@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/shared/search_bar.dart';
-import '../providers/location_provider.dart';
+import '../providers/category_provider.dart';
+import '../widget/category_widget.dart';
+import '../widget/location_button_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,106 +16,134 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    final locationProvider =
-        Provider.of<LocationProvider>(context, listen: false);
-    locationProvider.initCurrentLocation();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CategoryProvider>(context, listen: false).fetchCategories();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final locationProvider = Provider.of<LocationProvider>(context);
-    return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          // top part
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 3.5,
-            decoration: const BoxDecoration(
-                // color: Colors.amberAccent,
-                ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title:
+        // ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Column(
+            children: [
+              const Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 20), // Add SizedBox for spacing
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Delivery in",
-                              style: TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.bold)),
-                          const Text("9 minutes",
-                              style: TextStyle(
-                                fontFamily: "Gilroy-Heavy",
-                                fontSize: 30,
-                              )),
-                          GestureDetector(
-                            onTap: () => locationProvider.initCurrentLocation(),
-                            child: Expanded(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    locationProvider.address.isEmpty
-                                        ? 'Loading address...'
-                                        : locationProvider.address,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  GestureDetector(
-                                      onTap: () {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                          content: Text(
-                                            "Dropdown clicked",
-                                          ),
-                                          showCloseIcon: true,
-                                          duration: Duration(milliseconds: 500),
-                                        ));
-                                      },
-                                      child: const Icon(Icons.arrow_drop_down)),
-                                ],
-                              ),
-                            ),
+                          Text(
+                            'Delivery in ',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12),
                           ),
+                          Text(
+                            '7 minutes',
+                            style: TextStyle(
+                                fontFamily: 'Gilroy-ExtraBold',
+                                color: Colors.black,
+                                fontSize: 28),
+                          ),
+                          LocationButton(),
                         ],
                       ),
-                      GestureDetector(
-                          onTap: () async {},
-                          child: Image.asset(
-                            "assets/images/people.png",
-                            width: 26,
-                            height: 26,
-                          )),
+                      // Location Button
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  // Search Bar
-                  searchBar(),
+                  // ProfileImage(), // Use CircularProfileImageWidget
                 ],
               ),
-            ),
+              SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // SearchBarWidget(),
+                    searchBar(),
+                    const SizedBox(height: 20),
+                    displayCategory(context),
+                    // SnacksAndDrinksSection(), // New Snacks & Drinks Section
+                    const SizedBox(height: 20),
+                    // Additional content can be added here
+                  ],
+                ),
+              ),
+            ],
           ),
-          // card section
-          const SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Row(
-              children: [
-                Text("Example"),
-              ],
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
 }
+//
+// class SnacksAndDrinksSection extends StatelessWidget {
+//   const SnacksAndDrinksSection({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         const Text(
+//           'Snacks & Drinks',
+//           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+//         ),
+//         SizedBox(height: 10),
+//         GridView.count(
+//           shrinkWrap: true,
+//           crossAxisCount: 4, // Set to 4 to display four images per row
+//           childAspectRatio: 0.7, // Adjust this as needed for a better fit
+//           physics:
+//               NeverScrollableScrollPhysics(), // Prevent grid from scrolling independently
+//           children: [
+//            categoryItem(image, sub_category_title);
+//           ],
+//         ),
+//       ],
+//     );
+//   }
+// }
+//
+// class SnacksAndDrinksItem extends StatelessWidget {
+//   final String image;
+//   final String name;
+//
+//   const SnacksAndDrinksItem(
+//       {super.key, required this.image, required this.name});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Card(
+//           margin: const EdgeInsets.all(8.0),
+//           child: Padding(
+//             padding: const EdgeInsets.all(8.0), // Add padding inside the card
+//             child: Image.asset(
+//               image,
+//               width: 70, // Decrease the width for better fit
+//               height: 70, // Decrease the height for better fit
+//               fit: BoxFit.cover,
+//             ),
+//           ),
+//         ),
+//         const SizedBox(height: 5),
+//         Text(
+//           name,
+//           textAlign: TextAlign.center,
+//           style: const TextStyle(fontSize: 12), // Adjust text size as needed
+//         ),
+//       ],
+//     );
+//   }
+// }

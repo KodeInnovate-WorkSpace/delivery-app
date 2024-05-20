@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/firebase_options.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/providers/category_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:speedy_delivery/providers/location_provider.dart';
@@ -19,6 +20,8 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => LocationProvider()),
     ChangeNotifierProvider(create: (_) => CheckUserProvider()),
+    ChangeNotifierProvider(create: (_) => CategoryProvider()),
+
   ], child: const MyApp()));
 }
 
@@ -32,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Gilroy-Regular",
       ),
-      home: const Scaffold(
+      home:  const Scaffold(
         body: Center(
           // child: SplashScreen(),
           child: HomeScreen(),

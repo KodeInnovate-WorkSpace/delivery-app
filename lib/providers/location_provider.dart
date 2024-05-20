@@ -21,7 +21,7 @@ class LocationProvider with ChangeNotifier {
       String newAddress =
           "${place.street}, ${place.subLocality}, ${place.locality}";
 
-      if (place.subLocality != "umbra") {
+      if (place.subLocality != "Mumbra") {
         _address = "We're currently unavailable";
       } else {
         _address = newAddress;
