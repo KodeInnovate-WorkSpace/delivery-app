@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/shared/search_bar.dart';
 import '../providers/category_provider.dart';
-import '../widget/category_widget.dart';
 import '../widget/location_button_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -71,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     // SearchBarWidget(),
                     searchBar(),
                     const SizedBox(height: 20),
-                    displayCategory(context),
+                    // displayCategory(context),
                     // SnacksAndDrinksSection(), // New Snacks & Drinks Section
                     const SizedBox(height: 20),
                     // Additional content can be added here

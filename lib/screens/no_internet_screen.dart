@@ -29,7 +29,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                 if (isConnected) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) =>  HomeScreen()),
+                    MaterialPageRoute(builder: (context) =>  const HomeScreen()),
                   );
                 } else {
                   const CircularProgressIndicator();

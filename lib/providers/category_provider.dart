@@ -17,12 +17,14 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection("category").get();
+      final QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection("category").get();
       List<Category> loadedCategory = [];
 
       for (var doc in snapshot.docs) {
         List<SubCategory> subCategories = [];
-        final subCategoriesSnapshot = await doc.reference.collection("sub-category").get();
+        final subCategoriesSnapshot =
+            await doc.reference.collection("sub-category").get();
 
         for (var subDoc in subCategoriesSnapshot.docs) {
           log("Sub-Category Data = ${subDoc.data()}"); // Log the actual data
@@ -31,7 +33,8 @@ class CategoryProvider with ChangeNotifier {
               image: subDoc['image'], name: subDoc['sub_category_name']));
         }
 
-        loadedCategory.add(Category(name: doc['category_name'], subCategories: subCategories));
+        loadedCategory.add(
+            Category(name: doc['category_name'], subCategories: subCategories));
       }
       _categories = loadedCategory;
 

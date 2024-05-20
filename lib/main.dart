@@ -8,7 +8,6 @@ import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:speedy_delivery/providers/location_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
-import 'package:speedy_delivery/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
