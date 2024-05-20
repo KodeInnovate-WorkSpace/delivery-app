@@ -6,13 +6,12 @@ Widget termsPrivacyLine() {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Text(
+      const Text(
         "By continuing, you agree to our ",
         style: TextStyle(fontSize: 10),
       ),
       underlineText("Terms of service"),
-
-      Text(
+      const Text(
         " & ",
         style: TextStyle(fontSize: 10),
       ),

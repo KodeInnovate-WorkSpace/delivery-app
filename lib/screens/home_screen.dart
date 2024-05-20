@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final locationProvider = Provider.of<LocationProvider>(context);
     return Scaffold(
+      appBar: AppBar(),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -103,97 +104,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           // card section
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+          const SingleChildScrollView(
+            scrollDirection: Axis.vertical,
             child: Row(
               children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                Card(
-                    elevation: 4.0,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 150.0,
-                          width: 250,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Ink.image(
-                            image: const NetworkImage(
-                                'https://source.unsplash.com/random/800x600?house'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ],
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
-                Card(
-                    elevation: 4.0,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 150.0,
-                          width: 250,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Ink.image(
-                            image: const NetworkImage(
-                                'https://source.unsplash.com/random/800x600?house'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ],
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
-                Card(
-                    elevation: 4.0,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 150.0,
-                          width: 250,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Ink.image(
-                            image: const NetworkImage(
-                                'https://source.unsplash.com/random/800x600?house'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ],
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
-                Card(
-                    elevation: 4.0,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 150.0,
-                          width: 250,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Ink.image(
-                            image: const NetworkImage(
-                                'https://source.unsplash.com/random/800x600?house'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ],
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
+                Text("Example"),
               ],
             ),
           )

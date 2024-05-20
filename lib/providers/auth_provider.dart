@@ -1,14 +1,14 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../screens/verify_phone_num_screen.dart';
 
 class AuthProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   bool isButtonEnabled = false;
   bool isLoading = false;
+
+  String get phone => textController.text;
 
   AuthProvider() {
     textController.addListener(checkInputLength);
@@ -43,8 +43,6 @@ class AuthProvider with ChangeNotifier {
             log("Auto Retrieval Timeout");
           },
           phoneNumber: "+91$phoneNumber");
-
-      log("User already exists on DB");
     }
   }
 

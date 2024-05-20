@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/firebase_options.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:speedy_delivery/providers/location_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => LocationProvider()),
+    ChangeNotifierProvider(create: (_) => CheckUserProvider()),
   ], child: const MyApp()));
 }
 

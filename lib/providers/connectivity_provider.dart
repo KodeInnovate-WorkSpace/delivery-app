@@ -24,6 +24,8 @@ class ConnectivityProvider with ChangeNotifier {
       return _isConnected;
     } catch (e) {
       log("Error: $e");
+      _isConnected = false;
+      notifyListeners();
       return false;
     }
   }

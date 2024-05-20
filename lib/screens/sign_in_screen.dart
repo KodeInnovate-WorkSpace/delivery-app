@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/services/store_user.dart';
 import '../widget/terms_privacy_line.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -93,8 +94,11 @@ class _SigninScreenState extends State<SigninScreen> {
                 ),
                 ElevatedButton(
                   onPressed: authProvider.isButtonEnabled
-                      ? () => authProvider.verifyPhoneNumber(
-                          context, authProvider.textController.text)
+                      ? () async {
+                          await StoreUser().storeUserData(context);
+                          authProvider.verifyPhoneNumber(
+                              context, authProvider.textController.text);
+                        }
                       : null,
                   style: ButtonStyle(
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
