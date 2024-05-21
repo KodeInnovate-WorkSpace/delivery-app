@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/shared/search_bar.dart';
 import '../providers/category_provider.dart';
+import '../shared/search_bar.dart';
+import '../widget/category_widget.dart';
 import '../widget/location_button_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -63,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // ProfileImage(), // Use CircularProfileImageWidget
                 ],
               ),
-              SingleChildScrollView(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -74,6 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     // SnacksAndDrinksSection(), // New Snacks & Drinks Section
                     const SizedBox(height: 20),
                     // Additional content can be added here
+
+                    // Use Consumer to listen to CategoryProvider and display CategoryWidget
+                    CategoryWidget(),
                   ],
                 ),
               ),
@@ -84,65 +86,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-//
-// class SnacksAndDrinksSection extends StatelessWidget {
-//   const SnacksAndDrinksSection({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         const Text(
-//           'Snacks & Drinks',
-//           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-//         ),
-//         SizedBox(height: 10),
-//         GridView.count(
-//           shrinkWrap: true,
-//           crossAxisCount: 4, // Set to 4 to display four images per row
-//           childAspectRatio: 0.7, // Adjust this as needed for a better fit
-//           physics:
-//               NeverScrollableScrollPhysics(), // Prevent grid from scrolling independently
-//           children: [
-//            categoryItem(image, sub_category_title);
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-// }
-//
-// class SnacksAndDrinksItem extends StatelessWidget {
-//   final String image;
-//   final String name;
-//
-//   const SnacksAndDrinksItem(
-//       {super.key, required this.image, required this.name});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Card(
-//           margin: const EdgeInsets.all(8.0),
-//           child: Padding(
-//             padding: const EdgeInsets.all(8.0), // Add padding inside the card
-//             child: Image.asset(
-//               image,
-//               width: 70, // Decrease the width for better fit
-//               height: 70, // Decrease the height for better fit
-//               fit: BoxFit.cover,
-//             ),
-//           ),
-//         ),
-//         const SizedBox(height: 5),
-//         Text(
-//           name,
-//           textAlign: TextAlign.center,
-//           style: const TextStyle(fontSize: 12), // Adjust text size as needed
-//         ),
-//       ],
-//     );
-//   }
-// }

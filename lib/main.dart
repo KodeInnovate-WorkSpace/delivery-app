@@ -20,7 +20,6 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => LocationProvider()),
     ChangeNotifierProvider(create: (_) => CheckUserProvider()),
     ChangeNotifierProvider(create: (_) => CategoryProvider()),
-
   ], child: const MyApp()));
 }
 
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Gilroy-Regular",
       ),
-      home:  const Scaffold(
+      home: Scaffold(
         body: Center(
           // child: SplashScreen(),
           child: HomeScreen(),
