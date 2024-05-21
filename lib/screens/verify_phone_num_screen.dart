@@ -85,7 +85,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
 
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) =>   HomeScreen()),
+                    MaterialPageRoute(builder: (context) =>   const HomeScreen()),
                   );
 
                   setState(() {
