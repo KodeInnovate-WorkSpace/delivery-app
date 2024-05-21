@@ -32,8 +32,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Gilroy-Regular",
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          elevation: 3,
+          shadowColor: Colors.black54,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          titleTextStyle: TextStyle(
+              fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
+        ),
       ),
-      home: Scaffold(
+      home: const Scaffold(
         body: Center(
           // child: SplashScreen(),
           child: HomeScreen(),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/screens/categories_screen.dart';
 import '../providers/category_provider.dart';
 
 class CategoryWidget extends StatelessWidget {
@@ -48,19 +49,30 @@ class CategoryWidget extends StatelessWidget {
                     final subCategory = category.subCategories[subIndex];
                     return Column(
                       children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffeaf1fc),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.network(
-                              subCategory.image,
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CategoryScreen(
+                                      categoryTitle: category.subCategories[subIndex].name)),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            decoration: const BoxDecoration(
+                              color: Color(0xffeaf1fc),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.network(
+                                subCategory.image,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
