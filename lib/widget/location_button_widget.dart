@@ -105,7 +105,8 @@ class _LocationButtonState extends State<LocationButton> {
         if (pMark.subLocality != "Mumbra") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+            MaterialPageRoute(
+                builder: (context) => const NotInLocationScreen()),
           );
         }
       });
@@ -116,8 +117,8 @@ class _LocationButtonState extends State<LocationButton> {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         showModalBottomSheet(
           context: context,
           backgroundColor: Colors.white, // Set the background color
@@ -181,9 +182,14 @@ class _LocationButtonState extends State<LocationButton> {
           },
         );
       },
-      child: Text(
-        completeAddress ?? 'Thane, Maharashtra,400612 India ',
-        style: const TextStyle(color: Colors.black),
+      child: Row(
+        children: [
+          Text(
+            completeAddress ?? 'Thane, Maharashtra, India ',
+            style: const TextStyle(color: Colors.black),
+          ),
+          const Icon(Icons.arrow_drop_down_sharp),
+        ],
       ),
     );
   }

@@ -6,11 +6,13 @@ import '../widget/category_widget.dart';
 import '../widget/location_button_widget.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
@@ -23,16 +25,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(
-        //   title:
-        // ),
+        backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: Column(
             children: [
-              const Row(
+              Row(
                 children: [
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 20), // Add SizedBox for spacing
@@ -42,41 +42,48 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(
                             'Delivery in ',
                             style: TextStyle(
+                                fontFamily: 'Gilroy-ExtraBold',
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold,
                                 fontSize: 12),
                           ),
                           Text(
                             '7 minutes',
                             style: TextStyle(
-                                fontFamily: 'Gilroy-ExtraBold',
+                                fontFamily: 'Gilroy-Black',
                                 color: Colors.black,
                                 fontSize: 28),
                           ),
                           LocationButton(),
+                          SizedBox(
+                            height: 18,
+                          ),
                         ],
                       ),
                       // Location Button
                     ],
                   ),
-                  // ProfileImage(), // Use CircularProfileImageWidget
+                  const SizedBox(
+                    width: 110,
+                  ),
+                  Image.asset(
+                    "assets/images/people.png",
+                    width: 26,
+                    height: 26,
+                  ),
                 ],
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // SearchBarWidget(),
-                    searchBar(),
-                    const SizedBox(height: 20),
-                    // displayCategory(context),
-                    // SnacksAndDrinksSection(), // New Snacks & Drinks Section
-                    const SizedBox(height: 20),
-                    // Additional content can be added here
-
-                    // Use Consumer to listen to CategoryProvider and display CategoryWidget
-                    CategoryWidget(),
-                  ],
+              // Search bar
+              searchBar(),
+              const Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: 20),
+                      SizedBox(height: 20),
+                      CategoryWidget(),
+                    ],
+                  ),
                 ),
               ),
             ],
