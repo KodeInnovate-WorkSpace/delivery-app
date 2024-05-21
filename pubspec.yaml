@@ -1,0 +1,59 @@
+name: speedy_delivery
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  cloud_firestore: ^4.17.3
+  connectivity_plus: ^6.0.3
+  firebase_auth: ^4.19.5
+  firebase_core: ^2.31.0
+  flutter:
+    sdk: flutter
+  geocoding: ^3.0.0
+  geolocator: ^12.0.0
+  pinput: ^4.0.0
+  provider: ^6.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Gilroy-Black
+      fonts:
+        - asset: assets/fonts/Gilroy-Black.ttf
+
+    - family: Gilroy-Bold
+      fonts:
+        - asset: assets/fonts/Gilroy-Bold.ttf
+
+    - family: Gilroy-Regular
+      fonts:
+        - asset: assets/fonts/Gilroy-Regular.ttf
+
+    - family: Gilroy-Heavy
+      fonts:
+        - asset: assets/fonts/Gilroy-Heavy.ttf
+
+    - family: Gilroy-ExtraBold
+      fonts:
+        - asset: assets/fonts/Gilroy-ExtraBold.ttf
+
+    - family: Gilroy-SemiBold
+      fonts:
+        - asset: assets/fonts/Gilroy-SemiBold.ttf
+
+    - family: Gilroy-Medium
+      fonts:
+        - asset: assets/fonts/Gilroy-Medium.ttf
