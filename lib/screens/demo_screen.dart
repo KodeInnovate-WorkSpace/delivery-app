@@ -1,22 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class DemoPage extends StatefulWidget {
+import '../providers/product_provider.dart';
+
+class DemoPage extends StatelessWidget {
   const DemoPage({super.key});
 
   @override
-  State<DemoPage> createState() => _DemoPageState();
-}
-
-class _DemoPageState extends State<DemoPage> {
-
-
-  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Demo Page"),
+    final productProvider =
+    Provider.of<ProductProvider>(context, listen: false);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Products"),
       ),
-      floatingActionButton: Icon(Icons.refresh),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Center(child: Text("Products")),
+          Consumer<ProductProvider>(
+            builder: (ctx, provider, child) {
+              if (provider.isLoading) {
+                return const CircularProgressIndicator();
+              } else if (provider.products.isEmpty) {
+                return const Text("No products found");
+              } else {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: provider.products.length,
+                  itemBuilder: (ctx, index) {
+                    return ListTile(
+                      title: Text(provider.products[index].name),
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          productProvider.fetchProducts(context);
+        },
+        child: const Icon(Icons.refresh),
+      ),
     );
   }
 }

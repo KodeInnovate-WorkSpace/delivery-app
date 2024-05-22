@@ -7,7 +7,9 @@ import 'package:speedy_delivery/providers/category_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:speedy_delivery/providers/location_provider.dart';
+import 'package:speedy_delivery/providers/product_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:speedy_delivery/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,7 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => LocationProvider()),
     ChangeNotifierProvider(create: (_) => CheckUserProvider()),
     ChangeNotifierProvider(create: (_) => CategoryProvider()),
+    ChangeNotifierProvider(create: (_) => ProductProvider()),
   ], child: const MyApp()));
 }
 

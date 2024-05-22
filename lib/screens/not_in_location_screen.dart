@@ -31,7 +31,7 @@ class NotInLocationScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const DemoPage()),
+                  MaterialPageRoute(builder: (context) =>  const DemoPage()),
                 );
               },
               child: const Text('Try Changing Location'),

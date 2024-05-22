@@ -7,8 +7,16 @@ class CategoryProvider with ChangeNotifier {
   List<Category> _categories = [];
   bool _isLoading = false;
 
+  // these are gonna be used in product provider
+  Category? _selectedCategory;
+  SubCategory? _selectedSubCategory;
+
   List<Category> get categories => _categories;
   bool get isLoading => _isLoading;
+
+  // categories getter
+  Category? get selectedCategory => _selectedCategory;
+  SubCategory? get selectedSubCategory => _selectedSubCategory;
 
   Future<void> fetchCategories() async {
     _isLoading = true;
@@ -25,7 +33,7 @@ class CategoryProvider with ChangeNotifier {
             await doc.reference.collection("sub-category").get();
 
         for (var subDoc in subCategoriesSnapshot.docs) {
-          log("Sub-Category Data = ${subDoc.data()}"); // Log the actual data
+          // log("Sub-Category Data = ${subDoc.data()}"); // Log the actual data
 
           subCategories.add(SubCategory(
               image: subDoc['image'], name: subDoc['sub_category_name']));
@@ -36,12 +44,23 @@ class CategoryProvider with ChangeNotifier {
       }
       _categories = loadedCategory;
 
-      log("Categories = ${_categories.map((c) => c.name).toList()}"); // Log category names for clarity
+      // log("Categories = ${_categories.map((c) => c.name).toList()}"); // Log category names for clarity
     } catch (e) {
       log("Categories not fetched: $e");
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void selectCategory(Category category) {
+    _selectedCategory = category;
+    _selectedSubCategory = null;
+    notifyListeners();
+  }
+
+  void selectSubCategory(SubCategory subCategory) {
+    _selectedSubCategory = subCategory;
+    notifyListeners();
   }
 }
