@@ -363,7 +363,7 @@ class CategoryScreenState extends State<CategoryScreen> {
         children: [
           Container(
             width: 80,
-            color: Colors.amberAccent, // Set background color of navbar
+            color: Color(0xffeaf1fc), // Set background color of navbar
             child: ListView.builder(
               itemCount: 4, // Add 1 for the "Categories" text
               itemBuilder: (context, index) {

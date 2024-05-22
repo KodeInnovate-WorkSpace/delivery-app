@@ -63,7 +63,7 @@ class HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(
-                    width: 110,
+                    width: 90,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -74,9 +74,9 @@ class HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Image.asset(
-                      "assets/images/people.png",
-                      width: 26,
-                      height: 26,
+                      "assets/images/profile_photo.png",
+                      width: 50,
+                      height: 50,
                     ),
                   ),
                 ],
