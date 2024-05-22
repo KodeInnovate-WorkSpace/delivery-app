@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/screens/profile_screen.dart';
 import '../providers/category_provider.dart';
 import '../shared/search_bar.dart';
 import '../widget/category_widget.dart';
@@ -62,12 +63,21 @@ class HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(
-                    width: 110,
+                    width: 90,
                   ),
-                  Image.asset(
-                    "assets/images/people.png",
-                    width: 26,
-                    height: 26,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfilePage()),
+                      );
+                    },
+                    child: Image.asset(
+                      "assets/images/profile_photo.png",
+                      width: 50,
+                      height: 50,
+                    ),
                   ),
                 ],
               ),

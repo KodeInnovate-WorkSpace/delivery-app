@@ -30,6 +30,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/dog.png
 
   fonts:
     - family: Gilroy-Black
