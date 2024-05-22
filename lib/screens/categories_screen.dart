@@ -399,7 +399,7 @@ class CategoryScreenState extends State<CategoryScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       alignment: Alignment.center,
-                      color: selectedCategory == "mainCategoriesNames[index]"
+                      color: selectedCategory == "Category"
                           ? Colors
                               .white // Set background color for selected category
                           : Colors
