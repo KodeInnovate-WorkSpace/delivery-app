@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -98,11 +99,14 @@ class ProfilePage extends StatelessWidget {
               leading: const Icon(Icons.logout),
               title: const Text('Log out'),
               trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
+              onTap: () async{
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => SigninScreen()),
+                  MaterialPageRoute(builder: (context) => const SigninScreen()),
+                      (route) => false,
                 );
+
               },
             ),
             const SizedBox(height: 40), // Add space below "Log out"

@@ -47,8 +47,8 @@ class MyApp extends StatelessWidget {
       ),
       home: const Scaffold(
         body: Center(
-          // child: SplashScreen(),
-          child: HomeScreen(),
+          child: SplashScreen(),
+          // child: HomeScreen(),
         ),
       ),
     );
