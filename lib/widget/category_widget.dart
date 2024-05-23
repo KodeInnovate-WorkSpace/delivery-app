@@ -55,10 +55,9 @@ class CategoryWidget extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) => CategoryScreen(
                                         // categoryTitle: category.subCategories[subIndex].name // displays sub-category name
-                                        categoryTitle: category
-                                            .name,
-                                    subCategories: category.subCategories,
-                                    // displays category name
+                                        categoryTitle: category.name,
+                                        subCategories: category.subCategories,
+                                        // displays category name
                                       )),
                             );
                           },
