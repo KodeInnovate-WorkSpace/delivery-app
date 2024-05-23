@@ -56,7 +56,9 @@ class CategoryWidget extends StatelessWidget {
                                   builder: (context) => CategoryScreen(
                                         // categoryTitle: category.subCategories[subIndex].name // displays sub-category name
                                         categoryTitle: category
-                                            .name, // displays category name
+                                            .name,
+                                    subCategories: category.subCategories,
+                                    // displays category name
                                       )),
                             );
                           },
@@ -73,7 +75,7 @@ class CategoryWidget extends StatelessWidget {
                                 subCategory.image,
                                 width: 70,
                                 height: 70,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),

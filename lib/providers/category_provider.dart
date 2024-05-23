@@ -56,11 +56,13 @@ class CategoryProvider with ChangeNotifier {
   void selectCategory(Category category) {
     _selectedCategory = category;
     _selectedSubCategory = null;
+    log("Selected Category: ${_selectedCategory.toString()}");
     notifyListeners();
   }
 
   void selectSubCategory(SubCategory subCategory) {
     _selectedSubCategory = subCategory;
+    log("Selected Sub-Category: ${_selectedSubCategory.toString()}");
     notifyListeners();
   }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/category_model.dart';
+import '../providers/category_provider.dart';
 
 Widget sideNavbar(BuildContext context) {
+  final categories = Provider.of<CategoryProvider>(context);
+
   return SingleChildScrollView(
     child: Container(
       width: MediaQuery.of(context).size.width / 5,
@@ -9,24 +14,29 @@ Widget sideNavbar(BuildContext context) {
       ),
       child: Column(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
-          subCategoryInfo(),
-          subCategoryInfo(),
-          subCategoryInfo(),
-          subCategoryInfo(),
-          subCategoryInfo(),
-          subCategoryInfo(),
-          subCategoryInfo(),
-          subCategoryInfo(),
+          const SizedBox(height: 20),
+          categories.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : (categories.categories.isEmpty)
+                  ? const Center(child: Text("No categories available"))
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount:
+                          getAllSubcategories(categories.categories).length,
+                      itemBuilder: (context, index) {
+                        final subCategory =
+                            getAllSubcategories(categories.categories)[index];
+                        return subCategoryInfo(subCategory);
+                      },
+                    ),
         ],
       ),
     ),
   );
 }
 
-Widget subCategoryInfo() {
+Widget subCategoryInfo(SubCategory subCategory) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Column(
@@ -37,12 +47,12 @@ Widget subCategoryInfo() {
             height: 60, // Adjust as per your requirement
             width: 60, // Adjust as per your requirement
             child: Image.network(
-              "https://firebasestorage.googleapis.com/v0/b/speedy-app-e17a5.appspot.com/o/images%2Fdoritos.png?alt=media&token=66d73abe-1584-4f70-94be-60180ff4c419",
-            ),
+                subCategory.image) // Assuming first sub-category image
+            , // Handle empty sub-category case (optional)
           ),
         ),
-        const Text(
-          "Cheetos",
+        Text(
+          subCategory.name,
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -50,4 +60,12 @@ Widget subCategoryInfo() {
       ],
     ),
   );
+}
+
+List<SubCategory> getAllSubcategories(List<Category> categories) {
+  List<SubCategory> subCategories = [];
+  for (var category in categories) {
+    subCategories.addAll(category.subCategories);
+  }
+  return subCategories;
 }

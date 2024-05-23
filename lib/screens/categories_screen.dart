@@ -3,16 +3,18 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/category_provider.dart';
 import 'package:speedy_delivery/screens/demo_screen.dart';
 
+import '../models/category_model.dart';
 import '../widget/side_navbar.dart';
 
 class CategoryScreen extends StatefulWidget {
   final double imageWidth;
   final double imageHeight;
   final String categoryTitle;
-
+  final List<SubCategory> subCategories;
   const CategoryScreen(
       {super.key,
       required this.categoryTitle,
+      required this.subCategories,
       this.imageWidth = 90.0,
       this.imageHeight = 90.0});
 
@@ -22,6 +24,7 @@ class CategoryScreen extends StatefulWidget {
 
 class CategoryScreenState extends State<CategoryScreen> {
   bool _isClicked = false;
+
   @override
   Widget build(BuildContext context) {
     final categoryProvider =
@@ -67,7 +70,7 @@ class CategoryScreenState extends State<CategoryScreen> {
                             6.0), // Set the border radius here
                       ),
                       color: Colors.white,
-                      elevation: 2.0,
+                      elevation: 1.6,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -79,7 +82,8 @@ class CategoryScreenState extends State<CategoryScreen> {
                                 child: Image.network(
                               width: 90,
                               "https://firebasestorage.googleapis.com/v0/b/speedy-app-e17a5.appspot.com/o/images%2Fblack_pepper_masala.png?alt=media&token=38266974-fadb-4613-b724-83ef4b66e1b0",
-                            )), // Replace with your actual content
+                            )),
+
                             const SizedBox(
                               height: 15,
                             ),
