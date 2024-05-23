@@ -66,7 +66,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                     height: 55,
                     width: 40,
                     decoration: BoxDecoration(
-                        // color: Colors.white,
+                      // color: Colors.white,
                         color: Colors.amber[50],
                         borderRadius: BorderRadius.circular(10))),
               ),
@@ -102,7 +102,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                   ),
                 ),
                 backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                  (Set<WidgetState> states) {
+                      (Set<WidgetState> states) {
                     if (states.contains(WidgetState.disabled)) {
                       return Colors.black.withOpacity(0.3);
                     }
@@ -112,27 +112,27 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               ), // Disable the button by setting onPressed to null
               child: _isLoading
                   ? const SizedBox(
-                      width: 250,
-                      height: 50.0,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white, // Adjust color as needed
-                        ),
-                      ),
-                    )
+                width: 250,
+                height: 50.0,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white, // Adjust color as needed
+                  ),
+                ),
+              )
                   : const SizedBox(
-                      width: 250,
-                      height: 50.0,
-                      child: Center(
-                        child: Text(
-                          "Verify",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                      ),
+                width: 250,
+                height: 50.0,
+                child: Center(
+                  child: Text(
+                    "Verify",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
                     ),
+                  ),
+                ),
+              ),
             ),
             termsPrivacyLine(),
           ],
