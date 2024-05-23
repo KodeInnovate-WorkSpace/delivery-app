@@ -21,7 +21,7 @@ By installing this app from a source other than the official app store, you ackn
 
 # Team Member
 
-|[<img src="https://avatars.githubusercontent.com/u/93507427?v=4" style="max-width: 50%; height: auto;"/>](https://github.com/Kaif-Shariff)|[<img src="https://avatars.githubusercontent.com/u/98759447?v=4" style="max-width: 30%; height: auto;"/>](https://github.com/Skmoin5502)|
-|---|---|
-| Backend | Frontend |
-| [Kaif Shariff](https://github.com/Kaif-Shariff) | [Shaikh Moinuddin](https://github.com/Skmoin5502) |
+|[<img src="https://avatars.githubusercontent.com/u/93507427?v=4" />](https://github.com/Kaif-Shariff)| [<img src="https://avatars.githubusercontent.com/u/98759447?v=4"/>](https://github.com/Skmoin5502)                                     |
+|---|----------------------------------------------------------------------------------------------------------------------------------------|
+| Backend | Frontend                                                                                                                               |
+| [Kaif Shariff](https://github.com/Kaif-Shariff) | [Shaikh Moinuddin](https://github.com/Skmoin5502)                                                                                      |

@@ -75,8 +75,7 @@ class HomeScreenState extends State<HomeScreen> {
                     },
                     child: Image.asset(
                       "assets/images/profile_photo.png",
-                      width: 50,
-                      height: 50,
+                      width: 40,
                     ),
                   ),
                 ],

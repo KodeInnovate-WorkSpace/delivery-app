@@ -54,7 +54,10 @@ class CategoryWidget extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CategoryScreen(
-                                      categoryTitle: category.subCategories[subIndex].name)),
+                                        // categoryTitle: category.subCategories[subIndex].name // displays sub-category name
+                                        categoryTitle: category
+                                            .name, // displays category name
+                                      )),
                             );
                           },
                           child: Container(
