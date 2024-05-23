@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/category_provider.dart';
@@ -49,7 +48,7 @@ class CategoryScreenState extends State<CategoryScreen> {
                   crossAxisCount: 2, // Number of items per row
                   mainAxisSpacing: 5.0, // Spacing between rows
                   crossAxisSpacing: 5.0, // Spacing between columns
-                  childAspectRatio: 0.6,
+                  childAspectRatio: 0.58,
                 ),
                 itemBuilder: (context, index) {
                   // final item = categoryProvider.selectedSubCategory?.name[index];
@@ -63,6 +62,10 @@ class CategoryScreenState extends State<CategoryScreen> {
                       );
                     },
                     child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            6.0), // Set the border radius here
+                      ),
                       color: Colors.white,
                       elevation: 2.0,
                       child: Padding(
