@@ -70,7 +70,7 @@ class HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ProfilePage()),
+                            builder: (context) =>  ProfilePage()),
                       );
                     },
                     child: Image.asset(

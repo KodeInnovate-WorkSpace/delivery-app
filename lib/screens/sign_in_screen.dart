@@ -14,7 +14,7 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    final authProvider = Provider.of<MyAuthProvider>(context);
 
     return Scaffold(
         body: Container(
@@ -48,12 +48,9 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(
                   height: 8,
                 ),
-
                 const Text(
                   "Log in or sign up",
-                  style: TextStyle(
-                      fontFamily: "Gilroy-Bold",
-                      fontSize: 20),
+                  style: TextStyle(fontFamily: "Gilroy-Bold", fontSize: 20),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),

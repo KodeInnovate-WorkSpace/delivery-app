@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
@@ -10,6 +12,8 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -27,13 +31,15 @@ class ProfilePage extends StatelessWidget {
             const Text(
               'My Account',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              '9136307745',
+              authProvider.phone.isEmpty
+                  ? "Please Login"
+                  : '+91 ${authProvider.phone}',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[700],
@@ -107,7 +113,7 @@ class ProfilePage extends StatelessWidget {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const SigninScreen()),
-                      (route) => false,
+                  (route) => false,
                 );
               },
             ),

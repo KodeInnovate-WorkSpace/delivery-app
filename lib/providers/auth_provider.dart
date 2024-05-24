@@ -5,14 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/home_screen.dart';
 import '../screens/verify_phone_num_screen.dart';
 
-class AuthProvider with ChangeNotifier {
+class MyAuthProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   bool isButtonEnabled = false;
   bool isLoading = false;
 
   String get phone => textController.text;
 
-  AuthProvider() {
+  MyAuthProvider() {
     textController.addListener(checkInputLength);
   }
 

@@ -11,7 +11,7 @@ class StoreUser {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> storeUserData(BuildContext context) async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     final checkUserProvider =
         Provider.of<CheckUserProvider>(context, listen: false);
 
