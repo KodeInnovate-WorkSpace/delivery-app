@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/categories_screen.dart';
@@ -50,13 +52,18 @@ class CategoryWidget extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
+
+
+                            log("Sub-Category Name: ${category.subCategories[subIndex].name.toLowerCase()}");
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CategoryScreen(
                                         // categoryTitle: category.subCategories[subIndex].name // displays sub-category name
-                                        categoryTitle: category
-                                            .name, // displays category name
+                                        categoryTitle: category.name,
+                                        subCategories: category.subCategories,
+                                        // displays category name
                                       )),
                             );
                           },
@@ -73,7 +80,7 @@ class CategoryWidget extends StatelessWidget {
                                 subCategory.image,
                                 width: 70,
                                 height: 70,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),

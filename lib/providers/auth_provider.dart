@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/home_screen.dart';
 import '../screens/verify_phone_num_screen.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -27,7 +29,14 @@ class AuthProvider with ChangeNotifier {
 
       // phone number verification logic
       await FirebaseAuth.instance.verifyPhoneNumber(
-          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            await FirebaseAuth.instance.signInWithCredential(credential);
+            await _setLoginState(true);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+          },
           verificationFailed: (FirebaseAuthException ex) {
             log("Verification failed: ${ex.message}");
           },
@@ -44,6 +53,11 @@ class AuthProvider with ChangeNotifier {
           },
           phoneNumber: "+91$phoneNumber");
     }
+  }
+
+  Future<void> _setLoginState(bool isLoggedIn) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', isLoggedIn);
   }
 
   @override
