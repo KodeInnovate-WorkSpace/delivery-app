@@ -31,7 +31,7 @@ class CategoryWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    category.name,
+                    toSentenceCase(category.name),
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -102,4 +102,8 @@ class CategoryWidget extends StatelessWidget {
       },
     );
   }
+}
+String toSentenceCase(String text) {
+  if (text.isEmpty) return '';
+  return text.replaceFirst(RegExp(r'^[a-z]'), text[0].toUpperCase());
 }
