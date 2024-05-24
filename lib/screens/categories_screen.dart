@@ -24,8 +24,6 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class CategoryScreenState extends State<CategoryScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     final categoryProvider =
