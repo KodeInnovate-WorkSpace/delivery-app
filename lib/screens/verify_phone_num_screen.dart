@@ -22,6 +22,9 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("OTP Verification"),
+      ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 2,
@@ -29,18 +32,8 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 8,
-            ),
             const Text(
-              "Verification",
-              style: TextStyle(
-                  fontFamily: "Gilroy-Regular",
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24),
-            ),
-            const Text(
-              "Enter the code sent to the number",
+              "We've sent a verification code to",
               style: TextStyle(
                   fontFamily: "Gilroy-Regular",
                   color: Colors.grey,
@@ -48,12 +41,11 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                   fontSize: 16),
             ),
             Text(
-              widget.phoneNumber,
+              "+91 ${widget.phoneNumber}",
               style: const TextStyle(
-                  fontFamily: "Gilroy-Regular",
+                  fontFamily: "Gilroy-SemiBold",
                   // color: Colors.grey,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16),
+                  fontSize: 17),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -66,8 +58,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                     height: 55,
                     width: 40,
                     decoration: BoxDecoration(
-                      // color: Colors.white,
-                        color: Colors.amber[50],
+                        border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(10))),
               ),
             ),
@@ -83,9 +74,10 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
 
                   await FirebaseAuth.instance.signInWithCredential(credential);
 
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) =>   const HomeScreen()),
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    (route) => false,
                   );
 
                   setState(() {
@@ -102,7 +94,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                   ),
                 ),
                 backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
+                  (Set<WidgetState> states) {
                     if (states.contains(WidgetState.disabled)) {
                       return Colors.black.withOpacity(0.3);
                     }
@@ -112,27 +104,27 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               ), // Disable the button by setting onPressed to null
               child: _isLoading
                   ? const SizedBox(
-                width: 250,
-                height: 50.0,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white, // Adjust color as needed
-                  ),
-                ),
-              )
+                      width: 250,
+                      height: 50.0,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white, // Adjust color as needed
+                        ),
+                      ),
+                    )
                   : const SizedBox(
-                width: 250,
-                height: 50.0,
-                child: Center(
-                  child: Text(
-                    "Verify",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
+                      width: 250,
+                      height: 50.0,
+                      child: Center(
+                        child: Text(
+                          "Verify",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
             termsPrivacyLine(),
           ],

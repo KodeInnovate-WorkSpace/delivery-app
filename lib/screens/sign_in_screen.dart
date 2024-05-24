@@ -48,11 +48,11 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(
                   height: 8,
                 ),
+
                 const Text(
-                  "Login to your account",
+                  "Log in or sign up",
                   style: TextStyle(
-                      fontFamily: "Gilroy-Regular",
-                      fontWeight: FontWeight.w900,
+                      fontFamily: "Gilroy-Bold",
                       fontSize: 20),
                 ),
                 Padding(
@@ -64,12 +64,16 @@ class _SigninScreenState extends State<SigninScreen> {
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
                       hintText: "Enter Mobile Number",
-                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontFamily: 'Gilroy-SemiBold'),
                       prefixIcon: const Padding(
                         padding: EdgeInsets.all(18.0),
                         child: Text(
                           "+91",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Gilroy-SemiBold'),
                         ),
                       ),
                       prefixIconConstraints:
@@ -82,12 +86,12 @@ class _SigninScreenState extends State<SigninScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.0),
-                        borderSide: BorderSide(color: Colors.grey.shade400),
+                        borderSide: BorderSide(color: Colors.grey.shade100),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.0),
                         borderSide:
-                            const BorderSide(color: Colors.black, width: 2.0),
+                            const BorderSide(color: Colors.grey, width: 1.0),
                       ),
                     ),
                   ),

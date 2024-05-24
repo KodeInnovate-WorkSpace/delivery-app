@@ -12,18 +12,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // Future<void> saveVerificationStatus(bool isVerified) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setBool('isVerified', isVerified);
-  // }
-  //
-  // Future<bool> getVerificationStatus() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.getBool('isVerified') ?? false;
-  // }
-  //
-  // final FirebaseAuth auth = FirebaseAuth.instance;
-  // User? currentUser = auth.currentUser;
 
   @override
   Widget build(BuildContext context) {

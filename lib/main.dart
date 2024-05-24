@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/firebase_options.dart';
@@ -8,7 +7,9 @@ import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:speedy_delivery/providers/location_provider.dart';
 import 'package:speedy_delivery/providers/product_provider.dart';
-import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,12 +45,7 @@ class MyApp extends StatelessWidget {
               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
         ),
       ),
-      home: const Scaffold(
-        body: Center(
-          // child: SplashScreen(),
-          child: HomeScreen(),
-        ),
-      ),
+      home: const SplashScreen(),
     );
   }
 }
