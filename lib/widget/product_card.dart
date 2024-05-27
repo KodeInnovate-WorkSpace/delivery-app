@@ -20,37 +20,39 @@ class _ProductCardState extends State<ProductCard> {
       ),
       color: Colors.white,
       elevation: 1.6,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      child: const Padding(
+        padding: EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Adjust padding
             Center(
-                child: Image.network(
-              width: 90,
-              "https://firebasestorage.googleapis.com/v0/b/speedy-app-e17a5.appspot.com/o/images%2Fblack_pepper_masala.png?alt=media&token=38266974-fadb-4613-b724-83ef4b66e1b0",
-            )),
+            //     child: Image.network(
+            //   width: 90,
+            //   "https://firebasestorage.googleapis.com/v0/b/speedy-app-e17a5.appspot.com/o/images%2Fblack_pepper_masala.png?alt=media&token=38266974-fadb-4613-b724-83ef4b66e1b0",
+            // )
+            child: Text("Image"),
+            ),
 
-            const SizedBox(
+            SizedBox(
               height: 15,
             ),
-            const Text(
+            Text(
               "MDH Black Pepper Powder",
               textAlign: TextAlign.left,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontFamily: 'Gilroy-SemiBold'),
             ), // Replace with your actual data field
-            const Text(
+            Text(
               "100g",
               style: TextStyle(color: Colors.grey),
             ),
-            const SizedBox(
+            SizedBox(
               height: 10,
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(

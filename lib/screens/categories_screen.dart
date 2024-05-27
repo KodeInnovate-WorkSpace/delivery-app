@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/category_provider.dart';
 import 'package:speedy_delivery/screens/demo_screen.dart';
+import 'package:speedy_delivery/shared/capitalise.dart';
 
 import '../models/category_model.dart';
 import '../widget/product_card.dart';
@@ -32,7 +33,7 @@ class CategoryScreenState extends State<CategoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.categoryTitle,
+          toSentenceCase(widget.categoryTitle),
         ),
       ),
       body: Row(

@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/categories_screen.dart';
 import '../providers/category_provider.dart';
+import '../shared/capitalise.dart';
 
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({super.key});
@@ -52,18 +51,15 @@ class CategoryWidget extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-
-
-                            log("Sub-Category Name: ${category.subCategories[subIndex].name.toLowerCase()}");
-
+                            categoryProvider.fetchDetailCategories(
+                                category.name,
+                                category.subCategories[subIndex].name);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CategoryScreen(
-                                        // categoryTitle: category.subCategories[subIndex].name // displays sub-category name
                                         categoryTitle: category.name,
                                         subCategories: category.subCategories,
-                                        // displays category name
                                       )),
                             );
                           },
@@ -103,7 +99,4 @@ class CategoryWidget extends StatelessWidget {
     );
   }
 }
-String toSentenceCase(String text) {
-  if (text.isEmpty) return '';
-  return text.replaceFirst(RegExp(r'^[a-z]'), text[0].toUpperCase());
-}
+

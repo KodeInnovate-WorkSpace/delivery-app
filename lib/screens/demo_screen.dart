@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/category_provider.dart';
 import '../providers/product_provider.dart';
 
 class DemoPage extends StatelessWidget {
@@ -7,8 +8,8 @@ class DemoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productProvider =
-        Provider.of<ProductProvider>(context, listen: false);
+    final categoryProvider =
+        Provider.of<CategoryProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Products"),
@@ -40,7 +41,7 @@ class DemoPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          productProvider.fetchProducts(context);
+          // categoryProvider.fetchDetailCategories();
         },
         child: const Icon(Icons.refresh),
       ),

@@ -41,49 +41,53 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDETzKIsnWeE4zDF2DvULMXSBoR4EPcCKY',
-    appId: '1:371540153942:web:95f8b1777a7496dae00df7',
-    messagingSenderId: '371540153942',
-    projectId: 'speedy-app-e17a5',
-    authDomain: 'speedy-app-e17a5.firebaseapp.com',
-    storageBucket: 'speedy-app-e17a5.appspot.com',
-    measurementId: 'G-DL3533Z2T3',
+    apiKey: 'AIzaSyAkhObxIQ3B0vAcpm2yRCCuRLUQTZJR8Q0',
+    appId: '1:776399631000:web:25af1a447599765febd6ed',
+    messagingSenderId: '776399631000',
+    projectId: 'speedy-57c76',
+    authDomain: 'speedy-57c76.firebaseapp.com',
+    storageBucket: 'speedy-57c76.appspot.com',
+    measurementId: 'G-7NM4S32ZSP',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDM1aZ9Sbt6J1yE-6m7mKF0Vrpcv0lYESE',
-    appId: '1:371540153942:android:28c1f3c59b9b4a49e00df7',
-    messagingSenderId: '371540153942',
-    projectId: 'speedy-app-e17a5',
-    storageBucket: 'speedy-app-e17a5.appspot.com',
+    apiKey: 'AIzaSyCsXm1M5BpO4kdzKkx2SoSh9ikect07vew',
+    appId: '1:776399631000:android:b03133bc4915dfa3ebd6ed',
+    messagingSenderId: '776399631000',
+    projectId: 'speedy-57c76',
+    storageBucket: 'speedy-57c76.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDRoiUE06tGrGqS-lYof5_tKSuZxyUDPJk',
-    appId: '1:371540153942:ios:ce1c4ccfb7f22d67e00df7',
-    messagingSenderId: '371540153942',
-    projectId: 'speedy-app-e17a5',
-    storageBucket: 'speedy-app-e17a5.appspot.com',
+    apiKey: 'AIzaSyCBb3bsD0k3ygUj8SUKMzlTPRQF6vthPJs',
+    appId: '1:776399631000:ios:7b5dfac01fd7d8c8ebd6ed',
+    messagingSenderId: '776399631000',
+    projectId: 'speedy-57c76',
+    storageBucket: 'speedy-57c76.appspot.com',
+    androidClientId: '776399631000-2lgc2ulflpgshsce0kqm575tg6j98gf9.apps.googleusercontent.com',
+    iosClientId: '776399631000-fmif45ju4otpqieddb89ia4fjdaattjb.apps.googleusercontent.com',
     iosBundleId: 'com.example.speedyDelivery',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDRoiUE06tGrGqS-lYof5_tKSuZxyUDPJk',
-    appId: '1:371540153942:ios:ce1c4ccfb7f22d67e00df7',
-    messagingSenderId: '371540153942',
-    projectId: 'speedy-app-e17a5',
-    storageBucket: 'speedy-app-e17a5.appspot.com',
+    apiKey: 'AIzaSyCBb3bsD0k3ygUj8SUKMzlTPRQF6vthPJs',
+    appId: '1:776399631000:ios:7b5dfac01fd7d8c8ebd6ed',
+    messagingSenderId: '776399631000',
+    projectId: 'speedy-57c76',
+    storageBucket: 'speedy-57c76.appspot.com',
+    androidClientId: '776399631000-2lgc2ulflpgshsce0kqm575tg6j98gf9.apps.googleusercontent.com',
+    iosClientId: '776399631000-fmif45ju4otpqieddb89ia4fjdaattjb.apps.googleusercontent.com',
     iosBundleId: 'com.example.speedyDelivery',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDETzKIsnWeE4zDF2DvULMXSBoR4EPcCKY',
-    appId: '1:371540153942:web:0edcb2db686360c1e00df7',
-    messagingSenderId: '371540153942',
-    projectId: 'speedy-app-e17a5',
-    authDomain: 'speedy-app-e17a5.firebaseapp.com',
-    storageBucket: 'speedy-app-e17a5.appspot.com',
-    measurementId: 'G-MLW32LCN4W',
+    apiKey: 'AIzaSyAkhObxIQ3B0vAcpm2yRCCuRLUQTZJR8Q0',
+    appId: '1:776399631000:web:d3439be59ac1fe8aebd6ed',
+    messagingSenderId: '776399631000',
+    projectId: 'speedy-57c76',
+    authDomain: 'speedy-57c76.firebaseapp.com',
+    storageBucket: 'speedy-57c76.appspot.com',
+    measurementId: 'G-X1WS80VQ92',
   );
 
 }
