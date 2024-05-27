@@ -40,8 +40,6 @@ class CategoryProvider with ChangeNotifier {
             await doc.reference.collection("sub_category").get();
 
         for (var subDoc in subCategoriesSnapshot.docs) {
-          // log("Sub-Category Data = ${subDoc.data()}"); // Log the actual data
-
           subCategories
               .add(SubCategory(image: subDoc['image'], name: subDoc['name']));
         }
@@ -63,9 +61,6 @@ class CategoryProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    log("Fetched Category: $myCategory");
-    log("Fetched Sub-Category: $mySubCategory");
-
     if (mySubCategory.isEmpty) {
       _isLoading = false;
       notifyListeners();
@@ -73,14 +68,12 @@ class CategoryProvider with ChangeNotifier {
     }
 
     try {
-      // Fetch the main category document based on the provided category name
       final QuerySnapshot mainCategorySnapshot = await FirebaseFirestore
           .instance
           .collection("main_category")
           .where("name", isEqualTo: myCategory)
           .get();
 
-      // Check if any main categories were found
       if (mainCategorySnapshot.docs.isEmpty) {
         log("No matching main categories found.");
         _isLoading = false;
@@ -131,7 +124,6 @@ class CategoryProvider with ChangeNotifier {
       }
 
       _detailCategory = loadedDetailCategories;
-      log("Loaded Detail Categories: ${_detailCategory.map((c) => c.name).toList()}");
 
       fetchProducts(
           myCategory, mySubCategory, _detailCategory.map((c) => c.name).first);
@@ -148,11 +140,9 @@ class CategoryProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    log("fetchProducts: category = $category, sub-category = $subCategory, detail-category = $detailCategory");
-
     try {
-      // Fetch the main category document based on the provided category name
-      final QuerySnapshot mainCategorySnapshot = await FirebaseFirestore.instance
+      final QuerySnapshot mainCategorySnapshot = await FirebaseFirestore
+          .instance
           .collection("main_category")
           .where("name", isEqualTo: category)
           .get();
@@ -164,10 +154,10 @@ class CategoryProvider with ChangeNotifier {
         return;
       }
 
-      // Assuming you have only one document for the main category name
       final mainCategoryDoc = mainCategorySnapshot.docs.first;
 
-      final subCategoryCollection = mainCategoryDoc.reference.collection('sub_category');
+      final subCategoryCollection =
+          mainCategoryDoc.reference.collection('sub_category');
       final subCategorySnapshot = await subCategoryCollection
           .where("name", isEqualTo: subCategory)
           .get();
@@ -179,10 +169,10 @@ class CategoryProvider with ChangeNotifier {
         return;
       }
 
-      // Assuming you have only one document for the sub-category name
       final subCategoryDoc = subCategorySnapshot.docs.first;
 
-      final detailCategoryCollection = subCategoryDoc.reference.collection('detail_category');
+      final detailCategoryCollection =
+          subCategoryDoc.reference.collection('detail_category');
       final detailCategorySnapshot = await detailCategoryCollection
           .where("name", isEqualTo: detailCategory)
           .get();
@@ -194,16 +184,15 @@ class CategoryProvider with ChangeNotifier {
         return;
       }
 
-      // Assuming you have only one document for the detail category name
       final detailCategoryDoc = detailCategorySnapshot.docs.first;
 
-      final productCollection = detailCategoryDoc.reference.collection('products');
+      final productCollection =
+          detailCategoryDoc.reference.collection('products');
       final QuerySnapshot productSnapshot = await productCollection.get();
 
       if (productSnapshot.docs.isEmpty) {
         log("No products found in '$detailCategory'.");
-      } else {
-        log("Products found: ${productSnapshot.docs.length}");
+        return;
       }
 
       List<Product> loadedProducts = [];
@@ -221,7 +210,7 @@ class CategoryProvider with ChangeNotifier {
       }
 
       _products = loadedProducts;
-      log("Loaded Products: ${_products.map((p) => p.name).toList()}");
+      log("Fetched Products: ${_products.map((p) => p.name).toList()}");
     } catch (e) {
       log("Failed to fetch products: $e");
     } finally {
@@ -229,7 +218,6 @@ class CategoryProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-
 
   void selectCategory(Category category) {
     _selectedCategory = category;

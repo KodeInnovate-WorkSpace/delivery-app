@@ -34,7 +34,8 @@ class CategoryScreenState extends State<CategoryScreen> {
   }
 
   Future<void> _fetchInitialProducts() async {
-    final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+    final categoryProvider =
+        Provider.of<CategoryProvider>(context, listen: false);
     final selectedCategory = categoryProvider.selectedCategory;
     final selectedSubCategory = categoryProvider.selectedSubCategory;
 
@@ -76,7 +77,8 @@ class CategoryScreenState extends State<CategoryScreen> {
                         final products = categoryProvider.products;
                         return GridView.builder(
                           itemCount: products.length,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2, // Number of items per row
                             mainAxisSpacing: 5.0, // Spacing between rows
                             crossAxisSpacing: 5.0, // Spacing between columns
