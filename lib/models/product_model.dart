@@ -1,8 +1,8 @@
 class Product {
   final String name;
-  final double price;
+  final String price;
   final String image;
-  final int stock;
+  final String stock;
   final String unit;
 
   Product({

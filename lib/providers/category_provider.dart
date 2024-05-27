@@ -148,20 +148,69 @@ class CategoryProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
+    log("fetchProducts: category = $category, sub-category = $subCategory, detail-category = $detailCategory");
+
     try {
-      final QuerySnapshot productSnapshot = await FirebaseFirestore.instance
+      // Fetch the main category document based on the provided category name
+      final QuerySnapshot mainCategorySnapshot = await FirebaseFirestore.instance
           .collection("main_category")
-          .doc(category)
-          .collection("sub_category")
-          .doc(subCategory)
-          .collection("detail_category")
-          .doc(detailCategory)
-          .collection("products")
+          .where("name", isEqualTo: category)
           .get();
+
+      if (mainCategorySnapshot.docs.isEmpty) {
+        log("No matching main category found for $category");
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
+      // Assuming you have only one document for the main category name
+      final mainCategoryDoc = mainCategorySnapshot.docs.first;
+
+      final subCategoryCollection = mainCategoryDoc.reference.collection('sub_category');
+      final subCategorySnapshot = await subCategoryCollection
+          .where("name", isEqualTo: subCategory)
+          .get();
+
+      if (subCategorySnapshot.docs.isEmpty) {
+        log("No matching sub-category found within '$category' for sub-category '$subCategory'.");
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
+      // Assuming you have only one document for the sub-category name
+      final subCategoryDoc = subCategorySnapshot.docs.first;
+
+      final detailCategoryCollection = subCategoryDoc.reference.collection('detail_category');
+      final detailCategorySnapshot = await detailCategoryCollection
+          .where("name", isEqualTo: detailCategory)
+          .get();
+
+      if (detailCategorySnapshot.docs.isEmpty) {
+        log("No matching detail category found within '$subCategory' for detail-category '$detailCategory'.");
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
+      // Assuming you have only one document for the detail category name
+      final detailCategoryDoc = detailCategorySnapshot.docs.first;
+
+      final productCollection = detailCategoryDoc.reference.collection('products');
+      final QuerySnapshot productSnapshot = await productCollection.get();
+
+      if (productSnapshot.docs.isEmpty) {
+        log("No products found in '$detailCategory'.");
+      } else {
+        log("Products found: ${productSnapshot.docs.length}");
+      }
 
       List<Product> loadedProducts = [];
 
       for (var productDoc in productSnapshot.docs) {
+        log("Product Data: ${productDoc.data()}");
+
         loadedProducts.add(Product(
           name: productDoc['name'],
           price: productDoc['price'],
@@ -172,7 +221,7 @@ class CategoryProvider with ChangeNotifier {
       }
 
       _products = loadedProducts;
-      log("Loaded Products: ${_products.map((c) => c.name).toList()}");
+      log("Loaded Products: ${_products.map((p) => p.name).toList()}");
     } catch (e) {
       log("Failed to fetch products: $e");
     } finally {
@@ -180,6 +229,7 @@ class CategoryProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
 
   void selectCategory(Category category) {
     _selectedCategory = category;
