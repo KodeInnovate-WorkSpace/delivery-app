@@ -10,7 +10,6 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  final bool _isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class _ProductCardState extends State<ProductCard> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Adjust padding
+
             Center(
             //     child: Image.network(
             //   width: 90,
@@ -63,81 +62,7 @@ class _ProductCardState extends State<ProductCard> {
                 ),
 
                 AddToCartButton(),
-                // Old Button
-                // OutlinedButton(
-                //   onPressed: () {
-                //     setState(() {
-                //       _isClicked = !_isClicked;
-                //     });
-                //   },
-                //   style: ButtonStyle(
-                //     backgroundColor: _isClicked
-                //         ? WidgetStateProperty.all<Color>(Colors.green)
-                //         : WidgetStateProperty.all<Color>(Colors.transparent),
-                //     overlayColor: WidgetStateProperty.resolveWith<Color>(
-                //         (Set<WidgetState> states) {
-                //       if (states.contains(WidgetState.hovered)) {
-                //         return Colors.green.withOpacity(0.1);
-                //       }
-                //       if (states.contains(WidgetState.pressed)) {
-                //         return Colors.green.withOpacity(0.3);
-                //       }
-                //       return Colors.green.withOpacity(0.6);
-                //     }),
-                //     side: WidgetStateProperty.all<BorderSide>(
-                //         const BorderSide(color: Colors.green)), // Outline color
-                //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                //       const RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.all(
-                //             Radius.circular(4)), // No border radius
-                //       ),
-                //     ),
-                //     minimumSize:
-                //         WidgetStateProperty.all<Size>(const Size(25, 30)),
-                //   ),
-                //   child: _isClicked
-                //       ? const Text(
-                //           "Add",
-                //           style: TextStyle(
-                //             color: Colors.green,
-                //           ),
-                //         )
-                //       : Container(
-                //           width: 30,
-                //           height: 25,
-                //           color: Colors.green,
-                //           child: Row(children: [
-                //             TextButton(
-                //                 onPressed: null,
-                //                 child: Text(
-                //                   "-",
-                //                   style: TextStyle(color: Colors.white),
-                //                 )),
-                //             const Text(
-                //               "1",
-                //               style: TextStyle(
-                //                 color: Colors.white,
-                //               ),
-                //             ),
-                //             TextButton(
-                //                 onPressed: null,
-                //                 style: ButtonStyle(
-                //                   shape: WidgetStateProperty.all<
-                //                       RoundedRectangleBorder>(
-                //                     const RoundedRectangleBorder(
-                //                       borderRadius: BorderRadius.all(
-                //                           Radius.circular(
-                //                               4)), // No border radius
-                //                     ),
-                //                   ),
-                //                 ),
-                //                 child: const Text(
-                //                   "+",
-                //                   style: TextStyle(color: Colors.white),
-                //                 )),
-                //           ]),
-                //         ),
-                // ),
+
               ],
             ),
           ],

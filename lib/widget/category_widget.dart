@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/categories_screen.dart';
@@ -12,7 +13,10 @@ class CategoryWidget extends StatelessWidget {
     return Consumer<CategoryProvider>(
       builder: (context, categoryProvider, child) {
         if (categoryProvider.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.amberAccent,
+          ));
         }
 
         if (categoryProvider.categories.isEmpty) {
@@ -72,11 +76,20 @@ class CategoryWidget extends StatelessWidget {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Image.network(
-                                subCategory.image,
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.contain,
+                              // child: Image.network(
+                              //   subCategory.image,
+                              //   width: 70,
+                              //   height: 70,
+                              //   fit: BoxFit.contain,
+                              // ),
+                              child: CachedNetworkImage(
+                                imageUrl: subCategory.image,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(
+                                  color: Colors.amberAccent,
+                                ), // Placeholder while loading
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
                             ),
                           ),
@@ -99,4 +112,3 @@ class CategoryWidget extends StatelessWidget {
     );
   }
 }
-

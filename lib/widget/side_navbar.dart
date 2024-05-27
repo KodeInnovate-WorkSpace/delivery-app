@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/category_model.dart';
@@ -17,7 +18,10 @@ Widget sideNavbar(BuildContext context) {
         children: [
           const SizedBox(height: 20),
           categories.isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(
+                  child: CircularProgressIndicator(
+                  color: Colors.amberAccent,
+                ))
               : (categories.detailCategories.isEmpty)
                   ? const Center(child: Text("No detail categories available"))
                   : ListView.builder(
@@ -46,7 +50,14 @@ Widget detailCategoryInfo(DetailCategory detailCategory) {
             color: const Color(0xffeaf1fc),
             height: 60,
             width: 60,
-            child: Image.network(detailCategory.image),
+            child: CachedNetworkImage(
+              imageUrl: detailCategory.image,
+              placeholder: (context, url) => const CircularProgressIndicator(
+                color: Colors.amberAccent,
+              ), // Placeholder while loading
+              errorWidget: (context, url, error) =>
+                  const Icon(Icons.error), // Error widget
+            ),
           ),
         ),
         Text(
@@ -61,5 +72,3 @@ Widget detailCategoryInfo(DetailCategory detailCategory) {
     ),
   );
 }
-
-
