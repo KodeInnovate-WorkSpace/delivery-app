@@ -1,14 +1,15 @@
 class Product {
-  final String image;
   final String name;
-  final int unit;
   final double price;
-  final bool stock;
+  final String image;
+  final int stock;
+  final String unit;
 
-  Product(
-      {required this.image,
-      required this.name,
-      required this.unit,
-      required this.price,
-      required this.stock});
+  Product({
+    required this.name,
+    required this.price,
+    required this.image,
+    required this.stock,
+    required this.unit,
+  });
 }

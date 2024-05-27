@@ -21,6 +21,10 @@ class CategoryProvider with ChangeNotifier {
   SubCategory? get selectedSubCategory => _selectedSubCategory;
   List<DetailCategory> get detailCategories => _detailCategory;
 
+  // products
+  List<Product> _products = [];
+  List<Product> get products => _products;
+
   Future<void> fetchCategories() async {
     _isLoading = true;
     notifyListeners();
@@ -55,14 +59,14 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> fetchDetailCategories(
-      String category, String subCategory) async {
+      String myCategory, String mySubCategory) async {
     _isLoading = true;
     notifyListeners();
 
-    log("Fetched Category: $category");
-    log("Fetched Sub-Category: $subCategory");
+    log("Fetched Category: $myCategory");
+    log("Fetched Sub-Category: $mySubCategory");
 
-    if (subCategory.isEmpty) {
+    if (mySubCategory.isEmpty) {
       _isLoading = false;
       notifyListeners();
       return;
@@ -73,7 +77,7 @@ class CategoryProvider with ChangeNotifier {
       final QuerySnapshot mainCategorySnapshot = await FirebaseFirestore
           .instance
           .collection("main_category")
-          .where("name", isEqualTo: category)
+          .where("name", isEqualTo: myCategory)
           .get();
 
       // Check if any main categories were found
@@ -91,12 +95,12 @@ class CategoryProvider with ChangeNotifier {
         final subCategoryCollection =
             mainDoc.reference.collection('sub_category');
         final subCategorySnapshot = await subCategoryCollection
-            .where("name", isEqualTo: subCategory)
+            .where("name", isEqualTo: mySubCategory)
             .get();
 
         // Check if any sub-categories were found within the main category
         if (subCategorySnapshot.docs.isEmpty) {
-          log("No matching sub-categories found within '$category'.");
+          log("No matching sub-categories found within '$myCategory'.");
           continue;
         }
 
@@ -128,8 +132,49 @@ class CategoryProvider with ChangeNotifier {
 
       _detailCategory = loadedDetailCategories;
       log("Loaded Detail Categories: ${_detailCategory.map((c) => c.name).toList()}");
+
+      fetchProducts(
+          myCategory, mySubCategory, _detailCategory.map((c) => c.name).first);
     } catch (e) {
       log("Detail Categories not fetched: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchProducts(
+      String category, String subCategory, String detailCategory) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final QuerySnapshot productSnapshot = await FirebaseFirestore.instance
+          .collection("main_category")
+          .doc(category)
+          .collection("sub_category")
+          .doc(subCategory)
+          .collection("detail_category")
+          .doc(detailCategory)
+          .collection("products")
+          .get();
+
+      List<Product> loadedProducts = [];
+
+      for (var productDoc in productSnapshot.docs) {
+        loadedProducts.add(Product(
+          name: productDoc['name'],
+          price: productDoc['price'],
+          image: productDoc['image'],
+          stock: productDoc['stock'],
+          unit: productDoc['unit'],
+        ));
+      }
+
+      _products = loadedProducts;
+      log("Loaded Products: ${_products.map((c) => c.name).toList()}");
+    } catch (e) {
+      log("Failed to fetch products: $e");
     } finally {
       _isLoading = false;
       notifyListeners();

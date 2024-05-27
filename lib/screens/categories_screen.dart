@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/category_provider.dart';
-import 'package:speedy_delivery/screens/demo_screen.dart';
 import 'package:speedy_delivery/shared/capitalise.dart';
-
 import '../models/category_model.dart';
 import '../widget/product_card.dart';
 import '../widget/side_navbar.dart';
@@ -56,15 +54,13 @@ class CategoryScreenState extends State<CategoryScreen> {
                 itemBuilder: (context, index) {
                   // final item = categoryProvider.selectedSubCategory?.name[index];
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const DemoPage()), // Update with your actual page
-                      );
-                    },
-                    child: const ProductCard(),
+                    onTap: () {},
+                    child: const ProductCard(
+                      imageUrl: 'image',
+                      productName: 'name',
+                      productWeight: 'weight',
+                      productPrice: "200",
+                    ),
                   );
                 },
               ),
