@@ -58,87 +58,101 @@ class CheckoutScreen extends StatelessWidget {
                 // title end
                 const SizedBox(height: 10),
                 // Display cart items
-                ...cartProvider.cart.map((item) {
-                  return Card(
-                    elevation: 0,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Image.network(
-                            item.itemImage,
-                            width: 50,
-                            height: 50,
-                          ),
-                          const SizedBox(width: 15),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+
+                if (cartProvider.cart.isEmpty)
+                  Center(
+                    child: Column(children: [
+                      Image.asset("assets/images/empty.png"),
+                      const Text(
+                        "No item in cart",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ]),
+                  ),
+
+                if (cartProvider.cart.isNotEmpty)
+                  ...cartProvider.cart.map((item) {
+                    return Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Image.network(
+                              item.itemImage,
+                              width: 50,
+                              height: 50,
+                            ),
+                            const SizedBox(width: 15),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.itemName,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    item.itemUnit,
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Total: ₹${item.itemPrice * item.qnt}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Column(
                               children: [
-                                Text(
-                                  item.itemName,
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                                Text(
-                                  item.itemUnit,
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Total: ₹${item.itemPrice * item.qnt}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                                Container(
+                                  // height: 35,
+                                  // width: 75,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.remove,
+                                            size: 15, color: Colors.white),
+                                        onPressed: () {
+                                          cartProvider.removeItem(item);
+                                        },
+                                      ),
+                                      Text(
+                                        '${item.qnt}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Gilroy-SemiBold',
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.add,
+                                            size: 15, color: Colors.white),
+                                        onPressed: () {
+                                          cartProvider.addItem(item);
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(width: 2),
-                          Column(
-                            children: [
-                              Container(
-                                // height: 35,
-                                // width: 75,
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove,
-                                          size: 15, color: Colors.white),
-                                      onPressed: () {
-                                        cartProvider.removeItem(item);
-                                      },
-                                    ),
-                                    Text(
-                                      '${item.qnt}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Gilroy-SemiBold',
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.add,
-                                          size: 15, color: Colors.white),
-                                      onPressed: () {
-                                        cartProvider.addItem(item);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                // spacing
                 const SizedBox(height: 10),
                 // Bill details
                 const SizedBox(height: 10),
