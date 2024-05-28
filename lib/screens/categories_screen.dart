@@ -14,10 +14,10 @@ class CategoryScreen extends StatefulWidget {
   final List<SubCategory> subCategories;
   const CategoryScreen(
       {super.key,
-      required this.categoryTitle,
-      required this.subCategories,
-      this.imageWidth = 90.0,
-      this.imageHeight = 90.0});
+        required this.categoryTitle,
+        required this.subCategories,
+        this.imageWidth = 90.0,
+        this.imageHeight = 90.0});
 
   @override
   CategoryScreenState createState() => CategoryScreenState();
@@ -30,7 +30,7 @@ class CategoryScreenState extends State<CategoryScreen> {
     // Fetch products when the screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final categoryProvider =
-          Provider.of<CategoryProvider>(context, listen: false);
+      Provider.of<CategoryProvider>(context, listen: false);
       // Replace 'mainCategory', 'subCategory', and 'detailCategory' with actual values
       categoryProvider.fetchProducts(
           'mainCategory', 'subCategory', 'detailCategory');
@@ -40,7 +40,7 @@ class CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     final categoryProvider =
-        Provider.of<CategoryProvider>(context, listen: true);
+    Provider.of<CategoryProvider>(context, listen: true);
 
     return Scaffold(
       appBar: AppBar(
@@ -62,35 +62,35 @@ class CategoryScreenState extends State<CategoryScreen> {
                   child: categoryProvider.isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : GridView.builder(
-                          itemCount: categoryProvider.products.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // Number of items per row
-                            mainAxisSpacing: 5.0, // Spacing between rows
-                            crossAxisSpacing: 5.0, // Spacing between columns
-                            childAspectRatio: 0.58,
-                          ),
-                          itemBuilder: (context, index) {
-                            final product = categoryProvider.products[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const DemoPage(), // Update with your actual page
-                                  ),
-                                );
-                              },
-                              child: ProductCard(
-                                imageUrl: product.image,
-                                productName: product.name,
-                                productWeight: product.unit,
-                                productPrice: product.price.toString(),
-                              ),
-                            );
-                          },
+                    itemCount: categoryProvider.products.length,
+                    gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Number of items per row
+                      mainAxisSpacing: 5.0, // Spacing between rows
+                      crossAxisSpacing: 5.0, // Spacing between columns
+                      childAspectRatio: 0.58,
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = categoryProvider.products[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                              const DemoPage(), // Update with your actual page
+                            ),
+                          );
+                        },
+                        child: ProductCard(
+                          imageUrl: product.image,
+                          productName: product.name,
+                          productWeight: product.unit,
+                          productPrice: product.price,
                         ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -103,7 +103,7 @@ class CategoryScreenState extends State<CategoryScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  CheckoutScreen(),
+                    builder: (context) =>  const CheckoutScreen(),
                   ),
                 );
               },

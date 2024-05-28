@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/screens/demo_screen.dart';
 
-import 'checkout_screen.dart';
 
 class NotInLocationScreen extends StatelessWidget {
   const NotInLocationScreen({super.key});

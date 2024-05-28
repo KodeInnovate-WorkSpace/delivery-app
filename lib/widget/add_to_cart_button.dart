@@ -6,7 +6,7 @@ import '../models/cart_model.dart';
 
 class AddToCartButton extends StatefulWidget {
   final String productName;
-  final String productPrice;
+  final double productPrice;
   final String productImage;
   final String productUnit;
 

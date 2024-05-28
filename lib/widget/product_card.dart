@@ -1,13 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/shared/capitalise.dart';
+import '../shared/remove_trailing_zero.dart';
 import 'add_to_cart_button.dart';
 
 class ProductCard extends StatefulWidget {
   final String productName;
   final String imageUrl;
   final String productWeight;
-  final String productPrice;
+  final double productPrice;
 
   const ProductCard({
     super.key,
@@ -53,7 +54,7 @@ class _ProductCardState extends State<ProductCard> {
               style: const TextStyle(fontFamily: 'Gilroy-SemiBold'),
             ),
             Text(
-              widget.productWeight,
+              widget.productWeight.toString(),
               style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 10),
@@ -61,7 +62,7 @@ class _ProductCardState extends State<ProductCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "\u20B9 ${widget.productPrice}",
+                  "\u20B9 ${formatPrice(widget.productPrice)}",
                   style: const TextStyle(fontFamily: "Gilroy-medium"),
                 ),
                 AddToCartButton(

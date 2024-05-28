@@ -201,9 +201,18 @@ class CategoryProvider with ChangeNotifier {
       for (var productDoc in productSnapshot.docs) {
         log("Product Data: ${productDoc.data()}");
 
+        // Convert price from String to double
+        double price;
+        try {
+          price = double.parse(productDoc['price']);
+        } catch (e) {
+          log("Failed to parse price for product ${productDoc['name']}: $e");
+          continue;
+        }
+
         loadedProducts.add(Product(
           name: productDoc['name'],
-          price: productDoc['price'],
+          price: price,
           image: productDoc['image'],
           stock: productDoc['stock'],
           unit: productDoc['unit'],

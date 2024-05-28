@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/screens/checkout_screen.dart';
 
 Widget customBottomSheet(BuildContext context) {
   return Container(

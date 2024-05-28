@@ -1,6 +1,6 @@
 class Product {
   final String name;
-  final String price;
+  final double price;
   final String image;
   final String stock;
   final String unit;

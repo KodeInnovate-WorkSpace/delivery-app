@@ -3,17 +3,20 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 
 class CheckoutScreen extends StatelessWidget {
+  const CheckoutScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
 
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Enable auto-resizing when keyboard appears
+      resizeToAvoidBottomInset:
+          true, // Enable auto-resizing when keyboard appears
       appBar: AppBar(
         title: const Text('Checkout'),
       ),
       body: Container(
-        color: Colors.grey[200], // Set the background color to grey
+        color: Colors.grey[100], // Set the background color to grey
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
@@ -21,34 +24,44 @@ class CheckoutScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Delivery information
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(Icons.timer, color: Colors.green),
-                    SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                const Card(
+                  elevation: 0,
+                  color: Colors.white, // Set the card color to white
+                  child: Padding(
+                    padding: EdgeInsets.all(18.0),
+                    child: Row(
                       children: [
-                        Text(
-                          'Delivery in 7 minutes',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        Icon(Icons.timer),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Delivery in 7 minutes',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Gilroy-ExtraBold'),
+                              ),
+                              Text(
+                                'Shipment of 1 item',
+                                style:
+                                    TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                            ],
                           ),
-                        ),
-                        Text(
-                          'Shipment of 1 item',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
+                // title end
                 const SizedBox(height: 10),
                 // Display cart items
                 ...cartProvider.cart.map((item) {
                   return Card(
-                    color: Colors.white, // Set the card color to white
+                    elevation: 0,
+                    color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -58,7 +71,7 @@ class CheckoutScreen extends StatelessWidget {
                             width: 50,
                             height: 50,
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 15),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,10 +95,12 @@ class CheckoutScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 2),
                           Column(
                             children: [
                               Container(
+                                // height: 35,
+                                // width: 75,
                                 decoration: BoxDecoration(
                                   color: Colors.green,
                                   borderRadius: BorderRadius.circular(5),
@@ -95,19 +110,21 @@ class CheckoutScreen extends StatelessWidget {
                                   children: [
                                     IconButton(
                                       icon: const Icon(Icons.remove,
-                                          color: Colors.white),
+                                          size: 15, color: Colors.white),
                                       onPressed: () {
                                         cartProvider.removeItem(item);
                                       },
                                     ),
                                     Text(
                                       '${item.qnt}',
-                                      style:
-                                      const TextStyle(color: Colors.white),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Gilroy-SemiBold',
+                                      ),
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.add,
-                                          color: Colors.white),
+                                          size: 15, color: Colors.white),
                                       onPressed: () {
                                         cartProvider.addItem(item);
                                       },
@@ -121,7 +138,7 @@ class CheckoutScreen extends StatelessWidget {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
                 const SizedBox(height: 10),
                 // Bill details
                 const SizedBox(height: 10),

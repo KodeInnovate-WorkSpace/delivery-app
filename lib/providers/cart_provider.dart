@@ -37,8 +37,8 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String calculateTotalPrice() {
-    String totalPrice = "0.0";
+  double calculateTotalPrice() {
+    double totalPrice = 0.0;
     for (var item in _cartItems) {
       totalPrice += item.itemPrice * item.qnt;
     }

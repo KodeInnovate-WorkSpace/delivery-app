@@ -76,12 +76,6 @@ class CategoryWidget extends StatelessWidget {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              // child: Image.network(
-                              //   subCategory.image,
-                              //   width: 70,
-                              //   height: 70,
-                              //   fit: BoxFit.contain,
-                              // ),
                               child: CachedNetworkImage(
                                 imageUrl: subCategory.image,
                                 placeholder: (context, url) =>
