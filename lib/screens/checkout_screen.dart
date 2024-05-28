@@ -4,10 +4,10 @@ class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
 
   @override
-  _CheckoutScreenState createState() => _CheckoutScreenState();
+  CheckoutScreenState createState() => CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class CheckoutScreenState extends State<CheckoutScreen> {
   int _quantity = 1;
   double _totalPrice = 31.0; // Initial total price for the first product
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/screens/demo_screen.dart';
 
 import 'checkout_screen.dart';
 
@@ -31,7 +32,7 @@ class NotInLocationScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>   CheckoutScreen()),
+                  MaterialPageRoute(builder: (context) => const DemoPage()),
                 );
               },
               child: const Text('Try Changing Location'),
