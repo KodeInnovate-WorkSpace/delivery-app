@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/category_provider.dart';
+import 'package:speedy_delivery/screens/checkout_screen.dart';
 import 'package:speedy_delivery/screens/demo_screen.dart';
-
 import '../models/category_model.dart';
 import '../widget/product_card.dart';
 import '../widget/side_navbar.dart';
@@ -25,6 +25,19 @@ class CategoryScreen extends StatefulWidget {
 
 class CategoryScreenState extends State<CategoryScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Fetch products when the screen is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: false);
+      // Replace 'mainCategory', 'subCategory', and 'detailCategory' with actual values
+      categoryProvider.fetchProducts(
+          'mainCategory', 'subCategory', 'detailCategory');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final categoryProvider =
         Provider.of<CategoryProvider>(context, listen: true);
@@ -35,40 +48,61 @@ class CategoryScreenState extends State<CategoryScreen> {
           widget.categoryTitle,
         ),
       ),
-      body: Row(
+      body: Stack(
         children: [
-          // side navbar
-          sideNavbar(context),
+          Row(
+            children: [
+              // Side navbar
+              sideNavbar(context),
 
-          // products list
-          Expanded(
-            child: Container(
-              color: Colors.grey[100],
-              child: GridView.builder(
-                itemCount: categoryProvider.categories.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Number of items per row
-                  mainAxisSpacing: 5.0, // Spacing between rows
-                  crossAxisSpacing: 5.0, // Spacing between columns
-                  childAspectRatio: 0.58,
+              // Products list
+              Expanded(
+                child: Container(
+                  color: Colors.grey[100],
+                  child: categoryProvider.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : GridView.builder(
+                          itemCount: categoryProvider.products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // Number of items per row
+                            mainAxisSpacing: 5.0, // Spacing between rows
+                            crossAxisSpacing: 5.0, // Spacing between columns
+                            childAspectRatio: 0.58,
+                          ),
+                          itemBuilder: (context, index) {
+                            final product = categoryProvider.products[index];
+                            return GestureDetector(
+                              onTap: () {},
+                              child: ProductCard(
+                                imageUrl: product.image,
+                                productName: product.name,
+                                productWeight: product.unit,
+                                productPrice: product.price,
+                              ),
+                            );
+                          },
+                        ),
                 ),
-                itemBuilder: (context, index) {
-                  // final item = categoryProvider.selectedSubCategory?.name[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const DemoPage()), // Update with your actual page
-                      );
-                    },
-                    child: const ProductCard(),
-                  );
-                },
               ),
+            ],
+          ),
+          Positioned(
+            bottom: 25,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CheckoutScreen(),
+                  ),
+                );
+              },
+              backgroundColor: Colors.white,
+              child: const Icon(Icons.shopping_cart_sharp),
             ),
-          )
+          ),
         ],
       ),
     );

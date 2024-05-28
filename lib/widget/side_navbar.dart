@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/category_model.dart';
 import '../providers/category_provider.dart';
+import '../shared/capitalise.dart';
 
 Widget sideNavbar(BuildContext context) {
   final categories = Provider.of<CategoryProvider>(context);
@@ -16,18 +18,20 @@ Widget sideNavbar(BuildContext context) {
         children: [
           const SizedBox(height: 20),
           categories.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : (categories.categories.isEmpty)
-                  ? const Center(child: Text("No categories available"))
+              ? const Center(
+                  child: CircularProgressIndicator(
+                  color: Colors.amberAccent,
+                ))
+              : (categories.detailCategories.isEmpty)
+                  ? const Center(child: Text("No detail categories available"))
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount:
-                          getAllSubcategories(categories.categories).length,
+                      itemCount: categories.detailCategories.length,
                       itemBuilder: (context, index) {
-                        final subCategory =
-                            getAllSubcategories(categories.categories)[index];
-                        return subCategoryInfo(subCategory);
+                        final detailCategory =
+                            categories.detailCategories[index];
+                        return detailCategoryInfo(detailCategory);
                       },
                     ),
         ],
@@ -36,36 +40,35 @@ Widget sideNavbar(BuildContext context) {
   );
 }
 
-Widget subCategoryInfo(SubCategory subCategory) {
+Widget detailCategoryInfo(DetailCategory detailCategory) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Column(
       children: [
         ClipOval(
           child: Container(
-            color: Colors.grey[100], // Background color
-            height: 60, // Adjust as per your requirement
-            width: 60, // Adjust as per your requirement
-            child: Image.network(
-                subCategory.image) // Assuming first sub-category image
-            , // Handle empty sub-category case (optional)
+            color: const Color(0xffeaf1fc),
+            height: 60,
+            width: 60,
+            child: CachedNetworkImage(
+              imageUrl: detailCategory.image,
+              placeholder: (context, url) => const CircularProgressIndicator(
+                color: Colors.amberAccent,
+              ), // Placeholder while loading
+              errorWidget: (context, url, error) =>
+                  const Icon(Icons.error), // Error widget
+            ),
           ),
         ),
         Text(
-          subCategory.name,
+          toSentenceCase(detailCategory.name),
           textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              fontSize: 11,
+              fontFamily: 'Gilroy-Medium',
+              color: Colors.grey[600]),
         ),
       ],
     ),
   );
-}
-
-List<SubCategory> getAllSubcategories(List<Category> categories) {
-  List<SubCategory> subCategories = [];
-  for (var category in categories) {
-    subCategories.addAll(category.subCategories);
-  }
-  return subCategories;
 }

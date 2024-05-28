@@ -76,6 +76,12 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: const Text('Cart'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {},
+            ),
+            ListTile(
               leading: const Icon(Icons.share),
               title: const Text('Share the app'),
               trailing: const Icon(Icons.arrow_forward_ios),

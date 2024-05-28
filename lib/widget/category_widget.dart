@@ -1,9 +1,9 @@
-import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/categories_screen.dart';
 import '../providers/category_provider.dart';
+import '../shared/capitalise.dart';
 
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({super.key});
@@ -13,7 +13,10 @@ class CategoryWidget extends StatelessWidget {
     return Consumer<CategoryProvider>(
       builder: (context, categoryProvider, child) {
         if (categoryProvider.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.amberAccent,
+          ));
         }
 
         if (categoryProvider.categories.isEmpty) {
@@ -31,7 +34,7 @@ class CategoryWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    category.name,
+                    toSentenceCase(category.name),
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -52,18 +55,15 @@ class CategoryWidget extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-
-
-                            log("Sub-Category Name: ${category.subCategories[subIndex].name.toLowerCase()}");
-
+                            categoryProvider.fetchDetailCategories(
+                                category.name,
+                                category.subCategories[subIndex].name);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CategoryScreen(
-                                        // categoryTitle: category.subCategories[subIndex].name // displays sub-category name
                                         categoryTitle: category.name,
                                         subCategories: category.subCategories,
-                                        // displays category name
                                       )),
                             );
                           },
@@ -76,11 +76,14 @@ class CategoryWidget extends StatelessWidget {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Image.network(
-                                subCategory.image,
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.contain,
+                              child: CachedNetworkImage(
+                                imageUrl: subCategory.image,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(
+                                  color: Colors.amberAccent,
+                                ), // Placeholder while loading
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
                             ),
                           ),

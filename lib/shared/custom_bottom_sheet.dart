@@ -41,7 +41,13 @@ Widget customBottomSheet(BuildContext context) {
                 color: Colors.white,
               )),
           ElevatedButton(
-              onPressed: null,
+              onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => const CheckoutScreen()),
+                // );
+              },
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.green),
                 overlayColor: WidgetStateProperty.resolveWith<Color>(

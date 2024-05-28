@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/firebase_options.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/providers/category_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
@@ -18,10 +19,12 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
     ChangeNotifierProvider(create: (_) => MyAuthProvider()),
+    ChangeNotifierProvider(create: (_) => CartProvider()),
     ChangeNotifierProvider(create: (_) => LocationProvider()),
     ChangeNotifierProvider(create: (_) => CheckUserProvider()),
     ChangeNotifierProvider(create: (_) => CategoryProvider()),
     ChangeNotifierProvider(create: (_) => ProductProvider()),
+    ChangeNotifierProvider(create: (_) => CartProvider()),
   ], child: const MyApp()));
 }
 
@@ -46,7 +49,6 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomeScreen(),
       // home: const SplashScreen(),
-
     );
   }
 }
