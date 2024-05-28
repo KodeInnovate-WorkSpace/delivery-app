@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/shared/capitalise.dart';
 import 'add_to_cart_button.dart';
 
 class ProductCard extends StatefulWidget {
@@ -35,14 +37,15 @@ class _ProductCardState extends State<ProductCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Image.network(
-                widget.imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: widget.imageUrl,
                 width: 90,
+                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(height: 15),
             Text(
-              widget.productName,
+              toSentenceCase(widget.productName),
               textAlign: TextAlign.left,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

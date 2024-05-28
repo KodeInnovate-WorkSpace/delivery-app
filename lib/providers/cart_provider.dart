@@ -1,7 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 
-import '../models/category_model.dart';
+import '../models/product_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;

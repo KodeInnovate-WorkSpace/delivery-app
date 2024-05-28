@@ -1,3 +1,5 @@
+import 'package:speedy_delivery/models/product_model.dart';
+
 class Category {
   final String name;
   final List<SubCategory> subCategories;
@@ -23,21 +25,5 @@ class DetailCategory {
     required this.name,
     required this.image,
     required this.products,
-  });
-}
-
-class Product {
-  final String name;
-  final int price;
-  final String image;
-  final String stock;
-  final String unit;
-
-  Product({
-    required this.name,
-    required this.price,
-    required this.image,
-    required this.stock,
-    required this.unit,
   });
 }
