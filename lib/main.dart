@@ -19,6 +19,7 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
     ChangeNotifierProvider(create: (_) => MyAuthProvider()),
+    ChangeNotifierProvider(create: (_) => CartProvider()),
     ChangeNotifierProvider(create: (_) => LocationProvider()),
     ChangeNotifierProvider(create: (_) => CheckUserProvider()),
     ChangeNotifierProvider(create: (_) => CategoryProvider()),

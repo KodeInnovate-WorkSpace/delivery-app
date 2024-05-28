@@ -38,10 +38,11 @@ class _ProductCardState extends State<ProductCard> {
           children: [
             Center(
               child: CachedNetworkImage(
-                imageUrl: widget.imageUrl,
-                width: 90,
-                fit: BoxFit.contain,
-              ),
+                  imageUrl: widget.imageUrl,
+                  width: 90,
+                  fit: BoxFit.contain,
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error)),
             ),
             const SizedBox(height: 15),
             Text(
@@ -63,7 +64,12 @@ class _ProductCardState extends State<ProductCard> {
                   "\u20B9 ${widget.productPrice}",
                   style: const TextStyle(fontFamily: "Gilroy-medium"),
                 ),
-                const AddToCartButton(),
+                AddToCartButton(
+                  productName: widget.productName,
+                  productPrice: widget.productPrice,
+                  productImage: widget.imageUrl,
+                  productUnit: widget.productWeight,
+                ),
               ],
             ),
           ],

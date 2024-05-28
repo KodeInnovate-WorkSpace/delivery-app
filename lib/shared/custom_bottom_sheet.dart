@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/screens/checkout_screen.dart';
 
 Widget customBottomSheet(BuildContext context) {
   return Container(
@@ -41,7 +42,13 @@ Widget customBottomSheet(BuildContext context) {
                 color: Colors.white,
               )),
           ElevatedButton(
-              onPressed: null,
+              onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => const CheckoutScreen()),
+                // );
+              },
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.green),
                 overlayColor: WidgetStateProperty.resolveWith<Color>(
