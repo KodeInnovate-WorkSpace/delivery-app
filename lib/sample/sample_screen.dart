@@ -1,7 +1,9 @@
 import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/sample/model.dart';
+import '../shared/capitalise.dart';
 
 class SampleScreen extends StatefulWidget {
   const SampleScreen({super.key});
@@ -11,58 +13,139 @@ class SampleScreen extends StatefulWidget {
 }
 
 class _SampleScreenState extends State<SampleScreen> {
+  final List<Category> categories = [];
+  final List<SubCategory> subCategories = [];
+  late Future<void> fetchDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDataFuture = fetchData();
+  }
+
+  Future<void> fetchData() async {
+    await fetchCategory();
+    await fetchSubCategory();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: ElevatedButton(
-        onPressed: () async {
-          fetchCategory();
-          fetchSubCategory();
-        },
-        child: const Text("Click"),
-      )),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<void>(
+              future: fetchDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(
+                    child: Text("Error"),
+                  );
+                } else {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              toSentenceCase(category.name),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: subCategories.length,
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              childAspectRatio: 0.59,
+                            ),
+                            itemBuilder: (context, subIndex) {
+                              final subCategory = subCategories[subIndex];
+                              return Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xffeaf1fc),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CachedNetworkImage(
+                                          imageUrl: subCategory.img,
+                                          placeholder: (context, url) =>
+                                          const CircularProgressIndicator(
+                                            color: Colors.amberAccent,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    subCategory.name,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+      await FirebaseFirestore.instance.collection("category").get();
 
-      // fetches with where()
-      // if (snapshot.docs.isNotEmpty) {
-      //   for (var doc in snapshot.docs) {
-      //     final data = doc.data();
-      //     final catId = data['category_id'];
-      //     final catName = data['category_name'];
-      //     log("Category: \n ID: $catId | Name: $catName");
-      //   }
-      // } else {
-      //   log("Category not present");
-      // }
-      // fetches: collection -> doc -> all
-      // all the documents are fetched
       if (snapshot.docs.isNotEmpty) {
-        for (var doc in snapshot.docs) {
-          final data = doc.data();
-          final catId = data['category_id'];
-          final catName = data['category_name'];
-          log("Category: \n ID: $catId | Name: $catName");
-        }
+        setState(() {
+          categories.clear();
+          for (var doc in snapshot.docs) {
+            final data = doc.data();
+            final category = Category(
+              id: data['category_id'],
+              name: data['category_name'],
+            );
+            categories.add(category);
+            log("Category: \n ID: ${category.id} | Name: ${category.name}");
+          }
+        });
       } else {
         log("Document does not exist.");
       }
-      // fetches collection -> doc('specific id') -> fields
-      // fetches a particular doc with doc id
-      // if (snapshot.exists) {
-      //   final data = snapshot.data();
-      //   final catId = data?['category_id'];
-      //   final catName = data?['category_name'];
-      //   log("Category: \n ID: $catId | Name: $catName");
-      // } else {
-      //   log("Document does not exist.");
-      // }
     } catch (e) {
       log("Error fetching category: $e");
     }
@@ -71,16 +154,23 @@ class _SampleScreenState extends State<SampleScreen> {
   Future<void> fetchSubCategory() async {
     try {
       final subSnapshot =
-          await FirebaseFirestore.instance.collection("sub_category").get();
+      await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
-        for (var doc in subSnapshot.docs) {
-          final data = doc.data();
-          final subCatId = data['sub_category_id'];
-          final catId = data['category_id'];
-          final subCatName = data['sub_category_name'];
-          log("Sub-Category \n ID: $subCatId | Name: $subCatName | Cat Id: $catId");
-        }
+        setState(() {
+          subCategories.clear();
+          for (var doc in subSnapshot.docs) {
+            final data = doc.data();
+            final subCategory = SubCategory(
+              id: data['sub_category_id'],
+              name: data['sub_category_name'],
+              img: data['sub_category_img'], // Make sure this field exists
+              catId: data['category_id'],
+            );
+            subCategories.add(subCategory);
+            log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
+          }
+        });
       } else {
         log("No Sub-Category Document Found!");
       }
