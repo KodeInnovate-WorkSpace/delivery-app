@@ -80,13 +80,11 @@ class HomeScreenState extends State<HomeScreen> {
               ],
             ),
             // Search bar
-            searchBar(context),
+            searchBar(),
             const Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 20),
                     SizedBox(height: 20),
                     CategoryWidget(),
                   ],
