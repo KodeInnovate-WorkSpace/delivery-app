@@ -18,6 +18,7 @@ class _SampleScreenState extends State<SampleScreen> {
           child: ElevatedButton(
         onPressed: () async {
           fetchCategory();
+          fetchSubCategory();
         },
         child: const Text("Click"),
       )),
@@ -26,24 +27,10 @@ class _SampleScreenState extends State<SampleScreen> {
 
   Future<void> fetchCategory() async {
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection("category")
-          .where('category_id', isEqualTo: 3)
-          .get();
+      final snapshot =
+          await FirebaseFirestore.instance.collection("category").get();
 
       // fetches with where()
-      if(snapshot.docs.isNotEmpty) {
-        for (var doc in snapshot.docs) {
-          final data = doc.data();
-          final catId = data['category_id'];
-          final catName = data['category_name'];
-          log("Category: \n ID: $catId | Name: $catName");
-        }
-      }else{
-        log("Category not present");
-      }
-      // fetches: collection -> doc -> all
-      // all the documents are fetched
       // if (snapshot.docs.isNotEmpty) {
       //   for (var doc in snapshot.docs) {
       //     final data = doc.data();
@@ -52,8 +39,20 @@ class _SampleScreenState extends State<SampleScreen> {
       //     log("Category: \n ID: $catId | Name: $catName");
       //   }
       // } else {
-      //   log("Document does not exist.");
+      //   log("Category not present");
       // }
+      // fetches: collection -> doc -> all
+      // all the documents are fetched
+      if (snapshot.docs.isNotEmpty) {
+        for (var doc in snapshot.docs) {
+          final data = doc.data();
+          final catId = data['category_id'];
+          final catName = data['category_name'];
+          log("Category: \n ID: $catId | Name: $catName");
+        }
+      } else {
+        log("Document does not exist.");
+      }
       // fetches collection -> doc('specific id') -> fields
       // fetches a particular doc with doc id
       // if (snapshot.exists) {
@@ -66,6 +65,27 @@ class _SampleScreenState extends State<SampleScreen> {
       // }
     } catch (e) {
       log("Error fetching category: $e");
+    }
+  }
+
+  Future<void> fetchSubCategory() async {
+    try {
+      final subSnapshot =
+          await FirebaseFirestore.instance.collection("sub_category").get();
+
+      if (subSnapshot.docs.isNotEmpty) {
+        for (var doc in subSnapshot.docs) {
+          final data = doc.data();
+          final subCatId = data['sub_category_id'];
+          final catId = data['category_id'];
+          final subCatName = data['sub_category_name'];
+          log("Sub-Category \n ID: $subCatId | Name: $subCatName | Cat Id: $catId");
+        }
+      } else {
+        log("No Sub-Category Document Found!");
+      }
+    } catch (e) {
+      log("No sub-category fetched: $e");
     }
   }
 }
