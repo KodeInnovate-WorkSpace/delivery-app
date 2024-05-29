@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/sample/model.dart';
+
 import '../shared/capitalise.dart';
 
 class SampleScreen extends StatefulWidget {
@@ -26,6 +27,60 @@ class _SampleScreenState extends State<SampleScreen> {
   Future<void> fetchData() async {
     await fetchCategory();
     await fetchSubCategory();
+  }
+
+  Future<void> fetchCategory() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection("category").get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          categories.clear();
+          for (var doc in snapshot.docs) {
+            final data = doc.data();
+            final category = Category(
+              id: data['category_id'],
+              name: data['category_name'],
+            );
+            categories.add(category);
+            log("Category: \n ID: ${category.id} | Name: ${category.name}");
+          }
+        });
+      } else {
+        log("No Category Document Found!");
+      }
+    } catch (e) {
+      log("Error fetching category: $e");
+    }
+  }
+
+  Future<void> fetchSubCategory() async {
+    try {
+      final subSnapshot =
+          await FirebaseFirestore.instance.collection("sub_category").get();
+
+      if (subSnapshot.docs.isNotEmpty) {
+        setState(() {
+          subCategories.clear();
+          for (var doc in subSnapshot.docs) {
+            final data = doc.data();
+            final subCategory = SubCategory(
+              id: data['sub_category_id'],
+              name: data['sub_category_name'],
+              img: data['sub_category_img'],
+              catId: data['category_id'],
+            );
+            subCategories.add(subCategory);
+            log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
+          }
+        });
+      } else {
+        log("No Sub-Category Document Found!");
+      }
+    } catch (e) {
+      log("Error fetching sub-category: $e");
+    }
   }
 
   @override
@@ -52,13 +107,17 @@ class _SampleScreenState extends State<SampleScreen> {
                     itemCount: categories.length,
                     itemBuilder: (context, index) {
                       final category = categories[index];
+                      final filteredSubCategories = subCategories
+                          .where(
+                              (subCategory) => subCategory.catId == category.id)
+                          .toList();
+
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              toSentenceCase(category.name),
+                            child: Text(category.name,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -68,14 +127,15 @@ class _SampleScreenState extends State<SampleScreen> {
                           GridView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: subCategories.length,
+                            itemCount: filteredSubCategories.length,
                             gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 4,
                               childAspectRatio: 0.59,
                             ),
                             itemBuilder: (context, subIndex) {
-                              final subCategory = subCategories[subIndex];
+                              final subCategory =
+                                  filteredSubCategories[subIndex];
                               return Column(
                                 children: [
                                   GestureDetector(
@@ -93,11 +153,11 @@ class _SampleScreenState extends State<SampleScreen> {
                                         child: CachedNetworkImage(
                                           imageUrl: subCategory.img,
                                           placeholder: (context, url) =>
-                                          const CircularProgressIndicator(
+                                              const CircularProgressIndicator(
                                             color: Colors.amberAccent,
                                           ),
                                           errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
+                                              const Icon(Icons.error),
                                         ),
                                       ),
                                     ),
@@ -123,59 +183,5 @@ class _SampleScreenState extends State<SampleScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> fetchCategory() async {
-    try {
-      final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
-
-      if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          categories.clear();
-          for (var doc in snapshot.docs) {
-            final data = doc.data();
-            final category = Category(
-              id: data['category_id'],
-              name: data['category_name'],
-            );
-            categories.add(category);
-            log("Category: \n ID: ${category.id} | Name: ${category.name}");
-          }
-        });
-      } else {
-        log("Document does not exist.");
-      }
-    } catch (e) {
-      log("Error fetching category: $e");
-    }
-  }
-
-  Future<void> fetchSubCategory() async {
-    try {
-      final subSnapshot =
-      await FirebaseFirestore.instance.collection("sub_category").get();
-
-      if (subSnapshot.docs.isNotEmpty) {
-        setState(() {
-          subCategories.clear();
-          for (var doc in subSnapshot.docs) {
-            final data = doc.data();
-            final subCategory = SubCategory(
-              id: data['sub_category_id'],
-              name: data['sub_category_name'],
-              img: data['sub_category_img'], // Make sure this field exists
-              catId: data['category_id'],
-            );
-            subCategories.add(subCategory);
-            log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
-          }
-        });
-      } else {
-        log("No Sub-Category Document Found!");
-      }
-    } catch (e) {
-      log("No sub-category fetched: $e");
-    }
   }
 }

@@ -48,8 +48,8 @@ class MyApp extends StatelessWidget {
               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
         ),
       ),
-      home: const SampleScreen(),
-      // home: const HomeScreen(),
+      // home: const SampleScreen(),
+      home: const HomeScreen(),
       // home: const SplashScreen(),
     );
   }
