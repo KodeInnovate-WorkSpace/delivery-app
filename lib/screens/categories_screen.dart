@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/category_provider.dart';
 import 'package:speedy_delivery/screens/checkout_screen.dart';
+
 import '../models/category_model.dart';
 import '../widget/product_card.dart';
 import '../widget/side_navbar.dart';
@@ -26,7 +27,6 @@ class CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch products when the screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final categoryProvider =
           Provider.of<CategoryProvider>(context, listen: false);

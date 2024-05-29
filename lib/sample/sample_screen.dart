@@ -3,8 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/sample/model.dart';
-
-import '../shared/capitalise.dart';
+import 'package:speedy_delivery/sample/sample_category_screen.dart';
 
 class SampleScreen extends StatefulWidget {
   const SampleScreen({super.key});
@@ -117,7 +116,8 @@ class _SampleScreenState extends State<SampleScreen> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(category.name,
+                            child: Text(
+                              category.name,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -139,7 +139,19 @@ class _SampleScreenState extends State<SampleScreen> {
                               return Column(
                                 children: [
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SampleCategoryScreen(
+                                            categoryTitle: category.name,
+                                            subCategories:
+                                                filteredSubCategories,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                     child: Container(
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 3),
