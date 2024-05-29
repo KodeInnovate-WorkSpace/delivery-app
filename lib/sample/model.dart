@@ -21,10 +21,10 @@ class SubCategory {
 class Product {
   final int id;
   final String name;
-  final double price;
+  final int price;
   final String image;
   final int stock;
-  final double unit;
+  final int unit;
   final int subCatId;
 
   Product({

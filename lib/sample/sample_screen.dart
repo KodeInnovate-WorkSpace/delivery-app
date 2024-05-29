@@ -17,6 +17,9 @@ class _SampleScreenState extends State<SampleScreen> {
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
 
+  // products
+  List<Product> products = [];
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +29,7 @@ class _SampleScreenState extends State<SampleScreen> {
   Future<void> fetchData() async {
     await fetchCategory();
     await fetchSubCategory();
+    // await fetchProducts();
   }
 
   Future<void> fetchCategory() async {
@@ -43,7 +47,7 @@ class _SampleScreenState extends State<SampleScreen> {
               name: data['category_name'],
             );
             categories.add(category);
-            log("Category: \n ID: ${category.id} | Name: ${category.name}");
+            // log("Category: \n ID: ${category.id} | Name: ${category.name}");
           }
         });
       } else {
@@ -71,7 +75,8 @@ class _SampleScreenState extends State<SampleScreen> {
               catId: data['category_id'],
             );
             subCategories.add(subCategory);
-            log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
+            // fetchProducts();
+            // log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
           }
         });
       } else {

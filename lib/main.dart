@@ -10,7 +10,6 @@ import 'package:speedy_delivery/providers/location_provider.dart';
 import 'package:speedy_delivery/providers/product_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:speedy_delivery/sample/sample_screen.dart';
-import 'package:speedy_delivery/screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
