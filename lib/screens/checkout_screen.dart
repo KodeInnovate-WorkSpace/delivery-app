@@ -94,7 +94,7 @@ class CheckoutScreen extends StatelessWidget {
                                     style: const TextStyle(fontSize: 16),
                                   ),
                                   Text(
-                                    item.itemUnit,
+                                    item.itemUnit.toString(),
                                     style: const TextStyle(color: Colors.grey),
                                   ),
                                   const SizedBox(height: 4),

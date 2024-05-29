@@ -1,8 +1,8 @@
 class Cart {
   final String itemName;
-  final double itemPrice;
+  final int itemPrice;
   final String itemImage;
-  final String itemUnit;
+  final int itemUnit;
   int qnt;
 
   Cart({

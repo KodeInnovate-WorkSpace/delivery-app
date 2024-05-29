@@ -65,12 +65,12 @@ class _ProductCardState extends State<ProductCard> {
                   "\u20B9 ${formatPrice(widget.productPrice)}",
                   style: const TextStyle(fontFamily: "Gilroy-medium"),
                 ),
-                AddToCartButton(
-                  productName: widget.productName,
-                  productPrice: widget.productPrice,
-                  productImage: widget.imageUrl,
-                  productUnit: widget.productWeight,
-                ),
+                // AddToCartButton(
+                //   productName: widget.productName,
+                //   productPrice: widget.productPrice,
+                //   productImage: widget.imageUrl,
+                //   productUnit: widget.productWeight,
+                // ),
               ],
             ),
           ],

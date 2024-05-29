@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/sample/model.dart';
 import '../screens/checkout_screen.dart';
+import '../widget/add_to_cart_button.dart';
 
 class SampleCategoryScreen extends StatefulWidget {
   final double imageWidth;
@@ -188,6 +189,7 @@ class SampleCategoryScreenState extends State<SampleCategoryScreen> {
                                         ),
                                       ),
                                       const SizedBox(height: 15),
+                                      // item name
                                       Text(
                                         product.name,
                                         textAlign: TextAlign.left,
@@ -213,6 +215,12 @@ class SampleCategoryScreenState extends State<SampleCategoryScreen> {
                                             style: const TextStyle(
                                               fontFamily: "Gilroy-medium",
                                             ),
+                                          ),
+                                          AddToCartButton(
+                                            productName: product.name,
+                                            productPrice: product.price,
+                                            productImage: product.image,
+                                            productUnit: product.unit,
                                           ),
                                         ],
                                       ),

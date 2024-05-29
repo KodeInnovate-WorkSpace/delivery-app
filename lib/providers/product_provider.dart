@@ -29,7 +29,9 @@ class ProductProvider with ChangeNotifier {
             name: doc['name'],
             unit: doc['unit'],
             price: doc['price'],
-            stock: doc['stock']));
+            stock: doc['stock'],
+            id: doc['id'],
+            subCatId: doc['sub_category_id']));
       }
 
       _products = loadedProducts;
