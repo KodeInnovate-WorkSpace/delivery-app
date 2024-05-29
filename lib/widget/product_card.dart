@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/shared/capitalise.dart';
 import '../shared/remove_trailing_zero.dart';
-import 'add_to_cart_button.dart';
 
 class ProductCard extends StatefulWidget {
   final String productName;
