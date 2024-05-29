@@ -80,7 +80,7 @@ class HomeScreenState extends State<HomeScreen> {
               ],
             ),
             // Search bar
-            searchBar(context),
+            searchBar(),
             const Expanded(
               child: SingleChildScrollView(
                 child: Column(
