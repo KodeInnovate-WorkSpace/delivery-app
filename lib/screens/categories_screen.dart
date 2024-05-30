@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:speedy_delivery/screens/checkout_screen.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
@@ -41,7 +42,7 @@ class CategoryScreenState extends State<CategoryScreen> {
   Future<void> fetchProducts(int subCategoryId) async {
     try {
       final productSnap =
-      await FirebaseFirestore.instance.collection("products").get();
+          await FirebaseFirestore.instance.collection("products").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
@@ -84,7 +85,8 @@ class CategoryScreenState extends State<CategoryScreen> {
           Row(
             children: [
               // Side navbar
-              sidebar(context, widget.subCategories, fetchProducts, selectedSubCategoryId, (id) {
+              sidebar(context, widget.subCategories, fetchProducts,
+                  selectedSubCategoryId, (id) {
                 setState(() {
                   selectedSubCategoryId = id;
                   fetchProducts(id);
@@ -103,6 +105,8 @@ class CategoryScreenState extends State<CategoryScreen> {
             right: 20,
             child: FloatingActionButton(
               onPressed: () {
+                HapticFeedback.selectionClick();
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(

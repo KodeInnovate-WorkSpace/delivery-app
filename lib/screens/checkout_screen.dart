@@ -192,10 +192,10 @@ class CheckoutScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         // Row 2
-                        const Row(
+                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
+                            const Row(
                               children: [
                                 Icon(
                                   Icons.sports_motorsports,
@@ -208,17 +208,17 @@ class CheckoutScreen extends StatelessWidget {
                             ),
                             Align(
                               alignment: Alignment.centerRight,
-                              child: Text('\u20B9 xxx',
-                                  style: TextStyle(fontSize: 14)),
+                              child: Text('\u20B9 ${cartProvider.deliveryCharge}',
+                                  style: const TextStyle(fontSize: 14)),
                             ),
                           ],
                         ),
                         const SizedBox(height: 4),
                         // Row 3
-                        const Row(
+                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
+                            const Row(
                               children: [
                                 Icon(
                                   Icons.shopping_bag,
@@ -231,21 +231,21 @@ class CheckoutScreen extends StatelessWidget {
                             ),
                             Align(
                               alignment: Alignment.centerRight,
-                              child: Text('\u20B9 xxx',
-                                  style: TextStyle(fontSize: 14)),
+                              child: Text('\u20B9 ${cartProvider.handlingCharge}',
+                                  style: const TextStyle(fontSize: 14)),
                             ),
                           ],
                         ),
                         const SizedBox(height: 4),
                         // Row 4
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Grand total',
+                            const Text('Grand total',
                                 style: TextStyle(
                                     fontSize: 16, fontFamily: 'Gilroy-Medium')),
-                            Text('\u20B9 xxx',
-                                style: TextStyle(
+                            Text('\u20B9 ${cartProvider.calculateGrandTotal()}',
+                                style: const TextStyle(
                                     fontSize: 16, fontFamily: 'Gilroy-Medium')),
                           ],
                         ),

@@ -6,6 +6,8 @@ import '../models/cart_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
+  double deliveryCharge = 5;
+  double handlingCharge = 10;
 
   final List<Cart> _cartItems = [];
   List<Cart> get cart => _cartItems;
@@ -43,6 +45,13 @@ class CartProvider extends ChangeNotifier {
       totalPrice += item.itemPrice * item.qnt;
     }
     return totalPrice;
+  }
+
+  double calculateGrandTotal() {
+    double grandTotal = 0.0;
+
+    grandTotal += calculateTotalPrice() + deliveryCharge + handlingCharge;
+    return grandTotal;
   }
 
   void logCartContents() {

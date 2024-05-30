@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 
 import '../widget/terms_privacy_line.dart';
@@ -64,6 +65,8 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                HapticFeedback.selectionClick();
+
                 try {
                   if (_otpController.text.length != 6) {
                     throw Exception("Invalid OTP");

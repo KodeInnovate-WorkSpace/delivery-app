@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:speedy_delivery/screens/demo_screen.dart';
 
 class Product {
   final String name;
@@ -10,12 +9,14 @@ class Product {
 }
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   List<Product> _allProducts = [];
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
@@ -110,14 +111,14 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Product Search')),
+      appBar: AppBar(title: const Text('Product Search')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             searchBar(),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             if (_filteredProducts.isNotEmpty)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,19 +149,19 @@ class _SearchPageState extends State<SearchPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Recently Searched',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   TextButton(
                     onPressed: clearRecentSearches,
-                    child: Text('Clear', style: TextStyle(color: Colors.red)),
+                    child: const Text('Clear', style: TextStyle(color: Colors.red)),
                   ),
                 ],
               ),
-              SizedBox(height: 5),
-              Divider(),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
+              const Divider(),
+              const SizedBox(height: 5),
               SizedBox(
                 height: 150, // Adjust the height as needed
                 child: ListView.builder(
@@ -169,11 +170,11 @@ class _SearchPageState extends State<SearchPage> {
                   itemBuilder: (context, index) {
                     final recentSearch = _recentSearches[index];
                     return Padding(
-                      padding: EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(right: 10),
                       child: Column(
                         children: [
                           Image.network(recentSearch.imageUrl, width: 50, height: 50),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Text(recentSearch.name),
                         ],
                       ),

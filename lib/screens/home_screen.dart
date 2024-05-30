@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:speedy_delivery/screens/categories_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
 import '../models/category_model.dart';
@@ -421,7 +422,10 @@ class HomeScreenState extends State<HomeScreen> {
             bottom: 25,
             right: 20,
             child: FloatingActionButton(
+              elevation: 2,
               onPressed: () {
+                HapticFeedback.selectionClick();
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
