@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:speedy_delivery/screens/checkout_screen.dart';
+import 'package:speedy_delivery/widget/product_card.dart';
 
 import '../models/category_model.dart';
 import '../models/product_model.dart';
@@ -15,12 +16,15 @@ class CategoryScreen extends StatefulWidget {
   final double imageHeight;
   final String categoryTitle;
   final List<SubCategory> subCategories;
+  final int selectedSubCategoryId;
+
   const CategoryScreen({
     super.key,
     required this.categoryTitle,
     required this.subCategories,
     this.imageWidth = 90.0,
     this.imageHeight = 90.0,
+    required this.selectedSubCategoryId,
   });
 
   @override
@@ -29,14 +33,13 @@ class CategoryScreen extends StatefulWidget {
 
 class CategoryScreenState extends State<CategoryScreen> {
   List<Product> products = [];
+  int? selectedSubCategoryId;
 
   @override
   void initState() {
     super.initState();
-    // Fetch products for the first sub-category by default
-    if (widget.subCategories.isNotEmpty) {
-      fetchProducts(widget.subCategories.first.id);
-    }
+    selectedSubCategoryId = widget.selectedSubCategoryId;
+    fetchProducts(selectedSubCategoryId!);
   }
 
   Future<void> fetchProducts(int subCategoryId) async {
@@ -137,106 +140,7 @@ class CategoryScreenState extends State<CategoryScreen> {
                 ),
               ),
 
-              // Products list
-              Expanded(
-                child: Container(
-                  color: Colors.grey[100],
-                  child: products.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/images/no_product.png',
-                                  width: 800,
-                                  height: 800,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : GridView.builder(
-                          itemCount: products.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 5.0,
-                            crossAxisSpacing: 5.0,
-                            childAspectRatio: 0.58,
-                          ),
-                          itemBuilder: (context, index) {
-                            final product = products[index];
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                ),
-                                color: Colors.white,
-                                elevation: 1.6,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Center(
-                                        child: CachedNetworkImage(
-                                          imageUrl: product.image,
-                                          width: 90,
-                                          fit: BoxFit.contain,
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 15),
-                                      // item name
-                                      Text(
-                                        product.name,
-                                        textAlign: TextAlign.left,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontFamily: 'Gilroy-SemiBold',
-                                        ),
-                                      ),
-                                      Text(
-                                        product.unit.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "\u20B9 ${product.price}",
-                                            style: const TextStyle(
-                                              fontFamily: "Gilroy-medium",
-                                            ),
-                                          ),
-                                          AddToCartButton(
-                                            productName: product.name,
-                                            productPrice: product.price,
-                                            productImage: product.image,
-                                            productUnit: product.unit,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                ),
-              ),
+              ProductCard(productList: products),
             ],
           ),
           Positioned(

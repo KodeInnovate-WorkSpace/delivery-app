@@ -35,7 +35,6 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchData() async {
     await fetchCategory();
     await fetchSubCategory();
-    // await fetchProducts();
   }
 
   Future<void> fetchCategory() async {
@@ -102,6 +101,7 @@ class HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 30),
             child: Column(
               children: [
+                // Head Section
                 Row(
                   children: [
                     const Column(
@@ -154,13 +154,140 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
                 // Search bar
                 searchBar(context),
+                // body
+                // Expanded(
+                //   child: SingleChildScrollView(
+                //     child: Column(
+                //       children: [
+                //         const SizedBox(height: 20),
+                //
+                //         // categories grid
+                //         FutureBuilder<void>(
+                //           future: fetchDataFuture,
+                //           builder: (context, snapshot) {
+                //             if (snapshot.connectionState ==
+                //                 ConnectionState.waiting) {
+                //               return const Center(
+                //                 child: CircularProgressIndicator(),
+                //               );
+                //             } else if (snapshot.hasError) {
+                //               return const Center(
+                //                 child: Text("Error"),
+                //               );
+                //             } else {
+                //               return ListView.builder(
+                //                 shrinkWrap: true,
+                //                 physics: const NeverScrollableScrollPhysics(),
+                //                 itemCount: categories.length,
+                //                 itemBuilder: (context, index) {
+                //                   final category = categories[index];
+                //                   final filteredSubCategories = subCategories
+                //                       .where((subCategory) =>
+                //                           subCategory.catId == category.id)
+                //                       .toList();
+                //
+                //                   return Column(
+                //                     crossAxisAlignment:
+                //                         CrossAxisAlignment.start,
+                //                     children: [
+                //                       Padding(
+                //                         padding: const EdgeInsets.all(8.0),
+                //                         child: Text(
+                //                           category.name,
+                //                           style: const TextStyle(
+                //                             fontSize: 18,
+                //                             fontWeight: FontWeight.bold,
+                //                           ),
+                //                         ),
+                //                       ),
+                //                       GridView.builder(
+                //                         shrinkWrap: true,
+                //                         physics:
+                //                             const NeverScrollableScrollPhysics(),
+                //                         itemCount: filteredSubCategories.length,
+                //                         gridDelegate:
+                //                             const SliverGridDelegateWithFixedCrossAxisCount(
+                //                           crossAxisCount: 4,
+                //                           childAspectRatio: 0.59,
+                //                         ),
+                //                         itemBuilder: (context, subIndex) {
+                //                           final subCategory =
+                //                               filteredSubCategories[subIndex];
+                //                           return Column(
+                //                             children: [
+                //                               GestureDetector(
+                //                                 onTap: () {
+                //                                   Navigator.push(
+                //                                     context,
+                //                                     MaterialPageRoute(
+                //                                       builder: (context) =>
+                //                                           CategoryScreen(
+                //                                         categoryTitle:
+                //                                             category.name,
+                //                                         subCategories:
+                //                                             filteredSubCategories,
+                //                                       ),
+                //                                     ),
+                //                                   );
+                //                                 },
+                //                                 child: Container(
+                //                                   margin: const EdgeInsets
+                //                                       .symmetric(horizontal: 3),
+                //                                   decoration:
+                //                                       const BoxDecoration(
+                //                                     color: Color(0xffeaf1fc),
+                //                                     borderRadius:
+                //                                         BorderRadius.all(
+                //                                             Radius.circular(
+                //                                                 10)),
+                //                                   ),
+                //                                   child: Padding(
+                //                                     padding:
+                //                                         const EdgeInsets.all(
+                //                                             8.0),
+                //                                     child: CachedNetworkImage(
+                //                                       imageUrl: subCategory.img,
+                //                                       placeholder: (context,
+                //                                               url) =>
+                //                                           const CircularProgressIndicator(
+                //                                         color:
+                //                                             Colors.amberAccent,
+                //                                       ),
+                //                                       errorWidget: (context,
+                //                                               url, error) =>
+                //                                           const Icon(
+                //                                               Icons.error),
+                //                                     ),
+                //                                   ),
+                //                                 ),
+                //                               ),
+                //                               const SizedBox(height: 10),
+                //                               Text(
+                //                                 subCategory.name,
+                //                                 textAlign: TextAlign.center,
+                //                                 style: const TextStyle(
+                //                                     fontSize: 12),
+                //                               ),
+                //                             ],
+                //                           );
+                //                         },
+                //                       ),
+                //                     ],
+                //                   );
+                //                 },
+                //               );
+                //             }
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
                         const SizedBox(height: 20),
-
-                        // categories grid
                         FutureBuilder<void>(
                           future: fetchDataFuture,
                           builder: (context, snapshot) {
@@ -225,6 +352,9 @@ class HomeScreenState extends State<HomeScreen> {
                                                             category.name,
                                                         subCategories:
                                                             filteredSubCategories,
+                                                        selectedSubCategoryId:
+                                                            subCategory
+                                                                .id, // Pass the selected sub-category ID
                                                       ),
                                                     ),
                                                   );

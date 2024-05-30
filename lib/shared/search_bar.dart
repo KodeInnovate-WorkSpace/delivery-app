@@ -6,7 +6,9 @@ Widget searchBar(BuildContext context) {
     onTap: () {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  SearchPage()), // Replace SearchScreen with your desired screen
+        MaterialPageRoute(
+            builder: (context) =>
+                SearchPage()), // Replace SearchScreen with your desired screen
       );
     },
     child: AbsorbPointer(
