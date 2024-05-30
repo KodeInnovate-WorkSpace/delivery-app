@@ -192,7 +192,7 @@ class CheckoutScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         // Row 2
-                         Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Row(
@@ -208,14 +208,15 @@ class CheckoutScreen extends StatelessWidget {
                             ),
                             Align(
                               alignment: Alignment.centerRight,
-                              child: Text('\u20B9 ${cartProvider.deliveryCharge}',
+                              child: Text(
+                                  '\u20B9 ${cartProvider.deliveryCharge}',
                                   style: const TextStyle(fontSize: 14)),
                             ),
                           ],
                         ),
                         const SizedBox(height: 4),
                         // Row 3
-                         Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Row(
@@ -231,7 +232,8 @@ class CheckoutScreen extends StatelessWidget {
                             ),
                             Align(
                               alignment: Alignment.centerRight,
-                              child: Text('\u20B9 ${cartProvider.handlingCharge}',
+                              child: Text(
+                                  '\u20B9 ${cartProvider.handlingCharge}',
                                   style: const TextStyle(fontSize: 14)),
                             ),
                           ],

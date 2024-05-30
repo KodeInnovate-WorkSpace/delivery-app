@@ -36,119 +36,97 @@ class AddToCartButtonState extends State<AddToCartButton> {
       itemUnit: widget.productUnit,
     );
 
-    return _isClicked
-        ? Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                if (_count > 1) {
-                  _count--;
-                  cartProvider.removeItem(cartItem);
-                } else if (_count == 1) {
-                  _isClicked = false;
-                  _count--;
-                  cartProvider.removeItem(cartItem);
-                }
-              });
-            },
-            child: Container(
-              height: 35,
-              width: 75,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(5),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      height: 30,
+      width: 70, // Ensure this size is consistent for both states
+      child: _isClicked
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.remove, size: 15, color: Colors.black),
+                  onPressed: () {
+                    setState(() {
+                      if (_count > 1) {
+                        _count--;
+                        cartProvider.removeItem(cartItem);
+                      } else if (_count == 1) {
+                        _isClicked = false;
+                        _count--;
+                        cartProvider.removeItem(cartItem);
+                      }
+                    });
+                  },
+                ),
+                Text(
+                  "$_count",
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'Gilroy-SemiBold',
+                    fontSize: 14,
+                  ),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.add, size: 15, color: Colors.black),
+                  onPressed: () {
+                    setState(() {
+                      _count++;
+                      cartProvider.addItem(cartItem);
+                    });
+                  },
+                ),
+              ],
+            )
+          : OutlinedButton(
+              onPressed: () {
+                setState(() {
+                  _isClicked = true;
+                  _count = 1; // Start with 1 when button is first clicked
+                  cartProvider.addItem(cartItem);
+                });
+              },
+              style: ButtonStyle(
+                backgroundColor:
+                    WidgetStateProperty.all<Color>(Colors.transparent),
+                overlayColor: WidgetStateProperty.resolveWith<Color>(
+                  (Set<WidgetState> states) {
+                    if (states.contains(WidgetState.hovered)) {
+                      return Colors.green.withOpacity(0.1);
+                    }
+                    if (states.contains(WidgetState.pressed)) {
+                      return Colors.green.withOpacity(0.3);
+                    }
+                    return Colors.green.withOpacity(0.6);
+                  },
+                ),
+                side: WidgetStateProperty.all<BorderSide>(
+                    const BorderSide(color: Colors.green)),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                  ),
+                ),
+                minimumSize: WidgetStateProperty.all<Size>(
+                    const Size(70, 30)), // Consistent size
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (_count > 1) {
-                            _count--;
-                            cartProvider.removeItem(cartItem);
-                          }
-                        });
-                      },
-                      child: const Icon(
-                        Icons.remove,
-                        color: Colors.white,
-                        size: 15,
-                      ),
-                    ),
-                    Text(
-                      _count != 0 ? "$_count" : "Add",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Gilroy-SemiBold',
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          _count++;
-                          cartProvider.addItem(cartItem);
-                        });
-                      },
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 15,
-                      ),
-                    ),
-                  ],
+              child: const Text(
+                "Add",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontFamily: 'Gilroy-SemiBold',
                 ),
               ),
             ),
-          ),
-        ),
-      ],
-    )
-        : OutlinedButton(
-      onPressed: () {
-        setState(() {
-          _isClicked = true;
-          _count = 1; // Start with 1 when button is first clicked
-          cartProvider.addItem(cartItem);
-        });
-      },
-      style: ButtonStyle(
-        backgroundColor:
-        WidgetStateProperty.all<Color>(Colors.transparent),
-        overlayColor: WidgetStateProperty.resolveWith<Color>(
-                (Set<WidgetState> states) {
-              if (states.contains(WidgetState.hovered)) {
-                return Colors.green.withOpacity(0.1);
-              }
-              if (states.contains(WidgetState.pressed)) {
-                return Colors.green.withOpacity(0.3);
-              }
-              return Colors.green.withOpacity(0.6);
-            }),
-        side: WidgetStateProperty.all<BorderSide>(
-            const BorderSide(color: Colors.green)),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-          ),
-        ),
-        minimumSize: WidgetStateProperty.all<Size>(const Size(75, 35)),
-      ),
-      child: const Text(
-        "Add",
-        style: TextStyle(
-          color: Colors.green,
-          fontFamily: 'Gilroy-SemiBold',
-        ),
-      ),
     );
   }
 }

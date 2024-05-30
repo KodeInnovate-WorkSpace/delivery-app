@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/screens/search_functionality.dart';
+
+import '../screens/categories_screen.dart';
+import '../screens/search_functionality.dart';
 
 Widget searchBar(BuildContext context) {
   return GestureDetector(
@@ -8,7 +10,7 @@ Widget searchBar(BuildContext context) {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                const SearchPage()), // Replace SearchScreen with your desired screen
+                 const SearchPage()), // Replace SearchScreen with your desired screen
       );
     },
     child: AbsorbPointer(

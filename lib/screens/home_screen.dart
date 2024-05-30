@@ -4,12 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:speedy_delivery/screens/categories_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
+
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../shared/search_bar.dart';
 import '../widget/location_button_widget.dart';
+import 'categories_screen.dart';
 import 'checkout_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -156,134 +157,7 @@ class HomeScreenState extends State<HomeScreen> {
                 // Search bar
                 searchBar(context),
                 // body
-                // Expanded(
-                //   child: SingleChildScrollView(
-                //     child: Column(
-                //       children: [
-                //         const SizedBox(height: 20),
-                //
-                //         // categories grid
-                //         FutureBuilder<void>(
-                //           future: fetchDataFuture,
-                //           builder: (context, snapshot) {
-                //             if (snapshot.connectionState ==
-                //                 ConnectionState.waiting) {
-                //               return const Center(
-                //                 child: CircularProgressIndicator(),
-                //               );
-                //             } else if (snapshot.hasError) {
-                //               return const Center(
-                //                 child: Text("Error"),
-                //               );
-                //             } else {
-                //               return ListView.builder(
-                //                 shrinkWrap: true,
-                //                 physics: const NeverScrollableScrollPhysics(),
-                //                 itemCount: categories.length,
-                //                 itemBuilder: (context, index) {
-                //                   final category = categories[index];
-                //                   final filteredSubCategories = subCategories
-                //                       .where((subCategory) =>
-                //                           subCategory.catId == category.id)
-                //                       .toList();
-                //
-                //                   return Column(
-                //                     crossAxisAlignment:
-                //                         CrossAxisAlignment.start,
-                //                     children: [
-                //                       Padding(
-                //                         padding: const EdgeInsets.all(8.0),
-                //                         child: Text(
-                //                           category.name,
-                //                           style: const TextStyle(
-                //                             fontSize: 18,
-                //                             fontWeight: FontWeight.bold,
-                //                           ),
-                //                         ),
-                //                       ),
-                //                       GridView.builder(
-                //                         shrinkWrap: true,
-                //                         physics:
-                //                             const NeverScrollableScrollPhysics(),
-                //                         itemCount: filteredSubCategories.length,
-                //                         gridDelegate:
-                //                             const SliverGridDelegateWithFixedCrossAxisCount(
-                //                           crossAxisCount: 4,
-                //                           childAspectRatio: 0.59,
-                //                         ),
-                //                         itemBuilder: (context, subIndex) {
-                //                           final subCategory =
-                //                               filteredSubCategories[subIndex];
-                //                           return Column(
-                //                             children: [
-                //                               GestureDetector(
-                //                                 onTap: () {
-                //                                   Navigator.push(
-                //                                     context,
-                //                                     MaterialPageRoute(
-                //                                       builder: (context) =>
-                //                                           CategoryScreen(
-                //                                         categoryTitle:
-                //                                             category.name,
-                //                                         subCategories:
-                //                                             filteredSubCategories,
-                //                                       ),
-                //                                     ),
-                //                                   );
-                //                                 },
-                //                                 child: Container(
-                //                                   margin: const EdgeInsets
-                //                                       .symmetric(horizontal: 3),
-                //                                   decoration:
-                //                                       const BoxDecoration(
-                //                                     color: Color(0xffeaf1fc),
-                //                                     borderRadius:
-                //                                         BorderRadius.all(
-                //                                             Radius.circular(
-                //                                                 10)),
-                //                                   ),
-                //                                   child: Padding(
-                //                                     padding:
-                //                                         const EdgeInsets.all(
-                //                                             8.0),
-                //                                     child: CachedNetworkImage(
-                //                                       imageUrl: subCategory.img,
-                //                                       placeholder: (context,
-                //                                               url) =>
-                //                                           const CircularProgressIndicator(
-                //                                         color:
-                //                                             Colors.amberAccent,
-                //                                       ),
-                //                                       errorWidget: (context,
-                //                                               url, error) =>
-                //                                           const Icon(
-                //                                               Icons.error),
-                //                                     ),
-                //                                   ),
-                //                                 ),
-                //                               ),
-                //                               const SizedBox(height: 10),
-                //                               Text(
-                //                                 subCategory.name,
-                //                                 textAlign: TextAlign.center,
-                //                                 style: const TextStyle(
-                //                                     fontSize: 12),
-                //                               ),
-                //                             ],
-                //                           );
-                //                         },
-                //                       ),
-                //                     ],
-                //                   );
-                //                 },
-                //               );
-                //             }
-                //           },
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
+
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
@@ -335,7 +209,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 4,
-                                          childAspectRatio: 0.59,
+                                          childAspectRatio: 0.65,
                                         ),
                                         itemBuilder: (context, subIndex) {
                                           final subCategory =
@@ -362,7 +236,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                 },
                                                 child: Container(
                                                   margin: const EdgeInsets
-                                                      .symmetric(horizontal: 3),
+                                                      .symmetric(horizontal: 4),
                                                   decoration:
                                                       const BoxDecoration(
                                                     color: Color(0xffeaf1fc),
@@ -376,6 +250,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: CachedNetworkImage(
+                                                      height: 60,
                                                       imageUrl: subCategory.img,
                                                       placeholder: (context,
                                                               url) =>
@@ -422,9 +297,10 @@ class HomeScreenState extends State<HomeScreen> {
             bottom: 25,
             right: 20,
             child: FloatingActionButton(
+              hoverColor: Colors.transparent,
               elevation: 2,
               onPressed: () {
-                HapticFeedback.selectionClick();
+                HapticFeedback.heavyImpact();
 
                 Navigator.push(
                   context,
@@ -434,7 +310,10 @@ class HomeScreenState extends State<HomeScreen> {
                 );
               },
               backgroundColor: Colors.white,
-              child: const Icon(Icons.shopping_cart_sharp),
+              child: const Icon(
+                Icons.shopping_cart_sharp,
+                color: Colors.black,
+              ),
             ),
           ),
         ],

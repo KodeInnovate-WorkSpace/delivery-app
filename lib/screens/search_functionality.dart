@@ -29,7 +29,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> fetchProductsFromFirestore() async {
-    final productsCollection = FirebaseFirestore.instance.collection('products');
+    final productsCollection =
+        FirebaseFirestore.instance.collection('products');
     final snapshot = await productsCollection.get();
     final products = snapshot.docs.map((doc) {
       return Product(
@@ -58,10 +59,13 @@ class _SearchPageState extends State<SearchPage> {
 
   void saveSearch(Product product) {
     setState(() {
-      _recentSearches.removeWhere((p) => p.name == product.name); // Remove if already exists to avoid duplicates
+      _recentSearches.removeWhere((p) =>
+          p.name ==
+          product.name); // Remove if already exists to avoid duplicates
       _recentSearches.insert(0, product); // Insert at the beginning
       if (_recentSearches.length > 5) {
-        _recentSearches = _recentSearches.sublist(0, 5); // Keep only the last 5 searches
+        _recentSearches =
+            _recentSearches.sublist(0, 5); // Keep only the last 5 searches
       }
     });
   }
@@ -129,7 +133,8 @@ class _SearchPageState extends State<SearchPage> {
                     itemBuilder: (context, index) {
                       final product = _filteredProducts[index];
                       return ListTile(
-                        leading: Image.network(product.imageUrl, width: 50, height: 50),
+                        leading: Image.network(product.imageUrl,
+                            width: 50, height: 50),
                         title: Text(product.name),
                         onTap: () {
                           saveSearch(product);
@@ -155,7 +160,8 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   TextButton(
                     onPressed: clearRecentSearches,
-                    child: const Text('Clear', style: TextStyle(color: Colors.red)),
+                    child: const Text('Clear',
+                        style: TextStyle(color: Colors.red)),
                   ),
                 ],
               ),
@@ -173,7 +179,8 @@ class _SearchPageState extends State<SearchPage> {
                       padding: const EdgeInsets.only(right: 10),
                       child: Column(
                         children: [
-                          Image.network(recentSearch.imageUrl, width: 50, height: 50),
+                          Image.network(recentSearch.imageUrl,
+                              width: 50, height: 50),
                           const SizedBox(height: 5),
                           Text(recentSearch.name),
                         ],

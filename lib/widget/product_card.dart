@@ -60,55 +60,64 @@ class _ProductCardState extends State<ProductCard> {
                       elevation: 1.6,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Stack(
                           children: [
-                            Center(
-                              child: CachedNetworkImage(
-                                imageUrl: product.image,
-                                width: 90,
-                                height: 80,
-                                fit: BoxFit.contain,
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            // item name
-                            Text(
-                              product.name,
-                              textAlign: TextAlign.left,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontFamily: 'Gilroy-SemiBold',
-                              ),
-                            ),
-                            Text(
-                              product.unit.toString(),
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "\u20B9 ${product.price}",
-                                  style: const TextStyle(
-                                    fontFamily: "Gilroy-medium",
+                                Center(
+                                  child: CachedNetworkImage(
+                                    imageUrl: product.image,
+                                    height: 75,
+                                    fit: BoxFit.contain,
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
                                   ),
                                 ),
-                                AddToCartButton(
-                                  productName: product.name,
-                                  productPrice: product.price,
-                                  productImage: product.image,
-                                  productUnit: product.unit,
+                                const SizedBox(height: 15),
+                                // item name
+                                Text(
+                                  product.name,
+                                  textAlign: TextAlign.left,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: 'Gilroy-SemiBold',
+                                  ),
+                                ),
+                                Text(
+                                  product.unit.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "\u20B9 ${product.price}",
+                                      style: const TextStyle(
+                                        fontFamily: "Gilroy-medium",
+                                      ),
+                                    ),
+
+                                  ],
                                 ),
                               ],
                             ),
+                            Positioned(
+                              bottom: 15,
+                              right: 0,
+                              child: AddToCartButton(
+                                productName: product.name,
+                                productPrice: product.price,
+                                productImage: product.image,
+                                productUnit: product.unit,
+                              ),
+                            )
                           ],
                         ),
                       ),

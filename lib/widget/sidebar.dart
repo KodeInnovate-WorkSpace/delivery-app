@@ -12,7 +12,7 @@ Widget sidebar(
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Container(
-      width: MediaQuery.of(context).size.width / 5,
+      width: MediaQuery.of(context).size.width / 6.2,
       color: Colors.white,
       child: ListView.builder(
         itemCount: subCategories.length,
