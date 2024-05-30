@@ -1,15 +1,10 @@
 import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'package:speedy_delivery/screens/checkout_screen.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
-
 import '../models/category_model.dart';
 import '../models/product_model.dart';
-import '../widget/add_to_cart_button.dart';
 import '../widget/sidebar.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -46,7 +41,7 @@ class CategoryScreenState extends State<CategoryScreen> {
   Future<void> fetchProducts(int subCategoryId) async {
     try {
       final productSnap =
-          await FirebaseFirestore.instance.collection("products").get();
+      await FirebaseFirestore.instance.collection("products").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
@@ -89,9 +84,18 @@ class CategoryScreenState extends State<CategoryScreen> {
           Row(
             children: [
               // Side navbar
-              sidebar(context, widget.subCategories,fetchProducts),
-
-              ProductCard(productList: products),
+              sidebar(context, widget.subCategories, fetchProducts, selectedSubCategoryId, (id) {
+                setState(() {
+                  selectedSubCategoryId = id;
+                  fetchProducts(id);
+                });
+              }),
+              // Product card
+              Expanded(
+                child: ProductCard(
+                  productList: products,
+                ),
+              ),
             ],
           ),
           Positioned(
