@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../screens/categories_screen.dart';
 import '../screens/search_functionality.dart';
 
 Widget searchBar(BuildContext context) {

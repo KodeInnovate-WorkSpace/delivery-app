@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:speedy_delivery/screens/checkout_screen.dart';
-import 'package:speedy_delivery/widget/new_product_card.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';

@@ -19,49 +19,41 @@ Widget sidebar(
         itemBuilder: (context, index) {
           final subCategory = subCategories[index];
           final isSelected = selectedSubCategoryId == subCategory.id;
-          return MouseRegion(
-            onEnter: (_) => onSubCategorySelected(subCategory.id),
-            onExit: (_) => onSubCategorySelected(subCategory.id),
-            child: GestureDetector(
-              onTap: () {
-                fetchProducts(subCategory.id);
-                onSubCategorySelected(subCategory.id);
-              },
-              child: Container(
-                color: isSelected ? const Color(0xffeaf1fc) : Colors.transparent,
-
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    ClipOval(
-                      child: Container(
-                        color: const Color(0xffeaf1fc),
-                        height: 60,
-                        width: 60,
-                        child: CachedNetworkImage(
-                          fit: BoxFit.contain,
-                          imageUrl: subCategory.img,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(
-                            color: Colors.amberAccent,
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
+          return GestureDetector(
+            onTap: () {
+              fetchProducts(subCategory.id);
+              onSubCategorySelected(subCategory.id);
+            },
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                ClipOval(
+                  child: Container(
+                    color: isSelected ? Colors.yellow[100] : const Color(0xffeaf1fc),
+                    height: 60,
+                    width: 60,
+                    child: CachedNetworkImage(
+                      fit: BoxFit.contain,
+                      imageUrl: subCategory.img,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(
+                        color: Colors.amberAccent,
                       ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
-                    Text(
-                      subCategory.name,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontFamily: 'Gilroy-Medium',
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                Text(
+                  subCategory.name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontFamily: 'Gilroy-Medium',
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
             ),
           );
         },
