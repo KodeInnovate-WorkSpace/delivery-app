@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/shared/capitalise.dart';
 import '../models/product_model.dart';
-import '../shared/remove_trailing_zero.dart';
 import 'add_to_cart_button.dart';
 
 class ProductCard extends StatefulWidget {
@@ -28,12 +26,15 @@ class _ProductCardState extends State<ProductCard> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      const SizedBox(
+                        height: 165,
+                      ),
                       Image.asset(
                         'assets/images/no_product.png',
-                        width: 800,
-                        height: 800,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 4,
+                        fit: BoxFit.contain,
                       ),
                     ],
                   ),
