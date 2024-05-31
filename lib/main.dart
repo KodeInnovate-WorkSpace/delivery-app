@@ -78,8 +78,8 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       // home: const SplashScreen(),
-      // home: isLogin ? const HomeScreen() : const SplashScreen(),
-      home: const AdminScreen(),
+      home: isLogin ? const HomeScreen() : const SplashScreen(),
+      // home: const AdminScreen(),
     );
   }
 }
