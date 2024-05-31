@@ -98,6 +98,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   onPressed: authProvider.isButtonEnabled
                       ? () async {
                           HapticFeedback.selectionClick();
+
                           await StoreUser().storeUserData(context);
                           authProvider.verifyPhoneNumber(
                               context, authProvider.textController.text);

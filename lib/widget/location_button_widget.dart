@@ -70,10 +70,10 @@ class _LocationButtonState extends State<LocationButton> {
         if (pMark.subLocality != 'Mumbra') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+            MaterialPageRoute(
+                builder: (context) => const NotInLocationScreen()),
           );
         }
-
       }
     } catch (e) {
       log("$e");

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/firebase_options.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
@@ -9,8 +10,6 @@ import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:speedy_delivery/providers/product_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:speedy_delivery/screens/home_screen.dart';
-import 'package:speedy_delivery/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,9 +75,8 @@ class _MyAppState extends State<MyApp> {
               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
         ),
       ),
-      // home: const SampleScreen(),
-      // home: const HomeScreen(),
-      home: isLogin ? const HomeScreen() : const SplashScreen(),
+      // home: isLogin ? const HomeScreen() : const SplashScreen(),
+      home: const AdminScreen(),
     );
   }
 }
