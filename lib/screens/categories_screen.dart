@@ -92,12 +92,6 @@ class CategoryScreenState extends State<CategoryScreen> {
                       fetchProducts(id);
                     });
                   }),
-              // Product card
-              // Expanded(
-              //   child:
-              //
-
-              // ),
               ProductCard(
                 productList: products,
               ),

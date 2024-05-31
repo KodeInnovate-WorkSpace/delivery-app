@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/admin/manage_user_screen.dart';
 import 'package:speedy_delivery/admin/sample.dart';
+
+import 'manage_category_screen.dart';
+import 'manage_product_screen.dart';
+import 'manage_sub_category_screen.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -27,11 +32,10 @@ class AdminScreen extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const SamplePage(method: 'Manage Users')),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageUserScreen(),
+                    ));
               },
               child: const Text(
                 "Manage Users",
@@ -44,11 +48,10 @@ class AdminScreen extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const SamplePage(method: 'Manage Categories')),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageCategoryScreen(),
+                    ));
               },
               child: const Text(
                 "Manage Categories",
@@ -61,11 +64,10 @@ class AdminScreen extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const SamplePage(method: 'Manage SubCategories')),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageSubCategoryScreen(),
+                    ));
               },
               child: const Text(
                 "Manage Sub-Categories",
@@ -78,11 +80,10 @@ class AdminScreen extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const SamplePage(method: 'Manage Products')),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageProductScreen(),
+                    ));
               },
               child: const Text(
                 "Manage Products",
@@ -95,11 +96,10 @@ class AdminScreen extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const SamplePage(method: 'Manage Notification')),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageProductScreen(),
+                    ));
               },
               child: const Text(
                 "Manage Notification",

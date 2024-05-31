@@ -23,108 +23,107 @@ class _ProductCardState extends State<ProductCard> {
         color: Colors.grey[100],
         child: widget.productList.isEmpty
             ? Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 165,
-                ),
-                Image.asset(
-                  'assets/images/no_product.png',
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 4,
-                  fit: BoxFit.contain,
-                ),
-              ],
-            ),
-          ),
-        )
-            : GridView.builder(
-          itemCount: widget.productList.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 5.0,
-            crossAxisSpacing: 5.0,
-            childAspectRatio: 0.58,
-          ),
-          itemBuilder: (context, index) {
-            final product = widget.productList[index];
-            return GestureDetector(
-              onTap: () {},
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                ),
-                color: Colors.white,
-                elevation: 1.6,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: CachedNetworkImage(
-                              imageUrl: product.image,
-                              height: 75,
-                              fit: BoxFit.contain,
-                              errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          // item name
-                          Text(
-                            product.name,
-                            textAlign: TextAlign.left,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: 'Gilroy-SemiBold',
-                            ),
-                          ),
-                          Text(
-                            product.unit.toString(),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "\u20B9 ${product.price}",
-                                style: const TextStyle(
-                                  fontFamily: "Gilroy-medium",
-                                ),
-                              ),
-
-                            ],
-                          ),
-                        ],
+                      const SizedBox(
+                        height: 165,
                       ),
-                      Positioned(
-                        bottom: 15,
-                        right: 0,
-                        child: AddToCartButton(
-                          productName: product.name,
-                          productPrice: product.price,
-                          productImage: product.image,
-                          productUnit: product.unit,
-                        ),
-                      )
+                      Image.asset(
+                        'assets/images/no_product.png',
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 4,
+                        fit: BoxFit.contain,
+                      ),
                     ],
                   ),
                 ),
+              )
+            : GridView.builder(
+                itemCount: widget.productList.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 5.0,
+                  crossAxisSpacing: 5.0,
+                  childAspectRatio: 0.58,
+                ),
+                itemBuilder: (context, index) {
+                  final product = widget.productList[index];
+                  return GestureDetector(
+                    onTap: () {},
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      color: Colors.white,
+                      elevation: 1.6,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: CachedNetworkImage(
+                                    imageUrl: product.image,
+                                    height: 75,
+                                    fit: BoxFit.contain,
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                                // item name
+                                Text(
+                                  product.name,
+                                  textAlign: TextAlign.left,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: 'Gilroy-SemiBold',
+                                  ),
+                                ),
+                                Text(
+                                  product.unit.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "\u20B9 ${product.price}",
+                                      style: const TextStyle(
+                                        fontFamily: "Gilroy-medium",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Positioned(
+                              bottom: 15,
+                              right: 0,
+                              child: AddToCartButton(
+                                productName: product.name,
+                                productPrice: product.price,
+                                productImage: product.image,
+                                productUnit: product.unit,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }

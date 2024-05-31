@@ -15,14 +15,14 @@ class CartProvider extends ChangeNotifier {
 
   String itemCount(Cart item) {
     final index =
-        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     notifyListeners();
     return _cartItems[index].qnt.toString();
   }
 
   void addItem(Cart item) {
     final index =
-        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       _cartItems[index].qnt++;
     } else {
@@ -34,7 +34,7 @@ class CartProvider extends ChangeNotifier {
 
   void removeItem(Cart item) {
     final index =
-        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       if (_cartItems[index].qnt > 1) {
         _cartItems[index].qnt--;

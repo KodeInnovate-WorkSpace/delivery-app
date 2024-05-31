@@ -175,56 +175,66 @@ class HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 // Head Section
-                Row(
+                Stack(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        const SizedBox(height: 20), // Add SizedBox for spacing
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Delivery in ',
-                              style: TextStyle(
-                                  fontFamily: 'Gilroy-ExtraBold',
-                                  color: Colors.black,
-                                  fontSize: 12),
-                            ),
-                            const Text(
-                              '7 minutes',
-                              style: TextStyle(
-                                  fontFamily: 'Gilroy-Black',
-                                  color: Colors.black,
-                                  fontSize: 28),
-                            ),
-                            LocationButton(scaffoldKey: scaffoldKey),
                             const SizedBox(
-                              height: 18,
+                                height: 20), // Add SizedBox for spacing
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Delivery in ',
+                                  style: TextStyle(
+                                      fontFamily: 'Gilroy-ExtraBold',
+                                      color: Colors.black,
+                                      fontSize: 12),
+                                ),
+                                const Text(
+                                  '7 minutes',
+                                  style: TextStyle(
+                                      fontFamily: 'Gilroy-Black',
+                                      color: Colors.black,
+                                      fontSize: 28),
+                                ),
+                                LocationButton(scaffoldKey: scaffoldKey),
+                                const SizedBox(
+                                  height: 18,
+                                ),
+                              ],
                             ),
+                            // Location Button
                           ],
                         ),
-                        // Location Button
+                        const SizedBox(
+                          width: 90,
+                        ),
                       ],
                     ),
-                    const SizedBox(
-                      width: 90,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfilePage()),
-                        );
-                      },
-                      child: Image.asset(
-                        "assets/images/profile_photo.png",
-                        width: 40,
+                    Positioned(
+                      top: 27,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ProfilePage()),
+                          );
+                        },
+                        child: Image.asset(
+                          "assets/images/profile_photo.png",
+                          width: 40,
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
+
                 // Search bar
                 searchBar(context),
                 // body

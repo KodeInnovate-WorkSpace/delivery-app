@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 
@@ -119,7 +120,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                             ),
                             const SizedBox(width: 2),
 
-                            // Cart button
+                            //add to Cart button
                             Column(
                               children: [
                                 // AddToCartButton(
@@ -270,6 +271,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                           ],
                         ),
                       ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
+
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () => HapticFeedback.heavyImpact(),
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                      ),
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          return Colors.black;
+                        },
+                      ),
+                    ),
+                    child: const SizedBox(
+                      width: 250,
+                      height: 50.0,
+                      child: Center(
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

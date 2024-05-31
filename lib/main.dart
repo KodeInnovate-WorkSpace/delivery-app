@@ -77,9 +77,9 @@ class _MyAppState extends State<MyApp> {
               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
         ),
       ),
-      home: const SplashScreen(),
+      // home: const SplashScreen(),
       // home: isLogin ? const HomeScreen() : const SplashScreen(),
-      // home: const AdminScreen(),
+      home: const AdminScreen(),
     );
   }
 }
