@@ -1,33 +1,14 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 
 class NoInternetScreen extends StatefulWidget {
   const NoInternetScreen({super.key});
 
   @override
-  _NoInternetScreenState createState() => _NoInternetScreenState();
+  State<NoInternetScreen> createState() => _NoInternetScreenState();
 }
 
 class _NoInternetScreenState extends State<NoInternetScreen> {
-  bool _isChecking = false;
-
-  Future<void> _retry() async {
-    setState(() {
-      _isChecking = true;
-    });
-
-    var connectivityResult = await Connectivity().checkConnectivity();
-
-    if (connectivityResult != ConnectivityResult.none) {
-      Get.back();
-    } else {
-      setState(() {
-        _isChecking = false;
-      });
-    }
-  }
+  final bool _isChecking = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +28,16 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                     "assets/images/no_net.png",
                     // fit: BoxFit.fill,
                   ),
-
-                  const Text("Seems like you don't have internet!", style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-Black'),),
+                  const Text(
+                    "Seems like you don't have internet!",
+                    style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-Black'),
+                  ),
                   const Text("Try connecting to internet"),
                   const SizedBox(
                     height: 40,
                   ),
                   ElevatedButton(
-                    onPressed: _retry,
+                    onPressed: null,
                     style: ButtonStyle(
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
