@@ -15,26 +15,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<bool>(
-        future: Provider.of<ConnectivityProvider>(context, listen: false)
-            .checkConnectivity(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final isConnected = snapshot.data!;
-            if (isConnected) {
-              return const SigninScreen();
-            } else {
-              return const NoInternetScreen();
-            }
-          } else {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: const BoxDecoration(color: Colors.amberAccent),
-              child: splashWidget(),
-            );
-          }
-        },
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(color: Colors.amberAccent),
+        child: splashWidget(),
       ),
     );
   }

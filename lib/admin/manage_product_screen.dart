@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:developer';
 
 import 'admin_model.dart';
 
@@ -34,9 +32,6 @@ class ManageProductScreen extends StatelessWidget {
                     DataColumn(label: Text('Sub-Category Id')),
                     DataColumn(label: Text('Name')),
                     DataColumn(label: Text('Price')),
-                    // DataColumn(label: Text('Stock')),
-                    // DataColumn(label: Text('Unit')),
-                    // Add more columns as needed
                   ],
                   rows: users.map((user) {
                     return DataRow(cells: [
@@ -44,9 +39,6 @@ class ManageProductScreen extends StatelessWidget {
                       DataCell(Text(user['sub_category_id'].toString())),
                       DataCell(Text(user['name'] ?? 'N/A')),
                       DataCell(Text("Rs. ${user['price'] ?? 'N/A'}")),
-                      // DataCell(Text(user['stock'] ?? 'N/A')),
-                      // DataCell(Text(user['unit'] ?? 'N/A')),
-                      // Add more cells as needed
                     ]);
                   }).toList(),
                 ),

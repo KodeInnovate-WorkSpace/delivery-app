@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/firebase_options.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
@@ -18,15 +18,19 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
-    ChangeNotifierProvider(create: (_) => MyAuthProvider()),
-    ChangeNotifierProvider(create: (_) => CartProvider()),
-    ChangeNotifierProvider(create: (_) => CheckUserProvider()),
-    ChangeNotifierProvider(create: (_) => CategoryProvider()),
-    ChangeNotifierProvider(create: (_) => ProductProvider()),
-    ChangeNotifierProvider(create: (_) => CartProvider()),
-  ], child: const MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => MyAuthProvider()),
+      ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => CheckUserProvider()),
+      ChangeNotifierProvider(create: (_) => CategoryProvider()),
+      ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ChangeNotifierProvider(create: (_) => CartProvider()),
+    ],
+    child: const MyApp(),
+  ));
+
+  Get.put(ConnectivityProvider(), permanent: true);
 }
 
 class MyApp extends StatefulWidget {
@@ -63,7 +67,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Gilroy-Regular",
@@ -77,9 +81,7 @@ class _MyAppState extends State<MyApp> {
               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
         ),
       ),
-      // home: const SplashScreen(),
       home: isLogin ? const HomeScreen() : const SplashScreen(),
-      // home: const AdminScreen(),
     );
   }
 }
