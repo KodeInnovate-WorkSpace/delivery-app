@@ -10,6 +10,8 @@ import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:speedy_delivery/providers/product_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:speedy_delivery/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,8 +77,9 @@ class _MyAppState extends State<MyApp> {
               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
         ),
       ),
+      home: const SplashScreen(),
       // home: isLogin ? const HomeScreen() : const SplashScreen(),
-      home: const AdminScreen(),
+      // home: const AdminScreen(),
     );
   }
 }

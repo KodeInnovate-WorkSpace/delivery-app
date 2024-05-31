@@ -4,12 +4,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
 
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../shared/search_bar.dart';
 import '../widget/location_button_widget.dart';
+import '../screens/not_in_location_screen.dart';
 import 'categories_screen.dart';
 import 'checkout_screen.dart';
 
@@ -33,6 +37,7 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     fetchDataFuture = fetchData();
+    checkLocationService();
   }
 
   Future<void> fetchData() async {
@@ -93,6 +98,70 @@ class HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       log("Error fetching sub-category: $e");
     }
+  }
+
+  Future<void> checkLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      showLocationDialog();
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        showLocationDialog();
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      showLocationDialog();
+      return;
+    }
+
+    // Location services are enabled and permission is granted, get the current location
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    log("Current Position: ${position.latitude}, ${position.longitude}");
+
+    // Get the placemarks from the coordinates
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+    String subLocality = place.subLocality ?? '';
+
+    // Check if the sublocality is not "Mumbra"
+    if (subLocality != 'Mumbra') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => NotInLocationScreen()),
+      );
+    }
+  }
+
+  void showLocationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enable Location'),
+          content: const Text('Please enable location services to proceed.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    ).then((_) =>
+        checkLocationService()); // Check location service again after dialog is closed
   }
 
   @override

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/screens/demo_screen.dart';
 
-import 'home_screen.dart';
-
 class NotInLocationScreen extends StatelessWidget {
   const NotInLocationScreen({super.key});
 
@@ -79,6 +77,40 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: notInLocation ? const NotInLocationScreen() : const HomeScreen(),
+    );
+  }
+}
+
+// Dummy HomeScreen for illustration
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
+      body: const Center(
+        child: Text('Home Screen'),
+      ),
+    );
+  }
+}
+
+// Dummy DemoPage for illustration
+class DemoPage extends StatelessWidget {
+  const DemoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Demo Page'),
+      ),
+      body: const Center(
+        child: Text('Demo Page'),
+      ),
     );
   }
 }
