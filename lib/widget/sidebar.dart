@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/category_model.dart';
 
 Widget sidebar(
@@ -21,6 +22,7 @@ Widget sidebar(
           final isSelected = selectedSubCategoryId == subCategory.id;
           return GestureDetector(
             onTap: () {
+              HapticFeedback.vibrate();
               fetchProducts(subCategory.id);
               onSubCategorySelected(subCategory.id);
             },

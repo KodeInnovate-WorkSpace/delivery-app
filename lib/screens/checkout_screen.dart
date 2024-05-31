@@ -1,10 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
 
+  @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -79,8 +85,8 @@ class CheckoutScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Image.network(
-                              item.itemImage,
+                            CachedNetworkImage(
+                              imageUrl: item.itemImage,
                               width: 50,
                               height: 50,
                             ),
@@ -89,15 +95,18 @@ class CheckoutScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Item name
                                   Text(
                                     item.itemName,
                                     style: const TextStyle(fontSize: 16),
                                   ),
+                                  // Item Unit kg, g, L, etc
                                   Text(
                                     item.itemUnit.toString(),
                                     style: const TextStyle(color: Colors.grey),
                                   ),
                                   const SizedBox(height: 4),
+                                  // Item price
                                   Text(
                                     'Total: ₹${item.itemPrice * item.qnt}',
                                     style: const TextStyle(
@@ -109,11 +118,17 @@ class CheckoutScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 2),
+
+                            // Cart button
                             Column(
                               children: [
+                                // AddToCartButton(
+                                //     productName: item.itemName,
+                                //     productPrice: item.itemPrice,
+                                //     productImage: item.itemImage,
+                                //     productUnit: item.itemUnit),
                                 Container(
-                                  // height: 35,
-                                  // width: 75,
+                                  height: 35,
                                   decoration: BoxDecoration(
                                     color: Colors.green,
                                     borderRadius: BorderRadius.circular(5),
@@ -126,8 +141,10 @@ class CheckoutScreen extends StatelessWidget {
                                             size: 15, color: Colors.white),
                                         onPressed: () {
                                           cartProvider.removeItem(item);
+                                          notifyListeners();
                                         },
                                       ),
+                                      // item count/quantity
                                       Text(
                                         '${item.qnt}',
                                         style: const TextStyle(
@@ -140,6 +157,7 @@ class CheckoutScreen extends StatelessWidget {
                                             size: 15, color: Colors.white),
                                         onPressed: () {
                                           cartProvider.addItem(item);
+                                          notifyListeners();
                                         },
                                       ),
                                     ],

@@ -9,7 +9,7 @@ Widget searchBar(BuildContext context) {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                SearchPage()), // Replace SearchScreen with your desired screen
+                const SearchPage()), // Replace SearchScreen with your desired screen
       );
     },
     child: AbsorbPointer(

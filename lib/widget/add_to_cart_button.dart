@@ -69,7 +69,9 @@ class AddToCartButtonState extends State<AddToCartButton> {
                   ),
                 ),
                 Text(
-                  "${cartProvider.cart.map((c) => c.qnt)}",
+                  cartProvider.itemCount(cartItem),
+                  // "${cartProvider.cart.map((c) => c.qnt)}",
+
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: 'Gilroy-SemiBold',

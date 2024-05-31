@@ -13,6 +13,13 @@ class CartProvider extends ChangeNotifier {
   List<Cart> get cart => _cartItems;
   bool get isLoading => _isLoading;
 
+  String itemCount(Cart item) {
+    final index =
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    notifyListeners();
+    return _cartItems[index].qnt.toString();
+  }
+
   void addItem(Cart item) {
     final index =
         _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);

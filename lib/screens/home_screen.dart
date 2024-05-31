@@ -218,6 +218,7 @@ class HomeScreenState extends State<HomeScreen> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
+                                                  // HapticFeedback.vibrate();
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -235,8 +236,11 @@ class HomeScreenState extends State<HomeScreen> {
                                                   );
                                                 },
                                                 child: Container(
+                                                  width: 100,
                                                   margin: const EdgeInsets
-                                                      .symmetric(horizontal: 4),
+                                                      .symmetric(
+                                                    horizontal: 4,
+                                                  ),
                                                   decoration:
                                                       const BoxDecoration(
                                                     color: Color(0xffeaf1fc),
