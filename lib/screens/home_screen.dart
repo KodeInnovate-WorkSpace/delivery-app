@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Category> categories = [];
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
@@ -97,6 +98,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: Stack(
         children: [
           Padding(
@@ -106,29 +108,29 @@ class HomeScreenState extends State<HomeScreen> {
                 // Head Section
                 Row(
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20), // Add SizedBox for spacing
+                        const SizedBox(height: 20), // Add SizedBox for spacing
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Delivery in ',
                               style: TextStyle(
                                   fontFamily: 'Gilroy-ExtraBold',
                                   color: Colors.black,
                                   fontSize: 12),
                             ),
-                            Text(
+                            const Text(
                               '7 minutes',
                               style: TextStyle(
                                   fontFamily: 'Gilroy-Black',
                                   color: Colors.black,
                                   fontSize: 28),
                             ),
-                            LocationButton(),
-                            SizedBox(
+                            LocationButton(scaffoldKey: scaffoldKey),
+                            const SizedBox(
                               height: 18,
                             ),
                           ],

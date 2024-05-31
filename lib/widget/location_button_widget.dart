@@ -3,11 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 
-import '../screens/not_in_location_screen.dart';
+import '../screens/demo_screen.dart';
 
 class LocationButton extends StatefulWidget {
-  const LocationButton({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const LocationButton({Key? key, required this.scaffoldKey}) : super(key: key);
 
   @override
   _LocationButtonState createState() => _LocationButtonState();
@@ -15,72 +18,26 @@ class LocationButton extends StatefulWidget {
 
 class _LocationButtonState extends State<LocationButton> {
   Position? position;
-  List<Placemark>? placeMarks;
   String? completeAddress;
 
-  Future<void> getCurrentLocation(BuildContext context) async {
+  Future<void> getCurrentLocation() async {
+    final BuildContext context = widget.scaffoldKey.currentContext!;
+
     bool serviceEnabled;
     LocationPermission permission;
 
     // Check if location service is enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Location Service Disabled'),
-            content: const Text('Please enable location services to proceed.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      _showLocationServiceDisabledDialog(context);
       return;
     }
 
     // Request location permission
     permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Location Permission Required'),
-            content: const Text('Please grant location permission to proceed.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Location Permission Denied'),
-            content: const Text(
-                'Location permission is permanently denied, we cannot request permissions.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+    if (permission != LocationPermission.always &&
+        permission != LocationPermission.whileInUse) {
+      _showLocationPermissionRequiredDialog(context);
       return;
     }
 
@@ -95,24 +52,88 @@ class _LocationButtonState extends State<LocationButton> {
         newPosition.longitude,
       );
 
-      Placemark pMark = placeMarks[0];
+      if (placeMarks.isNotEmpty) {
+        Placemark pMark = placeMarks[0];
 
-      setState(() {
-        completeAddress =
-            ' ${pMark.street}, ${pMark.subLocality}, ${pMark.postalCode}';
+        setState(() {
+          completeAddress = '${pMark.subLocality}, ${pMark.postalCode}';
+        });
 
-        // Check sublocality and redirect if not "Mumbra"
-        if (pMark.subLocality != "Mumbra") {
-          Navigator.pushReplacement(
+        // Check if the location is Diva
+        // if (pMark.locality?.toLowerCase() != 'diva') {
+        //   // If not in Diva, navigate to the demo screen
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+        //   );
+        // }
+        if (pMark.subLocality != 'Diva') {
+          // If not in Mumbra, navigate to the NotInLocationScreen
+          Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => const NotInLocationScreen()),
+            MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
           );
         }
-      });
+
+      }
     } catch (e) {
       log("$e");
+      _showLocationErrorDialog(context);
     }
+  }
+
+  void _showLocationServiceDisabledDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Location Service Disabled'),
+          content: const Text('Please enable location services to proceed.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showLocationPermissionRequiredDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Location Permission Required'),
+          content: const Text('Please grant location permission to proceed.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showLocationErrorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: const Text('An error occurred while fetching location.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -121,23 +142,16 @@ class _LocationButtonState extends State<LocationButton> {
       onTap: () {
         showModalBottomSheet(
           context: context,
-          backgroundColor: Colors.white, // Set the background color
+          backgroundColor: Colors.white,
           builder: (BuildContext context) {
             return SingleChildScrollView(
               child: Column(
-                // mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(
-                    title: const Text(
-                      'Select Address',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    onTap: () => Navigator.pop(context),
-                  ),
+                  _buildSelectAddressTile(context),
                   const ListTile(
                     leading: Icon(Icons.search),
                     title: TextField(
-                      style: TextStyle(color: Colors.black), // Set text color
+                      style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                         hintText: 'Search for area, street name...',
                         hintStyle: TextStyle(color: Colors.black),
@@ -147,18 +161,7 @@ class _LocationButtonState extends State<LocationButton> {
                       ),
                     ),
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.my_location_sharp),
-                    title: const Text(
-                      'Go to Current Location',
-                      style: TextStyle(color: Colors.green),
-                    ),
-                    onTap: () {
-                      getCurrentLocation(context);
-                      Navigator.pop(
-                          context); // Close the bottom sheet after initiating location fetch
-                    },
-                  ),
+                  _buildCurrentLocationTile(context),
                   ListTile(
                     leading: const Icon(Icons.arrow_downward),
                     title: const Text(
@@ -175,7 +178,6 @@ class _LocationButtonState extends State<LocationButton> {
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
-                  // Add more list tiles as needed
                 ],
               ),
             );
@@ -185,12 +187,36 @@ class _LocationButtonState extends State<LocationButton> {
       child: Row(
         children: [
           Text(
-            completeAddress ?? 'Thane, Maharashtra, India ',
+            completeAddress ?? 'Thane, Maharashtra, India',
             style: const TextStyle(color: Colors.black),
           ),
           const Icon(Icons.arrow_drop_down_sharp),
         ],
       ),
+    );
+  }
+
+  ListTile _buildSelectAddressTile(BuildContext context) {
+    return ListTile(
+      title: const Text(
+        'Select Address',
+        style: TextStyle(color: Colors.black),
+      ),
+      onTap: () => Navigator.pop(context),
+    );
+  }
+
+  ListTile _buildCurrentLocationTile(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.my_location_sharp),
+      title: const Text(
+        'Go to Current Location',
+        style: TextStyle(color: Colors.green),
+      ),
+      onTap: () {
+        getCurrentLocation();
+        Navigator.pop(context);
+      },
     );
   }
 }
