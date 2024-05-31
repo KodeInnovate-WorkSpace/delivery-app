@@ -67,8 +67,7 @@ class _LocationButtonState extends State<LocationButton> {
         //     MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
         //   );
         // }
-        if (pMark.subLocality != 'Diva') {
-          // If not in Mumbra, navigate to the NotInLocationScreen
+        if (pMark.subLocality != 'Mumbra') {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
