@@ -1,15 +1,16 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/product_model.dart';
 import '../widget/add_to_cart_button.dart';
 
-class Product {
-  final String name;
-  final String imageUrl;
-  final double price;
-
-  Product({required this.name, required this.imageUrl, required this.price});
-}
-
+// class Product {
+//   final String name;
+//   final String imageUrl;
+//   final double price;
+//
+//   Product({required this.name, required this.imageUrl, required this.price});
+// }
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -34,16 +35,19 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> fetchProductsFromFirestore() async {
-    final productsCollection = FirebaseFirestore.instance.collection(
-        'products');
+    final productsCollection =
+        FirebaseFirestore.instance.collection('products');
     final snapshot = await productsCollection.get();
-    final products = snapshot.docs.map((doc) {
+    final products = snapshot.docs.map((data) {
       return Product(
-        name: doc['name'] as String,
-        imageUrl: doc['image'] as String,
-        price: doc['price'] is int
-            ? (doc['price'] as int).toDouble()
-            : doc['price'] as double, // Handle price as int or double
+        id: data['id'] ?? 0,
+        name: data['name'] ?? '',
+        image: data['image'] ?? '',
+        unit: data['unit'] ?? '0',
+        price: data['price'] ?? 0,
+        stock: data['stock'] ?? 0,
+        subCatId: data['sub_category_id'] ?? 0,
+        status: data['status'], // Handle price as int or double
       );
     }).toList();
 
@@ -66,13 +70,13 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-
   void saveSearch(Product product) {
     setState(() {
       _productSearches.clear(); // Renamed from _sessionSearches
       _productSearches.add(product); // Renamed from _sessionSearches
       _recentSearches.removeWhere((p) =>
-      p.name == product.name); // Remove if already exists to avoid duplicates
+          p.name ==
+          product.name); // Remove if already exists to avoid duplicates
       _recentSearches.insert(0, product); // Insert at the beginning
       if (_recentSearches.length > 5) {
         _recentSearches =
@@ -135,11 +139,10 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-
   Widget productCard(Product product) {
     return Card(
       child: ListTile(
-        leading: Image.network(product.imageUrl, width: 50, height: 50),
+        leading: Image.network(product.image, width: 50, height: 50),
         title: Text(product.name),
         onTap: () {
           saveSearch(product);
@@ -162,9 +165,10 @@ class _SearchPageState extends State<SearchPage> {
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure button stays fixed
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween, // Ensure button stays fixed
             children: [
-              Image.network(product.imageUrl, width: 100, height: 100),
+              Image.network(product.image, width: 100, height: 100),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -189,8 +193,9 @@ class _SearchPageState extends State<SearchPage> {
                   AddToCartButton(
                     productName: product.name,
                     productPrice: product.price.toInt(),
-                    productImage: product.imageUrl,
-                    productUnit: "0", // Set product unit to 0 since it's not used
+                    productImage: product.image,
+                    productUnit:
+                        "0", // Set product unit to 0 since it's not used
                   ),
                 ],
               ),
@@ -202,15 +207,13 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-
-
   Widget recentSearchCard(Product product) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Image.network(product.imageUrl, width: 40, height: 40),
+            Image.network(product.image, width: 40, height: 40),
             // Adjust size here
             const SizedBox(height: 5),
             // Add padding here
@@ -239,8 +242,8 @@ class _SearchPageState extends State<SearchPage> {
                   children: [
                     const Text(
                       'Search Results',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(height: 10),
                     ListView.builder(
@@ -261,12 +264,13 @@ class _SearchPageState extends State<SearchPage> {
                   children: [
                     const Text(
                       'Recently Searched',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     TextButton(
                       onPressed: clearRecentSearches,
-                      child: const Text('Clear', style: TextStyle(color: Colors.red)),
+                      child: const Text('Clear',
+                          style: TextStyle(color: Colors.red)),
                     ),
                   ],
                 ),
@@ -303,7 +307,8 @@ class _SearchPageState extends State<SearchPage> {
                     // Renamed from _sessionSearches
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
-                      final productSearch = _productSearches[index]; // Renamed from _sessionSearches
+                      final productSearch = _productSearches[
+                          index]; // Renamed from _sessionSearches
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: productSearchCard(

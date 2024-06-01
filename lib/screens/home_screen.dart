@@ -136,7 +136,6 @@ class HomeScreenState extends State<HomeScreen> {
     );
     log("Current Position: ${position.latitude}, ${position.longitude}");
 
-    // Get the placemarks from the coordinates
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
@@ -161,11 +160,16 @@ class HomeScreenState extends State<HomeScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Enable Location'),
           content: const Text('Please enable location services to proceed.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text(
+                'OK',
+                style:
+                    TextStyle(color: Colors.black, fontFamily: 'Gilroy-Bold'),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
@@ -173,8 +177,7 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    ).then((_) =>
-        checkLocationService());
+    ).then((_) => checkLocationService());
   }
 
   @override

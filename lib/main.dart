@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/firebase_options.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
-import 'package:speedy_delivery/providers/connectivity_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/splash_screen.dart';
@@ -21,14 +19,12 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => MyAuthProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => CheckUserProvider()),
+      ChangeNotifierProvider(create: (_) => CartProvider()),
       // ChangeNotifierProvider(create: (_) => CategoryProvider()),
       // ChangeNotifierProvider(create: (_) => ProductProvider()),
-      ChangeNotifierProvider(create: (_) => CartProvider()),
     ],
     child: const MyApp(),
   ));
-
-  Get.put(ConnectivityProvider(), permanent: true);
 }
 
 class MyApp extends StatefulWidget {
@@ -65,7 +61,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Gilroy-Regular",

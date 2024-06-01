@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotInLocationScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class NotInLocationScreen extends StatelessWidget {
               const Icon(
                 Icons.location_off,
                 size: 100,
-                color: Colors.red,
+                // color: Colors.red,
               ),
               const SizedBox(height: 20),
               const Text(
@@ -34,19 +35,41 @@ class NotInLocationScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  // Navigate to the DemoPage and save state
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.setBool('notInLocation', true);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DemoPage()),
-                  );
-                },
-                child: const Text('Try Changing Location'),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    HapticFeedback.heavyImpact();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DemoPage()),
+                    );
+                  },
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                      ),
+                    ),
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
+                        return Colors.black;
+                      },
+                    ),
+                  ),
+                  child: const SizedBox(
+                    width: 200,
+                    height: 58,
+                    child: Center(
+                      child: Text(
+                        "Try changing location",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -108,10 +131,149 @@ class DemoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Demo Page'),
+        title: const Text('Change location'),
       ),
-      body: const Center(
-        child: Text('Demo Page'),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Change your location manually here'),
+            const SizedBox(height: 16),
+            // Building detail
+            SizedBox(
+              width: 300,
+              child: TextFormField(
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Building',
+                  hintStyle: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons
+                      .apartment), // Optional: icon color to match the border
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+
+// street detail
+            SizedBox(
+              width: 300,
+              child: TextFormField(
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Street',
+                  hintStyle: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons
+                      .signpost), // Optional: icon color to match the border
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            // landmark
+            SizedBox(
+              width: 300,
+              child: TextFormField(
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Landmark',
+                  hintStyle: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(
+                        color: Colors.black), // Set the border color to red
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(
+                      Icons.place), // Optional: icon color to match the border
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () => HapticFeedback.heavyImpact(),
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                    ),
+                  ),
+                  backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                      return Colors.black;
+                    },
+                  ),
+                ),
+                child: const SizedBox(
+                  width: 250,
+                  height: 58,
+                  child: Center(
+                    child: Text(
+                      "Continue",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
