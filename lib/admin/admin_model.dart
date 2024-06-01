@@ -29,20 +29,34 @@ class Admin extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> manageSubCategories() async {
     try {
       final querySnapshot =
-      await FirebaseFirestore.instance.collection('sub_category').get();
-      return querySnapshot.docs.map((doc) => {
-        ...doc.data(),
-        // 'sub_category_id': doc.id, // Include the document ID
-      }).toList();
+          await FirebaseFirestore.instance.collection('sub_category').get();
+      return querySnapshot.docs
+          .map((doc) => {
+                ...doc.data(),
+                // 'sub_category_id': doc.id, // Include the document ID
+              })
+          .toList();
     } catch (e) {
       log("Error: $e");
       return [];
     }
   }
 
-  Future<void> updateSubCategory(String id, String field, dynamic newValue) async {
+  Future<void> updateSubCategory(String field, dynamic newValue,
+      {String? categoryField, dynamic categoryValue}) async {
     try {
-      await FirebaseFirestore.instance.collection('sub_category').doc(id).update({field: newValue});
+      Query query = FirebaseFirestore.instance.collection('sub_category');
+
+      // Add conditions to your query if any
+      if (categoryField != null && categoryValue != null) {
+        query = query.where(categoryField, isEqualTo: categoryValue);
+      }
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({field: newValue});
+      }
     } catch (e) {
       log("Error updating sub-category: $e");
     }

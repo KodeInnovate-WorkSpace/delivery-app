@@ -87,9 +87,10 @@ class TableData extends DataTableSource {
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  Future<void> _updateSubCategory(
-      String id, String field, dynamic newValue) async {
-    await admin.updateSubCategory(id, field, newValue);
+  Future<void> _updateSubCategory(String field, dynamic newValue,
+      {String? categoryField, dynamic categoryValue}) async {
+    await admin.updateSubCategory(field, newValue,
+        categoryField: categoryField, categoryValue: categoryValue);
     _loadSubData(); // Reload data after update
   }
 
@@ -110,8 +111,12 @@ class TableData extends DataTableSource {
         TextFormField(
           initialValue: data['sub_category_name'],
           onFieldSubmitted: (newValue) {
-            _updateSubCategory(data['sub_category_id'].toString(),
-                'sub_category_name', newValue);
+            _updateSubCategory(
+              'sub_category_name',
+              newValue,
+              categoryField: 'sub_category_id',
+              categoryValue: data['sub_category_id'],
+            );
           },
         ),
       ),
