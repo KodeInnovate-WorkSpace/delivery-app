@@ -4,8 +4,9 @@ class Product {
   final int price;
   final String image;
   final int stock;
-  final int unit;
+  final String unit;
   final int subCatId;
+  final int status;
 
   Product({
     required this.id,
@@ -15,5 +16,6 @@ class Product {
     required this.stock,
     required this.unit,
     required this.subCatId,
+    required this.status,
   });
 }

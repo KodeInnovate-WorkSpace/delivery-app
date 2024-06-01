@@ -53,12 +53,16 @@ class CategoryScreenState extends State<CategoryScreen> {
               id: data['id'] ?? 0,
               name: data['name'] ?? '',
               image: data['image'] ?? '',
-              unit: data['unit'] ?? 0,
+              unit: data['unit'] ?? '0',
               price: data['price'] ?? 0,
               stock: data['stock'] ?? 0,
               subCatId: data['sub_category_id'] ?? 0,
+              status: data['status'],
             );
-            products.add(product);
+
+            if (product.status == 1) {
+              products.add(product);
+            }
           }
           products =
               products.where((x) => x.subCatId == subCategoryId).toList();

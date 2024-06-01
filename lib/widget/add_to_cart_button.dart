@@ -8,7 +8,7 @@ class AddToCartButton extends StatefulWidget {
   final String productName;
   final int productPrice;
   final String productImage;
-  final int productUnit;
+  final String productUnit;
 
   const AddToCartButton({
     super.key,

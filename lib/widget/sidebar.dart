@@ -10,6 +10,7 @@ Widget sidebar(
     int? selectedSubCategoryId,
     Function(int) onSubCategorySelected) {
 
+
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Container(

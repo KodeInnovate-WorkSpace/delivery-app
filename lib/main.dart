@@ -5,10 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/firebase_options.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
-import 'package:speedy_delivery/providers/category_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/connectivity_provider.dart';
-import 'package:speedy_delivery/providers/product_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/splash_screen.dart';
@@ -24,7 +22,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => CheckUserProvider()),
       // ChangeNotifierProvider(create: (_) => CategoryProvider()),
-      ChangeNotifierProvider(create: (_) => ProductProvider()),
+      // ChangeNotifierProvider(create: (_) => ProductProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
     ],
     child: const MyApp(),

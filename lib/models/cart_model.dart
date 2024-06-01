@@ -2,7 +2,7 @@ class Cart {
   final String itemName;
   final int itemPrice;
   final String itemImage;
-  final int itemUnit;
+  final String itemUnit;
   int qnt;
 
   Cart({

@@ -66,6 +66,7 @@ class _ProductCardState extends State<ProductCard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // item image
                                 Center(
                                   child: CachedNetworkImage(
                                     imageUrl: product.image,
@@ -86,13 +87,15 @@ class _ProductCardState extends State<ProductCard> {
                                     fontFamily: 'Gilroy-SemiBold',
                                   ),
                                 ),
+                                // Item unit
                                 Text(
-                                  product.unit.toString(),
+                                  product.unit,
                                   style: const TextStyle(
                                     color: Colors.grey,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
+                                // Item price
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

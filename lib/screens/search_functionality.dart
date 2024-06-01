@@ -190,7 +190,7 @@ class _SearchPageState extends State<SearchPage> {
                     productName: product.name,
                     productPrice: product.price.toInt(),
                     productImage: product.imageUrl,
-                    productUnit: 0, // Set product unit to 0 since it's not used
+                    productUnit: "0", // Set product unit to 0 since it's not used
                   ),
                 ],
               ),
