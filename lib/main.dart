@@ -12,52 +12,25 @@ import 'package:speedy_delivery/screens/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => MyAuthProvider()),
-      ChangeNotifierProvider(create: (_) => CartProvider()),
-      ChangeNotifierProvider(create: (_) => CheckUserProvider()),
-      ChangeNotifierProvider(create: (_) => CartProvider()),
-      // ChangeNotifierProvider(create: (_) => CategoryProvider()),
-      // ChangeNotifierProvider(create: (_) => ProductProvider()),
-    ],
-    child: const MyApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => MyAuthProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => CheckUserProvider()),
+        // Add other providers if needed
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool isLogin = false;
-
-  @override
-  void initState() {
-    super.initState();
-    checkIfLogin(); // Call this method when the app starts
-  }
-
-  Future<void> checkIfLogin() async {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null && mounted) {
-        // User is logged in
-        setState(() {
-          isLogin = true;
-        });
-      } else {
-        // User is not logged in
-        setState(() {
-          isLogin = false;
-        });
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +48,8 @@ class _MyAppState extends State<MyApp> {
               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
         ),
       ),
-      home: isLogin ? const HomeScreen() : const SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }
+
