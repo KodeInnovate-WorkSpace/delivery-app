@@ -13,7 +13,6 @@ import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../shared/search_bar.dart';
 import '../widget/location_button_widget.dart';
-import '../screens/not_in_location_screen.dart';
 import 'categories_screen.dart';
 import 'checkout_screen.dart';
 
@@ -58,8 +57,13 @@ class HomeScreenState extends State<HomeScreen> {
             final category = Category(
               id: data['category_id'],
               name: data['category_name'],
+              status: data['status'],
             );
-            categories.add(category);
+
+            if (category.status == 1) {
+              categories.add(category);
+            }
+
             // log("Category: \n ID: ${category.id} | Name: ${category.name}");
           }
         });
@@ -86,6 +90,7 @@ class HomeScreenState extends State<HomeScreen> {
               name: data['sub_category_name'],
               img: data['sub_category_img'],
               catId: data['category_id'],
+              status: data['status'],
             );
             subCategories.add(subCategory);
             // fetchProducts();
@@ -137,7 +142,7 @@ class HomeScreenState extends State<HomeScreen> {
     if (subLocality != 'Mumbra') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => NotInLocationScreen()),
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
       );
     }
   }
@@ -237,8 +242,8 @@ class HomeScreenState extends State<HomeScreen> {
 
                 // Search bar
                 searchBar(context),
-                // body
 
+                // body
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(

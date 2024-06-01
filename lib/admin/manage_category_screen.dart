@@ -9,44 +9,54 @@ class ManageCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Admin admin = Admin();
+    final DataTableSource src = TableData();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Users'),
+        title: const Text('Manage Category'),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: admin.manageCategories(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No users found.'));
-          } else {
-            final users = snapshot.data!;
-            return Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('ID')),
-                    DataColumn(label: Text('Category')),
-                    // Add more columns as needed
-                  ],
-                  rows: users.map((user) {
-                    return DataRow(cells: [
-                      DataCell(Text(user['category_id'].toString())),
-                      DataCell(Text(user['category_name'] ?? 'N/A')),
-                      // Add more cells as needed
-                    ]);
-                  }).toList(),
-                ),
-              ),
-            );
-          }
-        },
+      body: PaginatedDataTable(
+        columns: const [
+          DataColumn(label: Text('ID')),
+          DataColumn(label: Text('Category')),
+        ],
+        source: src,
+        columnSpacing: 20,
+        rowsPerPage: 5,
       ),
     );
   }
+}
+
+class TableData extends DataTableSource {
+  Admin admin = Admin();
+  List<Map<String, dynamic>> subData = [];
+
+  TableData() {
+    _loadSubData();
+  }
+
+  Future<void> _loadSubData() async {
+    subData = await admin.manageCategories();
+    notifyListeners(); // Notify the listeners that data has changed
+  }
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= subData.length) return null; // Check index bounds
+    final data = subData[index];
+    return DataRow(cells: [
+      DataCell(Text(data['category_id'].toString())),
+      DataCell(Text(data['category_name'] ?? 'N/A')),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => subData.length;
+
+  @override
+  int get selectedRowCount => 0;
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/admin/manage_user_screen.dart';
-import 'package:speedy_delivery/admin/sample.dart';
 
 import 'manage_category_screen.dart';
 import 'manage_product_screen.dart';
@@ -94,16 +93,20 @@ class AdminScreen extends StatelessWidget {
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
               ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ManageProductScreen(),
-                    ));
-              },
+              onPressed: null,
               child: const Text(
                 "Manage Notification",
                 style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            const TextButton(
+              onPressed: null,
+              child: Text(
+                "Log out",
+                style: TextStyle(
+                    color: Colors.red,
+                    fontFamily: 'Gilroy-SemiBold',
+                    fontSize: 20),
               ),
             ),
           ],

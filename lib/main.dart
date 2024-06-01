@@ -23,7 +23,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => MyAuthProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => CheckUserProvider()),
-      ChangeNotifierProvider(create: (_) => CategoryProvider()),
+      // ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ChangeNotifierProvider(create: (_) => ProductProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
     ],
