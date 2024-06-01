@@ -109,6 +109,11 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _handleRefresh() async {
+    fetchData();
+    checkLocationService();
+  }
+
   Future<void> checkLocationService() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -136,22 +141,63 @@ class HomeScreenState extends State<HomeScreen> {
     );
     log("Current Position: ${position.latitude}, ${position.longitude}");
 
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    // Get the placemarks from the coordinates
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String subLocality = place.subLocality ?? '';
+    String postalCode = place.postalCode ?? '';
 
-    if (subLocality != 'Mumbra') {
+    log("SubLocality: $subLocality, PostalCode: $postalCode");
+
+    // Check Firestore for status
+    await checkAccess();
+  }
+  Future<void> checkAccess() async {
+    try {
+      // Fetch all documents from the "location" collection
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('location').get();
+
+      // Check if there are any documents in the collection
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the placemarks from the coordinates
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        Placemark place = placemarks[0];
+        String subLocality = place.subLocality ?? '';
+        int postalCode = int.parse(place.postalCode ?? '');
+
+        // Iterate through each document
+        for (DocumentSnapshot document in querySnapshot.docs) {
+          // Assuming each document has 'sublocality', 'postal_code', and 'status' fields
+          String docSubLocality = document['sublocality'];
+          int docPostalCode = document['postal_code'];
+          int status = document['status'];
+
+          // Check if the sublocality and postal code match
+          if (subLocality == docSubLocality && postalCode == docPostalCode && status == 1) {
+            log("Access granted");
+            return; // Exit the function if access is granted
+          }
+        }
+        // If no document with matching sublocality, postal code, and status 1 is found
+        log("No document with matching sublocality, postal code, and status 1 found in Firestore");
+      } else {
+        log("No documents found in Firestore");
+      }
+      // If no document with matching sublocality, postal code, and status 1 is found or no documents are found
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+        MaterialPageRoute(builder: (context) => NotInLocationScreen()),
+      );
+    } catch (e) {
+      log("Error checking access: $e");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => NotInLocationScreen()),
       );
     }
-  }
-
-  Future<void> _handleRefresh() async {
-    fetchData();
-    checkLocationService();
   }
 
   void showLocationDialog() {
@@ -160,24 +206,19 @@ class HomeScreenState extends State<HomeScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
           title: const Text('Enable Location'),
           content: const Text('Please enable location services to proceed.'),
           actions: <Widget>[
             TextButton(
-              child: const Text(
-                'OK',
-                style:
-                    TextStyle(color: Colors.black, fontFamily: 'Gilroy-Bold'),
-              ),
+              child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();  // Close the dialog
               },
             ),
           ],
         );
       },
-    ).then((_) => checkLocationService());
+    ).then((_) => checkLocationService());  // Check location service again after dialog is closed
   }
 
   @override

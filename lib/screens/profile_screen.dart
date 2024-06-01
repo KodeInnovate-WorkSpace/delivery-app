@@ -120,14 +120,58 @@ class ProfilePage extends StatelessWidget {
               title: const Text('Log out'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.remove('isLoggedIn');
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SigninScreen()),
-                  (route) => false,
-                );
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          backgroundColor: Colors.white,
+                          title: const Text(
+                            "Logout",
+                            style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
+                          ),
+                          content:
+                              const Text("Are you sure you want to logout?"),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text(
+                                      "No",
+                                      style: TextStyle(color: Colors.red),
+                                    )),
+                                TextButton(
+                                    onPressed: () async {
+                                      await FirebaseAuth.instance.signOut();
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      await prefs.remove('isLoggedIn');
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SigninScreen()),
+                                        (route) => false,
+                                      );
+                                    },
+                                    child: Text(
+                                      "Yes",
+                                      style: TextStyle(color: Colors.black),
+                                    )),
+                              ],
+                            )
+                          ],
+                        ));
+
+                // await FirebaseAuth.instance.signOut();
+                // SharedPreferences prefs = await SharedPreferences.getInstance();
+                // await prefs.remove('isLoggedIn');
+                // Navigator.pushAndRemoveUntil(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const SigninScreen()),
+                //   (route) => false,
+                // );
               },
             ),
             const SizedBox(height: 40), // Add space below "Log out"
