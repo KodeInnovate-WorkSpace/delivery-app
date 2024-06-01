@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:speedy_delivery/providers/connectivity_provider.dart';
-import 'package:speedy_delivery/screens/no_internet_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 
 class SplashScreen extends StatefulWidget {

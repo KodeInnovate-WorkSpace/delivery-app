@@ -142,7 +142,6 @@ class HomeScreenState extends State<HomeScreen> {
     Placemark place = placemarks[0];
     String subLocality = place.subLocality ?? '';
 
-    // Check if the sublocality is not "Mumbra"
     if (subLocality != 'Mumbra') {
       Navigator.pushReplacement(
         context,
@@ -175,7 +174,7 @@ class HomeScreenState extends State<HomeScreen> {
         );
       },
     ).then((_) =>
-        checkLocationService()); // Check location service again after dialog is closed
+        checkLocationService());
   }
 
   @override

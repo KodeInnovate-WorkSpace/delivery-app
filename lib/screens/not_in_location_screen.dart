@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy_delivery/screens/demo_screen.dart';
 
 class NotInLocationScreen extends StatelessWidget {
   const NotInLocationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Prevent the back button from working
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (didPop) {
+          return;
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -36,7 +37,8 @@ class NotInLocationScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   // Navigate to the DemoPage and save state
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   await prefs.setBool('notInLocation', true);
 
                   Navigator.push(

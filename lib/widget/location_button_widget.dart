@@ -5,15 +5,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 
-import '../screens/demo_screen.dart';
-
 class LocationButton extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const LocationButton({Key? key, required this.scaffoldKey}) : super(key: key);
+  const LocationButton({super.key, required this.scaffoldKey});
 
   @override
-  _LocationButtonState createState() => _LocationButtonState();
+  State<LocationButton> createState() => _LocationButtonState();
 }
 
 class _LocationButtonState extends State<LocationButton> {
@@ -56,17 +54,10 @@ class _LocationButtonState extends State<LocationButton> {
         Placemark pMark = placeMarks[0];
 
         setState(() {
-          completeAddress = '${pMark.subLocality}, ${pMark.postalCode}';
+          completeAddress =
+              '${pMark.street}, ${pMark.subLocality}, ${pMark.locality} - ${pMark.postalCode} ';
         });
 
-        // Check if the location is Diva
-        // if (pMark.locality?.toLowerCase() != 'diva') {
-        //   // If not in Diva, navigate to the demo screen
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-        //   );
-        // }
         if (pMark.subLocality != 'Mumbra') {
           Navigator.push(
             context,

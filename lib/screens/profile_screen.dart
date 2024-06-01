@@ -166,11 +166,9 @@ void _shareApp() {
 }
 
 void _launchPlayStore() async {
-  const url = 'https://play.google.com/store/apps';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
+  final Uri url = Uri.parse('https://play.google.com/store/apps');
+  if (!await launchUrl(url)) {
+    throw Exception('Could not launch $url');
   }
 }
 
