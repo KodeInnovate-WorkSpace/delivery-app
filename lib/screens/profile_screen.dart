@@ -155,7 +155,7 @@ class ProfilePage extends StatelessWidget {
                                         (route) => false,
                                       );
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       "Yes",
                                       style: TextStyle(color: Colors.black),
                                     )),
