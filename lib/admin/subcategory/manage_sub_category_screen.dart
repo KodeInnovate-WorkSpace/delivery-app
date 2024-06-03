@@ -40,6 +40,9 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
     setState(() {});
   }
 
+  Future<void> _refreshPage() async {
+    await src._loadSubData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +53,23 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
       ),
       body: Stack(
         children: [
-          PaginatedDataTable(
-            columns: const [
-              DataColumn(label: Text('Category')),
-              DataColumn(label: Text('Sub-Cat Id')),
-              DataColumn(label: Text('Image')),
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('')),
-            ],
-            source: src,
-            columnSpacing: 15,
-            rowsPerPage: 5,
+          RefreshIndicator(
+            onRefresh: _refreshPage,
+            child: ListView(children: [
+              PaginatedDataTable(
+                columns: const [
+                  DataColumn(label: Text('Category')),
+                  DataColumn(label: Text('Sub-Cat Id')),
+                  DataColumn(label: Text('Image')),
+                  DataColumn(label: Text('Name')),
+                  DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('')),
+                ],
+                source: src,
+                columnSpacing: 15,
+                rowsPerPage: 5,
+              ),
+            ]),
           ),
           Positioned(
             bottom: 25,
@@ -71,7 +79,9 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
               elevation: 2,
               onPressed: () async {
                 final result = await Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EditSubCategory()));
 
                 if (result != null && result as bool) {
                   // Sub-category added successfully, refresh the list
@@ -134,12 +144,10 @@ class TableData extends DataTableSource {
   }
 
   // Delete a row of data from firebase
-  Future<void> _deleteSubCategory(
-      dynamic categoryValue) async {
+  Future<void> _deleteSubCategory(dynamic categoryValue) async {
     await subcat.deleteSubCategory(categoryValue);
     _loadSubData(); // Reload data after deletion
   }
-
 
   @override
   DataRow? getRow(int index) {

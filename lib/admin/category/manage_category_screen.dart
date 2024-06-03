@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../admin_model.dart';
 import 'edit_category.dart';
 
@@ -12,7 +11,6 @@ class ManageCategoryScreen extends StatefulWidget {
 
 class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
   late TableData src;
-  int selectedStatus = 0; // Initially set to active (0)
 
   @override
   void initState() {
@@ -30,36 +28,36 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
     super.dispose();
   }
 
-  void _refreshCategoryList() async {
-    // Clear existing data
-    src.catData.clear();
-
-    // Reload data from the server (or local storage)
-    await src._loadSubData();
-    // Notify listeners about the change (important!)
+  Future<void> _refreshCategoryList() async {
+    await src._loadCatData();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final DataTableSource src = TableData();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manage Category'),
       ),
       body: Stack(
         children: [
-          PaginatedDataTable(
-            columns: const [
-              DataColumn(label: Text('ID')),
-              DataColumn(label: Text('Category')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('')),
-            ],
-            source: src,
-            columnSpacing: 20,
-            rowsPerPage: 5,
+          RefreshIndicator(
+            onRefresh: _refreshCategoryList,
+            child: ListView(
+              children: [
+                PaginatedDataTable(
+                  columns: const [
+                    DataColumn(label: Text('ID')),
+                    DataColumn(label: Text('Category')),
+                    DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('')),
+                  ],
+                  source: src,
+                  columnSpacing: 20,
+                  rowsPerPage: 5,
+                ),
+              ],
+            ),
           ),
           Positioned(
             bottom: 25,
@@ -69,18 +67,15 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
               elevation: 2,
               onPressed: () async {
                 final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const EditCategory()));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EditCategory(),
+                  ),
+                );
 
                 if (result != null && result as bool) {
-                  // Sub-category added successfully, refresh the list
                   _refreshCategoryList();
                 }
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => const EditCategory()));
               },
               backgroundColor: Colors.black,
               child: const Icon(
@@ -98,35 +93,27 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
 class TableData extends DataTableSource {
   CatModel category = CatModel();
   List<Map<String, dynamic>> catData = [];
-  List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
+  List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
 
   TableData() {
-    _loadSubData();
+    _loadCatData();
   }
 
-  Future<void> _loadSubData() async {
+  Future<void> _loadCatData() async {
     catData = await category.manageCategories();
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  // function to update the values of sub-category name
-  // () takes name of field, New value to replace the old one, category field and category value
   Future<void> _updateSubCategory(String field, dynamic newValue,
       {String? categoryField, dynamic categoryValue}) async {
     await category.updateCategory(field, newValue,
         categoryField: categoryField, categoryValue: categoryValue);
-    _loadSubData(); // Reload data after update
+    _loadCatData(); // Reload data after update
   }
 
-  // Delete a row of data from firebase
   Future<void> _deleteCategory(dynamic categoryValue) async {
     await category.deleteCategory(categoryValue);
-
-    // Remove the deleted item from the local list
-    catData.removeWhere((data) => data['category_id'] == categoryValue);
-
-    // Notify listeners for UI update (important!)
-    notifyListeners();
+    _loadCatData(); // Reload data after deletion
   }
 
   @override
@@ -134,10 +121,7 @@ class TableData extends DataTableSource {
     if (index >= catData.length) return null; // Check index bounds
     final data = catData[index];
     return DataRow(cells: [
-      // id column
       DataCell(Text(data['category_id'].toString())),
-      // category name column
-
       DataCell(
         TextFormField(
           initialValue: data['category_name'],
@@ -151,8 +135,6 @@ class TableData extends DataTableSource {
           },
         ),
       ),
-
-      // status column
       DataCell(DropdownButton<int>(
         value: data['status'], // Use the status value from data
         onChanged: (int? newValue) {
@@ -166,14 +148,10 @@ class TableData extends DataTableSource {
         items: statusOptions.map<DropdownMenuItem<int>>((int status) {
           return DropdownMenuItem<int>(
             value: status,
-            child: Text(status == 0
-                ? 'Inactive'
-                : 'Active'), // Display 'Active' or 'Inactive'
+            child: Text(status == 0 ? 'Inactive' : 'Active'),
           );
         }).toList(),
       )),
-
-      // delete column
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
