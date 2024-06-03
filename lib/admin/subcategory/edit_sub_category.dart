@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/category_model.dart';
-import 'admin_model.dart';
+import '../../models/category_model.dart';
+import '../admin_model.dart';
 
 class EditSubCategory extends StatefulWidget {
   const EditSubCategory({super.key});
@@ -116,6 +116,16 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     }
   }
 
+  Future<void> openCamera() async {
+    final pickedFile =
+    await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,34 +162,14 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
               ),
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                controller: imageController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  hintText: 'Set Image URL (optional)',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.image),
-                ),
-              ),
+
+            // select image from camera
+            ElevatedButton(
+              onPressed: openCamera,
+              child: const Text("Open Camera"),
             ),
             const SizedBox(height: 20),
+            // select image from gallery
             ElevatedButton(
               onPressed: pickImage,
               child: const Text("Pick Image"),

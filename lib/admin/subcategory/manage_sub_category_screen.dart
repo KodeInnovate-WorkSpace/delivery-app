@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/admin/edit_sub_category.dart';
-import 'admin_model.dart';
+import 'package:speedy_delivery/admin/subcategory/edit_sub_category.dart';
+import '../admin_model.dart';
 
 class ManageSubCategoryScreen extends StatefulWidget {
   const ManageSubCategoryScreen({super.key});

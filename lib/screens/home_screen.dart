@@ -142,7 +142,8 @@ class HomeScreenState extends State<HomeScreen> {
     log("Current Position: ${position.latitude}, ${position.longitude}");
 
     // Get the placemarks from the coordinates
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String subLocality = place.subLocality ?? '';
     String postalCode = place.postalCode ?? '';
@@ -152,10 +153,12 @@ class HomeScreenState extends State<HomeScreen> {
     // Check Firestore for status
     await checkAccess();
   }
+
   Future<void> checkAccess() async {
     try {
       // Fetch all documents from the "location" collection
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('location').get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
@@ -163,7 +166,8 @@ class HomeScreenState extends State<HomeScreen> {
         Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
-        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
         Placemark place = placemarks[0];
         String subLocality = place.subLocality ?? '';
         int postalCode = int.parse(place.postalCode ?? '');
@@ -176,7 +180,9 @@ class HomeScreenState extends State<HomeScreen> {
           int status = document['status'];
 
           // Check if the sublocality and postal code match
-          if (subLocality == docSubLocality && postalCode == docPostalCode && status == 1) {
+          if (subLocality == docSubLocality &&
+              postalCode == docPostalCode &&
+              status == 1) {
             log("Access granted");
             return; // Exit the function if access is granted
           }
@@ -189,13 +195,13 @@ class HomeScreenState extends State<HomeScreen> {
       // If no document with matching sublocality, postal code, and status 1 is found or no documents are found
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => NotInLocationScreen()),
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
       );
     } catch (e) {
       log("Error checking access: $e");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => NotInLocationScreen()),
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
       );
     }
   }
@@ -212,13 +218,14 @@ class HomeScreenState extends State<HomeScreen> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop();  // Close the dialog
+                Navigator.of(context).pop(); // Close the dialog
               },
             ),
           ],
         );
       },
-    ).then((_) => checkLocationService());  // Check location service again after dialog is closed
+    ).then((_) =>
+        checkLocationService()); // Check location service again after dialog is closed
   }
 
   @override

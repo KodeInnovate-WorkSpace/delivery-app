@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/admin/manage_user_screen.dart';
+import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 
 import 'manage_category_screen.dart';
 import 'manage_product_screen.dart';
-import 'manage_sub_category_screen.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
