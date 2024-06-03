@@ -65,7 +65,8 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   Future<void> addNewCategory(BuildContext context) async {
     try {
       // Fetch all categories from Firestore
-      final snapshot = await FirebaseFirestore.instance.collection('category').get();
+      final snapshot =
+          await FirebaseFirestore.instance.collection('category').get();
 
       // Find the maximum category_id in the existing documents
       int maxId = 0;
@@ -86,7 +87,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        showMessage( "Category already exists");
+        showMessage("Category already exists");
         log("Category already exists");
         return;
       }
@@ -106,7 +107,6 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
       log("Error adding category: $e");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

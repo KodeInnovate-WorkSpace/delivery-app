@@ -12,6 +12,7 @@ class ManageCategoryScreen extends StatefulWidget {
 
 class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
   late TableData src;
+  int selectedStatus = 0; // Initially set to active (0)
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
 class TableData extends DataTableSource {
   CatModel category = CatModel();
   List<Map<String, dynamic>> catData = [];
+  List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
 
   TableData() {
     _loadSubData();
@@ -126,9 +128,26 @@ class TableData extends DataTableSource {
         ),
       ),
 
-      // DataCell(Text(data['category_name'] ?? 'N/A')),
       // status column
-      DataCell(Text(data['status'].toString())),
+      DataCell(DropdownButton<int>(
+        value: data['status'], // Use the status value from data
+        onChanged: (int? newValue) {
+          _updateSubCategory(
+            'status',
+            newValue,
+            categoryField: 'category_id',
+            categoryValue: data['category_id'],
+          );
+        },
+        items: statusOptions.map<DropdownMenuItem<int>>((int status) {
+          return DropdownMenuItem<int>(
+            value: status,
+            child: Text(status == 0
+                ? 'Inactive'
+                : 'Active'), // Display 'Active' or 'Inactive'
+          );
+        }).toList(),
+      )),
 
       // delete column
       DataCell(

@@ -44,6 +44,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
               DataColumn(label: Text('Sub-Cat Id')),
               DataColumn(label: Text('Image')),
               DataColumn(label: Text('Name')),
+              DataColumn(label: Text('Status')),
               DataColumn(label: Text('')),
             ],
             source: src,
@@ -77,6 +78,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 
 class TableData extends DataTableSource {
   SubCatModel subcat = SubCatModel();
+  List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
 
   // storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
@@ -135,6 +137,29 @@ class TableData extends DataTableSource {
           },
         ),
       ),
+
+      // status column
+      DataCell(DropdownButton<int>(
+        value: data['status'], // Use the status value from data
+        onChanged: (int? newValue) {
+          _updateSubCategory(
+            'status',
+            newValue,
+            categoryField: 'sub_category_id',
+            categoryValue: data['sub_category_id'],
+          );
+        },
+        items: statusOptions.map<DropdownMenuItem<int>>((int status) {
+          return DropdownMenuItem<int>(
+            value: status,
+            child: Text(status == 0
+                ? 'Inactive'
+                : 'Active'), // Display 'Active' or 'Inactive'
+          );
+        }).toList(),
+      )),
+
+      // delete column
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
