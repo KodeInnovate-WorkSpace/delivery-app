@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:label="speedy_delivery"
+        android:label="Speedy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

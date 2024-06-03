@@ -23,7 +23,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   final TextEditingController imageController = TextEditingController();
   File? _image;
 
-  Admin admin = Admin();
+  SubCatModel subcat = SubCatModel();
   List<Map<String, dynamic>> subData = [];
 
   @override
@@ -66,7 +66,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   }
 
   Future<void> addNewSubCategory() async {
-    subData = await admin.manageSubCategories();
+    subData = await subcat.manageSubCategories();
     notifyListeners();
 
     if (nameController.text.isEmpty ||

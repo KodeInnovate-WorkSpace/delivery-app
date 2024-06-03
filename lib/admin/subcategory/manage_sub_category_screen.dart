@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/admin/subcategory/edit_sub_category.dart';
 import '../admin_model.dart';
+import 'edit_sub_category.dart';
 
 class ManageSubCategoryScreen extends StatefulWidget {
   const ManageSubCategoryScreen({super.key});
@@ -82,7 +82,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 }
 
 class TableData extends DataTableSource {
-  Admin admin = Admin();
+  SubCatModel subcat = SubCatModel();
 
   // storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
@@ -92,9 +92,9 @@ class TableData extends DataTableSource {
   }
 
   Future<void> _loadSubData() async {
-    // getting data from manageSubCategories() which is in admin class
+    // getting data from manageSubCategories() which is in subcat class
 
-    subData = await admin.manageSubCategories();
+    subData = await subcat.manageSubCategories();
     notifyListeners(); // Notify the listeners that data has changed
   }
 
@@ -102,14 +102,14 @@ class TableData extends DataTableSource {
   // () takes name of field, New value to replace the old one, category field and category value
   Future<void> _updateSubCategory(String field, dynamic newValue,
       {String? categoryField, dynamic categoryValue}) async {
-    await admin.updateSubCategory(field, newValue,
+    await subcat.updateSubCategory(field, newValue,
         categoryField: categoryField, categoryValue: categoryValue);
     _loadSubData(); // Reload data after update
   }
 
   // Delete a row of data from firebase
   Future<void> _deleteSubCategory(dynamic categoryValue) async {
-    await admin.deleteSubCategory(categoryValue);
+    await subcat.deleteSubCategory(categoryValue);
     _loadSubData(); // Reload data after deletion
   }
 
