@@ -65,21 +65,29 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     }
   }
 
-  Future<void> addNewSubCategory() async {
-    subData = await subcat.manageSubCategories();
-    notifyListeners();
-
-    if (nameController.text.isEmpty ||
-        _image == null ||
-        selectedCategory == null) {
-      log("Please fill all the fields");
-      return;
-    }
-
+  Future<void> addNewSubCategory(BuildContext context) async {
     try {
+      // Fetch subData from Firestore
+      subData = await subcat.manageSubCategories();
+      notifyListeners();
+
+      // Check if sub-category already exists
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('sub_category')
+          .where('sub_category_name', isEqualTo: nameController.text)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        showMessage("Sub-Category already exists");
+        log("Sub-category already exists");
+        return;
+      }
+
+      // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
       final subCategoryDoc =
           FirebaseFirestore.instance.collection('sub_category').doc();
+
       await subCategoryDoc.set({
         'sub_category_id': subData.length + 1,
         'sub_category_name': nameController.text,
@@ -87,8 +95,11 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
         'category_id': selectedCategory,
         'status': dropdownValue,
       });
+
+      showMessage("Sub-Category added to database");
       log("Sub-category added successfully");
     } catch (e) {
+      showMessage("Error adding sub-category: $e");
       log("Error adding sub-category: $e");
     }
   }
@@ -102,7 +113,6 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
       final downloadUrl = await snapshot.ref.getDownloadURL();
       showMessage("Image Uploaded");
       return downloadUrl;
-
     } catch (e) {
       log("Error uploading image: $e");
       rethrow;
@@ -115,19 +125,16 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
-        showMessage("Image picked");
-
       });
     }
   }
 
   Future<void> openCamera() async {
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.camera);
+        await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
-        showMessage("Image picked");
       });
     }
   }
@@ -230,10 +237,16 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  addNewSubCategory();
-                  showMessage("Sub-Category added to database");
+                onPressed: () async {
+                  if (nameController.text.isEmpty ||
+                      _image == null ||
+                      selectedCategory == null) {
+                    showMessage("Please fill necessary details");
+                    log("Please fill all the fields");
+                    return;
+                  }
 
+                  await addNewSubCategory(context);
                   log("Sub-Category Length: ${subData.length}");
                 },
                 style: ButtonStyle(
