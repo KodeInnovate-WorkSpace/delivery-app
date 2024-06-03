@@ -1,30 +1,27 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../models/category_model.dart';
 import '../../shared/show_msg.dart';
 import '../admin_model.dart';
 
-class EditSubCategory extends StatefulWidget {
-  const EditSubCategory({super.key});
+class EditCategory extends StatefulWidget {
+  const EditCategory({super.key});
 
   @override
-  State<EditSubCategory> createState() => _EditSubCategoryState();
+  State<EditCategory> createState() => _EditCategoryState();
 }
 
-class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
+class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   int? dropdownValue = 1;
   final List<int> categories = [];
   int? selectedCategory;
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController imageController = TextEditingController();
-  File? _image;
 
-  SubCatModel subcat = SubCatModel();
-  List<Map<String, dynamic>> subData = [];
+  CatModel category = CatModel();
+
+  // list to store fetched categories
+  List<Map<String, dynamic>> catData = [];
 
   @override
   void initState() {
@@ -65,79 +62,51 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     }
   }
 
-  Future<void> addNewSubCategory(BuildContext context) async {
+  Future<void> addNewCategory(BuildContext context) async {
     try {
-      // Fetch subData from Firestore
-      subData = await subcat.manageSubCategories();
-      notifyListeners();
+      // Fetch all categories from Firestore
+      final snapshot = await FirebaseFirestore.instance.collection('category').get();
 
-      // Check if sub-category already exists
+      // Find the maximum category_id in the existing documents
+      int maxId = 0;
+      if (snapshot.docs.isNotEmpty) {
+        for (var doc in snapshot.docs) {
+          final data = doc.data();
+          final categoryId = data['category_id'] as int;
+          if (categoryId > maxId) {
+            maxId = categoryId;
+          }
+        }
+      }
+
+      // Check if category already exists
       final querySnapshot = await FirebaseFirestore.instance
-          .collection('sub_category')
-          .where('sub_category_name', isEqualTo: nameController.text)
+          .collection('category')
+          .where('category_name', isEqualTo: nameController.text)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        showMessage("Sub-Category already exists");
-        log("Sub-category already exists");
+        showMessage( "Category already exists");
+        log("Category already exists");
         return;
       }
 
-      // Upload image and add sub-category to Firestore
-      String imageUrl = await uploadImage(_image!);
-      final subCategoryDoc =
-          FirebaseFirestore.instance.collection('sub_category').doc();
-
-      await subCategoryDoc.set({
-        'sub_category_id': subData.length + 1,
-        'sub_category_name': nameController.text,
-        'sub_category_img': imageUrl,
-        'category_id': selectedCategory,
+      // Add new category to Firestore with the correct category_id
+      final catDoc = FirebaseFirestore.instance.collection('category').doc();
+      await catDoc.set({
+        'category_id': maxId + 1,
+        'category_name': nameController.text,
         'status': dropdownValue,
       });
 
-      showMessage("Sub-Category added to database");
-      log("Sub-category added successfully");
+      showMessage("Category added to database");
+      log("Category added successfully");
     } catch (e) {
-      showMessage("Error adding sub-category: $e");
-      log("Error adding sub-category: $e");
+      showMessage("Error adding category: $e");
+      log("Error adding category: $e");
     }
   }
 
-  Future<String> uploadImage(File image) async {
-    try {
-      final storageRef = FirebaseStorage.instance.ref().child(
-          'sub_category_images/${DateTime.now().millisecondsSinceEpoch}');
-      final uploadTask = storageRef.putFile(image);
-      final snapshot = await uploadTask;
-      final downloadUrl = await snapshot.ref.getDownloadURL();
-      showMessage("Image Uploaded");
-      return downloadUrl;
-    } catch (e) {
-      log("Error uploading image: $e");
-      rethrow;
-    }
-  }
-
-  Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> openCamera() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,20 +145,6 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
-            // select image from camera
-            ElevatedButton(
-              onPressed: openCamera,
-              child: const Text("Open Camera"),
-            ),
-            const SizedBox(height: 20),
-            // select image from gallery
-            ElevatedButton(
-              onPressed: pickImage,
-              child: const Text("Pick Image"),
-            ),
-            _image != null
-                ? Image.file(_image!, height: 100, width: 100)
-                : const Text("No image selected"),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -214,43 +169,19 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
             // Select Category
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Category: "),
-                DropdownButton<int>(
-                  value: selectedCategory,
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      selectedCategory = newValue!;
-                    });
-                  },
-                  items: categories.map<DropdownMenuItem<int>>((int category) {
-                    return DropdownMenuItem<int>(
-                      value: category,
-                      child: Text(category.toString()),
-                    );
-                  }).toList(),
-                  hint: const Text("Select a category"),
-                )
-              ],
-            ),
-            const SizedBox(height: 20),
 
             // Add button
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  if (nameController.text.isEmpty ||
-                      _image == null ||
-                      selectedCategory == null) {
+                  if (nameController.text.isEmpty) {
                     showMessage("Please fill necessary details");
                     log("Please fill all the fields");
                     return;
                   }
 
-                  await addNewSubCategory(context);
-                  log("Sub-Category Length: ${subData.length}");
+                  await addNewCategory(context);
+                  log("Category Length: ${catData.length}");
                 },
                 style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(

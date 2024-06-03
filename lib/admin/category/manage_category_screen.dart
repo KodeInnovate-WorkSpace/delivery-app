@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../admin_model.dart';
-import 'edit_sub_category.dart';
 
-class ManageSubCategoryScreen extends StatefulWidget {
-  const ManageSubCategoryScreen({super.key});
+import '../admin_model.dart';
+import 'edit_category.dart';
+
+class ManageCategoryScreen extends StatefulWidget {
+  const ManageCategoryScreen({super.key});
 
   @override
-  State<ManageSubCategoryScreen> createState() =>
-      _ManageSubCategoryScreenState();
+  State<ManageCategoryScreen> createState() => _ManageCategoryScreenState();
 }
 
-class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
+class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
   late TableData src;
 
   @override
@@ -31,23 +31,23 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final DataTableSource src = TableData();
+
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Manage Sub-Categories'),
+        title: const Text('Manage Category'),
       ),
       body: Stack(
         children: [
           PaginatedDataTable(
             columns: const [
-              DataColumn(label: Text('Cat Id')),
-              DataColumn(label: Text('Sub-Cat Id')),
-              DataColumn(label: Text('Image')),
-              DataColumn(label: Text('Name')),
+              DataColumn(label: Text('ID')),
+              DataColumn(label: Text('Category')),
+              DataColumn(label: Text('Status')),
               DataColumn(label: Text('')),
             ],
             source: src,
-            columnSpacing: 15,
+            columnSpacing: 20,
             rowsPerPage: 5,
           ),
           Positioned(
@@ -60,7 +60,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const EditSubCategory()));
+                        builder: (context) => const EditCategory()));
               },
               backgroundColor: Colors.black,
               child: const Icon(
@@ -76,19 +76,15 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 }
 
 class TableData extends DataTableSource {
-  SubCatModel subcat = SubCatModel();
-
-  // storing sub-category data in a list
-  List<Map<String, dynamic>> subData = [];
+  CatModel category = CatModel();
+  List<Map<String, dynamic>> catData = [];
 
   TableData() {
     _loadSubData();
   }
 
   Future<void> _loadSubData() async {
-    // getting data from manageSubCategories() which is in subcat class
-
-    subData = await subcat.manageSubCategories();
+    catData = await category.manageCategories();
     notifyListeners(); // Notify the listeners that data has changed
   }
 
@@ -96,50 +92,50 @@ class TableData extends DataTableSource {
   // () takes name of field, New value to replace the old one, category field and category value
   Future<void> _updateSubCategory(String field, dynamic newValue,
       {String? categoryField, dynamic categoryValue}) async {
-    await subcat.updateSubCategory(field, newValue,
+    await category.updateCategory(field, newValue,
         categoryField: categoryField, categoryValue: categoryValue);
     _loadSubData(); // Reload data after update
   }
 
   // Delete a row of data from firebase
-  Future<void> _deleteSubCategory(dynamic categoryValue) async {
-    await subcat.deleteSubCategory(categoryValue);
+  Future<void> _deleteCategory(dynamic categoryValue) async {
+    await category.deleteCategory(categoryValue);
     _loadSubData(); // Reload data after deletion
   }
 
   @override
   DataRow? getRow(int index) {
-    if (index >= subData.length) return null; // Check index bounds
-
-    // storing each index of subData list in data variable to iterate over each list
-    final data = subData[index];
+    if (index >= catData.length) return null; // Check index bounds
+    final data = catData[index];
     return DataRow(cells: [
+      // id column
       DataCell(Text(data['category_id'].toString())),
-      DataCell(Text(data['sub_category_id'].toString())),
-      DataCell(
-        SizedBox(
-          width: 35,
-          child: Image.network(data['sub_category_img']),
-        ),
-      ),
+      // category name column
+
       DataCell(
         TextFormField(
-          initialValue: data['sub_category_name'],
+          initialValue: data['category_name'],
           onFieldSubmitted: (newValue) {
             _updateSubCategory(
-              'sub_category_name',
+              'category_name',
               newValue,
-              categoryField: 'sub_category_id',
-              categoryValue: data['sub_category_id'],
+              categoryField: 'category_id',
+              categoryValue: data['category_id'],
             );
           },
         ),
       ),
+
+      // DataCell(Text(data['category_name'] ?? 'N/A')),
+      // status column
+      DataCell(Text(data['status'].toString())),
+
+      // delete column
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            _deleteSubCategory(data['sub_category_id']);
+            _deleteCategory(data['category_id']);
           },
         ),
       ),
@@ -150,7 +146,7 @@ class TableData extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => subData.length;
+  int get rowCount => catData.length;
 
   @override
   int get selectedRowCount => 0;

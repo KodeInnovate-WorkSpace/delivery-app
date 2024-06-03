@@ -16,17 +16,6 @@ class Admin extends ChangeNotifier {
     }
   }
 
-  Future<List<Map<String, dynamic>>> manageCategories() async {
-    try {
-      final querySnapshot =
-          await FirebaseFirestore.instance.collection('category').get();
-      return querySnapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      log("Error: $e");
-      return [];
-    }
-  }
-
   Future<List<Map<String, dynamic>>> manageProducts() async {
     try {
       final querySnapshot =
@@ -99,6 +88,63 @@ class SubCatModel extends ChangeNotifier {
       showMessage("Sub-Category Deleted!");
     } catch (e) {
       log("Error deleting sub-category: $e");
+    }
+  }
+}
+
+class CatModel extends ChangeNotifier {
+  Future<List<Map<String, dynamic>>> manageCategories() async {
+    try {
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('category').get();
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      log("Error: $e");
+      return [];
+    }
+  }
+
+  Future<void> updateCategory(String field, dynamic newValue,
+      {String? categoryField, dynamic categoryValue}) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('category');
+
+      // Add conditions to your query if any
+      if (categoryField != null && categoryValue != null) {
+        query = query.where(categoryField, isEqualTo: categoryValue);
+      }
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({field: newValue});
+      }
+    } catch (e) {
+      log("Error updating category: $e");
+    }
+  }
+
+  Future<void> deleteCategory(dynamic categoryValue) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('category');
+
+      // Add conditions to your query if any
+      if (categoryValue != null) {
+        query = query.where(FieldPath(const ['category_id']),
+            isEqualTo: categoryValue); // Assuming 'catId' is the field name
+      }
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+      log("Category Deleted!");
+      showMessage("Category Deleted!");
+    } catch (e) {
+      showMessage("Error deleting category");
+
+      log("Error deleting category: $e");
     }
   }
 }

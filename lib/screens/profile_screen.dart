@@ -164,14 +164,6 @@ class ProfilePage extends StatelessWidget {
                           ],
                         ));
 
-                // await FirebaseAuth.instance.signOut();
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // await prefs.remove('isLoggedIn');
-                // Navigator.pushAndRemoveUntil(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const SigninScreen()),
-                //   (route) => false,
-                // );
               },
             ),
             const SizedBox(height: 40), // Add space below "Log out"
