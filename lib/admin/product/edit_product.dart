@@ -95,11 +95,11 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         'id': productData.length + 1,
         'image': imageUrl,
         'name': nameController.text,
-        // 'price': price,
-        // 'stock': stock,
+        'price': double.parse(priceController.text),
+        'stock': int.parse(stockController.text),
         'sub_category_id': selectedCategory,
         'status': dropdownValue,
-        // 'unit': unit,
+        // 'unit': unitController,
       });
 
       showMessage("Product added to database");
@@ -178,7 +178,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.category),
+                  prefixIcon: const Icon(Icons.drive_file_rename_outline),
                 ),
               ),
             ),
@@ -188,6 +188,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             SizedBox(
               width: 250,
               child: TextFormField(
+                keyboardType: TextInputType.number,
                 controller: priceController,
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
@@ -208,7 +209,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.category),
+                  prefixIcon: const Icon(Icons.attach_money),
                 ),
               ),
             ),
@@ -218,6 +219,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             SizedBox(
               width: 250,
               child: TextFormField(
+                keyboardType: TextInputType.number,
                 controller: stockController,
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
@@ -238,7 +240,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.category),
+                  prefixIcon: const Icon(Icons.warehouse),
                 ),
               ),
             ),
@@ -268,7 +270,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.category),
+                  prefixIcon: const Icon(Icons.production_quantity_limits),
                 ),
               ),
             ),
@@ -386,7 +388,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   }
 
                   await addNewProduct(context);
-                  log("Sub-Category Length: ${productData.length}");
+                  log("Product Length: ${productData.length}");
                 },
                 style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(

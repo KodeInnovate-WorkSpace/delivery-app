@@ -83,8 +83,7 @@ class TableData extends DataTableSource {
 
   // storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
-  Map<int, String> categoryData =
-      {}; // map to store category_id to category_name
+  Map<int, String> categoryData ={}; // map to store category_id to category_name
 
   TableData() {
     _loadSubData();
