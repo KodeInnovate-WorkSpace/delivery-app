@@ -17,11 +17,15 @@ class EditSubCategory extends StatefulWidget {
 
 class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   int? dropdownValue = 1;
-  final List<int> categories = [];
-  int? selectedCategory;
+  final List<String> categoryNames = [];
+  final Map<String, int> categoryMap = {};
+  String? selectedCategoryName;
+  int? selectedCategoryId;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
   File? _image;
+
+  bool isLoading = false;
 
   SubCatModel subcat = SubCatModel();
   List<Map<String, dynamic>> subData = [];
@@ -35,11 +39,12 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+      await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
-          categories.clear();
+          categoryNames.clear();
+          categoryMap.clear();
           for (var doc in snapshot.docs) {
             final data = doc.data();
             final category = Category(
@@ -49,12 +54,14 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             );
 
             if (category.status == 1) {
-              categories.add(category.id);
+              categoryNames.add(category.name);
+              categoryMap[category.name] = category.id;
             }
           }
 
-          if (categories.isNotEmpty) {
-            selectedCategory = categories.first;
+          if (categoryNames.isNotEmpty) {
+            selectedCategoryName = categoryNames.first;
+            selectedCategoryId = categoryMap[selectedCategoryName!];
           }
         });
       } else {
@@ -86,13 +93,13 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
       final subCategoryDoc =
-          FirebaseFirestore.instance.collection('sub_category').doc();
+      FirebaseFirestore.instance.collection('sub_category').doc();
 
       await subCategoryDoc.set({
         'sub_category_id': subData.length + 1,
         'sub_category_name': nameController.text,
         'sub_category_img': imageUrl,
-        'category_id': selectedCategory,
+        'category_id': selectedCategoryId,
         'status': dropdownValue,
       });
 
@@ -121,7 +128,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
   Future<void> pickImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -131,7 +138,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
   Future<void> openCamera() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -142,6 +149,9 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Add new sub-category"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -176,17 +186,55 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
-            // select image from camera
-            ElevatedButton(
-              onPressed: openCamera,
-              child: const Text("Open Camera"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // select image from camera
+                ElevatedButton(
+                  onPressed: openCamera,
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        return Colors.black;
+                      },
+                    ),
+                  ),
+                  child: const Text(
+                    "Open Camera",
+                    style: TextStyle(
+                        color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // select image from gallery
+                ElevatedButton(
+                  onPressed: pickImage,
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        return Colors.black;
+                      },
+                    ),
+                  ),
+                  child: const Text(
+                    "Pick Image",
+                    style: TextStyle(
+                        color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            // select image from gallery
-            ElevatedButton(
-              onPressed: pickImage,
-              child: const Text("Pick Image"),
-            ),
+
             _image != null
                 ? Image.file(_image!, height: 100, width: 100)
                 : const Text("No image selected"),
@@ -218,15 +266,17 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Category: "),
-                DropdownButton<int>(
-                  value: selectedCategory,
-                  onChanged: (int? newValue) {
+                DropdownButton<String>(
+                  value: selectedCategoryName,
+                  onChanged: (String? newValue) {
                     setState(() {
-                      selectedCategory = newValue!;
+                      selectedCategoryName = newValue!;
+                      selectedCategoryId = categoryMap[selectedCategoryName]!;
                     });
                   },
-                  items: categories.map<DropdownMenuItem<int>>((int category) {
-                    return DropdownMenuItem<int>(
+                  items: categoryNames
+                      .map<DropdownMenuItem<String>>((String category) {
+                    return DropdownMenuItem<String>(
                       value: category,
                       child: Text(category.toString()),
                     );
@@ -243,40 +293,41 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 onPressed: () async {
                   if (nameController.text.isEmpty ||
                       _image == null ||
-                      selectedCategory == null) {
+                      selectedCategoryName == null) {
                     showMessage("Please fill necessary details");
                     log("Please fill all the fields");
+
+                    setState(() {
+                      isLoading = false;
+                    });
+
                     return;
                   }
 
                   await addNewSubCategory(context);
-                  log("Sub-Category Length: ${subData.length}");
+                  Navigator.pop(context);
                 },
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                    ),
-                  ),
-                  backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                      return Colors.black;
-                    },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                child: const SizedBox(
-                  width: 200,
-                  height: 58,
-                  child: Center(
-                    child: Text(
-                      "Add",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Gilroy-Black',
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ),
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
+                    : const Text(
+                  "Add",
+                  style: TextStyle(
+                      color: Colors.white, fontFamily: 'Gilroy-Bold'),
                 ),
               ),
             ),

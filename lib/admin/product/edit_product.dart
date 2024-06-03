@@ -18,9 +18,10 @@ class EditProduct extends StatefulWidget {
 class _EditProductState extends State<EditProduct> with ChangeNotifier {
   int? dropdownValue = 1;
   final List<int> categories = [];
-  final List<int> subcategories = [];
+  final List<String> subcategories = [];
+  Map<String, int> subcategoriesMap = {};
   int? selectedCategory;
-  int? selectedSubCategory;
+  String? selectedSubCategory;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
@@ -34,66 +35,35 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   @override
   void initState() {
     super.initState();
-    // fetchCategory();
     fetchSubCategory();
   }
-
-  // Future<void> fetchCategory() async {
-  //   try {
-  //     final snapshot =
-  //         await FirebaseFirestore.instance.collection("category").get();
-  //
-  //     if (snapshot.docs.isNotEmpty) {
-  //       setState(() {
-  //         categories.clear();
-  //         for (var doc in snapshot.docs) {
-  //           final data = doc.data();
-  //           final category = Category(
-  //             id: data['category_id'],
-  //             name: data['category_name'],
-  //             status: data['status'],
-  //           );
-  //
-  //           if (category.status == 1) {
-  //             categories.add(category.id);
-  //           }
-  //         }
-  //
-  //         if (categories.isNotEmpty) {
-  //           selectedCategory = categories.first;
-  //         }
-  //       });
-  //     } else {
-  //       log("No Category Document Found!");
-  //     }
-  //   } catch (e) {
-  //     log("Error fetching category: $e");
-  //   }
-  // }
 
   Future<void> fetchSubCategory() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection("sub_category").get();
+      await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
           subcategories.clear();
+          subcategoriesMap.clear();
           for (var doc in snapshot.docs) {
             final data = doc.data();
-            final category = Category(
+            final sub = Category(
               id: data['sub_category_id'],
               name: data['sub_category_name'],
               status: data['status'],
             );
 
-            if (category.status == 1) {
-              subcategories.add(category.id);
+            if (sub.status == 1) {
+              subcategories.add(sub.name);
+              subcategoriesMap[sub.name] = sub.id;
             }
           }
 
           if (subcategories.isNotEmpty) {
             selectedSubCategory = subcategories.first;
+            selectedCategory = subcategoriesMap[selectedSubCategory!];
           }
         });
       } else {
@@ -125,7 +95,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
       final productDoc =
-          FirebaseFirestore.instance.collection('products').doc();
+      FirebaseFirestore.instance.collection('products').doc();
 
       await productDoc.set({
         'id': productData.length + 1,
@@ -145,6 +115,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       log("Error adding Product: $e");
     }
   }
+
 
   Future<String> uploadImage(File image) async {
     try {
@@ -185,6 +156,9 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add new product"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -395,15 +369,16 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Sub-Category: "),
-                DropdownButton<int>(
+                DropdownButton<String>(
                   value: selectedSubCategory,
-                  onChanged: (int? newValue) {
+                  onChanged: (String? newValue) {
                     setState(() {
                       selectedSubCategory = newValue!;
                     });
                   },
-                  items: subcategories.map<DropdownMenuItem<int>>((int subcat) {
-                    return DropdownMenuItem<int>(
+                  items: subcategories
+                      .map<DropdownMenuItem<String>>((String subcat) {
+                    return DropdownMenuItem<String>(
                       value: subcat,
                       child: Text(subcat.toString()),
                     );
