@@ -16,17 +16,6 @@ class Admin extends ChangeNotifier {
     }
   }
 
-  Future<List<Map<String, dynamic>>> manageProducts() async {
-    try {
-      final querySnapshot =
-          await FirebaseFirestore.instance.collection('products').get();
-      return querySnapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      log("Error: $e");
-      return [];
-    }
-  }
-
   Future<Widget> manageNotification() async {
     return const Text("Manage Notification");
   }
@@ -145,6 +134,19 @@ class CatModel extends ChangeNotifier {
       showMessage("Error deleting category");
 
       log("Error deleting category: $e");
+    }
+  }
+}
+
+class ProductModel extends ChangeNotifier {
+  Future<List<Map<String, dynamic>>> manageProducts() async {
+    try {
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('products').get();
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      log("Error: $e");
+      return [];
     }
   }
 }

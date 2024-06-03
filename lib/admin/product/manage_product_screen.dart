@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import '../admin_model.dart';
-import 'edit_sub_category.dart';
+import 'edit_product.dart';
 
-class ManageSubCategoryScreen extends StatefulWidget {
-  const ManageSubCategoryScreen({super.key});
+class ManageProductScreen extends StatefulWidget {
+  const ManageProductScreen({super.key});
 
   @override
-  State<ManageSubCategoryScreen> createState() =>
-      _ManageSubCategoryScreenState();
+  State<ManageProductScreen> createState() =>
+      _ManageProductScreenState();
 }
 
-class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
+class _ManageProductScreenState extends State<ManageProductScreen> {
   late TableData src;
 
   @override
@@ -40,7 +40,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
         children: [
           PaginatedDataTable(
             columns: const [
-              DataColumn(label: Text('Category')),
+              DataColumn(label: Text('Cat Id')),
               DataColumn(label: Text('Sub-Cat Id')),
               DataColumn(label: Text('Image')),
               DataColumn(label: Text('Name')),
@@ -61,7 +61,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const EditSubCategory()));
+                        builder: (context) => const EditProduct()));
               },
               backgroundColor: Colors.black,
               child: const Icon(
@@ -78,13 +78,10 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 
 class TableData extends DataTableSource {
   SubCatModel subcat = SubCatModel();
-  CatModel category = CatModel();
   List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
 
   // storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
-  Map<int, String> categoryData =
-      {}; // map to store category_id to category_name
 
   TableData() {
     _loadSubData();
@@ -92,17 +89,9 @@ class TableData extends DataTableSource {
 
   Future<void> _loadSubData() async {
     // getting data from manageSubCategories() which is in subcat class
-    _loadCategoryData();
+
     subData = await subcat.manageSubCategories();
     notifyListeners(); // Notify the listeners that data has changed
-  }
-
-  Future<void> _loadCategoryData() async {
-    final categories = await category.manageCategories();
-    categoryData = {
-      for (var cat in categories) cat['category_id']: cat['category_name']
-    };
-    notifyListeners();
   }
 
   // function to update the values of sub-category name
@@ -126,11 +115,8 @@ class TableData extends DataTableSource {
 
     // storing each index of subData list in data variable to iterate over each list
     final data = subData[index];
-    final categoryName = categoryData[data['category_id']] ?? 'Unknown';
-
     return DataRow(cells: [
-      // DataCell(Text(data['category_id'].toString())),
-      DataCell(Text(categoryName)),
+      DataCell(Text(data['category_id'].toString())),
       DataCell(Text(data['sub_category_id'].toString())),
       DataCell(
         SizedBox(
