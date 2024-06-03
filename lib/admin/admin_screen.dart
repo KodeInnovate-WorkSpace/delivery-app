@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/manage_user_screen.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
+import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
 
 import '../screens/sign_in_screen.dart';
 import 'category/manage_category_screen.dart';

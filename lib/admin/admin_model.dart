@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 
-class Admin extends ChangeNotifier {
+class UserModel extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> manageUsers() async {
     try {
       final querySnapshot =
@@ -13,6 +13,48 @@ class Admin extends ChangeNotifier {
     } catch (e) {
       log("Error: $e");
       return [];
+    }
+  }
+
+  Future<void> updateUser(String field, dynamic newValue,
+      {String? categoryField, dynamic categoryValue}) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('users');
+
+      // Add conditions to your query if any
+      if (categoryField != null && categoryValue != null) {
+        query = query.where(categoryField, isEqualTo: categoryValue);
+      }
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({field: newValue});
+      }
+    } catch (e) {
+      log("Error updating users: $e");
+    }
+  }
+
+  Future<void> deleteUser(dynamic categoryValue) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('users');
+
+      // Add conditions to your query if any
+      if (categoryValue != null) {
+        query = query.where(FieldPath(const ['id']),
+            isEqualTo: categoryValue); // Assuming 'catId' is the field name
+      }
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+      log("User Deleted!");
+      showMessage("Users Deleted!");
+    } catch (e) {
+      log("Error deleting users: $e");
     }
   }
 
@@ -141,7 +183,8 @@ class CatModel extends ChangeNotifier {
 class ProductModel extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> manageProducts() async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance.collection('products').get();
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('products').get();
       return querySnapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       debugPrint("Error: $e");
@@ -149,7 +192,8 @@ class ProductModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
+  Future<void> updateProduct(String field, dynamic newValue,
+      {String? categoryField, dynamic categoryValue}) async {
     try {
       Query query = FirebaseFirestore.instance.collection('products');
 
@@ -174,7 +218,8 @@ class ProductModel extends ChangeNotifier {
 
       // Add conditions to your query if any
       if (categoryValue != null) {
-        query = query.where('id', isEqualTo: categoryValue); // Assuming 'id' is the field name
+        query = query.where('id',
+            isEqualTo: categoryValue); // Assuming 'id' is the field name
       }
 
       // Get the documents matching the query
@@ -188,5 +233,3 @@ class ProductModel extends ChangeNotifier {
     }
   }
 }
-
-
