@@ -94,8 +94,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
-      final productDoc =
-      FirebaseFirestore.instance.collection('products').doc();
+      final productDoc = FirebaseFirestore.instance.collection('products').doc();
 
       await productDoc.set({
         'id': productData.length + 1,
@@ -116,7 +115,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
     }
   }
 
-
   Future<String> uploadImage(File image) async {
     try {
       final storageRef = FirebaseStorage.instance
@@ -135,7 +133,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<void> pickImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -145,7 +143,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<void> openCamera() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -300,7 +298,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       ),
                     ),
                     backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
+                          (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -322,7 +320,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       ),
                     ),
                     backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
+                          (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -374,19 +372,20 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   onChanged: (String? newValue) {
                     setState(() {
                       selectedSubCategory = newValue!;
+                      selectedCategory = subcategoriesMap[selectedSubCategory!];
                     });
                   },
-                  items: subcategories
-                      .map<DropdownMenuItem<String>>((String subcat) {
+                  items: subcategories.map<DropdownMenuItem<String>>((String subcat) {
                     return DropdownMenuItem<String>(
                       value: subcat,
-                      child: Text(subcat.toString()),
+                      child: Text(subcat),
                     );
                   }).toList(),
                   hint: const Text("Select a sub-category"),
                 )
               ],
             ),
+
             const SizedBox(height: 20),
 
             // Add button
@@ -411,7 +410,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                   ),
                   backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
+                        (Set<WidgetState> states) {
                       return Colors.black;
                     },
                   ),

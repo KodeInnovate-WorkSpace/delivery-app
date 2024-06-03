@@ -37,7 +37,9 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
     // Notify listeners about the change (important!)
     setState(() {});
   }
-
+  Future<void> _refreshPage() async {
+    await src.loadProductData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,20 +49,25 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
       ),
       body: Stack(
         children: [
-          PaginatedDataTable(
-            columns: const [
-              DataColumn(label: Text('Product Id')),
-              DataColumn(label: Text('Image')),
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Price')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('Unit')),
-              DataColumn(label: Text('Sub-Cat')),
-              DataColumn(label: Text('')),
-            ],
-            source: src,
-            columnSpacing: 15,
-            rowsPerPage: 5,
+          RefreshIndicator(
+            onRefresh: _refreshPage,
+            child: ListView(
+              children: [PaginatedDataTable(
+                columns: const [
+                  DataColumn(label: Text('Product Id')),
+                  DataColumn(label: Text('Image')),
+                  DataColumn(label: Text('Name')),
+                  DataColumn(label: Text('Price')),
+                  DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('Unit')),
+                  DataColumn(label: Text('Sub-Cat')),
+                  DataColumn(label: Text('')),
+                ],
+                source: src,
+                columnSpacing: 15,
+                rowsPerPage: 5,
+              ),]
+            ),
           ),
           Positioned(
             bottom: 25,
