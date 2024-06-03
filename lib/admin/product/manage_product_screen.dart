@@ -28,6 +28,16 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
     super.dispose();
   }
 
+  void _refreshProductList() async {
+    // Clear existing data
+    src.productData.clear();
+    // Reload data from the server (or local storage)
+    await src.loadProductData();
+
+    // Notify listeners about the change (important!)
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,11 +68,20 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
             child: FloatingActionButton(
               hoverColor: Colors.transparent,
               elevation: 2,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const EditProduct()),
-                );
+              onPressed: () async {
+                final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EditProduct()));
+
+                if (result != null && result as bool) {
+                  // Sub-category added successfully, refresh the list
+                  _refreshProductList();
+                }
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const EditProduct()),
+                // );
               },
               backgroundColor: Colors.black,
               child: const Icon(
@@ -117,6 +136,7 @@ class TableData extends DataTableSource {
   Future<void> _deleteProduct(dynamic categoryValue) async {
     await productObj.deleteProduct(categoryValue);
     loadProductData(); // Reload data after deletion
+    // _updateProduct;
   }
 
   @override

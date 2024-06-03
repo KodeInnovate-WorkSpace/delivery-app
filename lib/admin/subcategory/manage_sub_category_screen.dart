@@ -29,6 +29,18 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
     super.dispose();
   }
 
+  void _refreshSubCategoryList() async {
+    // Clear existing data
+    src.subData.clear();
+
+    // Reload data from the server (or local storage)
+    await src._loadSubData();
+
+    // Notify listeners about the change (important!)
+    setState(() {});
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,11 +69,18 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
             child: FloatingActionButton(
               hoverColor: Colors.transparent,
               elevation: 2,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const EditSubCategory()));
+              onPressed: () async {
+                final result = await Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
+
+                if (result != null && result as bool) {
+                  // Sub-category added successfully, refresh the list
+                  _refreshSubCategoryList();
+                }
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const EditSubCategory()));
               },
               backgroundColor: Colors.black,
               child: const Icon(
@@ -83,7 +102,8 @@ class TableData extends DataTableSource {
 
   // storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
-  Map<int, String> categoryData ={}; // map to store category_id to category_name
+  Map<int, String> categoryData =
+      {}; // map to store category_id to category_name
 
   TableData() {
     _loadSubData();
@@ -114,10 +134,12 @@ class TableData extends DataTableSource {
   }
 
   // Delete a row of data from firebase
-  Future<void> _deleteSubCategory(dynamic categoryValue) async {
+  Future<void> _deleteSubCategory(
+      dynamic categoryValue) async {
     await subcat.deleteSubCategory(categoryValue);
     _loadSubData(); // Reload data after deletion
   }
+
 
   @override
   DataRow? getRow(int index) {

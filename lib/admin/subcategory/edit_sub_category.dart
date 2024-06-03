@@ -39,7 +39,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
+          await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -93,7 +93,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
       final subCategoryDoc =
-      FirebaseFirestore.instance.collection('sub_category').doc();
+          FirebaseFirestore.instance.collection('sub_category').doc();
 
       await subCategoryDoc.set({
         'sub_category_id': subData.length + 1,
@@ -128,7 +128,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
   Future<void> pickImage() async {
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -138,7 +138,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
   Future<void> openCamera() async {
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.camera);
+        await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -150,7 +150,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add new sub-category"),
+        title: const Text("Add new sub-category"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -193,13 +193,13 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ElevatedButton(
                   onPressed: openCamera,
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -215,13 +215,13 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ElevatedButton(
                   onPressed: pickImage,
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -305,12 +305,12 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                   }
 
                   await addNewSubCategory(context);
-                  Navigator.pop(context);
+                  Navigator.pop(context, true);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -321,14 +321,14 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : const Text(
-                  "Add",
-                  style: TextStyle(
-                      color: Colors.white, fontFamily: 'Gilroy-Bold'),
-                ),
+                        "Add",
+                        style: TextStyle(
+                            color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                      ),
               ),
             ),
           ],

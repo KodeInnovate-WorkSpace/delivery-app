@@ -402,6 +402,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   }
 
                   await addNewProduct(context);
+                  Navigator.pop(context, true);
                 },
                 style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(

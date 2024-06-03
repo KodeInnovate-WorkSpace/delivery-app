@@ -181,6 +181,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                   }
 
                   await addNewCategory(context);
+                  Navigator.pop(context, true);
                   log("Category Length: ${catData.length}");
                 },
                 style: ButtonStyle(

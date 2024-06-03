@@ -30,6 +30,16 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
     super.dispose();
   }
 
+  void _refreshCategoryList() async {
+    // Clear existing data
+    src.catData.clear();
+
+    // Reload data from the server (or local storage)
+    await src._loadSubData();
+    // Notify listeners about the change (important!)
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final DataTableSource src = TableData();
@@ -57,11 +67,20 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
             child: FloatingActionButton(
               hoverColor: Colors.transparent,
               elevation: 2,
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const EditCategory()));
+
+                if (result != null && result as bool) {
+                  // Sub-category added successfully, refresh the list
+                  _refreshCategoryList();
+                }
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const EditCategory()));
               },
               backgroundColor: Colors.black,
               child: const Icon(
@@ -102,7 +121,12 @@ class TableData extends DataTableSource {
   // Delete a row of data from firebase
   Future<void> _deleteCategory(dynamic categoryValue) async {
     await category.deleteCategory(categoryValue);
-    _loadSubData(); // Reload data after deletion
+
+    // Remove the deleted item from the local list
+    catData.removeWhere((data) => data['category_id'] == categoryValue);
+
+    // Notify listeners for UI update (important!)
+    notifyListeners();
   }
 
   @override
