@@ -83,6 +83,7 @@ class TableData extends DataTableSource {
 
   List<Map<String, dynamic>> productData = [];
 
+  // get sub-category in dropdown
   SubCatModel subCatObj = SubCatModel();
   Map<int, String> subCatData = {}; // Map to store category_id to category_name
 

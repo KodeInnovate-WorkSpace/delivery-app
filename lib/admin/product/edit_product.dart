@@ -18,12 +18,14 @@ class EditProduct extends StatefulWidget {
 class _EditProductState extends State<EditProduct> with ChangeNotifier {
   int? dropdownValue = 1;
   final List<int> categories = [];
+  final List<int> subcategories = [];
   int? selectedCategory;
+  int? selectedSubCategory;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
-  final TextEditingController unitController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
+  final TextEditingController unitController = TextEditingController();
   File? _image;
 
   ProductModel product = ProductModel();
@@ -32,39 +34,73 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   @override
   void initState() {
     super.initState();
-    fetchCategory();
+    // fetchCategory();
+    fetchSubCategory();
   }
 
-  Future<void> fetchCategory() async {
+  // Future<void> fetchCategory() async {
+  //   try {
+  //     final snapshot =
+  //         await FirebaseFirestore.instance.collection("category").get();
+  //
+  //     if (snapshot.docs.isNotEmpty) {
+  //       setState(() {
+  //         categories.clear();
+  //         for (var doc in snapshot.docs) {
+  //           final data = doc.data();
+  //           final category = Category(
+  //             id: data['category_id'],
+  //             name: data['category_name'],
+  //             status: data['status'],
+  //           );
+  //
+  //           if (category.status == 1) {
+  //             categories.add(category.id);
+  //           }
+  //         }
+  //
+  //         if (categories.isNotEmpty) {
+  //           selectedCategory = categories.first;
+  //         }
+  //       });
+  //     } else {
+  //       log("No Category Document Found!");
+  //     }
+  //   } catch (e) {
+  //     log("Error fetching category: $e");
+  //   }
+  // }
+
+  Future<void> fetchSubCategory() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+          await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
-          categories.clear();
+          subcategories.clear();
           for (var doc in snapshot.docs) {
             final data = doc.data();
             final category = Category(
-              id: data['category_id'],
-              name: data['category_name'],
+              id: data['sub_category_id'],
+              name: data['sub_category_name'],
               status: data['status'],
             );
 
             if (category.status == 1) {
-              categories.add(category.id);
+              subcategories.add(category.id);
             }
           }
 
-          if (categories.isNotEmpty) {
-            selectedCategory = categories.first;
+          if (subcategories.isNotEmpty) {
+            selectedSubCategory = subcategories.first;
           }
         });
       } else {
-        log("No Category Document Found!");
+        log("No Sub-Category Document Found!");
       }
     } catch (e) {
-      log("Error fetching category: $e");
+      log("Error fetching Sub-Category: $e");
     }
   }
 
@@ -95,11 +131,11 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         'id': productData.length + 1,
         'image': imageUrl,
         'name': nameController.text,
-        'price': double.parse(priceController.text),
+        'price': int.parse(priceController.text),
+        'status': dropdownValue,
         'stock': int.parse(stockController.text),
         'sub_category_id': selectedCategory,
-        'status': dropdownValue,
-        // 'unit': unitController,
+        'unit': unitController.text,
       });
 
       showMessage("Product added to database");
@@ -209,7 +245,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.attach_money),
+                  prefixIcon: const Icon(Icons.currency_rupee),
                 ),
               ),
             ),
@@ -276,6 +312,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
+            // Select Image
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -329,6 +366,8 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 ? Image.file(_image!, height: 100, width: 100)
                 : const Text("No image selected"),
             const SizedBox(height: 20),
+
+            // Status
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -355,21 +394,21 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Category: "),
+                const Text("Sub-Category: "),
                 DropdownButton<int>(
-                  value: selectedCategory,
+                  value: selectedSubCategory,
                   onChanged: (int? newValue) {
                     setState(() {
-                      selectedCategory = newValue!;
+                      selectedSubCategory = newValue!;
                     });
                   },
-                  items: categories.map<DropdownMenuItem<int>>((int category) {
+                  items: subcategories.map<DropdownMenuItem<int>>((int subcat) {
                     return DropdownMenuItem<int>(
-                      value: category,
-                      child: Text(category.toString()),
+                      value: subcat,
+                      child: Text(subcat.toString()),
                     );
                   }).toList(),
-                  hint: const Text("Select a category"),
+                  hint: const Text("Select a sub-category"),
                 )
               ],
             ),
@@ -388,7 +427,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   }
 
                   await addNewProduct(context);
-                  log("Product Length: ${productData.length}");
                 },
                 style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
