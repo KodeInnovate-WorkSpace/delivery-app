@@ -304,143 +304,146 @@ class HomeScreenState extends State<HomeScreen> {
 
                 // body
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        FutureBuilder<void>(
-                          future: fetchDataFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (snapshot.hasError) {
-                              return const Center(
-                                child: Text("Error"),
-                              );
-                            } else {
-                              return RefreshIndicator(
-                                onRefresh: _handleRefresh,
-                                backgroundColor: Colors.white,
-                                color: Colors.black,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: categories.length,
-                                  itemBuilder: (context, index) {
-                                    final category = categories[index];
-                                    final filteredSubCategories = subCategories
-                                        .where((subCategory) =>
-                                            subCategory.catId == category.id)
-                                        .toList();
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      FutureBuilder<void>(
+                        future: fetchDataFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                              child: Text("Error"),
+                            );
+                          } else {
+                            return RefreshIndicator(
+                              onRefresh: _handleRefresh,
+                              backgroundColor: Colors.white,
+                              color: Colors.black,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: categories.length,
+                                itemBuilder: (context, index) {
+                                  final category = categories[index];
+                                  final filteredSubCategories =
+                                      subCategories
+                                          .where((subCategory) =>
+                                              subCategory.catId ==
+                                              category.id)
+                                          .toList();
 
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            category.name,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          category.name,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        GridView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              filteredSubCategories.length,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            childAspectRatio: 0.65,
-                                          ),
-                                          itemBuilder: (context, subIndex) {
-                                            final subCategory =
-                                                filteredSubCategories[subIndex];
-                                            return Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    // HapticFeedback.vibrate();
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            CategoryScreen(
-                                                          categoryTitle:
-                                                              category.name,
-                                                          subCategories:
-                                                              filteredSubCategories,
-                                                          selectedSubCategoryId:
-                                                              subCategory
-                                                                  .id, // Pass the selected sub-category ID
-                                                        ),
+                                      ),
+                                      GridView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            filteredSubCategories.length,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4,
+                                          childAspectRatio: 0.65,
+                                        ),
+                                        itemBuilder: (context, subIndex) {
+                                          final subCategory =
+                                              filteredSubCategories[
+                                                  subIndex];
+                                          return Column(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  // HapticFeedback.vibrate();
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CategoryScreen(
+                                                        categoryTitle:
+                                                            category.name,
+                                                        subCategories:
+                                                            filteredSubCategories,
+                                                        selectedSubCategoryId:
+                                                            subCategory
+                                                                .id, // Pass the selected sub-category ID
                                                       ),
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: 100,
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 4,
                                                     ),
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: Color(0xffeaf1fc),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: CachedNetworkImage(
-                                                        height: 60,
-                                                        imageUrl:
-                                                            subCategory.img,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            const CircularProgressIndicator(
-                                                          color: Colors
-                                                              .amberAccent,
-                                                        ),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            const Icon(
-                                                                Icons.error),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  width: 100,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                    horizontal: 4,
+                                                  ),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color:
+                                                        Color(0xffeaf1fc),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10)),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets
+                                                            .all(8.0),
+                                                    child:
+                                                        CachedNetworkImage(
+                                                      height: 60,
+                                                      imageUrl:
+                                                          subCategory.img,
+                                                      placeholder: (context,
+                                                              url) =>
+                                                          const CircularProgressIndicator(
+                                                        color: Colors
+                                                            .amberAccent,
                                                       ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          const Icon(
+                                                              Icons.error),
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(height: 10),
-                                                Text(
-                                                  subCategory.name,
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                subCategory.name,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                    fontSize: 12),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],

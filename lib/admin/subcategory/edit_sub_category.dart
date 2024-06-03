@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../models/category_model.dart';
+import '../../shared/show_msg.dart';
 import '../admin_model.dart';
 
 class EditSubCategory extends StatefulWidget {
@@ -99,7 +100,9 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
       final uploadTask = storageRef.putFile(image);
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();
+      showMessage("Image Uploaded");
       return downloadUrl;
+
     } catch (e) {
       log("Error uploading image: $e");
       rethrow;
@@ -112,6 +115,8 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        showMessage("Image picked");
+
       });
     }
   }
@@ -122,6 +127,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        showMessage("Image picked");
       });
     }
   }
@@ -226,6 +232,8 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
               child: ElevatedButton(
                 onPressed: () {
                   addNewSubCategory();
+                  showMessage("Sub-Category added to database");
+
                   log("Sub-Category Length: ${subData.length}");
                 },
                 style: ButtonStyle(

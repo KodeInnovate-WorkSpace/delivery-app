@@ -12,17 +12,19 @@ class Product {
 
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   List<Product> _allProducts = [];
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
-  List<Product> _productSearches = []; // Renamed from _sessionSearches
-  Map<String, int> _productCounts = {}; // Add this line
+  final List<Product> _productSearches = []; // Renamed from _sessionSearches
+  final Map<String, int> _productCounts = {}; // Add this line
 
   @override
   void initState() {
@@ -152,7 +154,7 @@ class _SearchPageState extends State<SearchPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             //color: Colors.deepPurple[50], // Default background color
             color: Colors.grey[200],
@@ -163,24 +165,24 @@ class _SearchPageState extends State<SearchPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure button stays fixed
             children: [
               Image.network(product.imageUrl, width: 100, height: 100),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       product.name,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Text(
-                      'Price: \₹${product.price.toStringAsFixed(2)}',
-                      style: TextStyle(color: Colors.grey),
+                      'Price: ₹${product.price.toStringAsFixed(2)}',
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -195,7 +197,7 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
         ),
-        SizedBox(height: 10), // Adjust spacing as needed
+        const SizedBox(height: 10), // Adjust spacing as needed
       ],
     );
   }
@@ -210,7 +212,7 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             Image.network(product.imageUrl, width: 40, height: 40),
             // Adjust size here
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             // Add padding here
             Text(product.name),
           ],
@@ -264,7 +266,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     TextButton(
                       onPressed: clearRecentSearches,
-                      child: Text('Clear', style: TextStyle(color: Colors.red)),
+                      child: const Text('Clear', style: TextStyle(color: Colors.red)),
                     ),
                   ],
                 ),

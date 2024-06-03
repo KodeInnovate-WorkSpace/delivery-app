@@ -1,0 +1,66 @@
+// import 'dart:developer';
+//
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+//
+// import '../../shared/show_msg.dart';
+//
+// class SubCategory extends ChangeNotifier {
+//   Future<List<Map<String, dynamic>>> manageSubCategories() async {
+//     try {
+//       final querySnapshot =
+//           await FirebaseFirestore.instance.collection('sub_category').get();
+//       return querySnapshot.docs
+//           .map((doc) => {
+//                 ...doc.data(),
+//                 // 'sub_category_id': doc.id, // Include the document ID
+//               })
+//           .toList();
+//     } catch (e) {
+//       log("Error: $e");
+//       return [];
+//     }
+//   }
+//
+//   Future<void> updateSubCategory(String field, dynamic newValue,
+//       {String? categoryField, dynamic categoryValue}) async {
+//     try {
+//       Query query = FirebaseFirestore.instance.collection('sub_category');
+//
+//       // Add conditions to your query if any
+//       if (categoryField != null && categoryValue != null) {
+//         query = query.where(categoryField, isEqualTo: categoryValue);
+//       }
+//
+//       // Get the documents matching the query
+//       QuerySnapshot querySnapshot = await query.get();
+//       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+//         await doc.reference.update({field: newValue});
+//       }
+//     } catch (e) {
+//       log("Error updating sub-category: $e");
+//     }
+//   }
+//
+//   Future<void> deleteSubCategory(dynamic categoryValue) async {
+//     try {
+//       Query query = FirebaseFirestore.instance.collection('sub_category');
+//
+//       // Add conditions to your query if any
+//       if (categoryValue != null) {
+//         query = query.where(FieldPath(const ['sub_category_id']),
+//             isEqualTo: categoryValue); // Assuming 'catId' is the field name
+//       }
+//
+//       // Get the documents matching the query
+//       QuerySnapshot querySnapshot = await query.get();
+//       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+//         await doc.reference.delete();
+//       }
+//       log("Sub-Category Deleted!");
+//       showMessage("Sub-Category Deleted!");
+//     } catch (e) {
+//       log("Error deleting sub-category: $e");
+//     }
+//   }
+// }

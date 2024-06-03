@@ -22,6 +22,12 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
     });
   }
 
+  // Future<void> _handleRefresh() async {
+  //   setState(() {
+  //     TableData();
+  //   });
+  // }
+
   @override
   void dispose() {
     src.removeListener(() {});
@@ -44,6 +50,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
               DataColumn(label: Text('Sub-Cat Id')),
               DataColumn(label: Text('Image')),
               DataColumn(label: Text('Name')),
+              DataColumn(label: Text('')),
             ],
             source: src,
             columnSpacing: 15,
@@ -76,6 +83,8 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 
 class TableData extends DataTableSource {
   Admin admin = Admin();
+
+  // storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
 
   TableData() {
@@ -83,10 +92,14 @@ class TableData extends DataTableSource {
   }
 
   Future<void> _loadSubData() async {
+    // getting data from manageSubCategories() which is in admin class
+
     subData = await admin.manageSubCategories();
     notifyListeners(); // Notify the listeners that data has changed
   }
 
+  // function to update the values of sub-category name
+  // () takes name of field, New value to replace the old one, category field and category value
   Future<void> _updateSubCategory(String field, dynamic newValue,
       {String? categoryField, dynamic categoryValue}) async {
     await admin.updateSubCategory(field, newValue,
@@ -94,9 +107,17 @@ class TableData extends DataTableSource {
     _loadSubData(); // Reload data after update
   }
 
+  // Delete a row of data from firebase
+  Future<void> _deleteSubCategory(dynamic categoryValue) async {
+    await admin.deleteSubCategory(categoryValue);
+    _loadSubData(); // Reload data after deletion
+  }
+
   @override
   DataRow? getRow(int index) {
     if (index >= subData.length) return null; // Check index bounds
+
+    // storing each index of subData list in data variable to iterate over each list
     final data = subData[index];
     return DataRow(cells: [
       DataCell(Text(data['category_id'].toString())),
@@ -117,6 +138,14 @@ class TableData extends DataTableSource {
               categoryField: 'sub_category_id',
               categoryValue: data['sub_category_id'],
             );
+          },
+        ),
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            _deleteSubCategory(data['sub_category_id']);
           },
         ),
       ),
