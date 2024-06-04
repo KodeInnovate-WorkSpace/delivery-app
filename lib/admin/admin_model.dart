@@ -277,8 +277,8 @@ class ProductModel extends ChangeNotifier {
 
       // Add conditions to your query if any
       if (categoryValue != null) {
-        query = query.where('id',
-            isEqualTo: categoryValue); // Assuming 'id' is the field name
+        query = query.where(FieldPath(const ['id']),
+            isEqualTo: categoryValue); // Assuming 'catId' is the field name
       }
 
       // Get the documents matching the query
@@ -286,9 +286,12 @@ class ProductModel extends ChangeNotifier {
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         await doc.reference.delete();
       }
-      debugPrint("Product Deleted!");
+      log("Product Deleted!");
+      showMessage("Product Deleted!");
     } catch (e) {
-      debugPrint("Error deleting product: $e");
+      showMessage("Error deleting product");
+
+      log("Error deleting product: $e");
     }
   }
 }

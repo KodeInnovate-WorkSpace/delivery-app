@@ -63,7 +63,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                   DataColumn(label: Text('Price')),
                   DataColumn(label: Text('Stock')),
                   DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Sub-Cat')),
+                  DataColumn(label: Text('Sub-Category')),
                   DataColumn(label: Text('')),
                 ],
                 source: src,
@@ -145,8 +145,7 @@ class TableData extends DataTableSource {
 
   Future<void> _deleteProduct(dynamic categoryValue) async {
     await productObj.deleteProduct(categoryValue);
-    loadProductData(); // Reload data after deletion
-    // _updateProduct;
+    await loadProductData(); // Refresh data after deletion
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/input_box.dart';
@@ -26,7 +25,7 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory>
   List<Map<String, dynamic>> catOptions = [];
 
   String? selectedCategoryName;
-  int selectedCategoryId = -1; // Default value
+  int selectedCategoryId = 0; // Default value
 
   Map<String, int> categoryMap = {}; // Map to store category names and IDs
 
@@ -38,6 +37,7 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory>
     });
     categoryController.text = widget.data['sub_category_name'];
     dropdownValue = widget.data['status'];
+    notifyListeners();
   }
 
   Future<void> _loadCatData() async {
@@ -55,7 +55,7 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory>
           .firstWhere((entry) => entry.value == selectedCategoryId)
           .key;
     }
-
+    setState(() {});
     notifyListeners();
   }
 
