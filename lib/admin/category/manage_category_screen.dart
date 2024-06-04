@@ -56,7 +56,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
                   ],
                   source: src,
                   columnSpacing: 20,
-                  rowsPerPage: 5,
+                  rowsPerPage: 8,
                 ),
               ],
             ),

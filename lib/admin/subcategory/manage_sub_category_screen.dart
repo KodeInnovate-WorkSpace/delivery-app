@@ -48,12 +48,11 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
             child: ListView(children: [
               PaginatedDataTable(
                 columns: const [
+                  DataColumn(label: Text('Id'), tooltip: "Sub-Categoy ID"),
                   DataColumn(
                       label: Text('Category'),
                       tooltip:
                           "Name of the category this sub-category belongs to"),
-                  DataColumn(
-                      label: Text('Sub-Cat Id'), tooltip: "Sub-Categoy ID"),
                   DataColumn(label: Text('Image')),
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Status')),
@@ -62,7 +61,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                 ],
                 source: src,
                 columnSpacing: 15,
-                rowsPerPage: 5,
+                rowsPerPage: 8,
               ),
             ]),
           ),
@@ -158,8 +157,8 @@ class TableData extends DataTableSource {
     final categoryName = categoryData[data['category_id']] ?? 'Deleted';
 
     return DataRow(cells: [
-      DataCell(Text(categoryName)),
       DataCell(Text(data['sub_category_id'].toString())),
+      DataCell(Text(categoryName)),
       DataCell(
         SizedBox(
           width: 35,
