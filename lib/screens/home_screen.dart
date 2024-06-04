@@ -3,10 +3,8 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:speedy_delivery/screens/example/demo_screen.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
@@ -232,252 +230,219 @@ class HomeScreenState extends State<HomeScreen> {
     return NetworkHandler(
       child: Scaffold(
         key: scaffoldKey,
-        body: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 30),
-                child: Column(
-                  children: [
-                    // Head Section
-                    Stack(
-                      children: [
-                        Row(
+        body: RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // Heading
+              SliverAppBar(
+                pinned: true,
+                floating: true,
+                expandedHeight: 190.0,
+                collapsedHeight: 80,
+                elevation: 2,
+                flexibleSpace: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                  child: Stack(
+                    fit: StackFit.expand, // Ensures full-width search bar
+                    children: [
+                      FlexibleSpaceBar(
+                        centerTitle: true,
+                        background: Column(
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            // Head Section
+                            const SizedBox(height: 15),
+                            Stack(
                               children: [
-                                const SizedBox(
-                                    height: 20), // Add SizedBox for spacing
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
                                   children: [
-                                    const Text(
-                                      'Delivery in ',
-                                      style: TextStyle(
-                                          fontFamily: 'Gilroy-ExtraBold',
-                                          color: Colors.black,
-                                          fontSize: 12),
-                                    ),
-                                    const Text(
-                                      '7 minutes',
-                                      style: TextStyle(
-                                          fontFamily: 'Gilroy-Black',
-                                          color: Colors.black,
-                                          fontSize: 28),
-                                    ),
-                                    LocationButton(scaffoldKey: scaffoldKey),
-                                    const SizedBox(
-                                      height: 18,
-                                    ),
-                                  ],
-                                ),
-                                // Location Button
-                              ],
-                            ),
-                            const SizedBox(
-                              width: 90,
-                            ),
-                          ],
-                        ),
-                        Positioned(
-                          top: 27,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/profile');
-                            },
-                            child: Image.asset(
-                              "assets/images/profile_photo.png",
-                              width: 40,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-
-                    // Search bar
-                    searchBar(context),
-
-                    // body
-                    Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        FutureBuilder<void>(
-                          future: fetchDataFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (snapshot.hasError) {
-                              return const Center(
-                                child: Text("Error"),
-                              );
-                            } else {
-                              return RefreshIndicator(
-                                onRefresh: _handleRefresh,
-                                backgroundColor: Colors.white,
-                                color: Colors.black,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: categories.length,
-                                  itemBuilder: (context, index) {
-                                    final category = categories[index];
-                                    final filteredSubCategories = subCategories
-                                        .where((subCategory) =>
-                                            subCategory.catId == category.id)
-                                        .toList();
-
-                                    return Column(
+                                    Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            category.name,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                                        const SizedBox(
+                                            height:
+                                                20), // Add SizedBox for spacing
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Delivery in ',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      'Gilroy-ExtraBold',
+                                                  color: Colors.black,
+                                                  fontSize: 12),
                                             ),
-                                          ),
-                                        ),
-                                        GridView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              filteredSubCategories.length,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            childAspectRatio: 0.65,
-                                          ),
-                                          itemBuilder: (context, subIndex) {
-                                            final subCategory =
-                                                filteredSubCategories[subIndex];
-                                            return Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    // HapticFeedback.vibrate();
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            CategoryScreen(
-                                                          categoryTitle:
-                                                              category.name,
-                                                          subCategories:
-                                                              filteredSubCategories,
-                                                          selectedSubCategoryId:
-                                                              subCategory
-                                                                  .id, // Pass the selected sub-category ID
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: 100,
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 4,
-                                                    ),
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: Color(0xffeaf1fc),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: CachedNetworkImage(
-                                                        height: 60,
-                                                        imageUrl:
-                                                            subCategory.img,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            const CircularProgressIndicator(
-                                                          color: Colors
-                                                              .amberAccent,
-                                                        ),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            const Icon(
-                                                                Icons.error),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 10),
-                                                Text(
-                                                  subCategory.name,
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12),
-                                                ),
-                                              ],
-                                            );
-                                          },
+                                            const Text(
+                                              '7 minutes',
+                                              style: TextStyle(
+                                                  fontFamily: 'Gilroy-Black',
+                                                  color: Colors.black,
+                                                  fontSize: 28),
+                                            ),
+                                            LocationButton(
+                                                scaffoldKey: scaffoldKey),
+                                            const SizedBox(height: 18),
+                                          ],
                                         ),
                                       ],
-                                    );
-                                  },
+                                    ),
+                                    const SizedBox(width: 90),
+                                  ],
                                 ),
-                              );
-                            }
-                          },
+                                Positioned(
+                                  top: 27,
+                                  right: 0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/profile');
+                                    },
+                                    child: Image.asset(
+                                      "assets/images/profile_photo.png",
+                                      width: 40,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              // cart floating button
-              Positioned(
-                bottom: 25,
-                right: 20,
-                child: FloatingActionButton(
-                  hoverColor: Colors.transparent,
-                  elevation: 2,
-                  onPressed: () {
-                    HapticFeedback.heavyImpact();
-
-                    Navigator.pushNamed(context, '/checkout');
-                  },
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.shopping_cart_sharp,
-                    color: Colors.black,
+                      ),
+                      Positioned(
+                        // Position the search bar with some bottom padding
+                        bottom: 0.0, // Adjust padding as needed
+                        left: 0,
+                        right: 0,
+                        child: searchBar(context),
+                      ),
+                    ],
                   ),
                 ),
               ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 0),
+                      child: FutureBuilder<void>(
+                        future: fetchDataFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return const Center(child: Text("Error"));
+                          } else {
+                            return Column(
+                              children: categories.map((category) {
+                                final filteredSubCategories = subCategories
+                                    .where((subCategory) =>
+                                        subCategory.catId == category.id)
+                                    .toList();
 
-              // temp button
-              Positioned(
-                bottom: 25,
-                right: 85,
-                child: FloatingActionButton(
-                  hoverColor: Colors.transparent,
-                  elevation: 2,
-                  onPressed: () {
-                    HapticFeedback.heavyImpact();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const DemoPage()));
-                    // Navigator.pushNamed(context, '/checkout');
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      // padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        category.name,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    GridView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: filteredSubCategories.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 4,
+                                        childAspectRatio: 0.65,
+                                      ),
+                                      itemBuilder: (context, subIndex) {
+                                        final subCategory =
+                                            filteredSubCategories[subIndex];
+                                        return Column(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CategoryScreen(
+                                                      categoryTitle:
+                                                          category.name,
+                                                      subCategories:
+                                                          filteredSubCategories,
+                                                      selectedSubCategoryId:
+                                                          subCategory
+                                                              .id, // Pass the selected sub-category ID
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                width: 100,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 4),
+                                                decoration: const BoxDecoration(
+                                                  color: Color(0xffeaf1fc),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(10)),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: CachedNetworkImage(
+                                                    height: 60,
+                                                    imageUrl: subCategory.img,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        const CircularProgressIndicator(
+                                                            color: Colors
+                                                                .amberAccent),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        const Icon(Icons.error),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              subCategory.name,
+                                              textAlign: TextAlign.center,
+                                              style:
+                                                  const TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            );
+                          }
+                        },
+                      ),
+                    );
                   },
-                  backgroundColor: Colors.white,
-                  child: const Text("Temp"),
+                  childCount: 1, // Adjust as per your needs
                 ),
               ),
             ],
