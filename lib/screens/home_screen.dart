@@ -472,6 +472,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:speedy_delivery/screens/example/demo_screen.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
 import '../widget/network_handler.dart';
@@ -514,7 +515,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
+          await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -545,7 +546,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchSubCategory() async {
     try {
       final subSnapshot =
-      await FirebaseFirestore.instance.collection("sub_category").get();
+          await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
         setState(() {
@@ -610,7 +611,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     // Get the placemarks from the coordinates
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String subLocality = place.subLocality ?? '';
     String postalCode = place.postalCode ?? '';
@@ -625,7 +626,7 @@ class HomeScreenState extends State<HomeScreen> {
     try {
       // Fetch all documents from the "location" collection
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('location').get();
+          await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
@@ -703,7 +704,8 @@ class HomeScreenState extends State<HomeScreen> {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 30),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 30),
               child: Column(
                 children: [
                   // Head Section
@@ -754,7 +756,6 @@ class HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             Navigator.pushNamed(context, '/profile');
                           },
-
                           child: Image.asset(
                             "assets/images/profile_photo.png",
                             width: 40,
@@ -766,6 +767,7 @@ class HomeScreenState extends State<HomeScreen> {
 
                   // Search bar
                   searchBar(context),
+
 
                   // body
                   Expanded(
@@ -794,16 +796,14 @@ class HomeScreenState extends State<HomeScreen> {
                                   itemCount: categories.length,
                                   itemBuilder: (context, index) {
                                     final category = categories[index];
-                                    final filteredSubCategories =
-                                    subCategories
+                                    final filteredSubCategories = subCategories
                                         .where((subCategory) =>
-                                    subCategory.catId ==
-                                        category.id)
+                                            subCategory.catId == category.id)
                                         .toList();
 
                                     return Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
@@ -818,18 +818,17 @@ class HomeScreenState extends State<HomeScreen> {
                                         GridView.builder(
                                           shrinkWrap: true,
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemCount:
-                                          filteredSubCategories.length,
+                                              filteredSubCategories.length,
                                           gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
                                             childAspectRatio: 0.65,
                                           ),
                                           itemBuilder: (context, subIndex) {
                                             final subCategory =
-                                            filteredSubCategories[
-                                            subIndex];
+                                                filteredSubCategories[subIndex];
                                             return Column(
                                               children: [
                                                 GestureDetector(
@@ -840,14 +839,14 @@ class HomeScreenState extends State<HomeScreen> {
                                                       MaterialPageRoute(
                                                         builder: (context) =>
                                                             CategoryScreen(
-                                                              categoryTitle:
+                                                          categoryTitle:
                                                               category.name,
-                                                              subCategories:
+                                                          subCategories:
                                                               filteredSubCategories,
-                                                              selectedSubCategoryId:
+                                                          selectedSubCategoryId:
                                                               subCategory
                                                                   .id, // Pass the selected sub-category ID
-                                                            ),
+                                                        ),
                                                       ),
                                                     );
                                                   },
@@ -858,33 +857,31 @@ class HomeScreenState extends State<HomeScreen> {
                                                       horizontal: 4,
                                                     ),
                                                     decoration:
-                                                    const BoxDecoration(
-                                                      color:
-                                                      Color(0xffeaf1fc),
+                                                        const BoxDecoration(
+                                                      color: Color(0xffeaf1fc),
                                                       borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10)),
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                      const EdgeInsets
-                                                          .all(8.0),
-                                                      child:
-                                                      CachedNetworkImage(
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: CachedNetworkImage(
                                                         height: 60,
                                                         imageUrl:
-                                                        subCategory.img,
+                                                            subCategory.img,
                                                         placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(
+                                                                url) =>
+                                                            const CircularProgressIndicator(
                                                           color: Colors
                                                               .amberAccent,
                                                         ),
                                                         errorWidget: (context,
-                                                            url, error) =>
-                                                        const Icon(
-                                                            Icons.error),
+                                                                url, error) =>
+                                                            const Icon(
+                                                                Icons.error),
                                                       ),
                                                     ),
                                                   ),
@@ -927,12 +924,31 @@ class HomeScreenState extends State<HomeScreen> {
 
                   Navigator.pushNamed(context, '/checkout');
                 },
-
                 backgroundColor: Colors.white,
                 child: const Icon(
                   Icons.shopping_cart_sharp,
                   color: Colors.black,
                 ),
+              ),
+            ),
+
+            // temp button
+            Positioned(
+              bottom: 25,
+              right: 85,
+              child: FloatingActionButton(
+                hoverColor: Colors.transparent,
+                elevation: 2,
+                onPressed: () {
+                  HapticFeedback.heavyImpact();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DemoPage()));
+                  // Navigator.pushNamed(context, '/checkout');
+                },
+                backgroundColor: Colors.white,
+                child: const Text("Temp"),
               ),
             ),
           ],

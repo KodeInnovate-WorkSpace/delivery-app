@@ -21,7 +21,6 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
-
     return Expanded(
       child: Container(
         color: Colors.grey[100],
@@ -64,66 +63,61 @@ class _ProductCardState extends State<ProductCard> {
                       elevation: 1.6,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Stack(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // item image
-                                Center(
-                                  child: CachedNetworkImage(
-                                    imageUrl: product.image,
-                                    height: 75,
-                                    fit: BoxFit.contain,
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                // item name
-                                Text(
-                                  product.name,
-                                  textAlign: TextAlign.left,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontFamily: 'Gilroy-SemiBold',
-                                  ),
-                                ),
-                                // Item unit
-                                Text(
-                                  product.unit,
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                // Item price
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "\u20B9 ${product.price}",
-                                      style: const TextStyle(
-                                        fontFamily: "Gilroy-medium",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Positioned(
-                              bottom: 15,
-                              right: 0,
-                              child: AddToCartButton(
-                                productName: product.name,
-                                productPrice: product.price,
-                                productImage: product.image,
-                                productUnit: product.unit,
+                            // item image
+                            Center(
+                              child: CachedNetworkImage(
+                                imageUrl: product.image,
+                                height: 75,
+                                fit: BoxFit.contain,
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
-                            )
+                            ),
+                            const SizedBox(height: 15),
+                            // item name
+                            Text(
+                              product.name,
+                              textAlign: TextAlign.left,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: 'Gilroy-SemiBold',
+                              ),
+                            ),
+                            // Item unit
+                            Text(
+                              product.unit,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            // Item price
+                            SizedBox(
+                              height: 50,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "\u20B9 ${product.price}",
+                                    style: const TextStyle(
+                                      fontFamily: "Gilroy-medium",
+                                    ),
+                                  ),
+                                  AddToCartButton(
+                                    productName: product.name,
+                                    productPrice: product.price,
+                                    productImage: product.image,
+                                    productUnit: product.unit,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
