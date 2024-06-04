@@ -306,7 +306,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                   DataColumn(label: Text('Price')),
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Unit')),
-                  // DataColumn(label: Text('Sub-Cat')),
+                  DataColumn(label: Text('Sub-Cat')),
                   DataColumn(label: Text('')),
                 ],
                 source: src,
@@ -476,26 +476,26 @@ class TableData extends DataTableSource {
       ),
 
       // sub-category name column
-      // DataCell(DropdownButton<String>(
-      //   value: subCatName,
-      //   onChanged: (String? newValue) {
-      //     final newSubCatId = subCatData.entries
-      //         .firstWhere((entry) => entry.value == newValue)
-      //         .key;
-      //     _updateProduct(
-      //       'sub_category_id',
-      //       newSubCatId,
-      //       categoryField: 'id',
-      //       categoryValue: data['id'],
-      //     );
-      //   },
-      //   items: subCatData.entries.map<DropdownMenuItem<String>>((entry) {
-      //     return DropdownMenuItem<String>(
-      //       value: entry.value,
-      //       child: Text(entry.value),
-      //     );
-      //   }).toList(),
-      // )),
+      DataCell(DropdownButton<String>(
+        value: subCatName,
+        onChanged: (String? newValue) {
+          final newSubCatId = subCatData.entries
+              .firstWhere((entry) => entry.value == newValue)
+              .key;
+          _updateProduct(
+            'sub_category_id',
+            newSubCatId,
+            categoryField: 'id',
+            categoryValue: data['id'],
+          );
+        },
+        items: subCatData.entries.map<DropdownMenuItem<String>>((entry) {
+          return DropdownMenuItem<String>(
+            value: entry.value,
+            child: Text(entry.value),
+          );
+        }).toList(),
+      )),
 
       // Delete column
       DataCell(
