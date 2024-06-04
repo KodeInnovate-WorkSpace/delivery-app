@@ -31,10 +31,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
     super.dispose();
   }
 
-  Future<void> _refreshCategoryList() async {
-    await src._loadCatData();
-    setState(() {});
-  }
+
 
 
   @override
@@ -46,7 +43,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
       body: Stack(
         children: [
           RefreshIndicator(
-            onRefresh: _refreshCategoryList,
+            onRefresh: src._refreshCategoryList,
             child: ListView(
               children: [
                 PaginatedDataTable(
@@ -79,7 +76,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
                 );
 
                 if (result != null && result as bool) {
-                  _refreshCategoryList();
+                  src._refreshCategoryList();
                 }
               },
               backgroundColor: Colors.black,
@@ -110,7 +107,10 @@ class TableData extends DataTableSource {
     catData = await category.manageCategories();
     notifyListeners(); // Notify the listeners that data has changed
   }
-
+  Future<void> _refreshCategoryList() async {
+    await _loadCatData();
+    notifyListeners();
+  }
   @override
   DataRow? getRow(int index) {
     if (index >= catData.length) return null; // Check index bounds
@@ -149,21 +149,21 @@ class TableData extends DataTableSource {
       DataCell(
         IconButton(
           icon: const Icon(Icons.edit),
-          onPressed: () {
-            // final result = await Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) =>  UpdateCategory(data: data),
-            //   ),
-            // );
-            //
-            // // Check if result is true (indicating update)
-            // if (result != null && result as bool) {
-            //   _refreshCategoryList(); // Call refresh function here
-            // }
+          onPressed: () async{
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>  UpdateCategory(data: data),
+              ),
+            );
 
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) =>  UpdateCategory(data: data)));
+            // Check if result is true (indicating update)
+            if (result != null && result as bool) {
+              _refreshCategoryList(); // Call refresh function here
+            }
+
+            // Navigator.push(context,
+            //     MaterialPageRoute(builder: (context) =>  UpdateCategory(data: data)));
 
           },
         ),
