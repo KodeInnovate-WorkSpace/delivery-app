@@ -84,6 +84,9 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                     (route) => false,
                   );
 
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //     context, 'home', (route) => false);
+
                   setState(() {
                     _isLoading = !_isLoading;
                   });

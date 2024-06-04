@@ -41,7 +41,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   Future<void> fetchSubCategory() async {
     try {
       final snapshot =
-      await FirebaseFirestore.instance.collection("sub_category").get();
+          await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -94,7 +94,8 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
-      final productDoc = FirebaseFirestore.instance.collection('products').doc();
+      final productDoc =
+          FirebaseFirestore.instance.collection('products').doc();
 
       await productDoc.set({
         'id': productData.length + 1,
@@ -133,7 +134,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<void> pickImage() async {
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -143,7 +144,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<void> openCamera() async {
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.camera);
+        await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -153,6 +154,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   @override
   Widget build(BuildContext context) {
+    // bool isButtonDisabled = false;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add new product"),
@@ -298,7 +300,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       ),
                     ),
                     backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
+                      (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -320,7 +322,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       ),
                     ),
                     backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
+                      (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -375,7 +377,8 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       selectedCategory = subcategoriesMap[selectedSubCategory!];
                     });
                   },
-                  items: subcategories.map<DropdownMenuItem<String>>((String subcat) {
+                  items: subcategories
+                      .map<DropdownMenuItem<String>>((String subcat) {
                     return DropdownMenuItem<String>(
                       value: subcat,
                       child: Text(subcat),
@@ -389,6 +392,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             const SizedBox(height: 20),
 
             // Add button
+
             Center(
               child: ElevatedButton(
                 onPressed: () async {
@@ -410,7 +414,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                   ),
                   backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
+                    (Set<WidgetState> states) {
                       return Colors.black;
                     },
                   ),
@@ -431,6 +435,19 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 ),
               ),
             ),
+
+            const SizedBox(
+              height: 10,
+            ),
+            const Center(
+                child: Text(
+              "Adding product takes time. Please wait before adding new product, otherwise same product will be added again",
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: 12,
+              ),
+              textAlign: TextAlign.center,
+            )),
           ],
         ),
       ),
