@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/admin/subcategory/update_subcategory.dart';
 import '../admin_model.dart';
 import 'edit_sub_category.dart';
 
@@ -16,7 +17,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
   @override
   void initState() {
     super.initState();
-    src = TableData();
+    src = TableData(context);
     src.addListener(() {
       setState(() {});
     });
@@ -27,17 +28,6 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
     src.removeListener(() {});
     src.dispose();
     super.dispose();
-  }
-
-  void _refreshSubCategoryList() async {
-    // Clear existing data
-    src.subData.clear();
-
-    // Reload data from the server (or local storage)
-    await src._loadSubData();
-
-    // Notify listeners about the change (important!)
-    setState(() {});
   }
 
   Future<void> _refreshPage() async {
@@ -58,11 +48,16 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
             child: ListView(children: [
               PaginatedDataTable(
                 columns: const [
-                  DataColumn(label: Text('Category')),
-                  DataColumn(label: Text('Sub-Cat Id')),
+                  DataColumn(
+                      label: Text('Category'),
+                      tooltip:
+                          "Name of the category this sub-category belongs to"),
+                  DataColumn(
+                      label: Text('Sub-Cat Id'), tooltip: "Sub-Categoy ID"),
                   DataColumn(label: Text('Image')),
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('')),
                   DataColumn(label: Text('')),
                 ],
                 source: src,
@@ -85,12 +80,8 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 
                 if (result != null && result as bool) {
                   // Sub-category added successfully, refresh the list
-                  _refreshSubCategoryList();
+                  src._refreshSubCategoryList();
                 }
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => const EditSubCategory()));
               },
               backgroundColor: Colors.black,
               child: const Icon(
@@ -106,22 +97,24 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
 }
 
 class TableData extends DataTableSource {
+  final BuildContext context;
+
   SubCatModel subcat = SubCatModel();
   CatModel category = CatModel();
   List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
 
-  // storing sub-category data in a list
+  // Storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
   Map<int, String> categoryData =
-      {}; // map to store category_id to category_name
+      {}; // Map to store category_id to category_name
 
-  TableData() {
+  TableData(this.context) {
     _loadSubData();
   }
 
   Future<void> _loadSubData() async {
-    // getting data from manageSubCategories() which is in subcat class
-    _loadCategoryData();
+    // Getting data from manageSubCategories() which is in subcat class
+    await _loadCategoryData();
     subData = await subcat.manageSubCategories();
     notifyListeners(); // Notify the listeners that data has changed
   }
@@ -134,8 +127,6 @@ class TableData extends DataTableSource {
     notifyListeners();
   }
 
-  // function to update the values of sub-category name
-  // () takes name of field, New value to replace the old one, category field and category value
   Future<void> _updateSubCategory(String field, dynamic newValue,
       {String? categoryField, dynamic categoryValue}) async {
     await subcat.updateSubCategory(field, newValue,
@@ -143,45 +134,39 @@ class TableData extends DataTableSource {
     _loadSubData(); // Reload data after update
   }
 
-  // Delete a row of data from firebase
   Future<void> _deleteSubCategory(dynamic categoryValue) async {
     await subcat.deleteSubCategory(categoryValue);
     _loadSubData(); // Reload data after deletion
+  }
+
+  void _refreshSubCategoryList() async {
+    // Clear existing data
+    subData.clear();
+
+    // Reload data from the server (or local storage)
+    await _loadSubData();
+
+    notifyListeners();
   }
 
   @override
   DataRow? getRow(int index) {
     if (index >= subData.length) return null; // Check index bounds
 
-    // storing each index of subData list in data variable to iterate over each list
+    // Storing each index of subData list in data variable to iterate over each list
     final data = subData[index];
-    final categoryName = categoryData[data['category_id']] ?? 'Unknown';
+    final categoryName = categoryData[data['category_id']] ?? 'Deleted';
 
     return DataRow(cells: [
-      // DataCell(Text(data['category_id'].toString())),
       DataCell(Text(categoryName)),
       DataCell(Text(data['sub_category_id'].toString())),
       DataCell(
         SizedBox(
           width: 35,
-          child: Image.network(data['sub_category_img']),
+          child: Image.network(data['sub_category_img'] ?? ''),
         ),
       ),
-      DataCell(
-        TextFormField(
-          initialValue: data['sub_category_name'],
-          onFieldSubmitted: (newValue) {
-            _updateSubCategory(
-              'sub_category_name',
-              newValue,
-              categoryField: 'sub_category_id',
-              categoryValue: data['sub_category_id'],
-            );
-          },
-        ),
-      ),
-
-      // status column
+      DataCell(Text(data['sub_category_name'] ?? '')),
       DataCell(DropdownButton<int>(
         value: data['status'], // Use the status value from data
         onChanged: (int? newValue) {
@@ -201,13 +186,36 @@ class TableData extends DataTableSource {
           );
         }).toList(),
       )),
-
-      // delete column
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             _deleteSubCategory(data['sub_category_id']);
+          },
+        ),
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () async {
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => UpdateSubCategory(data: data),
+            //   ),
+            // );
+
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UpdateSubCategory(data: data),
+              ),
+            );
+
+            // Check if result is true (indicating update)
+            if (result != null && result as bool) {
+              _refreshSubCategoryList(); // Call refresh function here
+            }
           },
         ),
       ),

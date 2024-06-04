@@ -36,6 +36,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
     setState(() {});
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,8 +150,21 @@ class TableData extends DataTableSource {
         IconButton(
           icon: const Icon(Icons.edit),
           onPressed: () {
+            // final result = await Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) =>  UpdateCategory(data: data),
+            //   ),
+            // );
+            //
+            // // Check if result is true (indicating update)
+            // if (result != null && result as bool) {
+            //   _refreshCategoryList(); // Call refresh function here
+            // }
+
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) =>  UpdateCategory(data: data)));
+
           },
         ),
       ),
