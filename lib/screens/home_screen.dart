@@ -7,14 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
-import 'package:speedy_delivery/screens/profile_screen.dart';
 
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../shared/search_bar.dart';
 import '../widget/location_button_widget.dart';
 import 'categories_screen.dart';
-import 'checkout_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -284,11 +282,7 @@ class HomeScreenState extends State<HomeScreen> {
                       right: 0,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ProfilePage()),
-                          );
+                          Navigator.pushNamed(context, '/profile');
                         },
                         child: Image.asset(
                           "assets/images/profile_photo.png",
@@ -329,12 +323,10 @@ class HomeScreenState extends State<HomeScreen> {
                                 itemCount: categories.length,
                                 itemBuilder: (context, index) {
                                   final category = categories[index];
-                                  final filteredSubCategories =
-                                      subCategories
-                                          .where((subCategory) =>
-                                              subCategory.catId ==
-                                              category.id)
-                                          .toList();
+                                  final filteredSubCategories = subCategories
+                                      .where((subCategory) =>
+                                          subCategory.catId == category.id)
+                                      .toList();
 
                                   return Column(
                                     crossAxisAlignment:
@@ -354,8 +346,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         shrinkWrap: true,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
-                                        itemCount:
-                                            filteredSubCategories.length,
+                                        itemCount: filteredSubCategories.length,
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 4,
@@ -363,8 +354,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         ),
                                         itemBuilder: (context, subIndex) {
                                           final subCategory =
-                                              filteredSubCategories[
-                                                  subIndex];
+                                              filteredSubCategories[subIndex];
                                           return Column(
                                             children: [
                                               GestureDetector(
@@ -394,8 +384,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                   ),
                                                   decoration:
                                                       const BoxDecoration(
-                                                    color:
-                                                        Color(0xffeaf1fc),
+                                                    color: Color(0xffeaf1fc),
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
@@ -403,18 +392,16 @@ class HomeScreenState extends State<HomeScreen> {
                                                   ),
                                                   child: Padding(
                                                     padding:
-                                                        const EdgeInsets
-                                                            .all(8.0),
-                                                    child:
-                                                        CachedNetworkImage(
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: CachedNetworkImage(
                                                       height: 60,
-                                                      imageUrl:
-                                                          subCategory.img,
+                                                      imageUrl: subCategory.img,
                                                       placeholder: (context,
                                                               url) =>
                                                           const CircularProgressIndicator(
-                                                        color: Colors
-                                                            .amberAccent,
+                                                        color:
+                                                            Colors.amberAccent,
                                                       ),
                                                       errorWidget: (context,
                                                               url, error) =>
@@ -460,12 +447,7 @@ class HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 HapticFeedback.heavyImpact();
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CheckoutScreen(),
-                  ),
-                );
+                Navigator.pushNamed(context, '/checkout');
               },
               backgroundColor: Colors.white,
               child: const Icon(

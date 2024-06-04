@@ -94,6 +94,7 @@ class ProfilePage extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => const AdminScreen()),
                 );
+                // Navigator.pushNamed(context, '/admin');
               },
             ),
             ListTile(

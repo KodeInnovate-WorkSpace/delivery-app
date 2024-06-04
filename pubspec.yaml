@@ -15,16 +15,23 @@ dependencies:
   firebase_storage: ^11.7.7
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
   flutter_svg: ^2.0.10+1
   fluttertoast: ^8.2.5
   geocoding: ^3.0.0
   geolocator: ^12.0.0
   image_picker: ^1.1.2
+  internet_connection_checker: ^1.0.0+1
   pinput: ^4.0.0
   provider: ^6.1.2
   share_plus: ^9.0.0
   shared_preferences: ^2.2.3
   url_launcher: ^6.2.6
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons.jpg"
 
 dev_dependencies:
   flutter_test:
