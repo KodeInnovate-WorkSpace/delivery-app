@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/screens/example/prod_card.dart';
-import 'package:speedy_delivery/screens/example/product_screen_grid.dart';
 
 class DemoPage extends StatelessWidget {
   const DemoPage({super.key});

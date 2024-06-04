@@ -2,12 +2,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/checkout_screen.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
-import '../providers/cart_provider.dart';
 import '../widget/sidebar.dart';
 
 class CategoryScreen extends StatefulWidget {

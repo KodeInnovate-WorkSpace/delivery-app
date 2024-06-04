@@ -231,6 +231,8 @@ class HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         key: scaffoldKey,
         body: RefreshIndicator(
+          color: Colors.black,
+          backgroundColor: Colors.white,
           onRefresh: _handleRefresh,
           child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
@@ -335,7 +337,9 @@ class HomeScreenState extends State<HomeScreen> {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ));
                           } else if (snapshot.hasError) {
                             return const Center(child: Text("Error"));
                           } else {
@@ -350,9 +354,11 @@ class HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      // padding: const EdgeInsets.all(8.0),
-                                      child: Text(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 0),
+                                      child:
+
+                                      Text(
                                         category.name,
                                         style: const TextStyle(
                                           fontSize: 18,
@@ -397,7 +403,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                 width: 100,
                                                 margin:
                                                     const EdgeInsets.symmetric(
-                                                        horizontal: 4),
+                                                        horizontal: 4,
+                                                        vertical: 0),
                                                 decoration: const BoxDecoration(
                                                   color: Color(0xffeaf1fc),
                                                   borderRadius:
@@ -422,7 +429,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 10),
+                                            const SizedBox(height: 6),
+                                            // sub-category name
                                             Text(
                                               subCategory.name,
                                               textAlign: TextAlign.center,
