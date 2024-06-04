@@ -17,9 +17,10 @@ class UpdateSubCategory extends StatefulWidget {
 class _UpdateSubCategoryState extends State<UpdateSubCategory>
     with ChangeNotifier {
   int? dropdownValue = 1;
-  final TextEditingController categoryController = TextEditingController();
-  final SubCatModel subcatObj = SubCatModel();
   List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
+  final TextEditingController categoryController = TextEditingController();
+
+  final SubCatModel subcatObj = SubCatModel();
 
   CatModel catObj = CatModel();
   List<Map<String, dynamic>> catOptions = [];

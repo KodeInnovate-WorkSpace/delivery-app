@@ -101,7 +101,6 @@ class SubCatModel extends ChangeNotifier {
     }
   }
 
-
   // Future<void> updateSubCategory(String field, dynamic newValue,
   //     {String? categoryField, dynamic categoryValue}) async {
   //   try {
