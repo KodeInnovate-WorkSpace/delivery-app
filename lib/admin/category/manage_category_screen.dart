@@ -1,6 +1,9 @@
+// manage_category_screen.dart
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/admin/category/edit_category.dart';
+import 'package:speedy_delivery/admin/category/update_category.dart';
+
 import '../admin_model.dart';
-import 'edit_category.dart';
 
 class ManageCategoryScreen extends StatefulWidget {
   const ManageCategoryScreen({super.key});
@@ -15,7 +18,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
   @override
   void initState() {
     super.initState();
-    src = TableData();
+    src = TableData(context);
     src.addListener(() {
       setState(() {});
     });
@@ -50,6 +53,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
                     DataColumn(label: Text('ID')),
                     DataColumn(label: Text('Category')),
                     DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('')),
                     DataColumn(label: Text('')),
                   ],
                   source: src,
@@ -91,11 +95,13 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
 }
 
 class TableData extends DataTableSource {
+  final BuildContext context;
+
   CatModel category = CatModel();
   List<Map<String, dynamic>> catData = [];
   List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
 
-  TableData() {
+  TableData(this.context) {
     _loadCatData();
   }
 
@@ -104,59 +110,47 @@ class TableData extends DataTableSource {
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  Future<void> _updateSubCategory(String field, dynamic newValue,
-      {String? categoryField, dynamic categoryValue}) async {
-    await category.updateCategory(field, newValue,
-        categoryField: categoryField, categoryValue: categoryValue);
-    _loadCatData(); // Reload data after update
-  }
-
-  Future<void> _deleteCategory(dynamic categoryValue) async {
-    await category.deleteCategory(categoryValue);
-    _loadCatData(); // Reload data after deletion
-  }
-
   @override
   DataRow? getRow(int index) {
     if (index >= catData.length) return null; // Check index bounds
     final data = catData[index];
     return DataRow(cells: [
       DataCell(Text(data['category_id'].toString())),
+      DataCell(Text(data['category_name'].toString())),
+
       DataCell(
-        TextFormField(
-          initialValue: data['category_name'],
-          onFieldSubmitted: (newValue) {
-            _updateSubCategory(
-              'category_name',
+        DropdownButton<int>(
+          value: data['status'], // Use the status value from data
+          onChanged: (int? newValue) {
+            category.updateCategory(
+              'status',
               newValue,
               categoryField: 'category_id',
               categoryValue: data['category_id'],
-            );
+            ).then((_) => _loadCatData());
           },
+          items: statusOptions.map<DropdownMenuItem<int>>((int status) {
+            return DropdownMenuItem<int>(
+              value: status,
+              child: Text(status == 0 ? 'Inactive' : 'Active'),
+            );
+          }).toList(),
         ),
       ),
-      DataCell(DropdownButton<int>(
-        value: data['status'], // Use the status value from data
-        onChanged: (int? newValue) {
-          _updateSubCategory(
-            'status',
-            newValue,
-            categoryField: 'category_id',
-            categoryValue: data['category_id'],
-          );
-        },
-        items: statusOptions.map<DropdownMenuItem<int>>((int status) {
-          return DropdownMenuItem<int>(
-            value: status,
-            child: Text(status == 0 ? 'Inactive' : 'Active'),
-          );
-        }).toList(),
-      )),
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            _deleteCategory(data['category_id']);
+            category.deleteCategory(data['category_id']).then((_) => _loadCatData());
+          },
+        ),
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) =>  UpdateCategory(data: data)));
           },
         ),
       ),

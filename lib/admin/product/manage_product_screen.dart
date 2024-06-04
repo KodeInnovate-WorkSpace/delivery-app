@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../admin_model.dart';
+import '../category/update_category.dart';
 import 'edit_product.dart';
 
 class ManageProductScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
   @override
   void initState() {
     super.initState();
-    src = TableData();
+    src = TableData(context);
     src.addListener(() {
       setState(() {});
     });
@@ -37,9 +38,11 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
     // Notify listeners about the change (important!)
     setState(() {});
   }
+
   Future<void> _refreshPage() async {
     await src.loadProductData();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,8 +54,8 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
         children: [
           RefreshIndicator(
             onRefresh: _refreshPage,
-            child: ListView(
-              children: [PaginatedDataTable(
+            child: ListView(children: [
+              PaginatedDataTable(
                 columns: const [
                   DataColumn(label: Text('Product Id')),
                   DataColumn(label: Text('Image')),
@@ -66,8 +69,8 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                 source: src,
                 columnSpacing: 15,
                 rowsPerPage: 5,
-              ),]
-            ),
+              ),
+            ]),
           ),
           Positioned(
             bottom: 25,
@@ -104,6 +107,8 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
 }
 
 class TableData extends DataTableSource {
+  final BuildContext context;
+
   final ProductModel productObj = ProductModel();
   final List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
 
@@ -113,7 +118,7 @@ class TableData extends DataTableSource {
   SubCatModel subCatObj = SubCatModel();
   Map<int, String> subCatData = {}; // Map to store category_id to category_name
 
-  TableData() {
+  TableData(this.context) {
     loadProductData();
   }
 
@@ -145,6 +150,7 @@ class TableData extends DataTableSource {
     loadProductData(); // Reload data after deletion
     // _updateProduct;
   }
+
 
   @override
   DataRow? getRow(int index) {
@@ -256,6 +262,8 @@ class TableData extends DataTableSource {
           },
         ),
       ),
+
+
     ]);
   }
 

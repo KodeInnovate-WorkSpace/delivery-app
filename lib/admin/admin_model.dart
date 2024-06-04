@@ -155,6 +155,24 @@ class CatModel extends ChangeNotifier {
     }
   }
 
+  Future<void> newupdateCategory(String field, dynamic newValue,
+      {required String categoryId}) async {
+    try {
+      // Query the collection for the specific category ID
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('category')
+          .where('category_id', isEqualTo: int.parse(categoryId))
+          .get();
+
+      // Update the document(s) that match the query
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({field: newValue});
+      }
+    } catch (e) {
+      log("Error updating category: $e");
+    }
+  }
+
   Future<void> deleteCategory(dynamic categoryValue) async {
     try {
       Query query = FirebaseFirestore.instance.collection('category');
