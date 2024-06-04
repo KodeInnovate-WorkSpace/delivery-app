@@ -2,9 +2,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:pinput/pinput.dart';
-import 'package:speedy_delivery/screens/no_internet_screen.dart';
 
 import '../widget/terms_privacy_line.dart';
 import 'home_screen.dart';

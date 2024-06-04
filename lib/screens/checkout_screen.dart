@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 
+import '../widget/add_to_cart_button.dart';
+
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
 
@@ -123,47 +125,50 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                             //add to Cart button
                             Column(
                               children: [
-                                // AddToCartButton(
-                                //     productName: item.itemName,
-                                //     productPrice: item.itemPrice,
-                                //     productImage: item.itemImage,
-                                //     productUnit: item.itemUnit),
-                                Container(
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.remove,
-                                            size: 15, color: Colors.white),
-                                        onPressed: () {
-                                          cartProvider.removeItem(item);
-                                          notifyListeners();
-                                        },
-                                      ),
-                                      // item count/quantity
-                                      Text(
-                                        '${item.qnt}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: 'Gilroy-SemiBold',
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.add,
-                                            size: 15, color: Colors.white),
-                                        onPressed: () {
-                                          cartProvider.addItem(item);
-                                          notifyListeners();
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                AddToCartButton(
+                                  productName: item.itemName,
+                                  productPrice: item.itemPrice,
+                                  productImage: item.itemImage,
+                                  productUnit: item
+                                      .itemUnit, // Set product unit to 0 since it's not used
                                 ),
+
+                                // Container(
+                                //   height: 35,
+                                //   decoration: BoxDecoration(
+                                //     color: Colors.green,
+                                //     borderRadius: BorderRadius.circular(5),
+                                //   ),
+                                //   child: Row(
+                                //     mainAxisSize: MainAxisSize.min,
+                                //     children: [
+                                //       IconButton(
+                                //         icon: const Icon(Icons.remove,
+                                //             size: 15, color: Colors.white),
+                                //         onPressed: () {
+                                //           cartProvider.removeItem(item);
+                                //           notifyListeners();
+                                //         },
+                                //       ),
+                                //       // item count/quantity
+                                //       Text(
+                                //         '${item.qnt}',
+                                //         style: const TextStyle(
+                                //           color: Colors.white,
+                                //           fontFamily: 'Gilroy-SemiBold',
+                                //         ),
+                                //       ),
+                                //       IconButton(
+                                //         icon: const Icon(Icons.add,
+                                //             size: 15, color: Colors.white),
+                                //         onPressed: () {
+                                //           cartProvider.addItem(item);
+                                //           notifyListeners();
+                                //         },
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                           ],

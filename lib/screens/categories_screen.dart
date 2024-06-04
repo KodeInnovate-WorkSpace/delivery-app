@@ -2,10 +2,12 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/checkout_screen.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
+import '../providers/cart_provider.dart';
 import '../widget/sidebar.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -78,6 +80,7 @@ class CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -105,15 +108,25 @@ class CategoryScreenState extends State<CategoryScreen> {
             bottom: 25,
             right: 20,
             child: FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
                 HapticFeedback.selectionClick();
 
-                Navigator.push(
+                // Navigate to CheckoutScreen and wait for it to pop
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const CheckoutScreen(),
                   ),
                 );
+
+                // Rebuild the widget to reflect the updated cart state
+                setState(() {});
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => const CheckoutScreen(),
+                //   ),
+                // );
               },
               backgroundColor: Colors.white,
               child: const Icon(Icons.shopping_cart_sharp, color: Colors.black),

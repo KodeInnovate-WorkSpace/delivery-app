@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../admin_model.dart';
-import 'edit_user.dart';
 
 class ManageUserScreen extends StatefulWidget {
   const ManageUserScreen({super.key});
@@ -28,16 +27,16 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
     super.dispose();
   }
 
-  void _refreshUserList() async {
-    // Clear existing data
-    src.userData.clear();
-
-    // Reload data from the server (or local storage)
-    await src._loaduserData();
-
-    // Notify listeners about the change (important!)
-    setState(() {});
-  }
+  // void _refreshUserList() async {
+  //   // Clear existing data
+  //   src.userData.clear();
+  //
+  //   // Reload data from the server (or local storage)
+  //   await src._loaduserData();
+  //
+  //   // Notify listeners about the change (important!)
+  //   setState(() {});
+  // }
 
   Future<void> _refreshPage() async {
     await src._loaduserData();
@@ -147,7 +146,7 @@ class TableData extends DataTableSource {
 
     // storing each index of userData list in data variable to iterate over each list
     final data = userData[index];
-    final categoryName = categoryData[data['category_id']] ?? 'Unknown';
+    // final categoryName = categoryData[data['category_id']] ?? 'Unknown';
 
     return DataRow(cells: [
       // DataCell(Text(data['category_id'].toString())),

@@ -214,7 +214,7 @@ import 'package:speedy_delivery/widget/terms_privacy_line.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 
 class SigninScreen extends StatefulWidget {
-  const SigninScreen({Key? key}) : super(key: key);
+  const SigninScreen({super.key});
 
   @override
   State<SigninScreen> createState() => _SigninScreenState();
@@ -310,14 +310,14 @@ class _SigninScreenState extends State<SigninScreen> {
                         }
                             : null,
                         style: ButtonStyle(
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.0),
                             ),
                           ),
-                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.disabled)) {
+                          backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                                (Set<WidgetState> states) {
+                              if (states.contains(WidgetState.disabled)) {
                                 return Colors.black.withOpacity(0.3);
                               }
                               return Colors.black;

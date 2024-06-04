@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/cart_model.dart';
 import '../models/product_model.dart';
+import '../providers/cart_provider.dart';
 import 'add_to_cart_button.dart';
 
 class ProductCard extends StatefulWidget {
@@ -18,6 +21,7 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
+
     return Expanded(
       child: Container(
         color: Colors.grey[100],

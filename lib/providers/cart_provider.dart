@@ -96,7 +96,7 @@ class CartProvider extends ChangeNotifier {
   }
   // String itemCount(Cart item) {
   //   final index =
-  //   _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+  //       _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
   //   notifyListeners();
   //   return _cartItems[index].qnt.toString();
   // }

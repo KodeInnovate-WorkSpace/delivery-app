@@ -6,10 +6,10 @@ import '../screens/no_internet_screen.dart';
 class NetworkHandler extends StatefulWidget {
   final Widget child;
 
-  const NetworkHandler({required this.child, Key? key}) : super(key: key);
+  const NetworkHandler({required this.child, super.key});
 
   @override
-  _NetworkHandlerState createState() => _NetworkHandlerState();
+  State<NetworkHandler> createState() => _NetworkHandlerState();
 }
 
 class _NetworkHandlerState extends State<NetworkHandler> {

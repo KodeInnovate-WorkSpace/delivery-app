@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class NoInternetScreenOverlay extends StatefulWidget {
-  const NoInternetScreenOverlay({Key? key}) : super(key: key);
+  const NoInternetScreenOverlay({super.key});
 
   @override
-  _NoInternetScreenOverlayState createState() =>
+  State<NoInternetScreenOverlay> createState() =>
       _NoInternetScreenOverlayState();
 }
 
@@ -53,51 +53,52 @@ class _NoInternetScreenOverlayState extends State<NoInternetScreenOverlay> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _isChecking
-                ? CircularProgressIndicator(
-              color: Colors.white,
-            )
+                ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
                 : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/no_net.png",
-                ),
-                const Text(
-                  "Seems like you don't have internet!",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Gilroy-Black',
-                      color: Colors.black),
-                ),
-                const Text(
-                  "Try connecting to internet",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-            SizedBox(height: 20), // Adjust spacing as needed
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/no_net.png",
+                      ),
+                      const Text(
+                        "Seems like you don't have internet!",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Gilroy-Black',
+                            color: Colors.black),
+                      ),
+                      const Text(
+                        "Try connecting to internet",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
+            const SizedBox(height: 20), // Adjust spacing as needed
             ElevatedButton(
               onPressed: _isChecking
                   ? null
                   : () async {
-                setState(() {
-                  _isChecking = true; // Show loading animation
-                });
-                await _checkInternet(); // Call the function to check internet
-                setState(() {
-                  _isChecking = false; // Hide loading animation after checking
-                });
-              },
+                      setState(() {
+                        _isChecking = true; // Show loading animation
+                      });
+                      await _checkInternet(); // Call the function to check internet
+                      setState(() {
+                        _isChecking =
+                            false; // Hide loading animation after checking
+                      });
+                    },
               style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.0),
                   ),
                 ),
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.disabled)) {
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                  (Set<WidgetState> states) {
+                    if (states.contains(WidgetState.disabled)) {
                       return Colors.grey; // Color when button is disabled
                     }
                     return Colors.black; // Color when button is enabled
@@ -111,7 +112,7 @@ class _NoInternetScreenOverlayState extends State<NoInternetScreenOverlay> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Continue",
                         style: TextStyle(
                           color: Colors.white,
@@ -119,17 +120,17 @@ class _NoInternetScreenOverlayState extends State<NoInternetScreenOverlay> {
                         ),
                       ),
                       _isChecking
-                          ? CircularProgressIndicator(
-                        strokeWidth: 2.0,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                          : SizedBox(),
+                          ? const CircularProgressIndicator(
+                              strokeWidth: 2.0,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 ),
               ),
             ),
-
           ],
         ),
       ),
