@@ -357,7 +357,7 @@ class HomeScreenState extends State<HomeScreen> {
                                             subCategory.catId == category.id)
                                         .toList();
 
-                                    return Stack(
+                                    return Stack( // replace column with stack
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
