@@ -209,7 +209,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
-import 'package:speedy_delivery/services/store_user.dart';
+import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/widget/terms_privacy_line.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 
@@ -224,15 +224,18 @@ class _SigninScreenState extends State<SigninScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context);
+    final userProvider = Provider.of<CheckUserProvider>(context);
 
     return Scaffold(
-      resizeToAvoidBottomInset: true, // This will adjust the layout when the keyboard is shown
+      resizeToAvoidBottomInset:
+          true, // This will adjust the layout when the keyboard is shown
       body: NetworkHandler(
         child: Container(
           decoration: const BoxDecoration(
             color: Colors.amberAccent,
           ),
-          child: SingleChildScrollView( // Added SingleChildScrollView
+          child: SingleChildScrollView(
+            // Added SingleChildScrollView
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -256,7 +259,8 @@ class _SigninScreenState extends State<SigninScreen> {
                       const SizedBox(height: 8),
                       const Text(
                         "Log in or sign up",
-                        style: TextStyle(fontFamily: "Gilroy-Bold", fontSize: 20),
+                        style:
+                            TextStyle(fontFamily: "Gilroy-Bold", fontSize: 20),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -280,21 +284,23 @@ class _SigninScreenState extends State<SigninScreen> {
                               ),
                             ),
                             prefixIconConstraints:
-                            const BoxConstraints(minWidth: 0, minHeight: 0),
+                                const BoxConstraints(minWidth: 0, minHeight: 0),
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 20),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.0),
-                              borderSide: BorderSide(color: Colors.grey.shade50),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade50),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.0),
-                              borderSide: BorderSide(color: Colors.grey.shade100),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade100),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.0),
-                              borderSide:
-                              const BorderSide(color: Colors.grey, width: 1.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.grey, width: 1.0),
                             ),
                           ),
                         ),
@@ -302,21 +308,25 @@ class _SigninScreenState extends State<SigninScreen> {
                       ElevatedButton(
                         onPressed: authProvider.isButtonEnabled
                             ? () async {
-                          HapticFeedback.selectionClick();
+                                HapticFeedback.selectionClick();
 
-                          await StoreUser().storeUserData(context);
-                          authProvider.verifyPhoneNumber(
-                              context, authProvider.textController.text);
-                        }
+                                await userProvider.storeUserData(context,
+                                    'phone', authProvider.textController.text);
+
+                                authProvider.verifyPhoneNumber(
+                                    context, authProvider.textController.text);
+                              }
                             : null,
                         style: ButtonStyle(
-                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          shape:
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.0),
                             ),
                           ),
-                          backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
+                          backgroundColor:
+                              WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
                               if (states.contains(WidgetState.disabled)) {
                                 return Colors.black.withOpacity(0.3);
                               }
@@ -326,27 +336,28 @@ class _SigninScreenState extends State<SigninScreen> {
                         ),
                         child: authProvider.isLoading
                             ? const SizedBox(
-                          width: 250,
-                          height: 50.0,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white, // Adjust color as needed
-                            ),
-                          ),
-                        )
+                                width: 250,
+                                height: 50.0,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color:
+                                        Colors.white, // Adjust color as needed
+                                  ),
+                                ),
+                              )
                             : const SizedBox(
-                          width: 250,
-                          height: 50.0,
-                          child: Center(
-                            child: Text(
-                              "Continue",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
+                                width: 250,
+                                height: 50.0,
+                                child: Center(
+                                  child: Text(
+                                    "Continue",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
                       ),
                       termsPrivacyLine(),
                       const Row(

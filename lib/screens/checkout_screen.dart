@@ -572,17 +572,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                   Center(
                     child: ElevatedButton(
-                      onPressed: () => HapticFeedback.heavyImpact(),
+                      onPressed: () {
+                        HapticFeedback.heavyImpact();
+                      },
                       style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14.0),
                           ),
                         ),
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
+                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
                             return Colors.black;
                           },
                         ),
