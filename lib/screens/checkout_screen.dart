@@ -323,9 +323,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
+import 'package:speedy_delivery/shared/show_msg.dart';
 import '../widget/add_to_cart_button.dart';
-import '../widget/network_handler.dart'; // Make sure to import your NetworkHandler
+import '../widget/network_handler.dart';
+import 'address_input.dart'; // Make sure to import your NetworkHandler
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -338,6 +341,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final addressProvider = Provider.of<AddressProvider>(context);
 
     return NetworkHandler(
       child: Scaffold(
@@ -347,7 +351,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           title: const Text('Checkout'),
         ),
         body: Container(
-          color: Colors.grey[100], // Set the background color to grey
+          // height: MediaQuery.of(context).size.height, //covers the entire screen (responsive)
+          // color: Colors.grey[100], // Set the background color to grey
+          color: const Color(0xffeaf1fc), // Set the background color to grey
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
@@ -574,6 +580,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         HapticFeedback.heavyImpact();
+                        if (cartProvider.cart.isEmpty) {
+                          showMessage("Cart is empty");
+                          return;
+                        }
+
+                        if (addressProvider.address.isEmpty) {
+                          showMessage("Please select an address");
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => AddressInputForm(),
+                            ),
+                          );
+                        }
                       },
                       style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
