@@ -343,9 +343,10 @@ class HomeScreenState extends State<HomeScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                    child: CircularProgressIndicator(
-                                  color: Colors.black,
-                                ));
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  ),
+                                );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
                               } else {
@@ -356,13 +357,13 @@ class HomeScreenState extends State<HomeScreen> {
                                             subCategory.catId == category.id)
                                         .toList();
 
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    return Stack(
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 0),
+                                              horizontal: 8.0,
+                                              vertical:
+                                                  0.0), // Reduced vertical padding
                                           child: Text(
                                             category.name,
                                             style: const TextStyle(
@@ -410,9 +411,10 @@ class HomeScreenState extends State<HomeScreen> {
                                                     margin: const EdgeInsets
                                                         .symmetric(
                                                         horizontal: 4,
-                                                        vertical: 0),
+                                                        vertical:
+                                                            0), // Reduced vertical margin
                                                     decoration:
-                                                         const BoxDecoration(
+                                                        const BoxDecoration(
                                                       color: Color(0xffeaf1fc),
                                                       borderRadius:
                                                           BorderRadius.all(
@@ -440,7 +442,9 @@ class HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(height: 6),
+                                                const SizedBox(
+                                                    height:
+                                                        4), // Reduced height for the SizedBox
                                                 // sub-category name
                                                 Text(
                                                   subCategory.name,
