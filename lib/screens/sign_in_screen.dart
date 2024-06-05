@@ -310,8 +310,8 @@ class _SigninScreenState extends State<SigninScreen> {
                             ? () async {
                                 HapticFeedback.selectionClick();
 
-                                await userProvider.storeUserData(context,
-                                    'phone', authProvider.textController.text);
+                                await userProvider.storeDetail(context, 'phone',
+                                    authProvider.textController.text);
 
                                 authProvider.verifyPhoneNumber(
                                     context, authProvider.textController.text);

@@ -57,8 +57,9 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
               PaginatedDataTable(
                 columns: const [
                   DataColumn(label: Text('ID')),
+                  DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Phone')),
-                  DataColumn(label: Text('Location')),
+                  DataColumn(label: Text('Date')),
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('')),
                 ],
@@ -151,8 +152,9 @@ class TableData extends DataTableSource {
     return DataRow(cells: [
       // DataCell(Text(data['category_id'].toString())),
       DataCell(Text(data['id'].toString())),
+      DataCell(Text(data['name'].toString())),
       DataCell(Text(data['phone'].toString())),
-      DataCell(Text(data['location'].toString())),
+      DataCell(Text(data['date'].toString())),
       // status column
       DataCell(DropdownButton<int>(
         value: data['status'], // Use the status value from data

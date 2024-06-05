@@ -589,7 +589,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           showMessage("Please select an address");
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => AddressInputForm(),
+                              builder: (context) => const AddressInputForm(),
                             ),
                           );
                         }
