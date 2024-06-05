@@ -69,11 +69,14 @@
 //   }
 // }
 
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/cart_model.dart';
+import '../services/convert_to_json.dart';
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
@@ -101,19 +104,26 @@ class CartProvider extends ChangeNotifier {
   //   return _cartItems[index].qnt.toString();
   // }
 
-  void addItem(Cart item) {
+  void addItem(Cart item) async {
     final index =
         _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       _cartItems[index].qnt++;
     } else {
       _cartItems.add(item);
+
+      // Convert the address to json
+      String jsonCart = cartToJson(item);
+
+      // Store in shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('cart_${item.itemName}', jsonCart);
     }
     logCartContents();
     notifyListeners();
   }
 
-  void removeItem(Cart item) {
+  void removeItem(Cart item) async {
     final index =
         _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
@@ -121,6 +131,9 @@ class CartProvider extends ChangeNotifier {
         _cartItems[index].qnt--;
       } else {
         _cartItems.removeAt(index);
+        // Remove from shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.remove('cart_${item.itemName}');
       }
     }
     logCartContents();
@@ -140,6 +153,45 @@ class CartProvider extends ChangeNotifier {
 
     grandTotal += calculateTotalPrice() + deliveryCharge + handlingCharge;
     return grandTotal;
+  }
+
+  Future<Cart?> getCartItems(String itemName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? cartJson = prefs.getString('cart_$itemName');
+    if (cartJson != null) {
+      Map<String, dynamic> cartMap = json.decode(cartJson);
+      return Cart(
+        itemName: cartMap['name'],
+        itemPrice: cartMap['price'],
+        itemImage: cartMap['image'],
+        itemUnit: cartMap['unit'],
+        qnt: cartMap['qnt'],
+      );
+    }
+    return null;
+  }
+
+  Future<void> loadCart() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys();
+
+    _cartItems.clear();
+    for (String key in keys) {
+      if (key.startsWith('cart_')) {
+        String? cartJson = prefs.getString(key);
+        if (cartJson != null) {
+          Map<String, dynamic> cartMap = json.decode(cartJson);
+          _cartItems.add(Cart(
+            itemName: cartMap['name'],
+            itemPrice: cartMap['price'],
+            itemImage: cartMap['image'],
+            itemUnit: cartMap['unit'],
+            qnt: cartMap['qnt'],
+          ));
+        }
+      }
+    }
+    notifyListeners();
   }
 
   void logCartContents() {

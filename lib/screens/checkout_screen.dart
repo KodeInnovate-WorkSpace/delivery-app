@@ -343,6 +343,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final cartProvider = Provider.of<CartProvider>(context);
     final addressProvider = Provider.of<AddressProvider>(context);
 
+    cartProvider.loadCart();
     return NetworkHandler(
       child: Scaffold(
         resizeToAvoidBottomInset:

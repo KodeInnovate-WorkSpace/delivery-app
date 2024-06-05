@@ -19,7 +19,7 @@ class AddressProvider with ChangeNotifier {
 
   void addAddress(Address userAdd) async {
     final index =
-    _addressList.indexWhere((address) => address.flat == userAdd.flat);
+        _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
       _addressList[index] = userAdd;
     } else {
@@ -35,15 +35,15 @@ class AddressProvider with ChangeNotifier {
       // Show message
       showMessage("Address Saved!");
       log("Address: ${_addressList.map((add) => {
-        "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark}"
-      })}");
+            "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark}"
+          })}");
     }
     notifyListeners();
   }
 
   void removeAddress(Address userAdd) async {
     final index =
-    _addressList.indexWhere((address) => address.flat == userAdd.flat);
+        _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
       _addressList.removeAt(index);
 
