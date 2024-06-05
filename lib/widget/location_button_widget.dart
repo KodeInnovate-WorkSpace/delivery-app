@@ -3,12 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 
 class LocationButton extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const LocationButton({super.key, required this.scaffoldKey});
+  const LocationButton({Key? key, required this.scaffoldKey}) : super(key: key);
 
   @override
   State<LocationButton> createState() => _LocationButtonState();
@@ -17,10 +18,23 @@ class LocationButton extends StatefulWidget {
 class _LocationButtonState extends State<LocationButton> {
   Position? position;
   String? completeAddress;
+  late SharedPreferences _prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    _initPrefs();
+  }
+
+  Future<void> _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    completeAddress =
+        _prefs.getString('lastAddress') ?? 'Thane, Maharashtra, India';
+    setState(() {});
+  }
 
   Future<void> getCurrentLocation() async {
     final BuildContext context = widget.scaffoldKey.currentContext!;
-
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -66,6 +80,9 @@ class _LocationButtonState extends State<LocationButton> {
           );
         }
       }
+
+      // Save the address to SharedPreferences
+      await _prefs.setString('lastAddress', completeAddress!);
     } catch (e) {
       log("$e");
       _showLocationErrorDialog(context);
@@ -162,8 +179,8 @@ class _LocationButtonState extends State<LocationButton> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.location_on),
-                    title: const Text(
-                      'Thane - 400612 , Maharashtra, India',
+                    title: Text(
+                      completeAddress ?? 'Thane - 400612 , Maharashtra, India',
                       style: TextStyle(color: Colors.black),
                     ),
                     onTap: () => Navigator.pop(context),

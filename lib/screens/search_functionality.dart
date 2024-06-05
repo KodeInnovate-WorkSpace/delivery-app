@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:speedy_delivery/screens/checkout_screen.dart';
 import '../widget/add_to_cart_button.dart';
 
 class Product {
@@ -379,7 +380,11 @@ class _SearchPageState extends State<SearchPage> {
                 onPressed: () {
                   HapticFeedback.heavyImpact();
 
-                  Navigator.pushNamed(context, '/checkout');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CheckoutScreen()));
+                  // Navigator.pushNamed(context, '/checkout');
                 },
                 backgroundColor: Colors.white,
                 child: const Icon(

@@ -107,15 +107,15 @@ class MyApp extends StatelessWidget {
         child: SplashScreen(),
       ),
       routes: {
-        '/home': (context) => const NetworkHandler(
-              child: HomeScreen(),
-            ),
+        // '/home': (context) => const NetworkHandler(
+        //       child: HomeScreen(),
+        //     ),
         '/profile': (context) => const NetworkHandler(
               child: ProfilePage(),
             ),
-        '/checkout': (context) => const NetworkHandler(
-              child: CheckoutScreen(),
-            ),
+        // '/checkout': (context) => const NetworkHandler(
+        //       child: CheckoutScreen(),
+        //     ),
         '/search': (context) => const NetworkHandler(
               child: SearchPage(),
             ),
