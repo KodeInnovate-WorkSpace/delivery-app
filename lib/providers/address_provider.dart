@@ -18,7 +18,9 @@ class AddressProvider with ChangeNotifier {
     } else {
       _addressList.add(userAdd);
       showMessage("Address Saved!");
-      log("Address: ${_addressList.map((add)=>{ "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark}" })}");
+      log("Address: ${_addressList.map((add) => {
+            "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark}"
+          })}");
     }
     notifyListeners();
   }

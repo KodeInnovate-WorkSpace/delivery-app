@@ -43,6 +43,12 @@ class _InputBoxState extends State<InputBox> {
           fillColor: Colors.white,
           prefixIcon: Icon(widget.myIcon),
         ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Please enter ${widget.hintText}";
+          }
+          return null;
+        },
       ),
     );
   }
