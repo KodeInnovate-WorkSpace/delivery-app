@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../models/cart_model.dart';
 import '../services/convert_to_json.dart';
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
-  double deliveryCharge = 5;
-  double handlingCharge = 10;
+  double deliveryCharge = 29;
+  double handlingCharge = 1.85;
+
+  // convenienve 1.85%
 
   final List<Cart> _cartItems = [];
   List<Cart> get cart => _cartItems;

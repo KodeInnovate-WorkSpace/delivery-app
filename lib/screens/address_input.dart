@@ -44,7 +44,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
 
   void _saveAddress() {
     if (_formKey.currentState!.validate()) {
-      try{
+      try {
         final address = Address(
           flat: _flatController.text,
           floor: _floorController.text,
@@ -52,10 +52,12 @@ class _AddressInputFormState extends State<AddressInputForm> {
           mylandmark: _landmarkController.text,
         );
 
-        Provider.of<AddressProvider>(context, listen: false).addAddress(address);
+        Provider.of<AddressProvider>(context, listen: false)
+            .addAddress(address);
         Navigator.of(context).pop();
-      }catch(e){log("Error saving address (address_input.dart): $e");}
-
+      } catch (e) {
+        log("Error saving address (address_input.dart): $e");
+      }
     }
   }
 
@@ -189,7 +191,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
                 const SizedBox(
                   height: 20,
                 ),
-        
+
                 // landmark
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
@@ -305,7 +307,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
                 const SizedBox(
                   height: 20,
                 ),
-        
+
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
@@ -313,10 +315,11 @@ class _AddressInputFormState extends State<AddressInputForm> {
                     // store username in firebase
                     userProvider.storeDetail(
                         context, 'name', _nameController.text);
+                    Navigator.pop(context, true); // Close the bottom modal
                   },
                   style: ElevatedButton.styleFrom(
-                    fixedSize:
-                        const Size(250, 50), // Set your desired width and height
+                    fixedSize: const Size(
+                        250, 50), // Set your desired width and height
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -337,7 +340,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
                     ],
                   ),
                 ),
-        
+
                 // add address button
               ],
             ),

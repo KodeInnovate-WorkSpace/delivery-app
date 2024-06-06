@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,8 +17,9 @@ class CheckoutScreen extends StatefulWidget {
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   String _defaultAdd = "No address available";
+  late String _newAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +32,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
     }
 
+    // setState(() {
+    //   _defaultAdd = _newAdd;
+    // });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        // cartProvider.loadCart();
         addressProvider.loadAddresses();
+        setState(() {});
       }
     });
     cartProvider.loadCart();
-    // loading data on screen initialization
-    // cartProvider.loadCart();
-    // addressProvider.loadAddresses();
 
     return NetworkHandler(
       child: Scaffold(
@@ -53,7 +56,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             height: MediaQuery.of(context)
                 .size
                 .height, //covers the entire screen (responsive)
-            // color: Colors.grey[100], // Set the background color to grey
             color: const Color(0xffeaf1fc), // Set the background color to grey
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -359,7 +361,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         )),
 
                                     const SizedBox(
-                                      height: 40,
+                                      height: 35,
                                     ),
                                     // saved addresses
                                     Text(
@@ -373,8 +375,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       children: [
                                         if (addressProvider.address.isNotEmpty)
                                           SizedBox(
-                                            height: 600,
+                                            // height: MediaQuery.of(context).size.height,
+                                            height: 250,
                                             child: ListView.builder(
+                                              shrinkWrap: true,
                                               itemCount: addressProvider
                                                   .address.length,
                                               itemBuilder: (context, index) {
@@ -382,38 +386,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     .address[index];
                                                 return Column(
                                                   children: [
-                                                    ListTile(
-                                                      title: Text(
-                                                          'Flat No.${address.flat}, Floor: ${address.floor}, Building: ${address.building}'),
-                                                      subtitle: Text(
-                                                          "Landmark: ${address.mylandmark}"),
-                                                      trailing: IconButton(
-                                                          onPressed: () {
-                                                            addressProvider
-                                                                .removeAddress(
-                                                                    address);
-                                                          },
-                                                          icon: const Icon(
-                                                              Icons.delete)),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        _newAdd =
+                                                            "${addressProvider.address[index].flat}, ${addressProvider.address[index].building}, ${addressProvider.address[index].mylandmark}";
+                                                        setState(() {
+                                                          _defaultAdd = _newAdd;
+                                                        });
+                                                        setState(() {});
+                                                        Navigator.pop(context,
+                                                            true); // Close the bottom modal
+                                                        showMessage(
+                                                            "Address Changed!");
+                                                        log("Address: $_defaultAdd");
+                                                      },
+                                                      child: ListTile(
+                                                        title: Text(
+                                                            '${address.flat}, ${address.floor}, ${address.building}'),
+                                                        subtitle: Text(
+                                                            address.mylandmark),
+                                                        trailing: IconButton(
+                                                            onPressed: () {
+                                                              addressProvider
+                                                                  .removeAddress(
+                                                                      address);
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons.delete)),
+                                                      ),
                                                     ),
                                                   ],
                                                 );
                                               },
                                             ),
-                                          )
-                                        else
-                                          const SizedBox(
-                                            height: 60,
                                           ),
-                                        Center(
-                                          child: Text(
-                                            'No saved address',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.grey[600],
-                                            ),
-                                          ),
-                                        ),
                                       ],
                                     )
                                   ],
@@ -445,14 +451,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         style: TextStyle(
                                             fontFamily: 'Gilroy-SemiBold'),
                                       ),
-                                      Text(
-                                        _defaultAdd,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            color: Colors.grey[500],
-                                            fontFamily: 'Gilroy-Medium',
-                                            fontSize: 12),
+                                      Builder(
+                                        builder: (context) => Text(
+                                          _defaultAdd,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: Colors.grey[500],
+                                              fontFamily: 'Gilroy-Medium',
+                                              fontSize: 12),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -466,34 +474,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     color: Colors.green,
                                     fontFamily: 'Gilroy-SemiBold'),
                               ),
-                              // TextButton(
-                              //   onPressed: () async {
-                              //     if (addressProvider.address.isEmpty) {
-                              //       showMessage("Address book is empty");
-                              //       return;
-                              //     }
-                              //
-                              //     // Address? newAddress = await _showAddressSelectionDialog(
-                              //     //     context, addressProvider.address);
-                              //     // if (newAddress != null) {
-                              //     //   setState(() {
-                              //     //     _defaultAdd =
-                              //     //     "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark}";
-                              //     //   });
-                              //     // }
-                              //   },
-                              //   child: const Text(
-                              //     "Change",
-                              //     style: TextStyle(
-                              //         color: Colors.green,
-                              //         fontFamily: 'Gilroy-SemiBold'),
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
                       ),
                     ),
+
                     const Divider(),
                     // payment mode | place order
                     Row(
