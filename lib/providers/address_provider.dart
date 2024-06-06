@@ -63,6 +63,7 @@ class AddressProvider with ChangeNotifier {
       return Address(
         flat: addressMap['flat'],
         floor: addressMap['floor'],
+        building: addressMap['building'] ?? "N/A",
         mylandmark: addressMap['mylandmark'],
         // Add other fields as necessary
       );
@@ -77,12 +78,13 @@ class AddressProvider with ChangeNotifier {
     _addressList.clear();
     for (String key in keys) {
       if (key.startsWith('address_')) {
-        String? addressJson = prefs.getString(key);
-        if (addressJson != null) {
-          Map<String, dynamic> addressMap = json.decode(addressJson);
+        String? jsonAddress = prefs.getString(key);
+        if (jsonAddress != null) {
+          Map<String, dynamic> addressMap = json.decode(jsonAddress);
           _addressList.add(Address(
             flat: addressMap['flat'],
             floor: addressMap['floor'],
+            building: addressMap['building'] ?? 'N/A',
             mylandmark: addressMap['mylandmark'],
             // Add other fields as necessary
           ));

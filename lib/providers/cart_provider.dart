@@ -165,11 +165,34 @@ class CartProvider extends ChangeNotifier {
         itemPrice: cartMap['price'],
         itemImage: cartMap['image'],
         itemUnit: cartMap['unit'],
-        qnt: cartMap['qnt'],
       );
     }
+    notifyListeners();
+
     return null;
   }
+
+  // Future<void> loadCart() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final keys = prefs.getKeys();
+  //
+  //   _cartItems.clear();
+  //   for (String key in keys) {
+  //     if (key.startsWith('cart_')) {
+  //       String? cartJson = prefs.getString(key);
+  //       if (cartJson != null) {
+  //         Map<String, dynamic> cartMap = json.decode(cartJson);
+  //         _cartItems.add(Cart(
+  //           itemName: cartMap['name'],
+  //           itemPrice: cartMap['price'],
+  //           itemImage: cartMap['image'],
+  //           itemUnit: cartMap['unit'],
+  //         ));
+  //       }
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
 
   Future<void> loadCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -181,18 +204,27 @@ class CartProvider extends ChangeNotifier {
         String? cartJson = prefs.getString(key);
         if (cartJson != null) {
           Map<String, dynamic> cartMap = json.decode(cartJson);
-          _cartItems.add(Cart(
+          Cart cartItem = Cart(
             itemName: cartMap['name'],
             itemPrice: cartMap['price'],
             itemImage: cartMap['image'],
             itemUnit: cartMap['unit'],
-            qnt: cartMap['qnt'],
-          ));
+          );
+          // Check if the item already exists in _cartItems
+          final index = _cartItems.indexWhere((item) => item.itemName == cartItem.itemName);
+          if (index >= 0) {
+            // If it exists, update the quantity
+            _cartItems[index].qnt++;
+          } else {
+            // If it doesn't exist, add it to _cartItems
+            _cartItems.add(cartItem);
+          }
         }
       }
     }
     notifyListeners();
   }
+
 
   void logCartContents() {
     log("Current cart contents:");

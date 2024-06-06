@@ -9,7 +9,7 @@ import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 class LocationButton extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const LocationButton({Key? key, required this.scaffoldKey}) : super(key: key);
+  const LocationButton({super.key, required this.scaffoldKey});
 
   @override
   State<LocationButton> createState() => _LocationButtonState();
@@ -181,7 +181,7 @@ class _LocationButtonState extends State<LocationButton> {
                     leading: const Icon(Icons.location_on),
                     title: Text(
                       completeAddress ?? 'Thane - 400612 , Maharashtra, India',
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),

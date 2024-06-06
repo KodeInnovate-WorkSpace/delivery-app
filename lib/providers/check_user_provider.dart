@@ -60,7 +60,7 @@ class CheckUserProvider with ChangeNotifier {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     final checkUserProvider =
         Provider.of<CheckUserProvider>(context, listen: false);
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     try {
       // Get today's date
@@ -70,7 +70,7 @@ class CheckUserProvider with ChangeNotifier {
 
       if (!checkUserProvider.isUserExist) {
         // Add new user data if user does not exist
-        await _firestore.collection('users').add({
+        await firestore.collection('users').add({
           'phone': authProvider.phone,
           field: value,
           // Add other user data here if necessary
@@ -79,7 +79,7 @@ class CheckUserProvider with ChangeNotifier {
         });
       } else {
         // Query the user document based on phone number
-        QuerySnapshot querySnapshot = await _firestore
+        QuerySnapshot querySnapshot = await firestore
             .collection('users')
             .where('phone', isEqualTo: authProvider.textController.text)
             .get();

@@ -7,6 +7,7 @@ String addressToJson(Address address) {
   return json.encode({
     'flat': address.flat,
     'floor': address.floor,
+    'building': address.building,
     'mylandmark': address.mylandmark,
     // Add other fields as necessary
   });
