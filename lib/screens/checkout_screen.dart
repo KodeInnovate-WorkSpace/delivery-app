@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
+import '../demo/main_screen.dart';
 import '../widget/add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart'; // Make sure to import your NetworkHandler
@@ -246,7 +247,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                       size: 14,
                                     ),
                                     SizedBox(width: 4),
-                                    Text('Handling Charge',
+                                    Text('Convenience Fee',
                                         style: TextStyle(fontSize: 14)),
                                   ],
                                 ),
@@ -453,7 +454,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                       ),
                                       Builder(
                                         builder: (context) => Text(
-                                          _defaultAdd,
+                                          _newAdd,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
@@ -525,6 +526,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                 ),
                               );
                             }
+
+                            // go to payment gateway
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const MerchantApp(),
+                              ),
+                            );
                           },
                           style: ButtonStyle(
                             shape:

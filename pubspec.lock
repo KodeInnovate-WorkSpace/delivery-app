@@ -720,6 +720,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
+  phonepe_payment_sdk:
+    dependency: "direct main"
+    description:
+      name: phonepe_payment_sdk
+      sha256: f00b986ce05fbc655cb59929c2c29a9d39b2b21ec3ac1ad2bcf25d046c105f2e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   pinput:
     dependency: "direct main"
     description:
