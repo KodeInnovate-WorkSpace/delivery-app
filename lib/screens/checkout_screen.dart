@@ -6,10 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
-import '../demo/main_screen.dart';
 import '../widget/add_to_cart_button.dart';
 import '../widget/network_handler.dart';
-import 'address_input.dart'; // Make sure to import your NetworkHandler
+import 'address_input.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -411,6 +410,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                               addressProvider
                                                                   .removeAddress(
                                                                       address);
+                                                              Navigator.pop(
+                                                                  context);
                                                             },
                                                             icon: const Icon(
                                                                 Icons.delete)),
@@ -528,11 +529,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                             }
 
                             // go to payment gateway
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const MerchantApp(),
-                              ),
-                            );
                           },
                           style: ButtonStyle(
                             shape:

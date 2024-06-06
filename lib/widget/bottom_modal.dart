@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -119,7 +118,7 @@ class _BottomModalState extends State<BottomModal> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Address'),
+          title: const Text('Select Address'),
           content: SingleChildScrollView(
             child: ListBody(
               children: addresses.map((Address address) {
