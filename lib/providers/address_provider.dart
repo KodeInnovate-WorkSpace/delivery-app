@@ -58,17 +58,15 @@ class AddressProvider with ChangeNotifier {
   Future<Address?> getAddress(String flat) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? addressJson = prefs.getString('address_$flat');
-    if (addressJson != null) {
-      Map<String, dynamic> addressMap = json.decode(addressJson);
-      return Address(
-        flat: addressMap['flat'],
-        floor: addressMap['floor'],
-        building: addressMap['building'] ?? "N/A",
-        mylandmark: addressMap['mylandmark'],
-        // Add other fields as necessary
-      );
-    }
-    return null;
+    Map<String, dynamic> addressMap = json.decode(addressJson!);
+    return Address(
+      flat: addressMap['flat'],
+      floor: addressMap['floor'],
+      building: addressMap['building'] ?? "N/A",
+      mylandmark: addressMap['mylandmark'],
+      // Add other fields as necessary
+    );
+      return null;
   }
 
   Future<void> loadAddresses() async {
@@ -79,17 +77,15 @@ class AddressProvider with ChangeNotifier {
     for (String key in keys) {
       if (key.startsWith('address_')) {
         String? jsonAddress = prefs.getString(key);
-        if (jsonAddress != null) {
-          Map<String, dynamic> addressMap = json.decode(jsonAddress);
-          _addressList.add(Address(
-            flat: addressMap['flat'],
-            floor: addressMap['floor'],
-            building: addressMap['building'] ?? 'N/A',
-            mylandmark: addressMap['mylandmark'],
-            // Add other fields as necessary
-          ));
-        }
-      }
+        Map<String, dynamic> addressMap = json.decode(jsonAddress!);
+        _addressList.add(Address(
+          flat: addressMap['flat'],
+          floor: addressMap['floor'],
+          building: addressMap['building'] ?? 'N/A',
+          mylandmark: addressMap['mylandmark'],
+          // Add other fields as necessary
+        ));
+            }
     }
     notifyListeners();
   }

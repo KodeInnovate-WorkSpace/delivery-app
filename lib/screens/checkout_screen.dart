@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
+import '../payment/cf_payment_screen.dart';
 import '../widget/add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
@@ -19,7 +20,7 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   String _defaultAdd = "No address available";
-  late String _newAdd;
+  String _newAdd = '';
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         addressProvider.loadAddresses();
-        setState(() {});
+        // setState(() {});
       }
     });
     cartProvider.loadCart();
@@ -453,16 +454,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                         style: TextStyle(
                                             fontFamily: 'Gilroy-SemiBold'),
                                       ),
-                                      Builder(
-                                        builder: (context) => Text(
-                                          _newAdd,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: Colors.grey[500],
-                                              fontFamily: 'Gilroy-Medium',
-                                              fontSize: 12),
-                                        ),
+                                      Text(
+                                        _newAdd,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: Colors.grey[500],
+                                            fontFamily: 'Gilroy-Medium',
+                                            fontSize: 12),
                                       ),
                                     ],
                                   ),
@@ -529,6 +528,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                             }
 
                             // go to payment gateway
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                const CFPaymentScreen(),
+                              ),
+                            );
+
                           },
                           style: ButtonStyle(
                             shape:

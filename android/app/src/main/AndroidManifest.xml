@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -15,10 +16,17 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <meta-data android:name="com.phonepe.android.sdk.isUAT" android:value="true"/>
+    <meta-data android:name="com.phonepe.android.sdk.isSimulator" android:value="true"/>
+    <meta-data android:name="com.phonepe.android.sdk.MerchantId" android:value="PGTESTPAYUAT"/>
+<!--    <meta-data android:name="com.phonepe.android.sdk.AppId" android:value="appId"/>-->
+
+
     <application
         android:label="Speedy"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        tools:node="merge">
         <activity
             android:name=".MainActivity"
             android:exported="true"

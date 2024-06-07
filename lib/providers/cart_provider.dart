@@ -131,16 +131,14 @@ class CartProvider extends ChangeNotifier {
   Future<Cart?> getCartItems(String itemName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? cartJson = prefs.getString('cart_$itemName');
-    if (cartJson != null) {
-      Map<String, dynamic> cartMap = json.decode(cartJson);
-      return Cart(
-        itemName: cartMap['name'],
-        itemPrice: cartMap['price'],
-        itemImage: cartMap['image'],
-        itemUnit: cartMap['unit'],
-      );
-    }
-    notifyListeners();
+    Map<String, dynamic> cartMap = json.decode(cartJson!);
+    return Cart(
+      itemName: cartMap['name'],
+      itemPrice: cartMap['price'],
+      itemImage: cartMap['image'],
+      itemUnit: cartMap['unit'],
+    );
+      notifyListeners();
 
     return null;
   }
@@ -175,26 +173,24 @@ class CartProvider extends ChangeNotifier {
     for (String key in keys) {
       if (key.startsWith('cart_')) {
         String? cartJson = prefs.getString(key);
-        if (cartJson != null) {
-          Map<String, dynamic> cartMap = json.decode(cartJson);
-          Cart cartItem = Cart(
-            itemName: cartMap['name'],
-            itemPrice: cartMap['price'],
-            itemImage: cartMap['image'],
-            itemUnit: cartMap['unit'],
-          );
-          // Check if the item already exists in _cartItems
-          final index = _cartItems
-              .indexWhere((item) => item.itemName == cartItem.itemName);
-          if (index >= 0) {
-            // If it exists, update the quantity
-            _cartItems[index].qnt++;
-          } else {
-            // If it doesn't exist, add it to _cartItems
-            _cartItems.add(cartItem);
-          }
+        Map<String, dynamic> cartMap = json.decode(cartJson!);
+        Cart cartItem = Cart(
+          itemName: cartMap['name'],
+          itemPrice: cartMap['price'],
+          itemImage: cartMap['image'],
+          itemUnit: cartMap['unit'],
+        );
+        // Check if the item already exists in _cartItems
+        final index = _cartItems
+            .indexWhere((item) => item.itemName == cartItem.itemName);
+        if (index >= 0) {
+          // If it exists, update the quantity
+          _cartItems[index].qnt++;
+        } else {
+          // If it doesn't exist, add it to _cartItems
+          _cartItems.add(cartItem);
         }
-      }
+            }
     }
     notifyListeners();
   }
