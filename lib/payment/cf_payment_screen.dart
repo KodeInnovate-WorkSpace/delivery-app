@@ -1,49 +1,105 @@
-import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfwebcheckoutpayment.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
+import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
+import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
+import 'package:http/http.dart' as http;
 
-class CFPaymentScreen extends StatefulWidget {
-  const CFPaymentScreen({super.key});
+import '../services/random_number.dart';
+
+class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({super.key});
 
   @override
-  State<CFPaymentScreen> createState() => _CFPaymentScreenState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _CFPaymentScreenState extends State<CFPaymentScreen> {
-  String res = '';
+class _PaymentScreenState extends State<PaymentScreen> {
+  @override
+  void initState() {
+    super.initState();
+    CFPaymentGatewayService().setCallback(onVerify, onError);
+  }
 
-  Future<void> createOrder() async {
-    final url = Uri.parse(
-        'http://192.168.0.195:3000'); // Use http for local development
-    final response = await http
-        .get(url); // Use get instead of post for your current endpoint
+  String customOrderId = randomWithNDigits(6).toString();
 
-    if (response.statusCode == 200) {
-      setState(() {
-        res = response.body;
-      });
-    } else {
-      setState(() {
-        res = 'Failed to load';
-      });
+  Future<String?> createSession() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/createOrder'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'orderId': customOrderId,
+          'orderAmount': 1.00,
+          'customerDetails': {
+            'customer_id': 'walterwNrcMi',
+            'customer_phone': '7977542667',
+            'customer_name': 'Walter White',
+            'customer_email': 'walter.white@example.com',
+          },
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['payment_session_id'];
+      } else {
+        log('Failed to create session: ${response.body}');
+      }
+    } catch (e) {
+      log('Error creating session: $e');
     }
+    return null;
+  }
+
+  webCheckout() async {
+    try {
+      final sessionId = await createSession();
+      if (sessionId != null) {
+        var session = CFSessionBuilder()
+            .setEnvironment(CFEnvironment.SANDBOX)
+            .setOrderId(customOrderId)
+            .setPaymentSessionId(sessionId)
+            .build();
+
+        var cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session);
+        CFPaymentGatewayService().doPayment(cfWebCheckout.build());
+      } else {
+        log('Failed to obtain session ID');
+      }
+    } on CFException catch (e) {
+      log('Checkout error: ${e.message}');
+    }
+  }
+
+  void onVerify(String orderId) {
+    // Verify Payment status from the backend using order Status API
+  }
+
+  void onError(CFErrorResponse errorResponse, String orderId) {
+    // Configure Error callback
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text("Go to payment gateway"),
-            ElevatedButton(
-              onPressed: () async {
-                await createOrder(); // Call createOrder and wait for it to complete
-              },
-              child: Text(res == '' ? "NO RESPONSE" : res),
-            ),
-          ],
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Cashfree Flutter Integration'),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              const Text("Click below to open the checkout page"),
+              TextButton(onPressed: webCheckout, child: const Text("Pay Now")),
+            ],
+          ),
         ),
       ),
     );

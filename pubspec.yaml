@@ -16,6 +16,7 @@ dependencies:
   firebase_storage: ^12.0.0
   flutter:
     sdk: flutter
+  flutter_cashfree_pg_sdk: ^2.1.2+32
   flutter_launcher_icons: ^0.13.1
   flutter_svg: ^2.0.10+1
   fluttertoast: ^8.2.5
