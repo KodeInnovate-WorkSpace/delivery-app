@@ -1,9 +1,5 @@
-import 'dart:developer';
-
-import 'package:cashfree_pg/cashfree_pg.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:speedy_delivery/providers/cart_provider.dart';
 
 class CFPaymentScreen extends StatefulWidget {
   const CFPaymentScreen({super.key});
@@ -13,48 +9,27 @@ class CFPaymentScreen extends StatefulWidget {
 }
 
 class _CFPaymentScreenState extends State<CFPaymentScreen> {
-  var response = "";
-  var didResponse = false;
+  String res = '';
 
-  double amount = 0;
+  Future<void> createOrder() async {
+    final url = Uri.parse(
+        'http://192.168.0.195:3000'); // Use http for local development
+    final response = await http
+        .get(url); // Use get instead of post for your current endpoint
 
-  responseReceived() {
-    setState(() {
-      this.didResponse = true;
-    });
-  }
-
-  void startTransaction() async {
-    try {
-      Map<String, String> inputParams = {
-        "orderId": "4",
-        // "orderAmount": amount.toString(),
-        "orderAmount": "10",
-        "customerName": "Kaif",
-        "tokenData":"sY9JCVXpkI6ICc5RnIsICN4MzUIJiOicGbhJye.2e0nI0IiOiQWSyVGZy9mIsIiUOlkI6ISej5WZyJXdDJXZkJ3biwiIwEjI6ICduV3btFkclRmcvJCL4kjM0QzN3EzNxojIwhXZiwiImlWYLJiOiUWbh5kcl12b0NXdjJCLiMGOihjYldTMiJjN2YjI6ICdsF2cfJye.lRCVnf60PMvxqz1u8A2mFpavPiWLbL18q9VFZ1LPLLVzJewl5x3iCh4HoJ-4S4EUgs",
-        "orderCurrency": "INR",
-        "appId": "TEST10205657ccca08a88e3f624d6c4175650201",
-        "customerPhone": "7977542667",
-        "customerEmail": "kaif.shariff1234@gmail.com",
-        "stage": "TEST",
-        "notifyUrl": ""
-      };
-
-      CashfreePGSDK.doPayment(inputParams)
-          .then((value) => value?.forEach((key, value) {
-                this.responseReceived();
-                log("$key : $value");
-                response += "\"$key\":\"$value\"\n";
-              }));
-    } catch (error) {
-      log("Error: $error");
+    if (response.statusCode == 200) {
+      setState(() {
+        res = response.body;
+      });
+    } else {
+      setState(() {
+        res = 'Failed to load';
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context);
-
     return Scaffold(
       body: Center(
         child: Column(
@@ -64,13 +39,9 @@ class _CFPaymentScreenState extends State<CFPaymentScreen> {
             const Text("Go to payment gateway"),
             ElevatedButton(
               onPressed: () async {
-                setState(() {
-                  amount = cartProvider.calculateGrandTotal();
-                });
-
-                startTransaction();
+                await createOrder(); // Call createOrder and wait for it to complete
               },
-              child: const Text("Payment Gateway"),
+              child: Text(res == '' ? "NO RESPONSE" : res),
             ),
           ],
         ),

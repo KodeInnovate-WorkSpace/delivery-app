@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/screens/notification_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
@@ -129,6 +130,18 @@ class ProfilePage extends StatelessWidget {
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
                 _launchPlayStore();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.notifications_sharp),
+              title: const Text('Notification Preferences'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationSettingsPage()),
+                );
               },
             ),
             ListTile(

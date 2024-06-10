@@ -10,7 +10,7 @@ class CartProvider extends ChangeNotifier {
   double deliveryCharge = 29;
   double handlingCharge = 1.85;
 
-  // convenienve 1.85%
+  // convenience fee 1.85%
 
   final List<Cart> _cartItems = [];
   List<Cart> get cart => _cartItems;
@@ -138,9 +138,6 @@ class CartProvider extends ChangeNotifier {
       itemImage: cartMap['image'],
       itemUnit: cartMap['unit'],
     );
-      notifyListeners();
-
-    return null;
   }
 
   // Future<void> loadCart() async {
@@ -181,8 +178,8 @@ class CartProvider extends ChangeNotifier {
           itemUnit: cartMap['unit'],
         );
         // Check if the item already exists in _cartItems
-        final index = _cartItems
-            .indexWhere((item) => item.itemName == cartItem.itemName);
+        final index =
+            _cartItems.indexWhere((item) => item.itemName == cartItem.itemName);
         if (index >= 0) {
           // If it exists, update the quantity
           _cartItems[index].qnt++;
@@ -190,7 +187,7 @@ class CartProvider extends ChangeNotifier {
           // If it doesn't exist, add it to _cartItems
           _cartItems.add(cartItem);
         }
-            }
+      }
     }
     notifyListeners();
   }

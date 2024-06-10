@@ -34,6 +34,16 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>LSApplicationCategoryType</key>
+    <string></string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+    <string>phonepe</string>
+    <string>tez</string>
+    <string>paytmmp</string>
+    <string>bhim</string>
+    <string>credpay</string>
+    </array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
