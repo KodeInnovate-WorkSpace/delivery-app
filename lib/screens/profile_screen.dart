@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/notification_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,6 +19,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -41,6 +43,15 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
+            // Text(
+            //   userProvider.username.isEmpty
+            //       ? "Hello, "
+            //       : '${userProvider.username}',
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     color: Colors.grey[700],
+            //   ),
+            // ),
             Text(
               authProvider.phone.isEmpty
                   ? "Please Login"
@@ -67,7 +78,7 @@ class ProfilePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const YourOrdersPage()),
+                      builder: (context) => const OrderHistoryScreen()),
                 );
               },
             ),

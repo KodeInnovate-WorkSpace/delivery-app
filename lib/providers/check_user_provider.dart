@@ -24,13 +24,17 @@ class CheckUserProvider with ChangeNotifier {
       CollectionReference users = firestore.collection('users');
       final querySnapshot = await users.where('phone', isEqualTo: phone).get();
 
-      // get username
-      final userQuerySnapshot =
-          await users.where('name', isEqualTo: phone).get();
-
-      username = userQuerySnapshot.toString();
-
       _isUserExist = querySnapshot.docs.isNotEmpty;
+
+      // get username
+      if (_isUserExist) {
+        // Assuming there's only one document with the phone number
+        final userDoc = querySnapshot.docs.first;
+        username = userDoc['name'] as String;
+      } else {
+        username = 'Username';
+      }
+
       notifyListeners();
     } catch (e) {
       log("Error: $e");
