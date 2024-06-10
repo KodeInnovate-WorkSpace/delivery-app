@@ -9,6 +9,8 @@ class CheckUserProvider with ChangeNotifier {
   bool _isUserExist = false;
   bool get isUserExist => _isUserExist;
 
+  String username = 'Username';
+
   int userPhoneNum = 0;
   CheckUserProvider();
 
@@ -21,6 +23,12 @@ class CheckUserProvider with ChangeNotifier {
     try {
       CollectionReference users = firestore.collection('users');
       final querySnapshot = await users.where('phone', isEqualTo: phone).get();
+
+      // get username
+      final userQuerySnapshot =
+          await users.where('name', isEqualTo: phone).get();
+
+      username = userQuerySnapshot.toString();
 
       _isUserExist = querySnapshot.docs.isNotEmpty;
       notifyListeners();

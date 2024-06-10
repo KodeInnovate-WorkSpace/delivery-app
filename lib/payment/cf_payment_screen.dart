@@ -8,7 +8,6 @@ import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:http/http.dart' as http;
-
 import '../services/random_number.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -26,7 +25,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   String customOrderId = randomWithNDigits(6).toString();
-
+  String customCustomerId = randomWithNDigits(6).toString();
   Future<String?> createSession() async {
     try {
       final response = await http.post(
@@ -85,7 +84,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void onError(CFErrorResponse errorResponse, String orderId) {
     // Configure Error callback
   }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -97,7 +95,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
           child: Column(
             children: [
               const Text("Click below to open the checkout page"),
-              TextButton(onPressed: webCheckout, child: const Text("Pay Now")),
+              TextButton(
+                onPressed: () => webCheckout(),
+                child: const Text("Pay Now"),
+              ),
             ],
           ),
         ),

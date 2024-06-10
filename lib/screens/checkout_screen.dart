@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
+
 import '../payment/cf_payment_screen.dart';
+import '../services/payment_service.dart';
 import '../widget/add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
@@ -53,7 +55,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
             "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
       }
     });
-
     return NetworkHandler(
       child: Scaffold(
         resizeToAvoidBottomInset:
@@ -564,10 +565,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                               }
 
                               if (_selectedPaymentMethod == 'Banks') {
+                                // webCheckout(phoneNumber, uName, total_amount);
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const PaymentScreen(),
+                                    builder: (context) => const PaymentApp(),
+                                    // builder: (context) => const PaymentScreen(),
                                   ),
                                 );
                               } else if (_selectedPaymentMethod == 'Cash') {
