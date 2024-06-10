@@ -50,9 +50,7 @@ class _PaymentAppState extends State<PaymentApp> {
     var url = Uri.parse('https://sandbox.cashfree.com/pg/orders');
     var headers = {
       'Content-Type': 'application/json',
-      'X-Client-Id': '6983506cac38e05faf1b6e3085053896',
-      'X-Client-Secret':
-          'cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8',
+
       'x-api-version': '2023-08-01',
     };
 
