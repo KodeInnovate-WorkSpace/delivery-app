@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:speedy_delivery/shared/show_msg.dart';
 
 class Order {
   final String orderId; // New field for order ID
@@ -58,25 +60,70 @@ class OrderProvider with ChangeNotifier {
 
   List<Order> get orders => _orders;
 
+  OrderProvider() {
+    fetchOrders();
+  }
+
   void addOrder(Order order) {
-    // Generate a unique order ID
     String orderId = _generateOrderId();
     order = order.copyWith(orderId: orderId);
 
     _orders.add(order);
+    FirebaseFirestore.instance.collection('Extras').add({
+      'orderId': order.orderId,
+      'productName': order.productName,
+      'productImage': order.productImage,
+      'quantity': order.quantity,
+      'price': order.price,
+      'totalPrice': order.totalPrice,
+      'paymentMode': order.paymentMode,
+      'address': order.address,
+      'phone': order.phone,
+      'transactionId': order.transactionId,
+      'userId': order.userId,
+      'status': order.status,
+    });
+
     notifyListeners();
   }
 
   String _generateOrderId() {
     int randomNumber = Random().nextInt(9000) + 1000;
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    return 'ORD_$timestamp$randomNumber';
+    return 'ORD_${timestamp}_$randomNumber';
   }
 
-  void updateOrderStatus(Order order, int status) {
+
+  Future<void> fetchOrders() async {
+    final snapshot = await FirebaseFirestore.instance.collection('Extras').get();
+    _orders = snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Order(
+        orderId: data['orderId'],
+        productName: data['productName'],
+        productImage: data['productImage'],
+        quantity: data['quantity'],
+        price: data['price'],
+        totalPrice: data['totalPrice'],
+        paymentMode: data['paymentMode'],
+        address: data['address'],
+        phone: data['phone'],
+        transactionId: data['transactionId'],
+        userId: data['userId'],
+        status: data['status'] ?? 0,
+      );
+    }).toList();
+    notifyListeners();
+  }
+
+  Future<void> updateOrderStatus(Order order, int status) async {
     int orderIndex = _orders.indexWhere((o) => o.orderId == order.orderId);
     if (orderIndex != -1) {
       _orders[orderIndex] = order.copyWith(status: status);
+      await FirebaseFirestore.instance
+          .collection('Extras')
+          .doc(order.orderId)
+          .update({'status': status});
       notifyListeners();
     }
   }
@@ -85,29 +132,17 @@ class OrderProvider with ChangeNotifier {
     _orders.remove(order);
     notifyListeners();
   }
-
-  // delete from firebase
-  // Future<void> deleteCategory(dynamic categoryValue) async {
-  //   try {
-  //     Query query = FirebaseFirestore.instance.collection('category');
-  //
-  //     // Add conditions to your query if any
-  //     if (categoryValue != null) {
-  //       query = query.where(FieldPath(const ['category_id']),
-  //           isEqualTo: categoryValue); // Assuming 'catId' is the field name
-  //     }
-  //
-  //     // Get the documents matching the query
-  //     QuerySnapshot querySnapshot = await query.get();
-  //     for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-  //       await doc.reference.delete();
-  //     }
-  //     log("Category Deleted!");
-  //     showMessage("Category Deleted!");
-  //   } catch (e) {
-  //     showMessage("Error deleting category");
-  //
-  //     log("Error deleting category: $e");
-  //   }
-  // }
+// void deleteOrder(Order order) {
+//   _orders.remove(order);
+//   FirebaseFirestore.instance
+//       .collection('Extras')
+//       .where('orderId', isEqualTo: order.orderId)
+//       .get()
+//       .then((snapshot) {
+//     for (var doc in snapshot.docs) {
+//       doc.reference.delete();
+//     }
+//   });
+//   notifyListeners();
+// }
 }

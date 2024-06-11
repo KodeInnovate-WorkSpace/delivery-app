@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import '../providers/order_provider.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
@@ -11,37 +10,6 @@ class OrderHistoryScreen extends StatefulWidget {
 }
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
-  // Flag to track whether order data has been stored in Firestore
-  bool _isOrderDataStored = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isOrderDataStored) {
-      // Accessing the provider inside didChangeDependencies
-      final orderProvider = Provider.of<OrderProvider>(context);
-      if (orderProvider.orders.isNotEmpty) {
-        final order = orderProvider.orders[0]; // Assuming orders is not empty
-        // Save order to Firestore
-        FirebaseFirestore.instance.collection('OrderHistory').add({
-          'orderId': order.orderId,
-          'productName': order.productName,
-          'productImage': order.productImage,
-          'price': order.price,
-          'quantity': order.quantity,
-          'address': order.address,
-          'paymentMode': order.paymentMode,
-          'transactionId': order.transactionId,
-          'userId': order.userId,
-        });
-        // Set flag to true to indicate order data has been stored
-        setState(() {
-          _isOrderDataStored = true;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProvider>(context);
@@ -77,48 +45,62 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 bool isNewOrder = index == 0 ||
                     order.orderId != orderProvider.orders[index - 1].orderId;
 
-                return Card(
-                  color: const Color(0xffeaf1fc),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isNewOrder)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Order ID: ${order.orderId}'),
-                        ),
-                      ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(order.productImage),
-                        ),
-                        title: Text(order.productName),
-                        subtitle: Text(
-                            'Price: ₹${order.price}, Quantity: ${order.quantity}'),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            orderProvider.deleteOrder(order);
-                          },
-                        ),
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderTrackingScreen(),
                       ),
-                      if (isNewOrder && order.paymentMode == 'Cash')
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text('Address: ${order.address}'),
-                        ),
-                      if (isNewOrder && order.paymentMode == 'Bank')
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Address: ${order.address}'),
-                              Text('Transaction ID: ${order.transactionId}'),
-                              Text('User ID: ${order.userId}'),
-                            ],
+                    );
+                  },
+                  child: Card(
+                    color: const Color(0xffeaf1fc),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (isNewOrder)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Order ID: ${order.orderId}'),
+                          ),
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(order.productImage),
+                          ),
+                          title: Text(order.productName),
+                          subtitle: Text(
+                              'Price: ₹${order.price}, Quantity: ${order.quantity}, Total Price: ₹${order.totalPrice}'),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () async {
+                              setState(() {
+                                orderProvider.deleteOrder(order);
+                              });
+                            },
                           ),
                         ),
-                    ],
+                        if (isNewOrder && order.paymentMode == 'Cash')
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text('Address: ${order.address}'),
+                          ),
+                        if (isNewOrder && order.paymentMode == 'Bank')
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Address: ${order.address}'),
+                                Text('Transaction ID: ${order.transactionId}'),
+                                Text('User ID: ${order.userId}'),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -126,3 +108,241 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 }
+
+// class OrderTrackingScreen extends StatefulWidget {
+//   final String orderId;
+//
+//   const OrderTrackingScreen({required this.orderId, super.key});
+//
+//   @override
+//   _OrderTrackingScreenState createState() => _OrderTrackingScreenState();
+// }
+//
+// class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
+//   late Stream<DocumentSnapshot> _orderStream;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _orderStream = FirebaseFirestore.instance
+//         .collection('Extras')
+//         .doc(widget.orderId)
+//         .snapshots();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Order Tracking'),
+//       ),
+//       body: StreamBuilder<DocumentSnapshot>(
+//         stream: _orderStream,
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+//           if (!snapshot.hasData || !snapshot.data!.exists) {
+//             return const Center(child: Text('Order not found'));
+//           }
+//           final orderData = snapshot.data!.data() as Map<String, dynamic>;
+//           final currentStatus = orderData['status'] ?? 0;
+//
+//           return Stepper(
+//             currentStep: currentStatus,
+//             steps: [
+//               Step(
+//                 title: const Text('Order Confirmed'),
+//                 content: const Text('Your order has been confirmed.'),
+//                 isActive: currentStatus >= 0,
+//               ),
+//               Step(
+//                 title: const Text('Order in Process'),
+//                 content: const Text('Your order is being processed.'),
+//                 isActive: currentStatus >= 1,
+//               ),
+//               Step(
+//                 title: const Text('Order Pickup'),
+//                 content: const Text('Your order is ready for pickup.'),
+//                 isActive: currentStatus >= 2,
+//               ),
+//               Step(
+//                 title: const Text('Order Delivered'),
+//                 content: const Text('Your order has been delivered.'),
+//                 isActive: currentStatus >= 3,
+//               ),
+//               Step(
+//                 title: const Text('Order Received'),
+//                 content: const Text('You have received your order.'),
+//                 isActive: currentStatus >= 4,
+//               ),
+//             ],
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+//
+
+class OrderTrackingScreen extends StatefulWidget {
+  const OrderTrackingScreen({super.key});
+
+  @override
+  _OrderTrackingScreenState createState() => _OrderTrackingScreenState();
+}
+
+class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
+  int _currentStatus = 0;
+
+  void _incrementStatus() {
+    setState(() {
+      if (_currentStatus < 4) {
+        _currentStatus++;
+      }
+    });
+  }
+
+  void _decrementStatus() {
+    setState(() {
+      if (_currentStatus > 0) {
+        _currentStatus--;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Order Tracking Demo'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Stepper(
+              currentStep: _currentStatus,
+              steps: [
+                Step(
+                  title: const Text('Order Confirmed'),
+                  content: const Text('Your order has been confirmed.'),
+                  isActive: _currentStatus >= 0,
+                ),
+                Step(
+                  title: const Text('Order in Process'),
+                  content: const Text('Your order is being processed.'),
+                  isActive: _currentStatus >= 1,
+                ),
+                Step(
+                  title: const Text('Order Pickup'),
+                  content: const Text('Your order is ready for pickup.'),
+                  isActive: _currentStatus >= 2,
+                ),
+                Step(
+                  title: const Text('Order Delivered'),
+                  content: const Text('Your order has been delivered.'),
+                  isActive: _currentStatus >= 3,
+                ),
+                Step(
+                  title: const Text('Order Received'),
+                  content: const Text('You have received your order.'),
+                  isActive: _currentStatus >= 4,
+                ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _decrementStatus,
+                child: const Text('Previous Step'),
+              ),
+              const SizedBox(width: 20),
+              ElevatedButton(
+                onPressed: _incrementStatus,
+                child: const Text('Next Step'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+}
+
+// class OrderTrackingScreen extends StatefulWidget {
+//   final Order order;
+//
+//   const OrderTrackingScreen({required this.order, super.key});
+//
+//   @override
+//   _OrderTrackingScreenState createState() => _OrderTrackingScreenState();
+// }
+//
+// class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
+//   late Stream<DocumentSnapshot> _orderStream;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _orderStream = FirebaseFirestore.instance
+//         .collection('Extras')
+//         .doc(widget.order.orderId)
+//         .snapshots();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Order Tracking'),
+//       ),
+//       body: StreamBuilder<DocumentSnapshot>(
+//         stream: _orderStream,
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return Center(child: CircularProgressIndicator());
+//           }
+//           if (!snapshot.hasData || !snapshot.data!.exists) {
+//             return Center(child: Text('Order not found'));
+//           }
+//           final orderData = snapshot.data!.data() as Map<String, dynamic>;
+//           final currentStatus = orderData['status'] ?? 0;
+//
+//           return Stepper(
+//             currentStep: currentStatus,
+//             steps: [
+//               Step(
+//                 title: const Text('Order Confirmed'),
+//                 content: const Text('Your order has been confirmed.'),
+//                 isActive: currentStatus >= 0,
+//               ),
+//               Step(
+//                 title: const Text('Order in Process'),
+//                 content: const Text('Your order is being processed.'),
+//                 isActive: currentStatus >= 1,
+//               ),
+//               Step(
+//                 title: const Text('Order Pickup'),
+//                 content: const Text('Your order is ready for pickup.'),
+//                 isActive: currentStatus >= 2,
+//               ),
+//               Step(
+//                 title: const Text('Order Delivered'),
+//                 content: const Text('Your order has been delivered.'),
+//                 isActive: currentStatus >= 3,
+//               ),
+//               Step(
+//                 title: const Text('Order Received'),
+//                 content: const Text('You have received your order.'),
+//                 isActive: currentStatus >= 4,
+//               ),
+//             ],
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

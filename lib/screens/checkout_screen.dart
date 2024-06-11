@@ -635,6 +635,7 @@ import 'package:speedy_delivery/shared/show_msg.dart';
 import 'package:uuid/uuid.dart';
 import '../payment/cf_payment_screen.dart';
 import '../providers/order_provider.dart';
+import '../services/flutter_upi.dart';
 import '../services/payment_service.dart';
 import '../widget/add_to_cart_button.dart';
 import '../widget/network_handler.dart';
@@ -652,7 +653,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   String _defaultAdd = "No address available";
   String _newAdd = '';
   String _selectedPaymentMethod = 'Banks';
-  final uuid = Uuid();
+  final uuid = const Uuid();
 
   @override
   Widget build(BuildContext context) {
@@ -1215,24 +1216,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const PaymentApp(),
+                                              // const PaymentApp(),
+                                              const UPIPayment(),
+                                          // const Screen(),
                                           // builder: (context) => const PaymentScreen(),
                                         ),
                                       );
                                     } else if (_selectedPaymentMethod ==
                                         'Cash') {
-                                      // go to demo page
+                                      // Generate a single order ID for the entire checkout
+                                      String orderId = generateOrderId();
+
                                       Navigator.of(context)
                                           .push(
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              OrderConfirmationPage(),
+                                              const OrderConfirmationPage(),
                                         ),
                                       )
                                           .then((value) {
                                         for (var item in cartProvider.cart) {
                                           orderProvider.addOrder(
                                             Order(
+                                              orderId:
+                                                  orderId, // Use the same order ID for all items
                                               paymentMode:
                                                   _selectedPaymentMethod,
                                               productName: item.itemName,
@@ -1242,12 +1249,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                               totalPrice:
                                                   (item.itemPrice * item.qnt)
                                                       .toDouble(),
-                                              //paymentMode: 'Cash',
                                               address: _defaultAdd,
                                               phone:
                                                   '', // Add phone number if available
                                               transactionId: '',
-                                              userId: '', orderId: '',
+                                              userId: '',
                                             ),
                                           );
                                         }

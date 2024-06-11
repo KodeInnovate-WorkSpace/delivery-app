@@ -180,7 +180,7 @@ class CategoryScreenState extends State<CategoryScreen> {
   Future<void> fetchProducts(int subCategoryId) async {
     try {
       final productSnap =
-          await FirebaseFirestore.instance.collection("products").get();
+      await FirebaseFirestore.instance.collection("products").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
@@ -230,11 +230,11 @@ class CategoryScreenState extends State<CategoryScreen> {
                 // Side navbar
                 sidebar(context, widget.subCategories, fetchProducts,
                     selectedSubCategoryId, (id) {
-                  setState(() {
-                    selectedSubCategoryId = id;
-                    fetchProducts(id);
-                  });
-                }),
+                      setState(() {
+                        selectedSubCategoryId = id;
+                        fetchProducts(id);
+                      });
+                    }),
                 ProductCard(
                   productList: products,
                 ),
@@ -260,7 +260,7 @@ class CategoryScreenState extends State<CategoryScreen> {
                 },
                 backgroundColor: Colors.white,
                 child:
-                    const Icon(Icons.shopping_cart_sharp, color: Colors.black),
+                const Icon(Icons.shopping_cart_sharp, color: Colors.black),
               ),
             ),
           ],
