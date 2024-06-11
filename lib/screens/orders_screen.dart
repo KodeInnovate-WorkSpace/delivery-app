@@ -50,7 +50,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => OrderTrackingScreen(),
+                        builder: (context) => const OrderTrackingScreen(),
                       ),
                     );
                   },

@@ -30,9 +30,10 @@ dependencies:
   provider: ^6.1.2
   share_plus: ^9.0.0
   shared_preferences: ^2.2.3
-  upi_india: ^3.0.1
   url_launcher: ^6.2.6
 
+  http: any
+  uuid: any
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

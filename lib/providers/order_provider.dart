@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:speedy_delivery/shared/show_msg.dart';
 
 class Order {
   final String orderId; // New field for order ID
@@ -40,16 +39,16 @@ class Order {
   }) {
     return Order(
       orderId: orderId ?? this.orderId,
-      productName: this.productName,
-      productImage: this.productImage,
-      quantity: this.quantity,
-      price: this.price,
-      totalPrice: this.totalPrice,
-      paymentMode: this.paymentMode,
-      address: this.address,
-      phone: this.phone,
-      transactionId: this.transactionId,
-      userId: this.userId,
+      productName: productName,
+      productImage: productImage,
+      quantity: quantity,
+      price: price,
+      totalPrice: totalPrice,
+      paymentMode: paymentMode,
+      address: address,
+      phone: phone,
+      transactionId: transactionId,
+      userId: userId,
       status: status ?? this.status,
     );
   }

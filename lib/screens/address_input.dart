@@ -361,7 +361,7 @@ import '../providers/address_provider.dart';
 import '../providers/auth_provider.dart';
 
 class AddressInputForm extends StatefulWidget {
-  const AddressInputForm({Key? key}) : super(key: key);
+  const AddressInputForm({super.key});
 
   @override
   State<AddressInputForm> createState() => _AddressInputFormState();
@@ -434,9 +434,9 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   child: TextFormField(
                     controller: _flatController,
                     cursorColor: Colors.black,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Flat No.",
-                      prefixIcon: const Icon(Icons.home),
+                      prefixIcon: Icon(Icons.home),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -452,9 +452,9 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   child: TextFormField(
                     controller: _floorController,
                     cursorColor: Colors.black,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Floor",
-                      prefixIcon: const Icon(Icons.chalet),
+                      prefixIcon: Icon(Icons.chalet),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -470,9 +470,9 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   child: TextFormField(
                     controller: _buildingController,
                     cursorColor: Colors.black,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Building name",
-                      prefixIcon: const Icon(Icons.apartment),
+                      prefixIcon: Icon(Icons.apartment),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -488,9 +488,9 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   child: TextFormField(
                     controller: _landmarkController,
                     cursorColor: Colors.black,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Landmark",
-                      prefixIcon: const Icon(Icons.landscape),
+                      prefixIcon: Icon(Icons.landscape),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -506,9 +506,9 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   child: TextFormField(
                     controller: _nameController,
                     cursorColor: Colors.black,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Name",
-                      prefixIcon: const Icon(Icons.person),
+                      prefixIcon: Icon(Icons.person),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -525,9 +525,9 @@ class _AddressInputFormState extends State<AddressInputForm> {
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     cursorColor: Colors.black,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Phone",
-                      prefixIcon: const Icon(Icons.phone),
+                      prefixIcon: Icon(Icons.phone),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {

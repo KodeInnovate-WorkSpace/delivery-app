@@ -457,7 +457,7 @@ packages:
     source: hosted
     version: "0.2.3"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "761a297c042deedc1ffbb156d6e2af13886bb305c2a343a4d972504cd67dd938"
@@ -1005,14 +1005,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  upi_india:
-    dependency: "direct main"
-    description:
-      name: upi_india
-      sha256: "483f1425ee8f0897397861b107e50b3aa195fec71215f86e906b625e841e90dd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
   url_launcher:
     dependency: "direct main"
     description:
@@ -1078,7 +1070,7 @@ packages:
     source: hosted
     version: "3.1.1"
   uuid:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uuid
       sha256: "814e9e88f21a176ae1359149021870e87f7cddaf633ab678a5d2b0bff7fd1ba8"
