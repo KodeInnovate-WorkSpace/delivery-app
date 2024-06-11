@@ -1217,7 +1217,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               // const PaymentApp(),
-                                              const UPIPayment(),
+                                               UPIPayment(),
                                           // const Screen(),
                                           // builder: (context) => const PaymentScreen(),
                                         ),
