@@ -1,56 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:speedy_delivery/firebase_options.dart';
-// import 'package:speedy_delivery/providers/auth_provider.dart';
-// import 'package:speedy_delivery/providers/cart_provider.dart';
-// import 'package:speedy_delivery/providers/check_user_provider.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:speedy_delivery/screens/splash_screen.dart';
-//
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//
-//   runApp(
-//     MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (_) => MyAuthProvider()),
-//         ChangeNotifierProvider(create: (_) => CartProvider()),
-//         ChangeNotifierProvider(create: (_) => CheckUserProvider()),
-//         // Add other providers if needed
-//       ],
-//       child: const MyApp(),
-//     ),
-//   );
-// }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       theme: ThemeData(
-//         fontFamily: "Gilroy-Regular",
-//         scaffoldBackgroundColor: Colors.white,
-//         appBarTheme: const AppBarTheme(
-//           elevation: 3,
-//           shadowColor: Colors.black54,
-//           backgroundColor: Colors.white,
-//           surfaceTintColor: Colors.white,
-//           titleTextStyle: TextStyle(
-//               fontSize: 16, fontFamily: 'Gilroy-SemiBold', color: Colors.black),
-//         ),
-//       ),
-//       home: const SplashScreen(),
-//     );
-//   }
-// }
-//
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +14,7 @@ import 'package:speedy_delivery/screens/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  // await dotenv.load(fileName: "C:/Users/Farid/Desktop/speedy_delivery/lib/.env");
   runApp(
     MultiProvider(
       providers: [

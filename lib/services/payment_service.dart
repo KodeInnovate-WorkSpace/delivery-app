@@ -13,7 +13,6 @@ import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
-import 'package:speedy_delivery/services/random_number.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 

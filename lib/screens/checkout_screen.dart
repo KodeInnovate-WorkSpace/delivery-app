@@ -8,11 +8,12 @@ import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
+import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:speedy_delivery/screens/orders_screen.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import 'package:uuid/uuid.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
-import '../services/payment_service.dart';
 import '../widget/add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
@@ -40,7 +41,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   final uuid = const Uuid();
 
   //Payment gateway
+
   double totalAmt = 0.0;
+
   // Generate a unique order ID
   String orderId = const Uuid().v4();
   String customerId = const Uuid().v4();
@@ -59,11 +62,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      'x-client-id': "TEST102073159c36086010050049f41951370201",
-      'x-client-secret':
-          "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      'x-client-id': "",
+      'x-client-secret':"",
       'x-api-version': '2023-08-01', // This is latest version for API
-      // 'x-request-id': 'fluterwings'
     };
     log("$headers");
     var request = http.Request(
@@ -98,6 +99,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
 
   void verifyPayment(String orderId) {
     log("Verify Payment");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
+    );
+    showMessage("Payment Successful");
   }
 
   void onError(CFErrorResponse errorResponse, String orderId) {
@@ -122,11 +128,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
       final paymentSessionId = await createSessionID(orderId);
       var session = CFSessionBuilder()
           .setEnvironment(CFEnvironment.SANDBOX)
-          // .setOrderId(orderId)
           .setOrderId(orderId)
           .setPaymentSessionId(paymentSessionId["payment_session_id"])
-          // .setPaymentSessionId(
-          //     "session_bjAYHa4w9LurE8ge89_X86D60IfWekLhirl4H0m4VxeBaj88_7OFP1Q0XYBh7dsJR_ELh6czuupBif2bWvLDWYdWq3OkCu24XZXfPb5bKqDr") // Set the retrieved token here
           .build();
       return session;
     } on CFException catch (e) {
