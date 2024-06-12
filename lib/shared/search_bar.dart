@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/screens/search_functionality.dart';
+
 
 Widget searchBar(BuildContext context) {
   return GestureDetector(
     onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SearchPage()), // Replace SearchScreen with your desired screen
-      );
+      Navigator.pushNamed(context, '/search');
+      
     },
     child: AbsorbPointer(
       child: TextField(

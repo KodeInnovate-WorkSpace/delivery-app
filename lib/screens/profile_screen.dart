@@ -2,10 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/screens/notification_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'about_us_screen.dart';
+import 'address_screen.dart';
+import 'orders_screen.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -13,7 +18,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-
+    // final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -36,10 +41,19 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
+            // Text(
+            //   userProvider.username.isEmpty
+            //       ? "Hello, "
+            //       : '${userProvider.username}',
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     color: Colors.grey[700],
+            //   ),
+            // ),
             Text(
               authProvider.phone.isEmpty
                   ? "Please Login"
-                  : '+91 ${authProvider.phone}',
+                  : authProvider.textController.text,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[700],
@@ -62,7 +76,19 @@ class ProfilePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const YourOrdersPage()),
+                      builder: (context) => const OrderHistoryScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.home_work),
+              title: const Text('Your address'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddressScreen()),
                 );
               },
             ),
@@ -75,18 +101,25 @@ class ProfilePage extends StatelessWidget {
                 color: Colors.grey[600],
               ),
             ),
-            ListTile(
-              leading: const Icon(Icons.shopping_cart),
-              title: const Text('Cart'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
-            ),
+
             ListTile(
               leading: const Icon(Icons.share),
               title: const Text('Share the app'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
                 _shareApp();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Admin Screen'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminScreen()),
+                );
+                // Navigator.pushNamed(context, '/admin');
               },
             ),
             ListTile(
@@ -109,18 +142,65 @@ class ProfilePage extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.notifications_sharp),
+              title: const Text('Notification Preferences'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationSettingsPage()),
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Log out'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.remove('isLoggedIn');
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SigninScreen()),
-                  (route) => false,
-                );
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          backgroundColor: Colors.white,
+                          title: const Text(
+                            "Logout",
+                            style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
+                          ),
+                          content:
+                              const Text("Are you sure you want to logout?"),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text(
+                                      "No",
+                                      style: TextStyle(color: Colors.red),
+                                    )),
+                                TextButton(
+                                    onPressed: () async {
+                                      await FirebaseAuth.instance.signOut();
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      await prefs.remove('isLoggedIn');
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SigninScreen()),
+                                        (route) => false,
+                                      );
+                                    },
+                                    child: const Text(
+                                      "Yes",
+                                      style: TextStyle(color: Colors.black),
+                                    )),
+                              ],
+                            )
+                          ],
+                        ));
               },
             ),
             const SizedBox(height: 40), // Add space below "Log out"
@@ -159,54 +239,8 @@ void _shareApp() {
 }
 
 void _launchPlayStore() async {
-  const url = 'https://play.google.com/store/apps';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
-
-class YourOrdersPage extends StatelessWidget {
-  const YourOrdersPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your orders'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      body: const Center(
-        child: Text('Your orders content goes here'),
-      ),
-    );
-  }
-}
-
-class AboutUsPage extends StatelessWidget {
-  const AboutUsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('About Us'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      body: const Center(
-        child: Text('About us content goes here'),
-      ),
-    );
+  final Uri url = Uri.parse('https://play.google.com/store/apps');
+  if (!await launchUrl(url)) {
+    throw Exception('Could not launch $url');
   }
 }
