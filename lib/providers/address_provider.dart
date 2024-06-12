@@ -66,7 +66,6 @@ class AddressProvider with ChangeNotifier {
       mylandmark: addressMap['mylandmark'],
       // Add other fields as necessary
     );
-
   }
 
   Future<void> loadAddresses() async {
@@ -85,7 +84,7 @@ class AddressProvider with ChangeNotifier {
           mylandmark: addressMap['mylandmark'],
           // Add other fields as necessary
         ));
-            }
+      }
     }
     notifyListeners();
   }
