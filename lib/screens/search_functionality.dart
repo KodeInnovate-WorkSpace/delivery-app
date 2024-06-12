@@ -32,7 +32,7 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(filterProducts);
     fetchProductsFromFirestore();
     loadRecentSearches();
-    loadProductSearches(); // Load product searches
+    loadProductSearches();
   }
 
   Future<void> fetchProductsFromFirestore() async {
@@ -370,29 +370,6 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
 
-            // checkout screen
-            // Positioned(
-            //   bottom: 25,
-            //   right: 20,
-            //   child: FloatingActionButton(
-            //     hoverColor: Colors.transparent,
-            //     elevation: 2,
-            //     onPressed: () {
-            //       HapticFeedback.heavyImpact();
-            //
-            //       Navigator.push(
-            //           context,
-            //           MaterialPageRoute(
-            //               builder: (context) => const CheckoutScreen()));
-            //       // Navigator.pushNamed(context, '/checkout');
-            //     },
-            //     backgroundColor: Colors.white,
-            //     child: const Icon(
-            //       Icons.shopping_cart_sharp,
-            //       color: Colors.black,
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
