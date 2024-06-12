@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -57,20 +56,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
     super.initState();
     cfPaymentGatewayService.setCallback(verifyPayment, onError);
   }
+
   String _generateOrderId() {
     int randomNumber = Random().nextInt(9000) + 1000;
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     return 'ORD_${timestamp}_$randomNumber';
   }
+
   createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      'x-client-id': "TEST102073159c36086010050049f41951370201",
+      'x-client-id': "",
       'x-client-secret':
-          "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+          "",
       'x-api-version': '2023-08-01', // This is latest version for API
     };
-    print("$headers");
+    debugPrint("$headers");
     var request = http.Request(
         'POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
     request.body = json.encode({
@@ -96,13 +97,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
       // response and you can get sessionid for checkout
       return jsonDecode(await response.stream.bytesToString());
     } else {
-      print(await response.stream.bytesToString());
-      print("${response.reasonPhrase}");
+      debugPrint(await response.stream.bytesToString());
+      debugPrint("${response.reasonPhrase}");
     }
   }
 
   void verifyPayment(String orderId) {
-    print("Verify Payment");
+    debugPrint("Verify Payment");
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
@@ -111,8 +112,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   }
 
   void onError(CFErrorResponse errorResponse, String orderId) {
-    print(errorResponse.getMessage().toString());
-    print("Error while making payment");
+    debugPrint(errorResponse.getMessage().toString());
+    debugPrint("Error while making payment");
   }
 
   webCheckout() async {
@@ -122,7 +123,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
           CFWebCheckoutPaymentBuilder().setSession(session!).build();
       cfPaymentGatewayService.doPayment(cfWebCheckout);
     } on CFException catch (e) {
-      print(e.message);
+      debugPrint(e.message);
     }
   }
 
@@ -137,7 +138,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
           .build();
       return session;
     } on CFException catch (e) {
-      print(e.message);
+      debugPrint(e.message);
     }
     return null;
   }
@@ -165,7 +166,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
 
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
-      print(e.message);
+      debugPrint(e.message);
     }
   }
   //Payment gateway end
@@ -570,7 +571,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                                     true); // Close the bottom modal
                                                                 showMessage(
                                                                     "Address Changed!");
-                                                                print("Address: $_defaultAdd");
+                                                                debugPrint(
+                                                                    "Address: $_defaultAdd");
                                                               },
                                                               child: ListTile(
                                                                 title: Text(
@@ -723,60 +725,76 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                       showMessage("Please select an address");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) => const AddressInputForm(),
+                                          builder: (context) =>
+                                              const AddressInputForm(),
                                         ),
                                       );
                                       return; // Exit the function to prevent navigation to payment screen
                                     }
 
-                                    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+                                    final orderProvider =
+                                        Provider.of<OrderProvider>(context,
+                                            listen: false);
                                     String orderId = _generateOrderId();
 
                                     if (_selectedPaymentMethod == 'Banks') {
-                                      pay().then((value) {
-                                        List<Order> orders = cartProvider.cart.map((item) {
+                                      // pay()
+                                      webCheckout().then((value) {
+                                        List<Order> orders =
+                                            cartProvider.cart.map((item) {
                                           return Order(
-                                            orderId: orderId, // Use the same order ID for all items
+                                            orderId:
+                                                orderId, // Use the same order ID for all items
                                             paymentMode: _selectedPaymentMethod,
                                             productName: item.itemName,
                                             productImage: item.itemImage,
                                             quantity: item.qnt,
                                             price: item.itemPrice.toDouble(),
-                                            totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                                            totalPrice:
+                                                (item.itemPrice * item.qnt)
+                                                    .toDouble(),
                                             address: _defaultAdd,
-                                            phone: '', // Add phone number if available
-                                            transactionId: '',
-                                            userId: '',
+                                            // Add phone number if available
+                                            // transactionId: '',
                                           );
                                         }).toList();
 
                                         orderProvider.addOrders(orders);
-                                        cartProvider.clearCart(); // Clear the cart
+                                        cartProvider
+                                            .clearCart(); // Clear the cart
                                       });
-                                    } else if (_selectedPaymentMethod == 'Cash') {
-                                      Navigator.of(context).push(
+                                    } else if (_selectedPaymentMethod ==
+                                        'Cash') {
+                                      Navigator.of(context)
+                                          .push(
                                         MaterialPageRoute(
-                                          builder: (context) => const OrderConfirmationPage(),
+                                          builder: (context) =>
+                                              const OrderConfirmationPage(),
                                         ),
-                                      ).then((value) {
-                                        List<Order> orders = cartProvider.cart.map((item) {
+                                      )
+                                          .then((value) {
+                                        List<Order> orders =
+                                            cartProvider.cart.map((item) {
                                           return Order(
-                                            orderId: orderId, // Use the same order ID for all items
+                                            orderId:
+                                                orderId, // Use the same order ID for all items
                                             paymentMode: _selectedPaymentMethod,
                                             productName: item.itemName,
                                             productImage: item.itemImage,
                                             quantity: item.qnt,
                                             price: item.itemPrice.toDouble(),
-                                            totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                                            totalPrice:
+                                                (item.itemPrice * item.qnt)
+                                                    .toDouble(),
                                             address: _defaultAdd,
-                                            phone: '', // Add phone number if available
-                                            transactionId: '',
-                                            userId: '',
+                                            // Add phone number if available
+                                            // transactionId: '',
                                           );
                                         }).toList();
 
                                         orderProvider.addOrders(orders);
-                                        cartProvider.clearCart(); // Clear the cart
+                                        cartProvider
+                                            .clearCart(); // Clear the cart
                                       });
                                     }
                                   },

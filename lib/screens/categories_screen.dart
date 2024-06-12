@@ -111,12 +111,20 @@ class CategoryScreenState extends State<CategoryScreen> {
                   HapticFeedback.selectionClick();
 
                   // Navigate to CheckoutScreen and wait for it to pop
-                  await Navigator.push(
+
+                  await Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const CheckoutScreen(),
                     ),
                   );
+
+                  // await Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const CheckoutScreen(),
+                  //   ),
+                  // );
 
                   // Rebuild the widget to reflect the updated cart state
                   setState(() {});

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:developer';
 import 'auth_provider.dart';
 import 'package:intl/intl.dart';
@@ -83,6 +84,7 @@ class CheckUserProvider with ChangeNotifier {
       if (!checkUserProvider.isUserExist) {
         // Add new user data if user does not exist
         await firestore.collection('users').add({
+          'id': const Uuid().v4(),
           'phone': authProvider.phone,
           field: value,
           // Add other user data here if necessary

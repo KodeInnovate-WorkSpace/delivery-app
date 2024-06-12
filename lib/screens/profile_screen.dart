@@ -19,7 +19,6 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     // final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -54,7 +53,7 @@ class ProfilePage extends StatelessWidget {
             Text(
               authProvider.phone.isEmpty
                   ? "Please Login"
-                  : '+91 ${authProvider.phone}',
+                  : authProvider.textController.text,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[700],

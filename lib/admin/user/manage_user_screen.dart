@@ -27,19 +27,8 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
     super.dispose();
   }
 
-  // void _refreshUserList() async {
-  //   // Clear existing data
-  //   src.userData.clear();
-  //
-  //   // Reload data from the server (or local storage)
-  //   await src._loaduserData();
-  //
-  //   // Notify listeners about the change (important!)
-  //   setState(() {});
-  // }
-
   Future<void> _refreshPage() async {
-    await src._loaduserData();
+    await src._loadData();
   }
 
   @override
@@ -47,7 +36,7 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Manage Sub-Categories'),
+        title: const Text('Manage Users'),
       ),
       body: Stack(
         children: [
@@ -59,7 +48,7 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                   DataColumn(label: Text('ID')),
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Phone')),
-                  DataColumn(label: Text('Date')),
+                  DataColumn(label: Text('Date \n (DD-MM-YYYY)')),
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('')),
                 ],
@@ -69,28 +58,6 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
               ),
             ]),
           ),
-          // Positioned(
-          //   bottom: 25,
-          //   right: 20,
-          //   child: FloatingActionButton(
-          //     hoverColor: Colors.transparent,
-          //     elevation: 2,
-          //     onPressed: () async {
-          //       final result = await Navigator.push(context,
-          //           MaterialPageRoute(builder: (context) => const EditUser()));
-          //
-          //       if (result != null && result as bool) {
-          //         // Sub-category added successfully, refresh the list
-          //         _refreshUserList();
-          //       }
-          //     },
-          //     backgroundColor: Colors.black,
-          //     child: const Icon(
-          //       Icons.add,
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -99,30 +66,23 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
 
 class TableData extends DataTableSource {
   UserModel userModel = UserModel();
-  CatModel category = CatModel();
+
   List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
 
-  // storing sub-category data in a list
   List<Map<String, dynamic>> userData = [];
-  Map<int, String> categoryData =
-      {}; // map to store category_id to category_name
-
   TableData() {
-    _loaduserData();
+    _loadData();
   }
 
-  Future<void> _loaduserData() async {
+  Future<void> _loadData() async {
     // getting data from manageSubCategories() which is in userModel class
-    _loadCategoryData();
+    _loadUserData();
     userData = await userModel.manageUsers();
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  Future<void> _loadCategoryData() async {
-    final categories = await category.manageCategories();
-    categoryData = {
-      for (var cat in categories) cat['category_id']: cat['category_name']
-    };
+  Future<void> _loadUserData() async {
+    final user = await userModel.manageUsers();
     notifyListeners();
   }
 
@@ -132,13 +92,13 @@ class TableData extends DataTableSource {
       {String? categoryField, dynamic categoryValue}) async {
     await userModel.updateUser(field, newValue,
         categoryField: categoryField, categoryValue: categoryValue);
-    _loaduserData(); // Reload data after update
+    _loadData(); // Reload data after update
   }
 
   // Delete a row of data from firebase
   Future<void> _deleteSubCategory(dynamic categoryValue) async {
     await userModel.deleteUser(categoryValue);
-    _loaduserData(); // Reload data after deletion
+    _loadData(); // Reload data after deletion
   }
 
   @override
