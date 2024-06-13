@@ -5,12 +5,7 @@ Widget searchBar(BuildContext context) {
   return GestureDetector(
     onTap: () {
       Navigator.pushNamed(context, '/search');
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) =>
-      //           const SearchPage()), // Replace SearchScreen with your desired screen
-      // );
+      
     },
     child: AbsorbPointer(
       child: TextField(

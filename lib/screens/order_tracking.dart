@@ -26,19 +26,19 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Order Tracking',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: _orderStatusStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -78,7 +78,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Column(
                     children: statusCards,
                   ),
@@ -87,7 +87,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
             );
           }
 
-          return Center(child: Text('No data available'));
+          return const Center(child: Text('No data available'));
         },
       ),
     );
@@ -96,8 +96,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   Widget _buildOrderStatusCard(
       String title, String description, bool isActive) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      padding: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: isActive
             ? Colors.green.withOpacity(0.1)
@@ -113,17 +113,17 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 isActive ? Icons.check_circle : Icons.radio_button_unchecked,
                 color: isActive ? Colors.green : Colors.grey,
               ),
-              SizedBox(width: 16.0),
+              const SizedBox(width: 16.0),
               Text(
                 title,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Text(
             description,
-            style: TextStyle(fontSize: 16.0, color: Colors.black54),
+            style: const TextStyle(fontSize: 16.0, color: Colors.black54),
           ),
         ],
       ),

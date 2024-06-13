@@ -282,10 +282,9 @@ import 'dart:convert'; // Add this import
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'auth_provider.dart'; // Add this import
+// Add this import
 
 class Order {
   final String orderId;

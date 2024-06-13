@@ -66,9 +66,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      'x-client-id': "",
+      'x-client-id': "TEST102073159c36086010050049f41951370201",
       'x-client-secret':
-          "",
+          "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       'x-api-version': '2023-08-01', // This is latest version for API
     };
     debugPrint("$headers");

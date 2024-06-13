@@ -32,7 +32,7 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(filterProducts);
     fetchProductsFromFirestore();
     loadRecentSearches();
-    loadProductSearches(); // Load product searches
+    loadProductSearches();
   }
 
   Future<void> fetchProductsFromFirestore() async {

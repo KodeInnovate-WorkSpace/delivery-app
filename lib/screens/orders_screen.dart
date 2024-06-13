@@ -475,7 +475,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                               },
                             ),
                           );
-                        }).toList(),
+                        }),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16.0, vertical: 5),
