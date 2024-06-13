@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-
 Widget searchBar(BuildContext context) {
   return GestureDetector(
     onTap: () {
       Navigator.pushNamed(context, '/search');
-      
     },
     child: AbsorbPointer(
       child: TextField(

@@ -27,19 +27,19 @@ class CartProvider extends ChangeNotifier {
   void addItem(Cart item) async {
     final index =
         _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (index >= 0) {
       _cartItems[index].qnt++;
       // Update the stored value
       String jsonCart = cartToJson(_cartItems[index]);
-      await prefs.setString('cart_${item.itemName}', jsonCart);
+      // await prefs.setString('cart_${item.itemName}', jsonCart);
     } else {
       _cartItems.add(item);
       // Convert the address to json
       String jsonCart = cartToJson(item);
       // Store in shared preferences
-      await prefs.setString('cart_${item.itemName}', jsonCart);
+      // await prefs.setString('cart_${item.itemName}', jsonCart);
     }
     logCartContents();
     notifyListeners();
@@ -48,18 +48,18 @@ class CartProvider extends ChangeNotifier {
   void removeItem(Cart item) async {
     final index =
         _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (index >= 0) {
       if (_cartItems[index].qnt > 1) {
         _cartItems[index].qnt--;
         // Update the stored value
         String jsonCart = cartToJson(_cartItems[index]);
-        await prefs.setString('cart_${item.itemName}', jsonCart);
+        // await prefs.setString('cart_${item.itemName}', jsonCart);
       } else {
         _cartItems.removeAt(index);
         // Remove from shared preferences
-        await prefs.remove('cart_${item.itemName}');
+        // await prefs.remove('cart_${item.itemName}');
       }
     }
     logCartContents();

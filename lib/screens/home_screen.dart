@@ -275,7 +275,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
-                                                  'Delivery in ',
+                                                  'Delivery within ',
                                                   style: TextStyle(
                                                       fontFamily:
                                                           'Gilroy-ExtraBold',
@@ -283,7 +283,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                       fontSize: 12),
                                                 ),
                                                 const Text(
-                                                  '7 minutes',
+                                                  '20 minutes',
                                                   style: TextStyle(
                                                       fontFamily:
                                                           'Gilroy-Black',
@@ -356,7 +356,8 @@ class HomeScreenState extends State<HomeScreen> {
                                             subCategory.catId == category.id)
                                         .toList();
 
-                                    return Stack( // replace column with stack
+                                    return Stack(
+                                      // replace column with stack
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(

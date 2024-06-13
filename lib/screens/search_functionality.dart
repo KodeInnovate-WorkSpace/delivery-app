@@ -32,68 +32,85 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(filterProducts);
     fetchProductsFromFirestore();
     loadRecentSearches();
-    loadProductSearches();
+    loadProductSearches(); // Load product searches
   }
 
   Future<void> fetchProductsFromFirestore() async {
-    final productsCollection =
-        FirebaseFirestore.instance.collection('products');
-    final snapshot = await productsCollection.get();
-    final products = snapshot.docs.map((doc) {
-      return Product(
-        name: doc['name'] as String,
-        imageUrl: doc['image'] as String,
-        price: doc['price'] is int
-            ? (doc['price'] as int).toDouble()
-            : doc['price'] as double,
-      );
-    }).toList();
+    try {
+      final productsCollection =
+          FirebaseFirestore.instance.collection('products');
+      final snapshot = await productsCollection.get();
+      final products = snapshot.docs.map((doc) {
+        return Product(
+          name: doc['name'] as String,
+          imageUrl: doc['image'] as String,
+          price: doc['price'] is int
+              ? (doc['price'] as int).toDouble()
+              : doc['price'] as double,
+        );
+      }).toList();
 
-    setState(() {
-      _allProducts = products;
-    });
+      setState(() {
+        _allProducts = products;
+      });
+    } catch (e) {
+      debugPrint("$e");
+    }
   }
 
   Future<void> loadProductSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? productSearches =
-        prefs.getStringList('productSearches');
-    if (productSearches != null) {
-      setState(() {
-        _productSearches = productSearches.map((search) {
-          final List<String> searchValues = search.split(',');
-          return Product(
-            name: searchValues[0],
-            imageUrl: searchValues[1],
-            price: double.parse(searchValues[2]),
-          );
-        }).toList();
-      });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String>? productSearches =
+          prefs.getStringList('productSearches');
+      if (productSearches != null) {
+        setState(() {
+          _productSearches = productSearches.map((search) {
+            final List<String> searchValues = search.split(',');
+            return Product(
+              name: searchValues[0],
+              imageUrl: searchValues[1],
+              price: double.parse(searchValues[2]),
+            );
+          }).toList();
+        });
+      }
+    } catch (e) {
+      debugPrint("$e");
     }
   }
 
   Future<void> saveProductSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> productSearches = _productSearches.map((search) {
-      return '${search.name},${search.imageUrl},${search.price}';
-    }).toList();
-    prefs.setStringList('productSearches', productSearches);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> productSearches = _productSearches.map((search) {
+        return '${search.name},${search.imageUrl},${search.price}';
+      }).toList();
+      prefs.setStringList('productSearches', productSearches);
+    } catch (e) {
+      debugPrint("$e");
+    }
   }
 
   Future<void> loadRecentSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? recentSearches = prefs.getStringList('recentSearches');
-    if (recentSearches != null) {
-      setState(() {
-        _recentSearches = recentSearches.map((search) {
-          final List<String> searchValues = search.split(',');
-          return Product(
-            name: searchValues[0],
-            imageUrl: searchValues[1],
-            price: double.parse(searchValues[2]),
-          );
-        }).toList();
-      });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String>? recentSearches =
+          prefs.getStringList('recentSearches');
+      if (recentSearches != null) {
+        setState(() {
+          _recentSearches = recentSearches.map((search) {
+            final List<String> searchValues = search.split(',');
+            return Product(
+              name: searchValues[0],
+              imageUrl: searchValues[1],
+              price: double.parse(searchValues[2]),
+            );
+          }).toList();
+        });
+      }
+    } catch (e) {
+      debugPrint("$e");
     }
   }
 
@@ -369,30 +386,6 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
-
-            // checkout screen
-            // Positioned(
-            //   bottom: 25,
-            //   right: 20,
-            //   child: FloatingActionButton(
-            //     hoverColor: Colors.transparent,
-            //     elevation: 2,
-            //     onPressed: () {
-            //       HapticFeedback.heavyImpact();
-            //
-            //       Navigator.push(
-            //           context,
-            //           MaterialPageRoute(
-            //               builder: (context) => const CheckoutScreen()));
-            //       // Navigator.pushNamed(context, '/checkout');
-            //     },
-            //     backgroundColor: Colors.white,
-            //     child: const Icon(
-            //       Icons.shopping_cart_sharp,
-            //       color: Colors.black,
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

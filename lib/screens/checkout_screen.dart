@@ -738,8 +738,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                     String orderId = _generateOrderId();
 
                                     if (_selectedPaymentMethod == 'Banks') {
-                                      // pay()
-                                      webCheckout().then((value) {
+                                      pay().then((value) {
                                         List<Order> orders =
                                             cartProvider.cart.map((item) {
                                           return Order(
