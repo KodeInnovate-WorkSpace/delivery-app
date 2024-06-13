@@ -258,6 +258,13 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  // String itemCount(Cart item) {
+  //   final index =
+  //   _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+  //   notifyListeners();
+  //   return _cartItems[index].qnt.toString();
+  // }
+
   void clearCart() {
     _cartItems.clear();
     notifyListeners();
@@ -283,15 +290,37 @@ class CartProvider extends ChangeNotifier {
     if (index >= 0) {
       if (_cartItems[index].qnt > 1) {
         _cartItems[index].qnt--;
-      } else if (_cartItems[index].qnt == 1) {
+      } else {
+        // Remove item from cart when quantity is 1 or 0
         _cartItems.removeAt(index);
 
-        // _cartItems.clear();
+        // Check if the cart is now empty
+        if (_cartItems.isEmpty) {
+          _cartItems.clear();
+        }
       }
     }
+
     logCartContents();
     notifyListeners();
   }
+
+  // void removeItem(Cart item) {
+  //   final index =
+  //       _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+  //
+  //   if (index >= 0) {
+  //     if (_cartItems[index].qnt > 1) {
+  //       _cartItems[index].qnt--;
+  //     } else if (_cartItems[index].qnt == 1) {
+  //       _cartItems.removeAt(index);
+  //
+  //       // _cartItems.clear();
+  //     }
+  //   }
+  //   logCartContents();
+  //   notifyListeners();
+  // }
 
   double calculateTotalPrice() {
     double totalPrice = 0.0;

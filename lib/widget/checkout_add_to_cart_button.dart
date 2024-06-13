@@ -75,16 +75,15 @@ class CheckoutAddToCartButtonState extends State<CheckoutAddToCartButton> {
               icon: const Icon(Icons.remove, size: 15, color: Colors.white),
               onPressed: () {
                 setState(() {
-                  if (_count > 1) {
-                    _count--;
-                    cartProvider.removeItem(cartItem);
-                    _saveCartState();
-                  } else if (_count == 1) {
-                    _isClicked = false;
-                    _count--;
-                    cartProvider.removeItem(cartItem);
-                    _saveCartState();
-                  }
+                  // _count--;
+                  cartProvider.removeItem(cartItem);
+                  _saveCartState();
+                  // } else if (_count == 1) {
+                  //   _isClicked = false;
+                  //   _count--;
+                  //   cartProvider.removeItem(cartItem);
+                  //   _saveCartState();
+                  // }
                 });
               },
             ),
