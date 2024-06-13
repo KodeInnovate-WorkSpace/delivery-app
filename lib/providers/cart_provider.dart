@@ -1,6 +1,6 @@
-import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import '../models/cart_model.dart';
+import 'package:flutter/material.dart';
 
 // class CartProvider extends ChangeNotifier {
 //   final bool _isLoading = false;
@@ -237,7 +237,6 @@ import '../models/cart_model.dart';
 //   }
 // }
 
-import 'package:flutter/material.dart';
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
@@ -257,13 +256,14 @@ class CartProvider extends ChangeNotifier {
       return "ADD";
     }
   }
-
-  // String itemCount(Cart item) {
-  //   final index =
-  //   _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
-  //   notifyListeners();
-  //   return _cartItems[index].qnt.toString();
-  // }
+  int getItemCount(Cart item) {
+    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    if (index >= 0) {
+      return _cartItems[index].qnt;
+    } else {
+      return 0;
+    }
+  }
 
   void clearCart() {
     _cartItems.clear();
@@ -304,23 +304,6 @@ class CartProvider extends ChangeNotifier {
     logCartContents();
     notifyListeners();
   }
-
-  // void removeItem(Cart item) {
-  //   final index =
-  //       _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
-  //
-  //   if (index >= 0) {
-  //     if (_cartItems[index].qnt > 1) {
-  //       _cartItems[index].qnt--;
-  //     } else if (_cartItems[index].qnt == 1) {
-  //       _cartItems.removeAt(index);
-  //
-  //       // _cartItems.clear();
-  //     }
-  //   }
-  //   logCartContents();
-  //   notifyListeners();
-  // }
 
   double calculateTotalPrice() {
     double totalPrice = 0.0;

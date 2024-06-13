@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:speedy_delivery/widget/checkout_add_to_cart_button.dart';
 import '../models/product_model.dart';
 import 'add_to_cart_button.dart';
 
@@ -17,7 +18,6 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-
   Future<void> refreshCart() async {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -123,6 +123,13 @@ class _ProductCardState extends State<ProductCard> {
                                     productUnit: product.unit,
                                     // refreshCart: refreshCart,
                                   ),
+                                  // CheckoutAddToCartButton(
+                                  //     productName: product.name,
+                                  //     productPrice: product.price,
+                                  //     productImage: product.image,
+                                  //     productUnit: product.unit,
+                                  //     // refreshCart: refreshCart,
+                                  // )
                                 ],
                               ),
                             ),
