@@ -17,7 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
   List<Product> _productSearches = [];
-  final Map<String, int> _productCounts = {};
+  // final Map<String, int> _productCounts = {};
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> fetchProductsFromFirestore() async {
     try {
       final productsCollection =
-      FirebaseFirestore.instance.collection('products');
+          FirebaseFirestore.instance.collection('products');
       final snapshot = await productsCollection.get();
       final products = snapshot.docs.map((doc) {
         return Product(
@@ -58,7 +58,7 @@ class _SearchPageState extends State<SearchPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final List<String>? productSearches =
-      prefs.getStringList('productSearches');
+          prefs.getStringList('productSearches');
       if (productSearches != null) {
         setState(() {
           _productSearches = productSearches.map((search) {
@@ -97,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final List<String>? recentSearches =
-      prefs.getStringList('recentSearches');
+          prefs.getStringList('recentSearches');
       if (recentSearches != null) {
         setState(() {
           _recentSearches = recentSearches.map((search) {
@@ -224,6 +224,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget productSearchCard(Product product) {
+    // Future<void> refreshCart(BuildContext context) async {
+    //   Navigator.of(context).pushReplacement(
+    //     MaterialPageRoute(
+    //       builder: (context) => const SearchPage(),
+    //     ),
+    //   );
+    // }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -264,12 +272,6 @@ class _SearchPageState extends State<SearchPage> {
                     productPrice: product.price.toInt(),
                     productImage: product.image,
                     productUnit: product.unit,
-                    // onCountChanged: (count) {
-                    //   setState(() {
-                    //     _productCounts[product.name] = count;
-                    //   });
-                    // },
-                    // initialCount: _productCounts[product.name] ?? 0,
                   ),
                 ],
               ),

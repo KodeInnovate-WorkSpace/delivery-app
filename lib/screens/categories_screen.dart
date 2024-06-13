@@ -104,7 +104,7 @@ class CategoryScreenState extends State<CategoryScreen> {
               ],
             ),
             Positioned(
-              bottom: 25,
+              bottom: 55,
               right: 20,
               child: FloatingActionButton(
                 onPressed: () async {

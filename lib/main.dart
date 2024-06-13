@@ -5,7 +5,6 @@ import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
-import 'package:speedy_delivery/providers/new_provs/new_cart_provider.dart';
 import 'package:speedy_delivery/providers/order_provider.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
 import 'package:speedy_delivery/screens/search_functionality.dart';
