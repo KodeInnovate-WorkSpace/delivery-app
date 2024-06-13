@@ -9,11 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/orders_screen.dart';
+import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import 'package:uuid/uuid.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
-import '../widget/add_to_cart_button.dart';
 import '../widget/checkout_add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
@@ -236,28 +236,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Delivery information
-                            const Card(
+                             Card(
                               elevation: 0,
                               color:
                                   Colors.white, // Set the card color to white
                               child: Padding(
-                                padding: EdgeInsets.all(18.0),
+                                padding: const EdgeInsets.all(18.0),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.timer),
-                                    SizedBox(width: 12),
+                                    const Icon(Icons.timer),
+                                    const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Delivery in 7 minutes',
-                                            style: TextStyle(
+                                            'Delivery within $deliveryTime minutes',
+                                            style: const TextStyle(
                                                 fontSize: 18,
                                                 fontFamily: 'Gilroy-ExtraBold'),
                                           ),
-                                          Text(
+                                          const Text(
                                             'Shipment of 1 item',
                                             style: TextStyle(
                                                 fontSize: 12,
@@ -400,6 +400,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                             // Bill details
                             const SizedBox(height: 10),
                             Card(
+                              elevation: 0,
                               color:
                                   Colors.white, // Set the card color to white
                               child: Padding(

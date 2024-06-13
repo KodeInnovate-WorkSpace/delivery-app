@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
+import 'package:speedy_delivery/shared/constants.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
@@ -282,9 +283,9 @@ class HomeScreenState extends State<HomeScreen> {
                                                       color: Colors.black,
                                                       fontSize: 12),
                                                 ),
-                                                const Text(
-                                                  '20 minutes',
-                                                  style: TextStyle(
+                                                 Text(
+                                                  '$deliveryTime minutes',
+                                                  style: const TextStyle(
                                                       fontFamily:
                                                           'Gilroy-Black',
                                                       color: Colors.black,

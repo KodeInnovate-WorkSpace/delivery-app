@@ -237,7 +237,6 @@ import 'package:flutter/material.dart';
 //   }
 // }
 
-
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
   double deliveryCharge = 29;
@@ -256,8 +255,10 @@ class CartProvider extends ChangeNotifier {
       return "ADD";
     }
   }
+
   int getItemCount(Cart item) {
-    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index =
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       return _cartItems[index].qnt;
     } else {
