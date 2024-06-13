@@ -134,4 +134,33 @@ class CartProvider extends ChangeNotifier {
       log("Item: ${item.itemName}, Price: ${item.itemPrice}, Image: ${item.itemImage}, Unit: ${item.itemUnit}, Quantity: ${item.qnt}");
     }
   }
+
+// void addItem(Cart item) {
+//   final index =
+//       _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+//   if (index != -1) {
+//     _cartItems[index].qnt += item.qnt;
+//   } else {
+//     _cartItems.add(item);
+//   }
+//   notifyListeners();
+// }
+//
+// void removeItem(Cart item) {
+//   final index =
+//       _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+//   if (index != -1) {
+//     if (_cartItems[index].qnt > 1) {
+//       _cartItems[index].qnt -= item.qnt;
+//     } else {
+//       _cartItems.removeAt(index);
+//     }
+//   }
+//   notifyListeners();
+// }
+//
+// void clearCart() {
+//   _cartItems = [];
+//   notifyListeners();
+// }
 }

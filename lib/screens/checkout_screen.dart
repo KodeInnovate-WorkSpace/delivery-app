@@ -1,22 +1,17 @@
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/orders_screen.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
+import 'package:speedy_delivery/widget/checkout_bottom_section.dart';
 import 'package:uuid/uuid.dart';
 import '../providers/auth_provider.dart';
-import '../providers/order_provider.dart';
 import '../widget/add_to_cart_button.dart';
 import '../widget/network_handler.dart';
-import 'address_input.dart';
-import 'order_confirmation_screen.dart';
 import 'dart:convert';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfwebcheckoutpayment.dart';
@@ -34,9 +29,6 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
-  String _defaultAdd = "No address available";
-  String _newAdd = '';
-  String _selectedPaymentMethod = 'Banks';
   final uuid = const Uuid();
 
   //Payment gateway
@@ -57,10 +49,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
     cfPaymentGatewayService.setCallback(verifyPayment, onError);
   }
 
-  String _generateOrderId() {
-    int randomNumber = Random().nextInt(9000) + 1000;
-    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    return 'ORD_${timestamp}_$randomNumber';
+  @override
+  void dispose() {
+    super.dispose(); // Ensure to call super.dispose()
   }
 
   createSessionID(String myOrderId) async {
@@ -104,6 +95,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
 
   void verifyPayment(String orderId) {
     debugPrint("Verify Payment");
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
@@ -147,16 +139,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
     try {
       var session = await createSession();
       List<CFPaymentModes> components = <CFPaymentModes>[];
-      // If you want to set paument mode to be shown to customer
+      // If you want to set payment mode to be shown to customer
       var paymentComponent =
           CFPaymentComponentBuilder().setComponents(components).build();
-      // We will set theme of checkout session page like fonts, color
+      // set theme of checkout session page. fonts, color
       var theme = CFThemeBuilder()
           .setNavigationBarBackgroundColorColor("#f7ce34")
           .setPrimaryFont("Menlo")
           .setSecondaryFont("Futura")
           .build();
-      // Create checkout with all the settings we have set earlier
+      // Create checkout with all the settings set earlier
       var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder()
           .setSession(session!)
           .setPaymentComponent(paymentComponent)
@@ -164,7 +156,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
           .build();
       // Launching the payment page
 
-      cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
+      // cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
+      cfPaymentGatewayService.doPayment(cfDropCheckoutPayment).then((value) {
+        verifyPayment(orderId);
+      });
     } on CFException catch (e) {
       debugPrint(e.message);
     }
@@ -175,22 +170,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
   Widget build(BuildContext context) {
     // providers
     final cartProvider = Provider.of<CartProvider>(context);
-    final addressProvider = Provider.of<AddressProvider>(context);
-
-    if (addressProvider.address.isNotEmpty) {
-      _defaultAdd =
-          "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        addressProvider.loadAddresses();
-      }
-    });
-
-    String generateOrderId() {
-      return uuid.v4(); // Generate a version 4 (random) UUID
-    }
 
     // setting variables for payment gateway
     final authProvider = Provider.of<MyAuthProvider>(context);
@@ -200,6 +179,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
       customerPhone =
           authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
+
+    // clear cart on successful payment
+    clearCartOnPayment() {
+      cartProvider.clearCart();
+    }
+
     return NetworkHandler(
       child: Scaffold(
         resizeToAvoidBottomInset:
@@ -331,10 +316,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                 ),
                               );
                             }),
+                            // cart code ends
                             const SizedBox(height: 10),
                             // Bill details
                             const SizedBox(height: 10),
                             Card(
+                              elevation: 0,
                               color:
                                   Colors.white, // Set the card color to white
                               child: Padding(
@@ -445,394 +432,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 50),
+                            const SizedBox(height: 30),
                           ],
                         ),
                       ),
                     ),
                   ),
-
                   // Bottom section
-                  Positioned(
-                    bottom: 10,
-                    left: MediaQuery.of(context).size.width / 30,
-                    right: MediaQuery.of(context).size.width / 30,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            // location section
-                            GestureDetector(
-                              onTap: () {
-                                // address selection sheet
-                                showModalBottomSheet(
-                                  context: context,
-                                  backgroundColor: Colors.white,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white70,
-                                        borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(16.0)),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 25.0, vertical: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // title
-                                            const Text(
-                                              "Select address",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontFamily: 'Gilroy-Bold'),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            // add new address row
-                                            Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                10.0)),
-                                                    border: Border.all(
-                                                        color: Colors
-                                                            .grey.shade200)),
-                                                child: ListTile(
-                                                  minTileHeight: 50,
-                                                  leading: const Icon(Icons.add,
-                                                      color: Colors.green,
-                                                      size: 18),
-                                                  title: const Text(
-                                                    "Add new address",
-                                                    style: TextStyle(
-                                                        color: Colors.green,
-                                                        fontFamily:
-                                                            'Gilroy-SemiBold'),
-                                                  ),
-                                                  trailing: const Icon(
-                                                      Icons.chevron_right),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                const AddressInputForm()));
-                                                  },
-                                                )),
-                                            const SizedBox(
-                                              height: 35,
-                                            ),
-                                            // saved addresses
-                                            Text(
-                                              "Your saved addresses",
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.grey[600]),
-                                            ),
-                                            Column(
-                                              children: [
-                                                if (addressProvider
-                                                    .address.isNotEmpty)
-                                                  SizedBox(
-                                                    height: 250,
-                                                    child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      itemCount: addressProvider
-                                                          .address.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        final address =
-                                                            addressProvider
-                                                                .address[index];
-                                                        return Column(
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                _newAdd =
-                                                                    "${addressProvider.address[index].flat}, ${addressProvider.address[index].building}, ${addressProvider.address[index].mylandmark}";
-                                                                setState(() {
-                                                                  _defaultAdd =
-                                                                      _newAdd;
-                                                                });
-                                                                setState(() {});
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    true); // Close the bottom modal
-                                                                showMessage(
-                                                                    "Address Changed!");
-                                                                debugPrint(
-                                                                    "Address: $_defaultAdd");
-                                                              },
-                                                              child: ListTile(
-                                                                title: Text(
-                                                                    '${address.flat}, ${address.floor}, ${address.building}'),
-                                                                subtitle: Text(
-                                                                    address
-                                                                        .mylandmark),
-                                                                trailing:
-                                                                    IconButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          addressProvider
-                                                                              .removeAddress(address);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        icon: const Icon(
-                                                                            Icons.delete)),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                color: Colors.transparent,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.place),
-                                          const SizedBox(width: 5),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                "Delivering to",
-                                                style: TextStyle(
-                                                    fontFamily:
-                                                        'Gilroy-SemiBold'),
-                                              ),
-                                              Text(
-                                                _defaultAdd == "" &&
-                                                        _defaultAdd != _newAdd
-                                                    ? "Please select an address"
-                                                    : _newAdd,
-                                                // _newAdd.isNotEmpty
-                                                //     ? _newAdd
-                                                //     : "Please select an address",
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: Colors.grey[500],
-                                                    fontFamily: 'Gilroy-Medium',
-                                                    fontSize: 12),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      // change address button
-                                      const Text(
-                                        "Change",
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontFamily: 'Gilroy-SemiBold'),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Divider(),
-                            // payment mode | place order
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          Icons.account_balance,
-                                          size: 12,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        DropdownButton<String>(
-                                          value: _selectedPaymentMethod,
-                                          icon:
-                                              const Icon(Icons.arrow_drop_down),
-                                          iconSize: 24,
-                                          elevation: 16,
-                                          style: const TextStyle(
-                                              color: Colors.black),
-                                          underline: Container(
-                                            height: 2,
-                                            color: Colors.green,
-                                          ),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              _selectedPaymentMethod =
-                                                  newValue!;
-                                            });
-                                          },
-                                          items: <String>['Banks', 'Cash']
-                                              .map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(_selectedPaymentMethod)
-                                  ],
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    HapticFeedback.heavyImpact();
-
-                                    if (cartProvider.cart.isEmpty) {
-                                      showMessage("Cart is empty");
-                                      return;
-                                    }
-
-                                    if (addressProvider.address.isEmpty) {
-                                      showMessage("Please select an address");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AddressInputForm(),
-                                        ),
-                                      );
-                                      return; // Exit the function to prevent navigation to payment screen
-                                    }
-
-                                    final orderProvider =
-                                        Provider.of<OrderProvider>(context,
-                                            listen: false);
-                                    String orderId = _generateOrderId();
-
-                                    if (_selectedPaymentMethod == 'Banks') {
-                                      pay().then((value) {
-                                        List<Order> orders =
-                                            cartProvider.cart.map((item) {
-                                          return Order(
-                                            orderId:
-                                                orderId, // Use the same order ID for all items
-                                            paymentMode: _selectedPaymentMethod,
-                                            productName: item.itemName,
-                                            productImage: item.itemImage,
-                                            quantity: item.qnt,
-                                            price: item.itemPrice.toDouble(),
-                                            totalPrice:
-                                                (item.itemPrice * item.qnt)
-                                                    .toDouble(),
-                                            address: _defaultAdd,
-                                            // Add phone number if available
-                                            // transactionId: '',
-                                          );
-                                        }).toList();
-
-                                        orderProvider.addOrders(orders);
-                                        cartProvider
-                                            .clearCart(); // Clear the cart
-                                      });
-                                    } else if (_selectedPaymentMethod ==
-                                        'Cash') {
-                                      Navigator.of(context)
-                                          .push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const OrderConfirmationPage(),
-                                        ),
-                                      )
-                                          .then((value) {
-                                        List<Order> orders =
-                                            cartProvider.cart.map((item) {
-                                          return Order(
-                                            orderId:
-                                                orderId, // Use the same order ID for all items
-                                            paymentMode: _selectedPaymentMethod,
-                                            productName: item.itemName,
-                                            productImage: item.itemImage,
-                                            quantity: item.qnt,
-                                            price: item.itemPrice.toDouble(),
-                                            totalPrice:
-                                                (item.itemPrice * item.qnt)
-                                                    .toDouble(),
-                                            address: _defaultAdd,
-                                            // Add phone number if available
-                                            // transactionId: '',
-                                          );
-                                        }).toList();
-
-                                        orderProvider.addOrders(orders);
-                                        cartProvider
-                                            .clearCart(); // Clear the cart
-                                      });
-                                    }
-                                  },
-                                  style: ButtonStyle(
-                                    shape: WidgetStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(14.0),
-                                      ),
-                                    ),
-                                    backgroundColor:
-                                        WidgetStateProperty.resolveWith<Color>(
-                                      (Set<WidgetState> states) {
-                                        return Colors.black;
-                                      },
-                                    ),
-                                  ),
-                                  child: const SizedBox(
-                                    width: 120,
-                                    height: 50.0,
-                                    child: Center(
-                                      child: Text(
-                                        "Continue",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  checkoutBottom(context, pay),
                 ],
               ),
       ),
