@@ -7,7 +7,7 @@ class OrderTrackingScreen extends StatefulWidget {
   const OrderTrackingScreen({required this.orderId, super.key});
 
   @override
-  _OrderTrackingScreenState createState() => _OrderTrackingScreenState();
+  State<OrderTrackingScreen> createState() => _OrderTrackingScreenState();
 }
 
 class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
@@ -64,27 +64,33 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                   'You have received your order.', status >= 5),
             ];
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Order Status',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    widget.orderId,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    children: statusCards,
-                  ),
-                ],
-              ),
-            );
+            if(status == 6){
+              return const Text("Order Failed");
+            }else{
+
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Order Status',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      widget.orderId,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: statusCards,
+                    ),
+                  ],
+                ),
+              );
+            }
+
           }
 
           return const Center(child: Text('No data available'));
@@ -116,7 +122,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
               const SizedBox(width: 16.0),
               Text(
                 title,
-                style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
             ],
           ),

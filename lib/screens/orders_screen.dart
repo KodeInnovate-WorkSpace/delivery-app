@@ -32,79 +32,87 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       ),
       body: orderProvider.orders.isEmpty
           ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/dog.png',
+              height: 200,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Oops, you haven’t placed an order yet',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      )
+          : ListView.builder(
+        itemCount: groupedOrders.length,
+        itemBuilder: (context, index) {
+          final orderId = groupedOrders.keys.elementAt(index);
+          final orders = groupedOrders[orderId]!;
+
+          // Calculate overall total
+          final overallTotal =
+              orders.fold(0.0, (sum, order) => sum + order.totalPrice) +
+                  30.85;
+
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      OrderTrackingScreen(orderId: orderId),
+                ),
+              );
+            },
+            child: Card(
+              color: const Color(0xffeaf1fc),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    'assets/images/dog.png',
-                    height: 200,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Order ID: $orderId'),
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Oops, you haven’t placed an order yet',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[600],
-                    ),
+                  Column(
+                    children: orders.map((order) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage:
+                          NetworkImage(order.productImage),
+                        ),
+                        title: Text(order.productName),
+                        subtitle: Text(
+                            'Price: ₹${order.price}, Quantity: ${order.quantity}'),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () async {
+                            setState(() {
+                              orderProvider.deleteOrder(order);
+                            });
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Overall Total: ₹$overallTotal',
+                        style:
+                        const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
-            )
-          : ListView.builder(
-              itemCount: groupedOrders.length,
-              itemBuilder: (context, index) {
-                final orderId = groupedOrders.keys.elementAt(index);
-                final orders = groupedOrders[orderId]!;
-
-                // Calculate overall total
-                final overallTotal =
-                    orders.fold(0.0, (sum, order) => sum + order.totalPrice) +
-                        30.85;
-
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            OrderTrackingScreen(orderId: orderId),
-                      ),
-                    );
-                  },
-                  child: Card(
-                    color: const Color(0xffeaf1fc),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Order ID: $orderId'),
-                        ),
-                        Column(
-                          children: orders.map((order) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(order.productImage),
-                              ),
-                              title: Text(order.productName),
-                              subtitle: Text(
-                                  'Price: ₹${order.price}, Quantity: ${order.quantity}'),
-                            );
-                          }).toList(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Overall Total: ₹$overallTotal',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
             ),
+          );
+        },
+      ),
     );
   }
 }

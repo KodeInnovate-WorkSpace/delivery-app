@@ -290,7 +290,7 @@ Widget checkoutBottom(BuildContext context, Function pay) {
                         );
                       }).toList();
 
-                      orderProvider.addOrders(orders);
+                      orderProvider.addOrders(orders, orderId);
                       // cartProvider.clearCart(); // Clear the cart
                     });
                   } else if (selectedPaymentMethod == 'Cash') {
@@ -317,7 +317,7 @@ Widget checkoutBottom(BuildContext context, Function pay) {
                         );
                       }).toList();
 
-                      orderProvider.addOrders(orders);
+                      orderProvider.addOrders(orders, orderId);
                       // cartProvider.clearCart(); // Clear the cart
                     });
                   }

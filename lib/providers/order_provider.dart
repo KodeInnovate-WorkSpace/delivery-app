@@ -279,7 +279,7 @@
 //   }
 // }
 import 'dart:convert'; // Add this import
-import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -364,10 +364,10 @@ class OrderProvider with ChangeNotifier {
     fetchOrders();
   }
 
-  void addOrders(List<Order> orders) {
-    String orderId = _generateOrderId();
+  void addOrders(List<Order> orders, String ordId) {
+    // String orderId = _generateOrderId();
     List<Order> newOrders =
-        orders.map((order) => order.copyWith(orderId: orderId)).toList();
+        orders.map((order) => order.copyWith(orderId: ordId)).toList();
     _orders.addAll(newOrders);
 
     _saveOrdersToFirebase(newOrders);
@@ -407,11 +407,11 @@ class OrderProvider with ChangeNotifier {
         .set(combinedOrderData);
   }
 
-  String _generateOrderId() {
-    int randomNumber = Random().nextInt(9000) + 1000;
-    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    return 'ORD_${timestamp}_$randomNumber';
-  }
+  // String _generateOrderId() {
+  //   int randomNumber = Random().nextInt(9000) + 1000;
+  //   String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+  //   return 'ORD_${timestamp}_$randomNumber';
+  // }
 
   Future<void> fetchOrders() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
