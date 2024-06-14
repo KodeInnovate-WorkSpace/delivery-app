@@ -8,6 +8,7 @@ import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
+import 'package:speedy_delivery/screens/order_tracking.dart';
 import 'package:speedy_delivery/screens/orders_screen.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
@@ -34,11 +35,139 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
+  // String _defaultAdd = "No address available";
+  // String _newAdd = '';
+  // String _selectedPaymentMethod = 'Banks';
+  // double totalAmt = 0.0;
+  // String customerId = '';
+  // String customerPhone = "";
+  //
+  // var cfPaymentGatewayService = CFPaymentGatewayService();
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   customerId = _generateCustomerId();
+  //   cfPaymentGatewayService.setCallback(verifyPayment, onError);
+  // }
+  //
+  // String generateOrderId() {
+  //   int randomNumber = Random().nextInt(9000) + 1000;
+  //   String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+  //   return 'ORD_${timestamp}_$randomNumber';
+  // }
+  //
+  // String _generateCustomerId() {
+  //   int randomNumber = Random().nextInt(9000) + 1000;
+  //   String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+  //   return 'CUST_${timestamp}_$randomNumber';
+  // }
+  //
+  // Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
+  //   var headers = {
+  //     'Content-Type': 'application/json',
+  //     'x-client-id': "TEST102073159c36086010050049f41951370201",
+  //     'x-client-secret':
+  //         "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+  //     'x-api-version': '2023-08-01',
+  //   };
+  //   var request = http.Request(
+  //       'POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
+  //   request.body = json.encode({
+  //     "order_amount": totalAmt,
+  //     "order_id": myOrderId,
+  //     "order_currency": "INR",
+  //     "customer_details": {
+  //       "customer_id": customerId,
+  //       "customer_name": "customer_name",
+  //       "customer_email": "",
+  //       "customer_phone": customerPhone,
+  //     },
+  //     "order_meta": {"notify_url": "https://test.cashfree.com"},
+  //     "order_note": "some order note here"
+  //   });
+  //   request.headers.addAll(headers);
+  //
+  //   http.StreamedResponse response = await request.send();
+  //
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(await response.stream.bytesToString());
+  //   } else {
+  //     debugPrint(await response.stream.bytesToString());
+  //     debugPrint("${response.reasonPhrase}");
+  //     throw Exception("Failed to create session ID");
+  //   }
+  // }
+  //
+  // void verifyPayment(String oId) {
+  //   debugPrint("Verify Payment");
+  //   debugPrint("Order ID = $oId");
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
+  //   );
+  //   showMessage("Payment Successful");
+  // }
+  //
+  // void onError(CFErrorResponse errorResponse, String orderId) {
+  //   debugPrint(errorResponse.getMessage().toString());
+  //   debugPrint("Error while making payment");
+  //   debugPrint("Order ID is $orderId");
+  // }
+  //
+  // // Future<void> webCheckout() async {
+  // //   try {
+  // //     CFSession? session = await createSession();
+  // //     var cfWebCheckout =
+  // //         CFWebCheckoutPaymentBuilder().setSession(session!).build();
+  // //     cfPaymentGatewayService.doPayment(cfWebCheckout);
+  // //   } on CFException catch (e) {
+  // //     debugPrint(e.message);
+  // //   }
+  // // }
+  //
+  // Future<CFSession?> createSession(String myOrdId) async {
+  //   try {
+  //     final paymentSessionId = await createSessionID(myOrdId);
+  //     var session = CFSessionBuilder()
+  //         .setEnvironment(CFEnvironment.SANDBOX)
+  //         .setOrderId(myOrdId)
+  //         .setPaymentSessionId(paymentSessionId["payment_session_id"])
+  //         .build();
+  //     return session;
+  //   } on CFException catch (e) {
+  //     debugPrint(e.message);
+  //   }
+  //   return null;
+  // }
+  //
+  // Future<void> pay(String myOrdId) async {
+  //   try {
+  //     var session = await createSession(myOrdId);
+  //     List<CFPaymentModes> components = <CFPaymentModes>[];
+  //     var paymentComponent =
+  //         CFPaymentComponentBuilder().setComponents(components).build();
+  //     var theme = CFThemeBuilder()
+  //         .setNavigationBarBackgroundColorColor("#f7ce34")
+  //         .setPrimaryFont("Menlo")
+  //         .setSecondaryFont("Futura")
+  //         .build();
+  //     var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder()
+  //         .setSession(session!)
+  //         .setPaymentComponent(paymentComponent)
+  //         .setTheme(theme)
+  //         .build();
+  //
+  //     cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
+  //   } on CFException catch (e) {
+  //     debugPrint(e.message);
+  //   }
+  // }
   String _defaultAdd = "No address available";
   String _newAdd = '';
   String _selectedPaymentMethod = 'Banks';
   double totalAmt = 0.0;
-  // late String orderId;
+// late String orderId;
   String customerId = '';
   String customerPhone = "";
 
@@ -53,7 +182,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     //     ? orderProvider.orders.first.orderId
     //     : _generateOrderId();
     customerId = _generateCustomerId();
-    cfPaymentGatewayService.setCallback(verifyPayment, onError);
+    cfPaymentGatewayService.setCallback(verifyPayment, (errorResponse, orderId) => onError(errorResponse, orderId, context, orderProvider));
   }
 
   String generateOrderId() {
@@ -73,7 +202,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'Content-Type': 'application/json',
       'x-client-id': "TEST102073159c36086010050049f41951370201",
       'x-client-secret':
-          "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       'x-api-version': '2023-08-01',
     };
     var request = http.Request(
@@ -114,22 +243,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     showMessage("Payment Successful");
   }
 
-  void onError(CFErrorResponse errorResponse, String orderId) {
+  void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
     debugPrint(errorResponse.getMessage().toString());
     debugPrint("Error while making payment");
     debugPrint("Order ID is $orderId");
+
+    await orderProvider.cancelOrder(orderId);
+
+    // Navigate to OrderTrackingScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OrderTrackingScreen(orderId: orderId),
+      ),
+    );
   }
 
-  // Future<void> webCheckout() async {
-  //   try {
-  //     CFSession? session = await createSession();
-  //     var cfWebCheckout =
-  //         CFWebCheckoutPaymentBuilder().setSession(session!).build();
-  //     cfPaymentGatewayService.doPayment(cfWebCheckout);
-  //   } on CFException catch (e) {
-  //     debugPrint(e.message);
-  //   }
-  // }
+// Future<void> webCheckout() async {
+//   try {
+//     CFSession? session = await createSession();
+//     var cfWebCheckout =
+//         CFWebCheckoutPaymentBuilder().setSession(session!).build();
+//     cfPaymentGatewayService.doPayment(cfWebCheckout);
+//   } on CFException catch (e) {
+//     debugPrint(e.message);
+//   }
+// }
 
   Future<CFSession?> createSession(String myOrdId) async {
     try {
@@ -151,7 +290,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       var session = await createSession(myOrdId);
       List<CFPaymentModes> components = <CFPaymentModes>[];
       var paymentComponent =
-          CFPaymentComponentBuilder().setComponents(components).build();
+      CFPaymentComponentBuilder().setComponents(components).build();
       var theme = CFThemeBuilder()
           .setNavigationBarBackgroundColorColor("#f7ce34")
           .setPrimaryFont("Menlo")
@@ -168,7 +307,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       debugPrint(e.message);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     // providers
@@ -789,7 +927,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         .map((item) {
                                                   return Order(
                                                     orderId:
-                                                    myOrderId, // Use the same order ID for all items
+                                                        myOrderId, // Use the same order ID for all items
                                                     paymentMode:
                                                         _selectedPaymentMethod,
                                                     productName: item.itemName,
