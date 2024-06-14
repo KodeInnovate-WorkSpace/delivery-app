@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:speedy_delivery/screens/home_screen.dart';
 
 class NotInLocationScreen extends StatelessWidget {
   const NotInLocationScreen({super.key});
@@ -39,10 +38,12 @@ class NotInLocationScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     HapticFeedback.heavyImpact();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => const HomeScreen()),
+                    // );
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   style: ButtonStyle(
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(

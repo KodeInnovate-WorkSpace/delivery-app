@@ -171,6 +171,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _saveAddress();
+                      // userProvider.storeDetail(context, 'name', _nameController.text);
                       userProvider.storeDetail(
                           context, 'name', _nameController.text);
                       Navigator.pop(context, true);

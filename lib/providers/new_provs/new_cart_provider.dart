@@ -14,14 +14,9 @@ class NewCartProvider extends ChangeNotifier {
       // orElse: () => null,
     );
 
-    if (existingItem != null) {
-      // Item already exists, increase quantity
-      existingItem.qnt++;
-    } else {
-      // Add new item to cart
-      cart.add(item);
-    }
-    notifyListeners();
+    // Item already exists, increase quantity
+    existingItem.qnt++;
+      notifyListeners();
   }
 
   void removeItem(String itemName) {
@@ -35,15 +30,13 @@ class NewCartProvider extends ChangeNotifier {
       // orElse: () => null,
     );
 
-    if (existingItem != null) {
-      existingItem.qnt = newQuantity;
-      if (newQuantity <= 0) {
-        // Remove item if quantity becomes zero
-        removeItem(itemName);
-      }
-      notifyListeners();
+    existingItem.qnt = newQuantity;
+    if (newQuantity <= 0) {
+      // Remove item if quantity becomes zero
+      removeItem(itemName);
     }
-  }
+    notifyListeners();
+    }
 
   void deleteCartItem() {}
 }

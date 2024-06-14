@@ -18,7 +18,14 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-    // final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
+
+    List<String> selectedPhone = [
+      // "+917977542667",
+      "+919136307745",
+      "+919326500602",
+      "+919876543210"
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -41,15 +48,7 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            // Text(
-            //   userProvider.username.isEmpty
-            //       ? "Hello, "
-            //       : '${userProvider.username}',
-            //   style: TextStyle(
-            //     fontSize: 16,
-            //     color: Colors.grey[700],
-            //   ),
-            // ),
+
             Text(
               authProvider.phone.isEmpty
                   ? "Please Login"
@@ -110,18 +109,24 @@ class ProfilePage extends StatelessWidget {
                 _shareApp();
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Admin Screen'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AdminScreen()),
-                );
-                // Navigator.pushNamed(context, '/admin');
-              },
-            ),
+
+            if (selectedPhone.contains(authProvider.phone))
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Admin Screen'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AdminScreen()),
+                  );
+                  // Navigator.pushNamed(context, '/admin');
+                },
+              )
+            else
+              const SizedBox(),
+
             ListTile(
               leading: const Icon(Icons.info),
               title: const Text('About us'),

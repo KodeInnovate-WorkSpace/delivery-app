@@ -35,139 +35,10 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  // String _defaultAdd = "No address available";
-  // String _newAdd = '';
-  // String _selectedPaymentMethod = 'Banks';
-  // double totalAmt = 0.0;
-  // String customerId = '';
-  // String customerPhone = "";
-  //
-  // var cfPaymentGatewayService = CFPaymentGatewayService();
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   customerId = _generateCustomerId();
-  //   cfPaymentGatewayService.setCallback(verifyPayment, onError);
-  // }
-  //
-  // String generateOrderId() {
-  //   int randomNumber = Random().nextInt(9000) + 1000;
-  //   String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-  //   return 'ORD_${timestamp}_$randomNumber';
-  // }
-  //
-  // String _generateCustomerId() {
-  //   int randomNumber = Random().nextInt(9000) + 1000;
-  //   String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-  //   return 'CUST_${timestamp}_$randomNumber';
-  // }
-  //
-  // Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
-  //   var headers = {
-  //     'Content-Type': 'application/json',
-  //     'x-client-id': "TEST102073159c36086010050049f41951370201",
-  //     'x-client-secret':
-  //         "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
-  //     'x-api-version': '2023-08-01',
-  //   };
-  //   var request = http.Request(
-  //       'POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
-  //   request.body = json.encode({
-  //     "order_amount": totalAmt,
-  //     "order_id": myOrderId,
-  //     "order_currency": "INR",
-  //     "customer_details": {
-  //       "customer_id": customerId,
-  //       "customer_name": "customer_name",
-  //       "customer_email": "",
-  //       "customer_phone": customerPhone,
-  //     },
-  //     "order_meta": {"notify_url": "https://test.cashfree.com"},
-  //     "order_note": "some order note here"
-  //   });
-  //   request.headers.addAll(headers);
-  //
-  //   http.StreamedResponse response = await request.send();
-  //
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(await response.stream.bytesToString());
-  //   } else {
-  //     debugPrint(await response.stream.bytesToString());
-  //     debugPrint("${response.reasonPhrase}");
-  //     throw Exception("Failed to create session ID");
-  //   }
-  // }
-  //
-  // void verifyPayment(String oId) {
-  //   debugPrint("Verify Payment");
-  //   debugPrint("Order ID = $oId");
-  //   Navigator.pushReplacement(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
-  //   );
-  //   showMessage("Payment Successful");
-  // }
-  //
-  // void onError(CFErrorResponse errorResponse, String orderId) {
-  //   debugPrint(errorResponse.getMessage().toString());
-  //   debugPrint("Error while making payment");
-  //   debugPrint("Order ID is $orderId");
-  // }
-  //
-  // // Future<void> webCheckout() async {
-  // //   try {
-  // //     CFSession? session = await createSession();
-  // //     var cfWebCheckout =
-  // //         CFWebCheckoutPaymentBuilder().setSession(session!).build();
-  // //     cfPaymentGatewayService.doPayment(cfWebCheckout);
-  // //   } on CFException catch (e) {
-  // //     debugPrint(e.message);
-  // //   }
-  // // }
-  //
-  // Future<CFSession?> createSession(String myOrdId) async {
-  //   try {
-  //     final paymentSessionId = await createSessionID(myOrdId);
-  //     var session = CFSessionBuilder()
-  //         .setEnvironment(CFEnvironment.SANDBOX)
-  //         .setOrderId(myOrdId)
-  //         .setPaymentSessionId(paymentSessionId["payment_session_id"])
-  //         .build();
-  //     return session;
-  //   } on CFException catch (e) {
-  //     debugPrint(e.message);
-  //   }
-  //   return null;
-  // }
-  //
-  // Future<void> pay(String myOrdId) async {
-  //   try {
-  //     var session = await createSession(myOrdId);
-  //     List<CFPaymentModes> components = <CFPaymentModes>[];
-  //     var paymentComponent =
-  //         CFPaymentComponentBuilder().setComponents(components).build();
-  //     var theme = CFThemeBuilder()
-  //         .setNavigationBarBackgroundColorColor("#f7ce34")
-  //         .setPrimaryFont("Menlo")
-  //         .setSecondaryFont("Futura")
-  //         .build();
-  //     var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder()
-  //         .setSession(session!)
-  //         .setPaymentComponent(paymentComponent)
-  //         .setTheme(theme)
-  //         .build();
-  //
-  //     cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
-  //   } on CFException catch (e) {
-  //     debugPrint(e.message);
-  //   }
-  // }
   String _defaultAdd = "No address available";
   String _newAdd = '';
   String _selectedPaymentMethod = 'Banks';
   double totalAmt = 0.0;
-// late String orderId;
   String customerId = '';
   String customerPhone = "";
 
@@ -176,13 +47,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
-    // Use the orderId from the provider or generate it if not available
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-    // orderId = orderProvider.orders.isNotEmpty
-    //     ? orderProvider.orders.first.orderId
-    //     : _generateOrderId();
+
     customerId = _generateCustomerId();
-    cfPaymentGatewayService.setCallback(verifyPayment, (errorResponse, orderId) => onError(errorResponse, orderId, context, orderProvider));
+    cfPaymentGatewayService.setCallback(
+        verifyPayment,
+        (errorResponse, orderId) =>
+            onError(errorResponse, orderId, context, orderProvider));
   }
 
   String generateOrderId() {
@@ -201,8 +72,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     var headers = {
       'Content-Type': 'application/json',
       'x-client-id': "TEST102073159c36086010050049f41951370201",
+      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
       'x-client-secret':
-      "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+          "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      // 'x-client-secret':"cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
     var request = http.Request(
@@ -236,14 +109,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void verifyPayment(String oId) {
     debugPrint("Verify Payment");
     debugPrint("Order ID = $oId");
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    cartProvider.clearCart();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
     );
+
     showMessage("Payment Successful");
   }
 
-  void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
+  void onError(CFErrorResponse errorResponse, String orderId,
+      BuildContext context, OrderProvider orderProvider) async {
     debugPrint(errorResponse.getMessage().toString());
     debugPrint("Error while making payment");
     debugPrint("Order ID is $orderId");
@@ -259,16 +136,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-// Future<void> webCheckout() async {
-//   try {
-//     CFSession? session = await createSession();
-//     var cfWebCheckout =
-//         CFWebCheckoutPaymentBuilder().setSession(session!).build();
-//     cfPaymentGatewayService.doPayment(cfWebCheckout);
-//   } on CFException catch (e) {
-//     debugPrint(e.message);
-//   }
-// }
+  Future<void> webCheckout(String myOrdId) async {
+    try {
+      CFSession? session = await createSession(myOrdId);
+      var cfWebCheckout =
+          CFWebCheckoutPaymentBuilder().setSession(session!).build();
+      cfPaymentGatewayService.doPayment(cfWebCheckout);
+    } on CFException catch (e) {
+      debugPrint(e.message);
+    }
+  }
 
   Future<CFSession?> createSession(String myOrdId) async {
     try {
@@ -290,7 +167,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       var session = await createSession(myOrdId);
       List<CFPaymentModes> components = <CFPaymentModes>[];
       var paymentComponent =
-      CFPaymentComponentBuilder().setComponents(components).build();
+          CFPaymentComponentBuilder().setComponents(components).build();
       var theme = CFThemeBuilder()
           .setNavigationBarBackgroundColorColor("#f7ce34")
           .setPrimaryFont("Menlo")
@@ -301,17 +178,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           .setPaymentComponent(paymentComponent)
           .setTheme(theme)
           .build();
-
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
       debugPrint(e.message);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     // providers
     final cartProvider = Provider.of<CartProvider>(context);
     final addressProvider = Provider.of<AddressProvider>(context);
+    final authProvider = Provider.of<MyAuthProvider>(context);
 
     if (addressProvider.address.isNotEmpty) {
       _defaultAdd =
@@ -323,9 +201,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         addressProvider.loadAddresses();
       }
     });
-
-    // setting variables for payment gateway
-    final authProvider = Provider.of<MyAuthProvider>(context);
 
     setState(() {
       totalAmt = cartProvider.calculateGrandTotal();
@@ -842,6 +717,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+                                            // payment mode dropdown
                                             Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
@@ -859,10 +735,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   elevation: 16,
                                                   style: const TextStyle(
                                                       color: Colors.black),
-                                                  underline: Container(
-                                                    height: 2,
-                                                    color: Colors.green,
-                                                  ),
+                                                  // underline: Container(
+                                                  //   height: 2,
+                                                  //   color: Colors.green,
+                                                  // ),
+                                                  underline: Container(),
                                                   onChanged:
                                                       (String? newValue) {
                                                     setState(() {
@@ -886,7 +763,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ),
                                               ],
                                             ),
-                                            Text(_selectedPaymentMethod)
+                                            // Text(_selectedPaymentMethod)
                                           ],
                                         ),
                                         ElevatedButton(
@@ -947,8 +824,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                                                 orderProvider.addOrders(
                                                     orders, myOrderId);
-                                                cartProvider
-                                                    .clearCart(); // Clear the cart
+                                                // Clear the cart
                                               });
                                             } else if (_selectedPaymentMethod ==
                                                 'Cash') {

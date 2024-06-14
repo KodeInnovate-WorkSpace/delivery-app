@@ -211,7 +211,9 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget productCard(Product product) {
     return Card(
-      color: const Color(0xffeaf1fc),
+      // color: const Color(0xffeaf1fc),
+      elevation: 0,
+      color: Colors.white,
       child: ListTile(
         leading: Image.network(product.image, width: 50, height: 50),
         title: Text(product.name),
@@ -285,7 +287,9 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget recentSearchCard(Product product) {
     return Card(
-      color: const Color(0xffeaf1fc),
+      // color: const Color(0xffeaf1fc),
+      color: Colors.white,
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

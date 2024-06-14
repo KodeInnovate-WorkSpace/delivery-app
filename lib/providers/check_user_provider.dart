@@ -15,59 +15,26 @@ class CheckUserProvider with ChangeNotifier {
   int userPhoneNum = 0;
   CheckUserProvider();
 
+  //New Does User Exist
   Future<void> doesUserExists(String phone) async {
-    // update user phone number
-    userPhoneNum = int.parse(phone);
-    notifyListeners();
-
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
     try {
-      CollectionReference users = firestore.collection('users');
-      final querySnapshot = await users.where('phone', isEqualTo: phone).get();
+      QuerySnapshot querySnapshot = await firestore
+          .collection('users')
+          .where('phone', isEqualTo: phone)
+          .get();
 
       _isUserExist = querySnapshot.docs.isNotEmpty;
-
-      // get username
-      if (_isUserExist) {
-        // Assuming there's only one document with the phone number
-        final userDoc = querySnapshot.docs.first;
-        username = userDoc['name'] as String;
-      } else {
-        username = 'Username';
-      }
-
       notifyListeners();
     } catch (e) {
-      log("Error: $e");
+      log("Error checking user existence: $e");
       _isUserExist = false;
       notifyListeners();
     }
   }
 
-  // store user
-  // Future<void> storeUserData(
-  //     BuildContext context, String field, String value) async {
-  //   final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-  //   final checkUserProvider =
-  //       Provider.of<CheckUserProvider>(context, listen: false);
-  //   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  //
-  //   try {
-  //     await checkUserProvider.doesUserExists(authProvider.phone);
-  //
-  //     if (!checkUserProvider.isUserExist) {
-  //       CollectionReference users = _firestore.collection('users');
-  //
-  //       await users.add({
-  //         field: value,
-  //         // Add other user data here
-  //       });
-  //     }
-  //   } catch (e) {
-  //     log("Error: $e");
-  //   }
-  // }
-
+//New StoreDetail
   Future<void> storeDetail(
       BuildContext context, String field, String value) async {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
@@ -81,7 +48,7 @@ class CheckUserProvider with ChangeNotifier {
       // Check if the user exists
       await checkUserProvider.doesUserExists(authProvider.phone);
 
-      if (!checkUserProvider.isUserExist) {
+      if (!checkUserProvider._isUserExist) {
         // Add new user data if user does not exist
         await firestore.collection('users').add({
           'id': const Uuid().v4(),
@@ -91,11 +58,14 @@ class CheckUserProvider with ChangeNotifier {
           'date': todayDate,
           'status': 1,
         });
+        log("New user added successfully");
       } else {
+        log("User already exists, updating user data");
+
         // Query the user document based on phone number
         QuerySnapshot querySnapshot = await firestore
             .collection('users')
-            .where('phone', isEqualTo: authProvider.textController.text)
+            .where('phone', isEqualTo: authProvider.phone)
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {
@@ -109,7 +79,7 @@ class CheckUserProvider with ChangeNotifier {
 
           log("User field updated successfully");
         } else {
-          log("User not found");
+          log("User not found, which is unexpected since it should exist");
         }
       }
     } catch (e) {
