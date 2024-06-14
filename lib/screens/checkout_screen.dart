@@ -38,7 +38,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String _newAdd = '';
   String _selectedPaymentMethod = 'Banks';
   double totalAmt = 0.0;
-  late String orderId;
+  // late String orderId;
   String customerId = '';
   String customerPhone = "";
 
@@ -49,14 +49,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     super.initState();
     // Use the orderId from the provider or generate it if not available
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-    orderId = orderProvider.orders.isNotEmpty
-        ? orderProvider.orders.first.orderId
-        : _generateOrderId();
+    // orderId = orderProvider.orders.isNotEmpty
+    //     ? orderProvider.orders.first.orderId
+    //     : _generateOrderId();
     customerId = _generateCustomerId();
     cfPaymentGatewayService.setCallback(verifyPayment, onError);
   }
 
-  String _generateOrderId() {
+  String generateOrderId() {
     int randomNumber = Random().nextInt(9000) + 1000;
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     return 'ORD_${timestamp}_$randomNumber';
@@ -120,23 +120,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     debugPrint("Order ID is $orderId");
   }
 
-  Future<void> webCheckout() async {
-    try {
-      CFSession? session = await createSession();
-      var cfWebCheckout =
-          CFWebCheckoutPaymentBuilder().setSession(session!).build();
-      cfPaymentGatewayService.doPayment(cfWebCheckout);
-    } on CFException catch (e) {
-      debugPrint(e.message);
-    }
-  }
+  // Future<void> webCheckout() async {
+  //   try {
+  //     CFSession? session = await createSession();
+  //     var cfWebCheckout =
+  //         CFWebCheckoutPaymentBuilder().setSession(session!).build();
+  //     cfPaymentGatewayService.doPayment(cfWebCheckout);
+  //   } on CFException catch (e) {
+  //     debugPrint(e.message);
+  //   }
+  // }
 
-  Future<CFSession?> createSession() async {
+  Future<CFSession?> createSession(String myOrdId) async {
     try {
-      final paymentSessionId = await createSessionID(orderId);
+      final paymentSessionId = await createSessionID(myOrdId);
       var session = CFSessionBuilder()
           .setEnvironment(CFEnvironment.SANDBOX)
-          .setOrderId(orderId)
+          .setOrderId(myOrdId)
           .setPaymentSessionId(paymentSessionId["payment_session_id"])
           .build();
       return session;
@@ -146,9 +146,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return null;
   }
 
-  Future<void> pay() async {
+  Future<void> pay(String myOrdId) async {
     try {
-      var session = await createSession();
+      var session = await createSession(myOrdId);
       List<CFPaymentModes> components = <CFPaymentModes>[];
       var paymentComponent =
           CFPaymentComponentBuilder().setComponents(components).build();
@@ -755,6 +755,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           onPressed: () {
                                             HapticFeedback.heavyImpact();
 
+                                            //generate order id
+                                            final myOrderId = generateOrderId();
+
                                             if (cartProvider.cart.isEmpty) {
                                               showMessage("Cart is empty");
                                               return;
@@ -780,13 +783,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                                             if (_selectedPaymentMethod ==
                                                 'Banks') {
-                                              pay().then((value) {
+                                              pay(myOrderId).then((value) {
                                                 List<Order> orders =
                                                     cartProvider.cart
                                                         .map((item) {
                                                   return Order(
                                                     orderId:
-                                                        orderId, // Use the same order ID for all items
+                                                    myOrderId, // Use the same order ID for all items
                                                     paymentMode:
                                                         _selectedPaymentMethod,
                                                     productName: item.itemName,
@@ -805,7 +808,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 }).toList();
 
                                                 orderProvider.addOrders(
-                                                    orders, orderId);
+                                                    orders, myOrderId);
                                                 cartProvider
                                                     .clearCart(); // Clear the cart
                                               });
@@ -824,7 +827,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         .map((item) {
                                                   return Order(
                                                     orderId:
-                                                        orderId, // Use the same order ID for all items
+                                                        myOrderId, // Use the same order ID for all items
                                                     paymentMode:
                                                         _selectedPaymentMethod,
                                                     productName: item.itemName,
@@ -844,7 +847,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 }).toList();
 
                                                 orderProvider.addOrders(
-                                                    orders, orderId);
+                                                    orders, myOrderId);
                                                 cartProvider
                                                     .clearCart(); // Clear the cart
                                               });
