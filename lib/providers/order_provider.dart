@@ -365,7 +365,6 @@ class OrderProvider with ChangeNotifier {
   }
 
   void addOrders(List<Order> orders, String ordId) {
-    // String orderId = _generateOrderId();
     List<Order> newOrders =
         orders.map((order) => order.copyWith(orderId: ordId)).toList();
     _orders.addAll(newOrders);
@@ -406,12 +405,6 @@ class OrderProvider with ChangeNotifier {
         .doc(orders.first.orderId)
         .set(combinedOrderData);
   }
-
-  // String _generateOrderId() {
-  //   int randomNumber = Random().nextInt(9000) + 1000;
-  //   String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-  //   return 'ORD_${timestamp}_$randomNumber';
-  // }
 
   Future<void> fetchOrders() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -479,19 +472,3 @@ class OrderProvider with ChangeNotifier {
     await prefs.setString('orders', encodedData);
   }
 }
-
-// void _deleteOrderFromFirebase(Order order) async {
-//   final docRef = FirebaseFirestore.instance.collection('OrderHistory').doc(order.orderId);
-//   final doc = await docRef.get();
-//   if (doc.exists) {
-//     final data = doc.data()!;
-//     List<dynamic> ordersData = data['orders'];
-//     ordersData.removeWhere((orderData) => orderData['productName'] == order.productName);
-//     if (ordersData.isEmpty) {
-//       await docRef.delete();
-//     } else {
-//       double overallTotal = ordersData.fold(0.0, (sum, orderData) => sum + orderData['totalPrice']) + 30.85;
-//       await docRef.update({'orders': ordersData, 'overallTotal': overallTotal});
-//     }
-//   }
-// }

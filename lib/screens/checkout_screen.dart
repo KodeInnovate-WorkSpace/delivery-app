@@ -104,8 +104,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
-  void verifyPayment(String orderId) {
+  void verifyPayment(String oId) {
     debugPrint("Verify Payment");
+    debugPrint("Order ID = $oId");
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
@@ -776,7 +777,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 Provider.of<OrderProvider>(
                                                     context,
                                                     listen: false);
-                                            String orderId = _generateOrderId();
 
                                             if (_selectedPaymentMethod ==
                                                 'Banks') {
@@ -804,7 +804,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(orders, orderId);
+                                                orderProvider.addOrders(
+                                                    orders, orderId);
                                                 cartProvider
                                                     .clearCart(); // Clear the cart
                                               });
@@ -842,7 +843,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(orders, orderId);
+                                                orderProvider.addOrders(
+                                                    orders, orderId);
                                                 cartProvider
                                                     .clearCart(); // Clear the cart
                                               });
