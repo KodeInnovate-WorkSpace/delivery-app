@@ -129,10 +129,40 @@ class _AddressInputFormState extends State<AddressInputForm> {
                 // Phone No
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child: InputBox(
-                      hintText: ("Phone"),
-                      myIcon: Icons.phone,
-                      myController: _phoneController),
+                  child: TextFormField(
+                    controller: _phoneController,
+                    maxLength: 10,
+                    keyboardType: TextInputType.phone,
+                    cursorColor: Colors.black,
+                    decoration: InputDecoration(
+                      hintText: "Phone",
+                      hintStyle: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.normal),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: const Icon(Icons.phone),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter Phone";
+                      } else if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                        return "Please enter a valid 10 digit phone number";
+                      }
+                      return null;
+                    },
+                  ),
                 ),
                 const SizedBox(height: 20),
 

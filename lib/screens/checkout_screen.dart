@@ -17,6 +17,7 @@ import '../providers/order_provider.dart';
 import '../widget/checkout_add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
+import 'home_screen.dart';
 import 'order_confirmation_screen.dart';
 import 'dart:convert';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
@@ -236,7 +237,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Delivery information
-                             Card(
+                            Card(
                               elevation: 0,
                               color:
                                   Colors.white, // Set the card color to white
@@ -514,7 +515,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                             const SizedBox(height: 35),
                             Container(
                               decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 color: Colors.white,
                               ),
                               child: Padding(
@@ -522,130 +524,371 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                 child: Column(
                                   children: [
                                     // location section
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     // address selection sheet
+                                    //     showModalBottomSheet(
+                                    //       context: context,
+                                    //       backgroundColor: Colors.white,
+                                    //       builder: (BuildContext context) {
+                                    //         return Container(
+                                    //           decoration: const BoxDecoration(
+                                    //             color: Colors.white70,
+                                    //             borderRadius: BorderRadius.vertical(
+                                    //                 top: Radius.circular(16.0)),
+                                    //           ),
+                                    //           child: Padding(
+                                    //             padding: const EdgeInsets.symmetric(
+                                    //                 horizontal: 25.0, vertical: 10),
+                                    //             child: Column(
+                                    //               crossAxisAlignment:
+                                    //               CrossAxisAlignment.start,
+                                    //               children: [
+                                    //                 // title
+                                    //                 const Text(
+                                    //                   "Select address",
+                                    //                   style: TextStyle(
+                                    //                       fontSize: 20,
+                                    //                       fontFamily: 'Gilroy-Bold'),
+                                    //                 ),
+                                    //                 const SizedBox(
+                                    //                   height: 20,
+                                    //                 ),
+                                    //                 // add new address row
+                                    //                 Container(
+                                    //                     decoration: BoxDecoration(
+                                    //                         color: Colors.white,
+                                    //                         borderRadius:
+                                    //                         const BorderRadius.all(
+                                    //                             Radius.circular(
+                                    //                                 10.0)),
+                                    //                         border: Border.all(
+                                    //                             color: Colors
+                                    //                                 .grey.shade200)),
+                                    //                     child: ListTile(
+                                    //                       minTileHeight: 50,
+                                    //                       leading: const Icon(Icons.add,
+                                    //                           color: Colors.green,
+                                    //                           size: 18),
+                                    //                       title: const Text(
+                                    //                         "Add new address",
+                                    //                         style: TextStyle(
+                                    //                             color: Colors.green,
+                                    //                             fontFamily:
+                                    //                             'Gilroy-SemiBold'),
+                                    //                       ),
+                                    //                       trailing: const Icon(
+                                    //                           Icons.chevron_right),
+                                    //                       onTap: () {
+                                    //                         Navigator.push(
+                                    //                             context,
+                                    //                             MaterialPageRoute(
+                                    //                                 builder: (context) =>
+                                    //                                 const AddressInputForm()));
+                                    //                       },
+                                    //                     )),
+                                    //                 const SizedBox(
+                                    //                   height: 35,
+                                    //                 ),
+                                    //                 // saved addresses
+                                    //                 Text(
+                                    //                   "Your saved addresses",
+                                    //                   style: TextStyle(
+                                    //                       fontSize: 13,
+                                    //                       color: Colors.grey[600]),
+                                    //                 ),
+                                    //                 Column(
+                                    //                   children: [
+                                    //                     if (addressProvider
+                                    //                         .address.isNotEmpty)
+                                    //                       SizedBox(
+                                    //                         height: 250,
+                                    //                         child: ListView.builder(
+                                    //                           shrinkWrap: true,
+                                    //                           itemCount: addressProvider
+                                    //                               .address.length,
+                                    //                           itemBuilder:
+                                    //                               (context, index) {
+                                    //                             final address =
+                                    //                             addressProvider
+                                    //                                 .address[index];
+                                    //                             return Column(
+                                    //                               children: [
+                                    //                                 GestureDetector(
+                                    //                                   onTap: () {
+                                    //                                     _newAdd =
+                                    //                                     "${addressProvider.address[index].flat}, ${addressProvider.address[index].building}, ${addressProvider.address[index].mylandmark}";
+                                    //                                     setState(() {
+                                    //                                       _defaultAdd =
+                                    //                                           _newAdd;
+                                    //                                     });
+                                    //                                     setState(() {});
+                                    //                                     Navigator.pop(
+                                    //                                         context,
+                                    //                                         true); // Close the bottom modal
+                                    //                                     showMessage(
+                                    //                                         "Address Changed!");
+                                    //                                     debugPrint(
+                                    //                                         "Address: $_defaultAdd");
+                                    //                                   },
+                                    //                                   child: ListTile(
+                                    //                                     title: Text(
+                                    //                                         '${address.flat}, ${address.floor}, ${address.building}'),
+                                    //                                     subtitle: Text(
+                                    //                                         address
+                                    //                                             .mylandmark),
+                                    //                                     trailing:
+                                    //                                     IconButton(
+                                    //                                         onPressed:
+                                    //                                             () {
+                                    //                                           addressProvider
+                                    //                                               .removeAddress(address);
+                                    //                                           Navigator.pop(
+                                    //                                               context);
+                                    //                                         },
+                                    //                                         icon: const Icon(
+                                    //                                             Icons.delete)),
+                                    //                                   ),
+                                    //                                 ),
+                                    //                               ],
+                                    //                             );
+                                    //                           },
+                                    //                         ),
+                                    //                       ),
+                                    //                   ],
+                                    //                 )
+                                    //               ],
+                                    //             ),
+                                    //           ),
+                                    //         );
+                                    //       },
+                                    //     );
+                                    //   },
+                                    //   child: Container(
+                                    //     color: Colors.transparent,
+                                    //     child: Padding(
+                                    //       padding: const EdgeInsets.all(8.0),
+                                    //       child: Row(
+                                    //         crossAxisAlignment:
+                                    //         CrossAxisAlignment.center,
+                                    //         mainAxisAlignment:
+                                    //         MainAxisAlignment.spaceBetween,
+                                    //         children: [
+                                    //           Row(
+                                    //             children: [
+                                    //               const Icon(Icons.place),
+                                    //               const SizedBox(width: 5),
+                                    //               Column(
+                                    //                 crossAxisAlignment:
+                                    //                 CrossAxisAlignment.start,
+                                    //                 children: [
+                                    //                   const Text(
+                                    //                     "Delivering to",
+                                    //                     style: TextStyle(
+                                    //                         fontFamily:
+                                    //                         'Gilroy-SemiBold'),
+                                    //                   ),
+                                    //                   Text(
+                                    //                     _defaultAdd == "" &&
+                                    //                         _defaultAdd != _newAdd
+                                    //                         ? "Please select an address"
+                                    //                         : _newAdd,
+                                    //                     // _newAdd.isNotEmpty
+                                    //                     //     ? _newAdd
+                                    //                     //     : "Please select an address",
+                                    //                     maxLines: 1,
+                                    //                     overflow: TextOverflow.ellipsis,
+                                    //                     style: TextStyle(
+                                    //                         color: Colors.grey[500],
+                                    //                         fontFamily: 'Gilroy-Medium',
+                                    //                         fontSize: 12),
+                                    //                   ),
+                                    //                 ],
+                                    //               ),
+                                    //             ],
+                                    //           ),
+                                    //           // change address button
+                                    //           const Text(
+                                    //             "Change",
+                                    //             style: TextStyle(
+                                    //                 color: Colors.green,
+                                    //                 fontFamily: 'Gilroy-SemiBold'),
+                                    //           ),
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+
+                                    //New address
                                     GestureDetector(
                                       onTap: () {
-                                        // address selection sheet
+                                        // Address selection sheet
                                         showModalBottomSheet(
                                           context: context,
                                           backgroundColor: Colors.white,
                                           builder: (BuildContext context) {
-                                            return Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white70,
-                                                borderRadius: BorderRadius.vertical(
-                                                    top: Radius.circular(16.0)),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 25.0, vertical: 10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    // title
-                                                    const Text(
-                                                      "Select address",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily: 'Gilroy-Bold'),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    // add new address row
-                                                    Container(
-                                                        decoration: BoxDecoration(
+                                            return StatefulBuilder(
+                                              builder: (BuildContext context,
+                                                  StateSetter setModalState) {
+                                                return Container(
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.white70,
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                            top:
+                                                                Radius.circular(
+                                                                    16.0)),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 25.0,
+                                                        vertical: 10),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        // Title
+                                                        const Text(
+                                                          "Select address",
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontFamily:
+                                                                  'Gilroy-Bold'),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        // Add new address row
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
                                                             color: Colors.white,
                                                             borderRadius:
-                                                            const BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10.0)),
+                                                                const BorderRadius
+                                                                    .all(
+                                                                    Radius.circular(
+                                                                        10.0)),
                                                             border: Border.all(
                                                                 color: Colors
-                                                                    .grey.shade200)),
-                                                        child: ListTile(
-                                                          minTileHeight: 50,
-                                                          leading: const Icon(Icons.add,
-                                                              color: Colors.green,
-                                                              size: 18),
-                                                          title: const Text(
-                                                            "Add new address",
-                                                            style: TextStyle(
-                                                                color: Colors.green,
-                                                                fontFamily:
-                                                                'Gilroy-SemiBold'),
+                                                                    .grey
+                                                                    .shade200),
                                                           ),
-                                                          trailing: const Icon(
-                                                              Icons.chevron_right),
-                                                          onTap: () {
-                                                            Navigator.push(
+                                                          child: ListTile(
+                                                            minTileHeight: 50,
+                                                            leading: const Icon(
+                                                                Icons.add,
+                                                                color: Colors
+                                                                    .green,
+                                                                size: 18),
+                                                            title: const Text(
+                                                              "Add new address",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .green,
+                                                                  fontFamily:
+                                                                      'Gilroy-SemiBold'),
+                                                            ),
+                                                            trailing:
+                                                                const Icon(Icons
+                                                                    .chevron_right),
+                                                            onTap: () {
+                                                              Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                    builder: (context) =>
-                                                                    const AddressInputForm()));
-                                                          },
-                                                        )),
-                                                    const SizedBox(
-                                                      height: 35,
-                                                    ),
-                                                    // saved addresses
-                                                    Text(
-                                                      "Your saved addresses",
-                                                      style: TextStyle(
-                                                          fontSize: 13,
-                                                          color: Colors.grey[600]),
-                                                    ),
-                                                    Column(
-                                                      children: [
+                                                                    builder:
+                                                                        (context) =>
+                                                                            const AddressInputForm()),
+                                                              ).then((value) {
+                                                                // Refresh the modal state when returning from address input
+                                                                setModalState(
+                                                                    () {});
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 35),
+                                                        // Saved addresses
+                                                        Text(
+                                                          "Your saved addresses",
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              color: Colors
+                                                                  .grey[600]),
+                                                        ),
                                                         if (addressProvider
                                                             .address.isNotEmpty)
                                                           SizedBox(
                                                             height: 250,
-                                                            child: ListView.builder(
+                                                            child: ListView
+                                                                .builder(
                                                               shrinkWrap: true,
-                                                              itemCount: addressProvider
-                                                                  .address.length,
+                                                              itemCount:
+                                                                  addressProvider
+                                                                      .address
+                                                                      .length,
                                                               itemBuilder:
-                                                                  (context, index) {
+                                                                  (context,
+                                                                      index) {
                                                                 final address =
-                                                                addressProvider
-                                                                    .address[index];
+                                                                    addressProvider
+                                                                            .address[
+                                                                        index];
                                                                 return Column(
                                                                   children: [
                                                                     GestureDetector(
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         _newAdd =
-                                                                        "${addressProvider.address[index].flat}, ${addressProvider.address[index].building}, ${addressProvider.address[index].mylandmark}";
-                                                                        setState(() {
+                                                                            "${address.flat}, ${address.building}, ${address.mylandmark}";
+                                                                        setState(
+                                                                            () {
                                                                           _defaultAdd =
                                                                               _newAdd;
                                                                         });
-                                                                        setState(() {});
                                                                         Navigator.pop(
                                                                             context,
                                                                             true); // Close the bottom modal
                                                                         showMessage(
                                                                             "Address Changed!");
-                                                                        debugPrint(
-                                                                            "Address: $_defaultAdd");
+                                                                        // Redirect to home
+                                                                        Navigator
+                                                                            .pushReplacement(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => const HomeScreen()),
+                                                                        );
                                                                       },
-                                                                      child: ListTile(
+                                                                      child:
+                                                                          ListTile(
                                                                         title: Text(
                                                                             '${address.flat}, ${address.floor}, ${address.building}'),
-                                                                        subtitle: Text(
-                                                                            address
-                                                                                .mylandmark),
+                                                                        subtitle:
+                                                                            Text(address.mylandmark),
                                                                         trailing:
-                                                                        IconButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              addressProvider
-                                                                                  .removeAddress(address);
-                                                                              Navigator.pop(
-                                                                                  context);
-                                                                            },
-                                                                            icon: const Icon(
-                                                                                Icons.delete)),
+                                                                            IconButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            addressProvider.removeAddress(address);
+                                                                            setModalState(() {}); // Refresh the modal state
+                                                                            setState(() {
+                                                                              if (_defaultAdd == _newAdd) {
+                                                                                _defaultAdd = "";
+                                                                                _newAdd = "";
+                                                                              }
+                                                                            });
+                                                                            // Redirect to home
+                                                                            Navigator.pushReplacement(
+                                                                              context,
+                                                                              MaterialPageRoute(builder: (context) => const HomeScreen()),
+                                                                            );
+                                                                          },
+                                                                          icon:
+                                                                              const Icon(Icons.delete),
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ],
@@ -654,10 +897,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                             ),
                                                           ),
                                                       ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
                                             );
                                           },
                                         );
@@ -668,9 +911,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Row(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                                CrossAxisAlignment.center,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
@@ -678,39 +921,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                   const SizedBox(width: 5),
                                                   Column(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       const Text(
                                                         "Delivering to",
                                                         style: TextStyle(
                                                             fontFamily:
-                                                            'Gilroy-SemiBold'),
+                                                                'Gilroy-SemiBold'),
                                                       ),
                                                       Text(
-                                                        _defaultAdd == "" &&
-                                                            _defaultAdd != _newAdd
+                                                        _defaultAdd.isEmpty
                                                             ? "Please select an address"
-                                                            : _newAdd,
-                                                        // _newAdd.isNotEmpty
-                                                        //     ? _newAdd
-                                                        //     : "Please select an address",
+                                                            : _defaultAdd,
                                                         maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         style: TextStyle(
-                                                            color: Colors.grey[500],
-                                                            fontFamily: 'Gilroy-Medium',
+                                                            color: Colors
+                                                                .grey[500],
+                                                            fontFamily:
+                                                                'Gilroy-Medium',
                                                             fontSize: 12),
                                                       ),
                                                     ],
                                                   ),
                                                 ],
                                               ),
-                                              // change address button
+                                              // Change address button
                                               const Text(
                                                 "Change",
                                                 style: TextStyle(
                                                     color: Colors.green,
-                                                    fontFamily: 'Gilroy-SemiBold'),
+                                                    fontFamily:
+                                                        'Gilroy-SemiBold'),
                                               ),
                                             ],
                                           ),
@@ -720,15 +964,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                     const Divider(),
                                     // payment mode | place order
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Row(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 const Icon(
                                                   Icons.account_balance,
@@ -737,8 +984,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                 const SizedBox(width: 10),
                                                 DropdownButton<String>(
                                                   value: _selectedPaymentMethod,
-                                                  icon:
-                                                  const Icon(Icons.arrow_drop_down),
+                                                  icon: const Icon(
+                                                      Icons.arrow_drop_down),
                                                   iconSize: 24,
                                                   elevation: 16,
                                                   style: const TextStyle(
@@ -747,20 +994,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                     height: 2,
                                                     color: Colors.green,
                                                   ),
-                                                  onChanged: (String? newValue) {
+                                                  onChanged:
+                                                      (String? newValue) {
                                                     setState(() {
                                                       _selectedPaymentMethod =
-                                                      newValue!;
+                                                          newValue!;
                                                     });
                                                   },
-                                                  items: <String>['Banks', 'Cash']
-                                                      .map<DropdownMenuItem<String>>(
-                                                          (String value) {
-                                                        return DropdownMenuItem<String>(
-                                                          value: value,
-                                                          child: Text(value),
-                                                        );
-                                                      }).toList(),
+                                                  items: <String>[
+                                                    'Banks',
+                                                    'Cash'
+                                                  ].map<
+                                                          DropdownMenuItem<
+                                                              String>>(
+                                                      (String value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value,
+                                                      child: Text(value),
+                                                    );
+                                                  }).toList(),
                                                 ),
                                               ],
                                             ),
@@ -776,38 +1029,48 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                               return;
                                             }
 
-                                            if (addressProvider.address.isEmpty) {
-                                              showMessage("Please select an address");
+                                            if (addressProvider
+                                                .address.isEmpty) {
+                                              showMessage(
+                                                  "Please select an address");
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                  const AddressInputForm(),
+                                                      const AddressInputForm(),
                                                 ),
                                               );
                                               return; // Exit the function to prevent navigation to payment screen
                                             }
 
                                             final orderProvider =
-                                            Provider.of<OrderProvider>(context,
-                                                listen: false);
+                                                Provider.of<OrderProvider>(
+                                                    context,
+                                                    listen: false);
                                             String orderId = _generateOrderId();
 
-                                            if (_selectedPaymentMethod == 'Banks') {
-                                              // pay()
-                                              webCheckout().then((value) {
+                                            if (_selectedPaymentMethod ==
+                                                'Banks') {
+                                              pay()
+                                              // webCheckout()
+                                                  .then((value) {
                                                 List<Order> orders =
-                                                cartProvider.cart.map((item) {
+                                                    cartProvider.cart
+                                                        .map((item) {
                                                   return Order(
                                                     orderId:
-                                                    orderId, // Use the same order ID for all items
-                                                    paymentMode: _selectedPaymentMethod,
+                                                        orderId, // Use the same order ID for all items
+                                                    paymentMode:
+                                                        _selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage: item.itemImage,
+                                                    productImage:
+                                                        item.itemImage,
                                                     quantity: item.qnt,
-                                                    price: item.itemPrice.toDouble(),
-                                                    totalPrice:
-                                                    (item.itemPrice * item.qnt)
+                                                    price: item.itemPrice
                                                         .toDouble(),
+                                                    totalPrice:
+                                                        (item.itemPrice *
+                                                                item.qnt)
+                                                            .toDouble(),
                                                     address: _defaultAdd,
                                                     // Add phone number if available
                                                     // transactionId: '',
@@ -824,23 +1087,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                   .push(
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                  const OrderConfirmationPage(),
+                                                      const OrderConfirmationPage(),
                                                 ),
                                               )
                                                   .then((value) {
                                                 List<Order> orders =
-                                                cartProvider.cart.map((item) {
+                                                    cartProvider.cart
+                                                        .map((item) {
                                                   return Order(
                                                     orderId:
-                                                    orderId, // Use the same order ID for all items
-                                                    paymentMode: _selectedPaymentMethod,
+                                                        orderId, // Use the same order ID for all items
+                                                    paymentMode:
+                                                        _selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage: item.itemImage,
+                                                    productImage:
+                                                        item.itemImage,
                                                     quantity: item.qnt,
-                                                    price: item.itemPrice.toDouble(),
-                                                    totalPrice:
-                                                    (item.itemPrice * item.qnt)
+                                                    price: item.itemPrice
                                                         .toDouble(),
+                                                    totalPrice:
+                                                        (item.itemPrice *
+                                                                item.qnt)
+                                                            .toDouble(),
                                                     address: _defaultAdd,
                                                     // Add phone number if available
                                                     // transactionId: '',
@@ -858,12 +1126,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> with ChangeNotifier {
                                                 RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
                                                 borderRadius:
-                                                BorderRadius.circular(14.0),
+                                                    BorderRadius.circular(14.0),
                                               ),
                                             ),
-                                            backgroundColor:
-                                            WidgetStateProperty.resolveWith<Color>(
-                                                  (Set<WidgetState> states) {
+                                            backgroundColor: WidgetStateProperty
+                                                .resolveWith<Color>(
+                                              (Set<WidgetState> states) {
                                                 return Colors.black;
                                               },
                                             ),
