@@ -44,7 +44,10 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
             onRefresh: _refreshPage,
             child: ListView(children: [
               PaginatedDataTable(
+                dataRowHeight: 65,
+                showEmptyRows: false,
                 columns: const [
+                  DataColumn(label: Text('No.')),
                   DataColumn(label: Text('ID')),
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Phone')),
@@ -88,16 +91,16 @@ class TableData extends DataTableSource {
 
   // function to update the values of sub-category name
   // () takes name of field, New value to replace the old one, category field and category value
-  Future<void> _updateSubCategory(String field, dynamic newValue,
-      {String? categoryField, dynamic categoryValue}) async {
+  Future<void> _updateUser(String field, dynamic newValue,
+      {String? userField, dynamic userFieldValue}) async {
     await userModel.updateUser(field, newValue,
-        categoryField: categoryField, categoryValue: categoryValue);
+        userField: userField, fieldValue: userFieldValue);
     _loadData(); // Reload data after update
   }
 
   // Delete a row of data from firebase
-  Future<void> _deleteSubCategory(dynamic categoryValue) async {
-    await userModel.deleteUser(categoryValue);
+  Future<void> _deleteUser(dynamic userFieldValue) async {
+    await userModel.deleteUser(userFieldValue);
     _loadData(); // Reload data after deletion
   }
 
@@ -107,11 +110,17 @@ class TableData extends DataTableSource {
 
     // storing each index of userData list in data variable to iterate over each list
     final data = userData[index];
-    // final categoryName = categoryData[data['category_id']] ?? 'Unknown';
 
     return DataRow(cells: [
-      // DataCell(Text(data['category_id'].toString())),
-      DataCell(Text(data['id'].toString())),
+      DataCell(Text((index + 1).toString())),
+      DataCell(SizedBox(
+        width: 100,
+        child: Text(
+          data['id'].toString(),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      )),
       DataCell(Text(data['name'].toString())),
       DataCell(Text(data['phone'].toString())),
       DataCell(Text(data['date'].toString())),
@@ -119,11 +128,11 @@ class TableData extends DataTableSource {
       DataCell(DropdownButton<int>(
         value: data['status'], // Use the status value from data
         onChanged: (int? newValue) {
-          _updateSubCategory(
+          _updateUser(
             'status',
             newValue,
-            categoryField: 'sub_category_id',
-            categoryValue: data['sub_category_id'],
+            userField: 'id',
+            userFieldValue: data['id'],
           );
         },
         items: statusOptions.map<DropdownMenuItem<int>>((int status) {
@@ -141,7 +150,7 @@ class TableData extends DataTableSource {
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            _deleteSubCategory(data['sub_category_id']);
+            _deleteUser(data['id']);
           },
         ),
       ),

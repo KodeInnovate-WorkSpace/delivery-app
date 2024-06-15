@@ -46,7 +46,7 @@ class CheckUserProvider with ChangeNotifier {
       // Get today's date
       String todayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
       // Check if the user exists
-      await checkUserProvider.doesUserExists(authProvider.phone);
+      await checkUserProvider.doesUserExists(authProvider.phone.substring(3));
 
       if (!checkUserProvider._isUserExist) {
         // Add new user data if user does not exist
@@ -57,33 +57,63 @@ class CheckUserProvider with ChangeNotifier {
           // Add other user data here if necessary
           'date': todayDate,
           'status': 1,
+          'name': '',
         });
         log("New user added successfully");
       } else {
         log("User already exists, updating user data");
 
-        // Query the user document based on phone number
+// Query the user document based on phone number
         QuerySnapshot querySnapshot = await firestore
             .collection('users')
-            .where('phone', isEqualTo: authProvider.phone)
+            .where('phone', isEqualTo: authProvider.phone.substring(3))
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {
-          // Get the document reference of the user
-          DocumentReference userDocRef = querySnapshot.docs.first.reference;
+          // Get the document ID of the user
+          String userDocId = querySnapshot.docs.first.id;
 
-          // Update the specific field
-          await userDocRef.update({
-            field: value,
-          });
+          // Get the 'id' field from the user document data
+          String userId = querySnapshot.docs.first.get('id');
 
-          log("User field updated successfully");
+          // Call updateUserDetail with the document ID and the 'id' field value
+          await updateUserDetail(context, userId, value);
         } else {
           log("User not found, which is unexpected since it should exist");
         }
       }
     } catch (e) {
       log("Error: $e");
+    }
+  }
+
+//save name of the user
+  Future<void> updateUserDetail(
+      BuildContext context, String userId, String username) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      // Query the user document based on phone number
+      QuerySnapshot querySnapshot = await firestore
+          .collection('users')
+          .where('id', isEqualTo: userId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the document reference of the user
+        DocumentReference userDocRef = querySnapshot.docs.first.reference;
+
+        // Update the specific field
+        await userDocRef.update({
+          'name': username,
+        });
+
+        log("User field updated successfully");
+      } else {
+        log("User not found, which is unexpected since it should exist");
+      }
+    } catch (e) {
+      log("Error updating user: $e");
     }
   }
 }
