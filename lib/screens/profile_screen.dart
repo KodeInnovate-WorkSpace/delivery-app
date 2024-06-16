@@ -21,9 +21,9 @@ class ProfilePage extends StatelessWidget {
 
     List<String> selectedPhone = [
       // "+917977542667",
-      "+919136307745",
-      "+919326500602",
-      "+919876543210"
+      "9136307745",
+      "9326500602",
+      "9876543210"
     ];
 
     return Scaffold(

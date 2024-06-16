@@ -65,6 +65,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<CheckUserProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Enter Address"),

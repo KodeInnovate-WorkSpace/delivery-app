@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
+import 'package:speedy_delivery/screens/skeleton/home_skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
@@ -27,6 +28,8 @@ class HomeScreenState extends State<HomeScreen> {
   final List<Category> categories = [];
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
+
+  bool _isLoading = true;
 
   // products
   List<Product> products = [];
@@ -283,7 +286,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                       color: Colors.black,
                                                       fontSize: 12),
                                                 ),
-                                                 Text(
+                                                Text(
                                                   '$deliveryTime minutes',
                                                   style: const TextStyle(
                                                       fontFamily:
@@ -343,9 +346,9 @@ class HomeScreenState extends State<HomeScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                  ),
+                                  // child: CircularProgressIndicator(
+                                  //   color: Colors.black,
+                                  // ),
                                 );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
@@ -489,6 +492,30 @@ class HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.white,
                   child: const Icon(
                     Icons.shopping_cart_sharp,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+
+              // Removing this later!!
+              Positioned(
+                bottom: 65,
+                right: 20,
+                child: FloatingActionButton(
+                  hoverColor: Colors.transparent,
+                  elevation: 2,
+                  onPressed: () {
+                    HapticFeedback.heavyImpact();
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeSkeleton()));
+                    // Navigator.pushNamed(context, '/checkout');
+                  },
+                  backgroundColor: Colors.white,
+                  child: const Icon(
+                    Icons.refresh,
                     color: Colors.black,
                   ),
                 ),

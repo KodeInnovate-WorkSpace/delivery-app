@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
+import 'package:speedy_delivery/screens/account_disabled.dart';
 import 'package:speedy_delivery/widget/terms_privacy_line.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 
@@ -106,8 +107,18 @@ class _SigninScreenState extends State<SigninScreen> {
                                 await userProvider.storeDetail(context, 'phone',
                                     authProvider.textController.text);
 
-                                authProvider.verifyPhoneNumber(
-                                    context, authProvider.textController.text);
+                                await userProvider.checkUserStatus(
+                                    authProvider.textController.text);
+                                if (userProvider.isUserActive) {
+                                  authProvider.verifyPhoneNumber(context,
+                                      authProvider.textController.text);
+                                } else {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AccountDisabled()));
+                                }
                               }
                             : null,
                         style: ButtonStyle(

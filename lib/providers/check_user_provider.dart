@@ -130,6 +130,10 @@ class CheckUserProvider with ChangeNotifier {
   bool _isUserExist = false;
   bool get isUserExist => _isUserExist;
 
+  // check status variables
+  bool _isUserActive = true;
+  bool get isUserActive => _isUserActive;
+
   String username = 'Username';
   int userPhoneNum = 0;
   CheckUserProvider();
@@ -205,5 +209,29 @@ class CheckUserProvider with ChangeNotifier {
     } catch (e) {
       log("Error: $e");
     }
+  }
+
+  Future<void> checkUserStatus(String phone) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('users')
+          .where('phone', isEqualTo: phone)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first;
+        final userStatus = userDoc.get('status');
+        _isUserActive = userStatus == 1;
+      } else {
+        _isUserActive = false;
+      }
+    } catch (e) {
+      log("Error checking user status: $e");
+      _isUserActive = false;
+    }
+
+    notifyListeners();
   }
 }
