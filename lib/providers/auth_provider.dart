@@ -24,7 +24,7 @@ class MyAuthProvider with ChangeNotifier {
   Future<void> setPhone() async {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       if (user != null) {
-        textController.text = user.phoneNumber.toString();
+        textController.text = user.phoneNumber.toString().substring(3);
       } else {
         // User is not logged in, navigate to SignInScreen
       }

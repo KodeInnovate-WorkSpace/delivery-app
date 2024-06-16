@@ -43,6 +43,7 @@ class _InputBoxState extends State<InputBox> {
           fillColor: Colors.white,
           prefixIcon: Icon(widget.myIcon),
         ),
+        autofocus: true,
         validator: (value) {
           if (value!.isEmpty) {
             return "Please enter ${widget.hintText}";

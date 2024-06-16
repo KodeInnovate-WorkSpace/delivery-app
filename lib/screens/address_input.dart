@@ -29,8 +29,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
     super.initState();
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     if (authProvider.textController.text.isNotEmpty) {
-      // _phoneController.text = authProvider.textController.text;
-      _phoneController.text = authProvider.textController.text.substring(3);
+      _phoneController.text = authProvider.textController.text;
     }
   }
 
@@ -131,9 +130,11 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   width: MediaQuery.of(context).size.width,
                   child: TextFormField(
                     controller: _phoneController,
-                    maxLength: 10,
+                    // initialValue: _phoneController.text.substring(3),
+                    // maxLength: 10,
                     keyboardType: TextInputType.phone,
                     cursorColor: Colors.black,
+                    autofocus: true,
                     decoration: InputDecoration(
                       hintText: "Phone",
                       hintStyle: const TextStyle(

@@ -52,7 +52,7 @@ class ProfilePage extends StatelessWidget {
             Text(
               authProvider.phone.isEmpty
                   ? "Please Login"
-                  : authProvider.textController.text,
+                  : "+91 ${authProvider.textController.text}",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[700],
