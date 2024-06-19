@@ -36,6 +36,7 @@ dependencies:
   uuid: any
   flutter_dotenv: ^5.1.0
   flutter_phone_direct_caller: ^2.1.1
+  badges: ^3.1.2
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

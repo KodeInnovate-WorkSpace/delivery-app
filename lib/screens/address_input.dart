@@ -51,10 +51,10 @@ class _AddressInputFormState extends State<AddressInputForm> {
           floor: _floorController.text,
           building: _buildingController.text,
           mylandmark: _landmarkController.text,
+          phoneNumber: _phoneController.text,
         );
 
-        Provider.of<AddressProvider>(context, listen: false)
-            .addAddress(address);
+        Provider.of<AddressProvider>(context, listen: false).addAddress(address);
         Navigator.of(context).pop();
       } catch (e) {
         log("Error saving address (address_input.dart): $e");
@@ -78,68 +78,64 @@ class _AddressInputFormState extends State<AddressInputForm> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Flat No
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: InputBox(
-                      hintText: ("Flat No"),
-                      myIcon: Icons.home,
-                      myController: _flatController),
+                    hintText: "Flat No",
+                    myIcon: Icons.home,
+                    myController: _flatController,
+                  ),
                 ),
                 const SizedBox(height: 20),
-
-                // Floor
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: InputBox(
-                      hintText: ("Floor"),
-                      myIcon: Icons.chalet,
-                      myController: _floorController),
+                    hintText: "Floor",
+                    myIcon: Icons.chalet,
+                    myController: _floorController,
+                  ),
                 ),
                 const SizedBox(height: 20),
-
-                // Building Name
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: InputBox(
-                      hintText: ("Building Name"),
-                      myIcon: Icons.apartment,
-                      myController: _buildingController),
+                    hintText: "Building Name",
+                    myIcon: Icons.apartment,
+                    myController: _buildingController,
+                  ),
                 ),
                 const SizedBox(height: 20),
-
-                // Landmark
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: InputBox(
-                      hintText: ("Landmark"),
-                      myIcon: Icons.landscape,
-                      myController: _landmarkController),
+                    hintText: "Landmark",
+                    myIcon: Icons.landscape,
+                    myController: _landmarkController,
+                  ),
                 ),
                 const SizedBox(height: 20),
-                // Name
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: InputBox(
-                      hintText: ("Name"),
-                      myIcon: Icons.person,
-                      myController: _nameController),
+                    hintText: "Name",
+                    myIcon: Icons.person,
+                    myController: _nameController,
+                  ),
                 ),
                 const SizedBox(height: 20),
-                // Phone No
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: TextFormField(
                     controller: _phoneController,
-                    // initialValue: _phoneController.text.substring(3),
-                    // maxLength: 10,
                     keyboardType: TextInputType.phone,
                     cursorColor: Colors.black,
                     autofocus: true,
                     decoration: InputDecoration(
                       hintText: "Phone",
                       hintStyle: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.normal),
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.0),
                         borderSide: const BorderSide(color: Colors.black),
@@ -167,15 +163,11 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _saveAddress();
-                      // userProvider.storeDetail(context, 'name', _nameController.text);
-                      userProvider.storeDetail(
-                          context, 'name', _nameController.text);
+                      userProvider.storeDetail(context, 'name', _nameController.text);
                       Navigator.pop(context, true);
                     }
                   },

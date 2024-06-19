@@ -1,13 +1,15 @@
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
-import 'package:speedy_delivery/screens/skeleton/home_skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
+import '../providers/cart_provider.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
@@ -346,10 +348,10 @@ class HomeScreenState extends State<HomeScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                  // child: CircularProgressIndicator(
-                                  //   color: Colors.black,
-                                  // ),
-                                );
+                                    // child: CircularProgressIndicator(
+                                    //   color: Colors.black,
+                                    // ),
+                                    );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
                               } else {
@@ -477,47 +479,38 @@ class HomeScreenState extends State<HomeScreen> {
               Positioned(
                 bottom: 25,
                 right: 20,
-                child: FloatingActionButton(
-                  hoverColor: Colors.transparent,
-                  elevation: 2,
-                  onPressed: () {
-                    HapticFeedback.heavyImpact();
-
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CheckoutScreen()));
-                    // Navigator.pushNamed(context, '/checkout');
+                child: Consumer<CartProvider>(
+                  builder: (context, cartProvider, child) {
+                    int itemCount = cartProvider
+                        .totalItemsCount(); // Assuming this method exists in CartProvider
+                    return badges.Badge(
+                      badgeContent: Text(
+                        itemCount.toString(),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                      badgeStyle:
+                          const badges.BadgeStyle(badgeColor: Colors.red),
+                      child: FloatingActionButton(
+                        hoverColor: Colors.transparent,
+                        elevation: 2,
+                        onPressed: () {
+                          HapticFeedback.vibrate();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CheckoutScreen()),
+                          );
+                          // Navigator.pushNamed(context, '/checkout');
+                        },
+                        backgroundColor: Colors.white,
+                        child: const Icon(
+                          Icons.shopping_cart_sharp,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
                   },
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.shopping_cart_sharp,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-
-              // Removing this later!!
-              Positioned(
-                bottom: 65,
-                right: 20,
-                child: FloatingActionButton(
-                  hoverColor: Colors.transparent,
-                  elevation: 2,
-                  onPressed: () {
-                    HapticFeedback.heavyImpact();
-
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeSkeleton()));
-                    // Navigator.pushNamed(context, '/checkout');
-                  },
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.refresh,
-                    color: Colors.black,
-                  ),
                 ),
               ),
             ],
