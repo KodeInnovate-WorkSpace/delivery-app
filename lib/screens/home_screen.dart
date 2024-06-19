@@ -1,11 +1,15 @@
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
+import 'package:speedy_delivery/shared/constants.dart';
+import '../providers/cart_provider.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
@@ -27,6 +31,8 @@ class HomeScreenState extends State<HomeScreen> {
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
 
+  bool _isLoading = true;
+
   // products
   List<Product> products = [];
 
@@ -45,7 +51,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+      await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -76,7 +82,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchSubCategory() async {
     try {
       final subSnapshot =
-          await FirebaseFirestore.instance.collection("sub_category").get();
+      await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
         setState(() {
@@ -141,7 +147,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     // Get the placemarks from the coordinates
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String subLocality = place.subLocality ?? '';
     String postalCode = place.postalCode ?? '';
@@ -156,7 +162,7 @@ class HomeScreenState extends State<HomeScreen> {
     try {
       // Fetch all documents from the "location" collection
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('location').get();
+      await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
@@ -265,28 +271,28 @@ class HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             const SizedBox(
                                                 height:
-                                                    20), // Add SizedBox for spacing
+                                                20), // Add SizedBox for spacing
                                             Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
-                                                  'Delivery in ',
+                                                  'Delivery within ',
                                                   style: TextStyle(
                                                       fontFamily:
-                                                          'Gilroy-ExtraBold',
+                                                      'Gilroy-ExtraBold',
                                                       color: Colors.black,
                                                       fontSize: 12),
                                                 ),
-                                                const Text(
-                                                  '7 minutes',
-                                                  style: TextStyle(
+                                                Text(
+                                                  '$deliveryTime minutes',
+                                                  style: const TextStyle(
                                                       fontFamily:
-                                                          'Gilroy-Black',
+                                                      'Gilroy-Black',
                                                       color: Colors.black,
                                                       fontSize: 28),
                                                 ),
@@ -332,7 +338,7 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
+                          (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15.0, vertical: 0),
@@ -342,9 +348,9 @@ class HomeScreenState extends State<HomeScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                  ),
+                                  // child: CircularProgressIndicator(
+                                  //   color: Colors.black,
+                                  // ),
                                 );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
@@ -353,16 +359,17 @@ class HomeScreenState extends State<HomeScreen> {
                                   children: categories.map((category) {
                                     final filteredSubCategories = subCategories
                                         .where((subCategory) =>
-                                            subCategory.catId == category.id)
+                                    subCategory.catId == category.id)
                                         .toList();
 
-                                    return Stack( // replace column with stack
+                                    return Stack(
+                                      // replace column with stack
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8.0,
                                               vertical:
-                                                  0.0), // Reduced vertical padding
+                                              0.0), // Reduced vertical padding
                                           child: Text(
                                             category.name,
                                             style: const TextStyle(
@@ -374,17 +381,17 @@ class HomeScreenState extends State<HomeScreen> {
                                         GridView.builder(
                                           shrinkWrap: true,
                                           physics:
-                                              const NeverScrollableScrollPhysics(),
+                                          const NeverScrollableScrollPhysics(),
                                           itemCount:
-                                              filteredSubCategories.length,
+                                          filteredSubCategories.length,
                                           gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
                                             childAspectRatio: 0.65,
                                           ),
                                           itemBuilder: (context, subIndex) {
                                             final subCategory =
-                                                filteredSubCategories[subIndex];
+                                            filteredSubCategories[subIndex];
                                             return Column(
                                               children: [
                                                 GestureDetector(
@@ -394,14 +401,14 @@ class HomeScreenState extends State<HomeScreen> {
                                                       MaterialPageRoute(
                                                         builder: (context) =>
                                                             CategoryScreen(
-                                                          categoryTitle:
+                                                              categoryTitle:
                                                               category.name,
-                                                          subCategories:
+                                                              subCategories:
                                                               filteredSubCategories,
-                                                          selectedSubCategoryId:
+                                                              selectedSubCategoryId:
                                                               subCategory
                                                                   .id, // Pass the selected sub-category ID
-                                                        ),
+                                                            ),
                                                       ),
                                                     );
                                                   },
@@ -411,39 +418,39 @@ class HomeScreenState extends State<HomeScreen> {
                                                         .symmetric(
                                                         horizontal: 4,
                                                         vertical:
-                                                            0), // Reduced vertical margin
+                                                        0), // Reduced vertical margin
                                                     decoration:
-                                                        const BoxDecoration(
+                                                    const BoxDecoration(
                                                       color: Color(0xffeaf1fc),
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              10)),
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
+                                                      const EdgeInsets.all(
+                                                          8.0),
                                                       child: CachedNetworkImage(
                                                         height: 60,
                                                         imageUrl:
-                                                            subCategory.img,
+                                                        subCategory.img,
                                                         placeholder: (context,
-                                                                url) =>
-                                                            const CircularProgressIndicator(
-                                                                color: Colors
-                                                                    .amberAccent),
+                                                            url) =>
+                                                        const CircularProgressIndicator(
+                                                            color: Colors
+                                                                .amberAccent),
                                                         errorWidget: (context,
-                                                                url, error) =>
-                                                            const Icon(
-                                                                Icons.error),
+                                                            url, error) =>
+                                                        const Icon(
+                                                            Icons.error),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                                 const SizedBox(
                                                     height:
-                                                        4), // Reduced height for the SizedBox
+                                                    4), // Reduced height for the SizedBox
                                                 // sub-category name
                                                 Text(
                                                   subCategory.name,
@@ -469,29 +476,56 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+
+              // Removing this later!!
               Positioned(
                 bottom: 25,
                 right: 20,
-                child: FloatingActionButton(
-                  hoverColor: Colors.transparent,
-                  elevation: 2,
-                  onPressed: () {
-                    HapticFeedback.heavyImpact();
+                child: Consumer<CartProvider>(
+                  builder: (context, cartProvider, child) {
+                    int itemCount = cartProvider.totalItemsCount(); // Assuming this method exists in CartProvider
 
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CheckoutScreen()));
-                    // Navigator.pushNamed(context, '/checkout');
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        FloatingActionButton(
+                          hoverColor: Colors.transparent,
+                          elevation: 2,
+                          onPressed: () {
+                            HapticFeedback.vibrate();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                            );
+                            // Navigator.pushNamed(context, '/checkout');
+                          },
+                          backgroundColor: Colors.white,
+                          child: const Icon(
+                            Icons.shopping_cart_sharp,
+                            color: Colors.black,
+                          ),
+                        ),
+                        if (itemCount > 0)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: badges.Badge(
+                              badgeContent: Text(
+                                itemCount.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                              badgeStyle: const badges.BadgeStyle(
+                                badgeColor: Colors.red,
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
                   },
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.shopping_cart_sharp,
-                    color: Colors.black,
-                  ),
                 ),
               ),
-            ],
+            ] ,
           ),
         ),
       ),

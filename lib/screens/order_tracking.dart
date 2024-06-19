@@ -7,7 +7,7 @@ class OrderTrackingScreen extends StatefulWidget {
   const OrderTrackingScreen({required this.orderId, super.key});
 
   @override
-  _OrderTrackingScreenState createState() => _OrderTrackingScreenState();
+  State<OrderTrackingScreen> createState() => _OrderTrackingScreenState();
 }
 
 class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
@@ -16,29 +16,23 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   @override
   void initState() {
     super.initState();
-    _orderStatusStream = FirebaseFirestore.instance
-        .collection('OrderHistory')
-        .doc(widget.orderId)
-        .snapshots();
+    _orderStatusStream = FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Order Tracking',
-          style: TextStyle(color: Colors.black),
-        ),
+        title: const Text('Order Tracking', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: _orderStatusStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -47,61 +41,70 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
           if (snapshot.hasData) {
             var orderData = snapshot.data!;
-            var status =
-                orderData['status']; // Assuming 'status' field is an int
+            var status = orderData['status'];
 
-            // Build a list of order status cards
-            var statusCards = <Widget>[
-              _buildOrderStatusCard('Order Confirmed',
-                  'Your order has been confirmed.', status >= 1),
-              _buildOrderStatusCard('Order in Process',
-                  'Your order is being processed.', status >= 2),
-              _buildOrderStatusCard('Order Pickup',
-                  'Your order is ready for pickup.', status >= 3),
-              _buildOrderStatusCard('Order Delivered',
-                  'Your order has been delivered.', status >= 4),
-              _buildOrderStatusCard('Order Received',
-                  'You have received your order.', status >= 5),
-            ];
+            if (status == 5) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    _buildOrderFailedCard('Order Failed', 'Your order has failed due to a transaction issue.', true, Colors.red, Icons.error),
+                  ],
+                ),
+              );
+            } else if (status == 6) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    _buildOrderStatusCard('Order Cancelled', 'Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
+                  ],
+                ),
+              );
+            } else {
+              var statusCards = <Widget>[
+                _buildOrderStatusCard('Order Received', 'Your order has been received.', status >= 0),
+                _buildOrderStatusCard('Order Confirmed', 'Your order has been confirmed.', status >= 1),
+                _buildOrderStatusCard('Order In Process', 'Your order is in process.', status >= 2),
+                _buildOrderStatusCard('Order Pickup', 'Your order is ready for pickup.', status >= 3),
+                _buildOrderStatusCard('Order Delivered', 'You order has been delivered', status >= 4),
+              ];
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Order Status',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    widget.orderId,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 20),
-                  Column(
-                    children: statusCards,
-                  ),
-                ],
-              ),
-            );
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    Column(children: statusCards),
+                  ],
+                ),
+              );
+            }
           }
 
-          return Center(child: Text('No data available'));
+          return const Center(child: Text('No data available'));
         },
       ),
     );
   }
 
-  Widget _buildOrderStatusCard(
-      String title, String description, bool isActive) {
+  Widget _buildOrderStatusCard(String title, String description, bool isActive, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      padding: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: isActive
-            ? Colors.green.withOpacity(0.1)
-            : Colors.grey.withOpacity(0.1),
+        color: isActive ? color.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
@@ -109,22 +112,38 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                isActive ? Icons.check_circle : Icons.radio_button_unchecked,
-                color: isActive ? Colors.green : Colors.grey,
-              ),
-              SizedBox(width: 16.0),
-              Text(
-                title,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
+              Icon(isActive ? icon : Icons.radio_button_unchecked, color: isActive ? color : Colors.grey),
+              const SizedBox(width: 16.0),
+              Text(title, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: isActive ? color : Colors.black)),
             ],
           ),
-          SizedBox(height: 8.0),
-          Text(
-            description,
-            style: TextStyle(fontSize: 16.0, color: Colors.black54),
+          const SizedBox(height: 8.0),
+          Text(description, style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrderFailedCard(String title, String description, bool isActive, [Color color = Colors.red, IconData icon = Icons.error]) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: isActive ? color.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(isActive ? icon : Icons.radio_button_unchecked, color: isActive ? color : Colors.grey),
+              const SizedBox(width: 16.0),
+              Text(title, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: isActive ? color : Colors.black)),
+            ],
           ),
+          const SizedBox(height: 8.0),
+          Text(description, style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
         ],
       ),
     );

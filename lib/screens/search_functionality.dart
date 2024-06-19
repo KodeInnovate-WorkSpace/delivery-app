@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/product_model.dart';
 import '../widget/add_to_cart_button.dart';
-
-class Product {
-  final String name;
-  final String imageUrl;
-  final double price;
-
-  Product({required this.name, required this.imageUrl, required this.price});
-}
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -24,7 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
   List<Product> _productSearches = [];
-  final Map<String, int> _productCounts = {};
+  // final Map<String, int> _productCounts = {};
 
   @override
   void initState() {
@@ -32,75 +25,105 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(filterProducts);
     fetchProductsFromFirestore();
     loadRecentSearches();
-    loadProductSearches();
+    loadProductSearches(); // Load product searches
   }
 
   Future<void> fetchProductsFromFirestore() async {
-    final productsCollection =
-        FirebaseFirestore.instance.collection('products');
-    final snapshot = await productsCollection.get();
-    final products = snapshot.docs.map((doc) {
-      return Product(
-        name: doc['name'] as String,
-        imageUrl: doc['image'] as String,
-        price: doc['price'] is int
-            ? (doc['price'] as int).toDouble()
-            : doc['price'] as double,
-      );
-    }).toList();
+    try {
+      final productsCollection =
+          FirebaseFirestore.instance.collection('products');
+      final snapshot = await productsCollection.get();
+      final products = snapshot.docs.map((doc) {
+        return Product(
+          name: doc['name'] as String,
+          price: doc['price'],
+          id: doc['id'],
+          image: doc['image'],
+          stock: doc['stock'],
+          unit: doc['unit'],
+          subCatId: doc['sub_category_id'],
+          status: doc['status'],
+        );
+      }).toList();
 
-    setState(() {
-      _allProducts = products;
-    });
+      setState(() {
+        _allProducts = products;
+      });
+    } catch (e) {
+      debugPrint("$e");
+    }
   }
 
   Future<void> loadProductSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? productSearches =
-        prefs.getStringList('productSearches');
-    if (productSearches != null) {
-      setState(() {
-        _productSearches = productSearches.map((search) {
-          final List<String> searchValues = search.split(',');
-          return Product(
-            name: searchValues[0],
-            imageUrl: searchValues[1],
-            price: double.parse(searchValues[2]),
-          );
-        }).toList();
-      });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String>? productSearches =
+          prefs.getStringList('productSearches');
+      if (productSearches != null) {
+        setState(() {
+          _productSearches = productSearches.map((search) {
+            final List<String> searchValues = search.split(',');
+            return Product(
+              name: searchValues[0],
+              image: searchValues[1],
+              price: int.parse(searchValues[2]),
+              id: int.parse(searchValues[3]),
+              stock: int.parse(searchValues[4]),
+              unit: searchValues[5],
+              subCatId: int.parse(searchValues[6]),
+              status: int.parse(searchValues[7]),
+            );
+          }).toList();
+        });
+      }
+    } catch (e) {
+      debugPrint("$e");
     }
   }
 
   Future<void> saveProductSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> productSearches = _productSearches.map((search) {
-      return '${search.name},${search.imageUrl},${search.price}';
-    }).toList();
-    prefs.setStringList('productSearches', productSearches);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> productSearches = _productSearches.map((search) {
+        return '${search.name},${search.image},${search.price}';
+      }).toList();
+      prefs.setStringList('productSearches', productSearches);
+    } catch (e) {
+      debugPrint("$e");
+    }
   }
 
   Future<void> loadRecentSearches() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? recentSearches = prefs.getStringList('recentSearches');
-    if (recentSearches != null) {
-      setState(() {
-        _recentSearches = recentSearches.map((search) {
-          final List<String> searchValues = search.split(',');
-          return Product(
-            name: searchValues[0],
-            imageUrl: searchValues[1],
-            price: double.parse(searchValues[2]),
-          );
-        }).toList();
-      });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String>? recentSearches =
+          prefs.getStringList('recentSearches');
+      if (recentSearches != null) {
+        setState(() {
+          _recentSearches = recentSearches.map((search) {
+            final List<String> searchValues = search.split(',');
+            return Product(
+              name: searchValues[0],
+              image: searchValues[1],
+              price: int.parse(searchValues[2]),
+              id: int.parse(searchValues[3]),
+              stock: int.parse(searchValues[4]),
+              unit: searchValues[5],
+              subCatId: int.parse(searchValues[6]),
+              status: int.parse(searchValues[7]),
+            );
+          }).toList();
+        });
+      }
+    } catch (e) {
+      debugPrint("$e");
     }
   }
 
   Future<void> saveRecentSearches() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> recentSearches = _recentSearches.map((search) {
-      return '${search.name},${search.imageUrl},${search.price}';
+      return '${search.name},${search.image},${search.price}';
     }).toList();
     prefs.setStringList('recentSearches', recentSearches);
   }
@@ -127,7 +150,6 @@ class _SearchPageState extends State<SearchPage> {
       if (_recentSearches.length > 5) {
         _recentSearches = _recentSearches.sublist(0, 5);
       }
-      _productCounts[product.name] = 0;
       saveRecentSearches();
       saveProductSearches(); // Save product searches
     });
@@ -189,9 +211,11 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget productCard(Product product) {
     return Card(
-      color: const Color(0xffeaf1fc),
+      // color: const Color(0xffeaf1fc),
+      elevation: 0,
+      color: Colors.white,
       child: ListTile(
-        leading: Image.network(product.imageUrl, width: 50, height: 50),
+        leading: Image.network(product.image, width: 50, height: 50),
         title: Text(product.name),
         onTap: () {
           saveSearch(product);
@@ -202,6 +226,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget productSearchCard(Product product) {
+    // Future<void> refreshCart(BuildContext context) async {
+    //   Navigator.of(context).pushReplacement(
+    //     MaterialPageRoute(
+    //       builder: (context) => const SearchPage(),
+    //     ),
+    //   );
+    // }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -215,7 +247,7 @@ class _SearchPageState extends State<SearchPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.network(product.imageUrl, width: 100, height: 100),
+              Image.network(product.image, width: 100, height: 100),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -240,9 +272,8 @@ class _SearchPageState extends State<SearchPage> {
                   AddToCartButton(
                     productName: product.name,
                     productPrice: product.price.toInt(),
-                    productImage: product.imageUrl,
-                    productUnit:
-                        "0", // Set product unit to 0 since it's not used
+                    productImage: product.image,
+                    productUnit: product.unit,
                   ),
                 ],
               ),
@@ -256,17 +287,58 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget recentSearchCard(Product product) {
     return Card(
-      color: const Color(0xffeaf1fc),
+      // color: const Color(0xffeaf1fc),
+      color: Colors.white,
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Image.network(product.imageUrl, width: 40, height: 40),
+            Image.network(product.image, width: 40, height: 40),
             const SizedBox(height: 5),
             Text(product.name),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _searchListView() {
+    if (_productSearches.isEmpty) {
+      return _recentSearchListView();
+    } else {
+      return ListView.builder(
+        itemCount: _productSearches.length,
+        itemBuilder: (context, index) {
+          final product = _productSearches[index];
+          return productSearchCard(product);
+        },
+      );
+    }
+  }
+
+  Widget _recentSearchListView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Recent Searches',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+        ),
+        const Divider(),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _recentSearches.length,
+            itemBuilder: (context, index) {
+              final product = _recentSearches[index];
+              return recentSearchCard(product);
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -306,6 +378,15 @@ class _SearchPageState extends State<SearchPage> {
                             },
                           ),
                         ],
+                      ),
+                    if (_filteredProducts.isEmpty &&
+                        _controller.text.isNotEmpty)
+                      Text(
+                        'Product not found',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.grey[600]),
                       ),
                     if (_recentSearches.isNotEmpty) ...[
                       const SizedBox(height: 20),
@@ -369,7 +450,6 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
-
           ],
         ),
       ),

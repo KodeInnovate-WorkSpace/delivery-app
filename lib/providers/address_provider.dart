@@ -3,14 +3,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy_delivery/services/convert_to_json.dart';
-import 'package:speedy_delivery/shared/show_msg.dart';
 import '../models/address_model.dart';
+import '../shared/show_msg.dart';
 
 class AddressProvider with ChangeNotifier {
   final List<Address> _addressList = [];
 
-  // Getter for addressList
   List<Address> get address => _addressList;
 
   AddressProvider() {
@@ -18,36 +16,30 @@ class AddressProvider with ChangeNotifier {
   }
 
   void addAddress(Address userAdd) async {
-    final index =
-        _addressList.indexWhere((address) => address.flat == userAdd.flat);
+    final index = _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
       _addressList[index] = userAdd;
     } else {
       _addressList.add(userAdd);
 
-      // Convert the address to json
-      String jsonAddress = addressToJson(userAdd);
+      String jsonAddress = json.encode(userAdd.toJson());
 
-      // Store in shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('address_${userAdd.flat}', jsonAddress);
 
-      // Show message
       showMessage("Address Saved!");
       log("Address: ${_addressList.map((add) => {
-            "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark}"
-          })}");
+        "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark} | Phone: ${add.phoneNumber}"
+      })}");
     }
     notifyListeners();
   }
 
   void removeAddress(Address userAdd) async {
-    final index =
-        _addressList.indexWhere((address) => address.flat == userAdd.flat);
+    final index = _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
       _addressList.removeAt(index);
 
-      // Remove from shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('address_${userAdd.flat}');
 
@@ -58,14 +50,11 @@ class AddressProvider with ChangeNotifier {
   Future<Address?> getAddress(String flat) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? addressJson = prefs.getString('address_$flat');
-    Map<String, dynamic> addressMap = json.decode(addressJson!);
-    return Address(
-      flat: addressMap['flat'],
-      floor: addressMap['floor'],
-      building: addressMap['building'] ?? "N/A",
-      mylandmark: addressMap['mylandmark'],
-      // Add other fields as necessary
-    );
+    if (addressJson != null) {
+      Map<String, dynamic> addressMap = json.decode(addressJson);
+      return Address.fromJson(addressMap);
+    }
+    return null;
   }
 
   Future<void> loadAddresses() async {
@@ -76,14 +65,10 @@ class AddressProvider with ChangeNotifier {
     for (String key in keys) {
       if (key.startsWith('address_')) {
         String? jsonAddress = prefs.getString(key);
-        Map<String, dynamic> addressMap = json.decode(jsonAddress!);
-        _addressList.add(Address(
-          flat: addressMap['flat'],
-          floor: addressMap['floor'],
-          building: addressMap['building'] ?? 'N/A',
-          mylandmark: addressMap['mylandmark'],
-          // Add other fields as necessary
-        ));
+        if (jsonAddress != null) {
+          Map<String, dynamic> addressMap = json.decode(jsonAddress);
+          _addressList.add(Address.fromJson(addressMap));
+        }
       }
     }
     notifyListeners();

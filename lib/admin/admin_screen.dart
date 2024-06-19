@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
-
 import '../screens/sign_in_screen.dart';
 import 'category/manage_category_screen.dart';
 
@@ -85,13 +84,6 @@ class AdminScreen extends StatelessWidget {
                 color: Colors.white,
                 size: 15,
               ),
-              // child: const Text(
-              //   "Logout",
-              //   style: TextStyle(
-              //       color: Colors.white,
-              //       fontFamily: 'Gilroy-Bold',
-              //       fontSize: 16),
-              // ),
             ),
           ),
         ],
@@ -181,77 +173,6 @@ class AdminScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-
-            // Logout button
-            // ElevatedButton(
-            //   onPressed: () async {
-            //     showDialog(
-            //         context: context,
-            //         builder: (context) => AlertDialog(
-            //               backgroundColor: Colors.white,
-            //               title: const Text(
-            //                 "Logout",
-            //                 style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
-            //               ),
-            //               content:
-            //                   const Text("Are you sure you want to logout?"),
-            //               actions: [
-            //                 Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //                   children: [
-            //                     TextButton(
-            //                         onPressed: () =>
-            //                             Navigator.of(context).pop(),
-            //                         child: const Text(
-            //                           "No",
-            //                           style: TextStyle(color: Colors.red),
-            //                         )),
-            //                     TextButton(
-            //                         onPressed: () async {
-            //                           await FirebaseAuth.instance.signOut();
-            //                           SharedPreferences prefs =
-            //                               await SharedPreferences.getInstance();
-            //                           await prefs.remove('isLoggedIn');
-            //                           Navigator.pushAndRemoveUntil(
-            //                             context,
-            //                             MaterialPageRoute(
-            //                                 builder: (context) =>
-            //                                     const SigninScreen()),
-            //                             (route) => false,
-            //                           );
-            //                         },
-            //                         child: const Text(
-            //                           "Yes",
-            //                           style: TextStyle(color: Colors.black),
-            //                         )),
-            //                   ],
-            //                 )
-            //               ],
-            //             ));
-            //   },
-            //   style: ButtonStyle(
-            //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            //       RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(14.0),
-            //       ),
-            //     ),
-            //     backgroundColor: WidgetStateProperty.resolveWith<Color>(
-            //       (Set<WidgetState> states) {
-            //         if (states.contains(WidgetState.disabled)) {
-            //           return Colors.black.withOpacity(0.3);
-            //         }
-            //         return Colors.redAccent;
-            //       },
-            //     ),
-            //   ),
-            //   child: const Text(
-            //     "Logout",
-            //     style: TextStyle(
-            //         color: Colors.white,
-            //         fontFamily: 'Gilroy-Bold',
-            //         fontSize: 16),
-            //   ),
-            // ),
           ],
         ),
       ),

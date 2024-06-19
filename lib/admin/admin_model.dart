@@ -17,13 +17,13 @@ class UserModel extends ChangeNotifier {
   }
 
   Future<void> updateUser(String field, dynamic newValue,
-      {String? categoryField, dynamic categoryValue}) async {
+      {String? userField, dynamic fieldValue}) async {
     try {
       Query query = FirebaseFirestore.instance.collection('users');
 
       // Add conditions to your query if any
-      if (categoryField != null && categoryValue != null) {
-        query = query.where(categoryField, isEqualTo: categoryValue);
+      if (userField != null && fieldValue != null) {
+        query = query.where(userField, isEqualTo: fieldValue);
       }
 
       // Get the documents matching the query
@@ -36,14 +36,13 @@ class UserModel extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteUser(dynamic categoryValue) async {
+  Future<void> deleteUser(dynamic fieldValue) async {
     try {
       Query query = FirebaseFirestore.instance.collection('users');
 
       // Add conditions to your query if any
-      if (categoryValue != null) {
-        query = query.where(FieldPath(const ['id']),
-            isEqualTo: categoryValue); // Assuming 'catId' is the field name
+      if (fieldValue != null) {
+        query = query.where(FieldPath(const ['id']), isEqualTo: fieldValue);
       }
 
       // Get the documents matching the query

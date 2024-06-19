@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/screens/home_screen.dart';
 import '../models/product_model.dart';
 import 'add_to_cart_button.dart';
 
@@ -16,6 +17,14 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
+  Future<void> refreshCart() async {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const HomeScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -111,7 +120,15 @@ class _ProductCardState extends State<ProductCard> {
                                     productPrice: product.price,
                                     productImage: product.image,
                                     productUnit: product.unit,
+                                    // refreshCart: refreshCart,
                                   ),
+                                  // CheckoutAddToCartButton(
+                                  //     productName: product.name,
+                                  //     productPrice: product.price,
+                                  //     productImage: product.image,
+                                  //     productUnit: product.unit,
+                                  //     // refreshCart: refreshCart,
+                                  // )
                                 ],
                               ),
                             ),

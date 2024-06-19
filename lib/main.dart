@@ -14,12 +14,13 @@ import 'package:speedy_delivery/screens/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // await dotenv.load(fileName: "C:/Users/Farid/Desktop/speedy_delivery/lib/.env");
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MyAuthProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
+        // ChangeNotifierProvider(create: (_) => NewCartProvider()),
         ChangeNotifierProvider(create: (_) => CheckUserProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Gilroy-Regular",
         scaffoldBackgroundColor: Colors.white,
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionHandleColor: Colors.amberAccent
+        ),
         appBarTheme: const AppBarTheme(
           elevation: 3,
           shadowColor: Colors.black54,
@@ -56,19 +60,12 @@ class MyApp extends StatelessWidget {
         child: SplashScreen(),
       ),
       routes: {
-        // '/home': (context) => const NetworkHandler(
-        //       child: HomeScreen(),
-        //     ),
         '/profile': (context) => const NetworkHandler(
               child: ProfilePage(),
             ),
-        // '/checkout': (context) => const NetworkHandler(
-        //       child: CheckoutScreen(),
-        //     ),
         '/search': (context) => const NetworkHandler(
               child: SearchPage(),
             ),
-        // 'admin': (context) => const NetworkHandler(child: AdminScreen())
       },
     );
   }

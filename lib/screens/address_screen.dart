@@ -37,13 +37,17 @@ class AddressScreen extends StatelessWidget {
                         children: [
                           ListTile(
                             title: Text(
-                                'Flat No.${address.flat}, Floor: ${address.floor}, Building: ${address.building}'),
-                            subtitle: Text("Landmark: ${address.mylandmark}"),
+                                'Flat No.${address.flat}, Floor: ${address.floor}, Building: ${address.building}'
+                            ),
+                            subtitle: Text(
+                                'Landmark: ${address.mylandmark}, Phone: ${address.phoneNumber}'
+                            ),
                             trailing: IconButton(
-                                onPressed: () {
-                                  addressProvider.removeAddress(address);
-                                },
-                                icon: const Icon(Icons.delete)),
+                              onPressed: () {
+                                addressProvider.removeAddress(address);
+                              },
+                              icon: const Icon(Icons.delete),
+                            ),
                           ),
                         ],
                       );
@@ -65,18 +69,17 @@ class AddressScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
-              // add new address button
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddressInputForm()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddressInputForm(),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  fixedSize:
-                      const Size(250, 50), // Set your desired width and height
+                  fixedSize: const Size(250, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),

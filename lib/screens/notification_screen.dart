@@ -33,9 +33,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
     prefs.setBool(key, value);
   }
 
-  _requestNotificationPermission() async {
+  Future<bool> _requestNotificationPermission() async {
     var status = await Permission.notification.request();
-    return status == PermissionStatus.granted;
+    return status.isGranted;
   }
 
   @override
@@ -86,7 +86,6 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                         _savePreference('push_notification', value);
                       });
                     } else {
-                      // Optionally, show a message to the user.
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Notification permission is required.'),
                       ));

@@ -1,11 +1,14 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/checkout_screen.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
+import '../providers/cart_provider.dart';
 import '../widget/sidebar.dart';
 import '../widget/network_handler.dart'; // Import NetworkHandler
 
@@ -43,7 +46,7 @@ class CategoryScreenState extends State<CategoryScreen> {
   Future<void> fetchProducts(int subCategoryId) async {
     try {
       final productSnap =
-          await FirebaseFirestore.instance.collection("products").get();
+      await FirebaseFirestore.instance.collection("products").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
@@ -93,11 +96,11 @@ class CategoryScreenState extends State<CategoryScreen> {
                 // Side navbar
                 sidebar(context, widget.subCategories, fetchProducts,
                     selectedSubCategoryId, (id) {
-                  setState(() {
-                    selectedSubCategoryId = id;
-                    fetchProducts(id);
-                  });
-                }),
+                      setState(() {
+                        selectedSubCategoryId = id;
+                        fetchProducts(id);
+                      });
+                    }),
                 ProductCard(
                   productList: products,
                 ),
@@ -106,25 +109,48 @@ class CategoryScreenState extends State<CategoryScreen> {
             Positioned(
               bottom: 25,
               right: 20,
-              child: FloatingActionButton(
-                onPressed: () async {
-                  HapticFeedback.selectionClick();
+              child: Consumer<CartProvider>(
+                builder: (context, cartProvider, child) {
+                  int itemCount = cartProvider.totalItemsCount(); // Assuming this method exists in CartProvider
 
-                  // Navigate to CheckoutScreen and wait for it to pop
-
-                  await Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CheckoutScreen(),
-                    ),
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      FloatingActionButton(
+                        hoverColor: Colors.transparent,
+                        elevation: 2,
+                        onPressed: () {
+                          HapticFeedback.vibrate();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                          );
+                          // Navigator.pushNamed(context, '/checkout');
+                        },
+                        backgroundColor: Colors.white,
+                        child: const Icon(
+                          Icons.shopping_cart_sharp,
+                          color: Colors.black,
+                        ),
+                      ),
+                      if (itemCount > 0)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: badges.Badge(
+                            badgeContent: Text(
+                              itemCount.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                            badgeStyle: const badges.BadgeStyle(
+                              badgeColor: Colors.red,
+                            ),
+                          ),
+                        ),
+                    ],
                   );
-
-                  // Rebuild the widget to reflect the updated cart state
-                  setState(() {});
                 },
-                backgroundColor: Colors.white,
-                child:
-                    const Icon(Icons.shopping_cart_sharp, color: Colors.black),
               ),
             ),
           ],

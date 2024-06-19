@@ -193,13 +193,13 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ElevatedButton(
                   onPressed: openCamera,
                   style: ButtonStyle(
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                         return Colors.black;
                       },
                     ),
@@ -215,13 +215,13 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ElevatedButton(
                   onPressed: pickImage,
                   style: ButtonStyle(
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                         return Colors.black;
                       },
                     ),
@@ -290,10 +290,8 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             // Add button
             Center(
               child: ElevatedButton(
-                onPressed: () async {
-                  if (nameController.text.isEmpty ||
-                      _image == null ||
-                      selectedCategoryName == null) {
+                onPressed: isLoading ? null : () async {
+                  if (nameController.text.isEmpty || _image == null || selectedCategoryName == null) {
                     showMessage("Please fill necessary details");
                     log("Please fill all the fields");
 
@@ -304,33 +302,106 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                     return;
                   }
 
+                  setState(() {
+                    isLoading = true;
+                  });
+
                   await addNewSubCategory(context);
+
+                  setState(() {
+                    isLoading = false;
+                  });
+
                   Navigator.pop(context, true);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  backgroundColor: isLoading
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.black, // Set the color directly
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
                     : const Text(
-                        "Add",
-                        style: TextStyle(
-                            color: Colors.white, fontFamily: 'Gilroy-Bold'),
-                      ),
+                  "Add",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Gilroy-Bold',
+                  ),
+                ),
               ),
-            ),
+            )
+
+            // Center(
+            //   child: ElevatedButton(
+            //     onPressed: isLoading ? null : () async {
+            //       if (nameController.text.isEmpty || _image == null || selectedCategoryName == null) {
+            //         showMessage("Please fill necessary details");
+            //         log("Please fill all the fields");
+            //
+            //         setState(() {
+            //           isLoading = false;
+            //         });
+            //
+            //         return;
+            //       }
+            //
+            //       setState(() {
+            //         isLoading = true;
+            //       });
+            //
+            //       await addNewSubCategory(context);
+            //
+            //       setState(() {
+            //         isLoading = false;
+            //       });
+            //
+            //       Navigator.pop(context, true);
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            //             (Set<MaterialState> states) {
+            //           if (states.contains(MaterialState.disabled)) {
+            //             return Colors.black.withOpacity(0.3);
+            //           }
+            //           return Colors.black;
+            //         },
+            //       ),
+            //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            //       textStyle: const TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.bold,
+            //       ),
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(10.0),
+            //       ),
+            //     ),
+            //     child: isLoading
+            //         ? const CircularProgressIndicator(
+            //       color: Colors.white,
+            //       strokeWidth: 2,
+            //     )
+            //         : const Text(
+            //       "Add",
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //         fontFamily: 'Gilroy-Bold',
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
