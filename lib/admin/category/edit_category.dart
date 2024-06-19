@@ -22,6 +22,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
 
   // list to store fetched categories
   List<Map<String, dynamic>> catData = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -171,47 +172,101 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
             // Select Category
 
             // Add button
+            // Center(
+            //   child: ElevatedButton(
+            //     onPressed: () async {
+            //       if (nameController.text.isEmpty) {
+            //         showMessage("Please fill necessary details");
+            //         log("Please fill all the fields");
+            //         return;
+            //       }
+            //
+            //       await addNewCategory(context);
+            //       Navigator.pop(context, true);
+            //       log("Category Length: ${catData.length}");
+            //     },
+            //     style: ButtonStyle(
+            //       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //         RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(14.0),
+            //         ),
+            //       ),
+            //       backgroundColor: WidgetStateProperty.resolveWith<Color>(
+            //         (Set<WidgetState> states) {
+            //           return Colors.black;
+            //         },
+            //       ),
+            //     ),
+            //     child: const SizedBox(
+            //       width: 200,
+            //       height: 58,
+            //       child: Center(
+            //         child: Text(
+            //           "Add",
+            //           style: TextStyle(
+            //             color: Colors.white,
+            //             fontFamily: 'Gilroy-Black',
+            //             fontSize: 16.0,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Center(
               child: ElevatedButton(
-                onPressed: () async {
+                onPressed: isLoading ? null : () async {
                   if (nameController.text.isEmpty) {
                     showMessage("Please fill necessary details");
                     log("Please fill all the fields");
+
+                    setState(() {
+                      isLoading = false;
+                    });
+
                     return;
                   }
 
+                  setState(() {
+                    isLoading = true;
+                  });
+
                   await addNewCategory(context);
+
+                  setState(() {
+                    isLoading = false;
+                  });
+
                   Navigator.pop(context, true);
-                  log("Category Length: ${catData.length}");
                 },
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                    ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isLoading
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.black, // Set the color directly
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                  backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                      return Colors.black;
-                    },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                child: const SizedBox(
-                  width: 200,
-                  height: 58,
-                  child: Center(
-                    child: Text(
-                      "Add",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Gilroy-Black',
-                        fontSize: 16.0,
-                      ),
-                    ),
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
+                    : const Text(
+                  "Add",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Gilroy-Bold',
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

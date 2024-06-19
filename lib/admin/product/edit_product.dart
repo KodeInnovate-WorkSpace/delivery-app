@@ -32,6 +32,8 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   ProductModel product = ProductModel();
   List<Map<String, dynamic>> productData = [];
 
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -393,61 +395,108 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
             // Add button
 
+            // Center(
+            //   child: ElevatedButton(
+            //     onPressed: () async {
+            //       if (nameController.text.isEmpty ||
+            //           _image == null ||
+            //           selectedCategory == null) {
+            //         showMessage("Please fill necessary details");
+            //         log("Please fill all the fields");
+            //         return;
+            //       }
+            //
+            //       await addNewProduct(context);
+            //       Navigator.pop(context, true);
+            //     },
+            //     style: ButtonStyle(
+            //       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //         RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(14.0),
+            //         ),
+            //       ),
+            //       backgroundColor: WidgetStateProperty.resolveWith<Color>(
+            //         (Set<WidgetState> states) {
+            //           return Colors.black;
+            //         },
+            //       ),
+            //     ),
+            //     child: const SizedBox(
+            //       width: 200,
+            //       height: 58,
+            //       child: Center(
+            //         child: Text(
+            //           "Add",
+            //           style: TextStyle(
+            //             color: Colors.white,
+            //             fontFamily: 'Gilroy-Black',
+            //             fontSize: 16.0,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Center(
               child: ElevatedButton(
-                onPressed: () async {
-                  if (nameController.text.isEmpty ||
-                      _image == null ||
-                      selectedCategory == null) {
-                    showMessage("Please fill necessary details");
-                    log("Please fill all the fields");
-                    return;
-                  }
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        if (nameController.text.isEmpty ||
+                            _image == null ||
+                            selectedCategory == null) {
+                          showMessage("Please fill necessary details");
+                          log("Please fill all the fields");
 
-                  await addNewProduct(context);
-                  Navigator.pop(context, true);
-                },
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                    ),
+                          setState(() {
+                            isLoading = false;
+                          });
+
+                          return;
+                        }
+
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        await addNewProduct(context);
+
+                        setState(() {
+                          isLoading = false;
+                        });
+
+                        Navigator.pop(context, true);
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isLoading
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.black, // Set the color directly
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                  backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                      return Colors.black;
-                    },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                child: const SizedBox(
-                  width: 200,
-                  height: 58,
-                  child: Center(
-                    child: Text(
-                      "Add",
-                      style: TextStyle(
+                child: isLoading
+                    ? const CircularProgressIndicator(
                         color: Colors.white,
-                        fontFamily: 'Gilroy-Black',
-                        fontSize: 16.0,
+                        strokeWidth: 2,
+                      )
+                    : const Text(
+                        "Add",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Gilroy-Bold',
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               ),
             ),
 
-            const SizedBox(
-              height: 10,
-            ),
-            const Center(
-                child: Text(
-              "Adding product takes time. Please wait before adding new product, otherwise same product will be added again",
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: 12,
-              ),
-              textAlign: TextAlign.center,
-            )),
           ],
         ),
       ),
