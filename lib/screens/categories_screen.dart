@@ -46,7 +46,7 @@ class CategoryScreenState extends State<CategoryScreen> {
   Future<void> fetchProducts(int subCategoryId) async {
     try {
       final productSnap =
-          await FirebaseFirestore.instance.collection("products").get();
+      await FirebaseFirestore.instance.collection("products").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
@@ -96,48 +96,59 @@ class CategoryScreenState extends State<CategoryScreen> {
                 // Side navbar
                 sidebar(context, widget.subCategories, fetchProducts,
                     selectedSubCategoryId, (id) {
-                  setState(() {
-                    selectedSubCategoryId = id;
-                    fetchProducts(id);
-                  });
-                }),
+                      setState(() {
+                        selectedSubCategoryId = id;
+                        fetchProducts(id);
+                      });
+                    }),
                 ProductCard(
                   productList: products,
                 ),
               ],
             ),
             Positioned(
-              bottom: 55,
+              bottom: 25,
               right: 20,
               child: Consumer<CartProvider>(
                 builder: (context, cartProvider, child) {
                   int itemCount = cartProvider.totalItemsCount(); // Assuming this method exists in CartProvider
-                  return badges.Badge(
-                    badgeContent: Text(
-                      itemCount.toString(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    position: badges.BadgePosition.topEnd(top: 0, end: 0),
-                    badgeStyle: const badges.BadgeStyle(
-                        badgeColor: Colors.red
-                    ),
-                    child: FloatingActionButton(
-                      hoverColor: Colors.transparent,
-                      elevation: 2,
-                      onPressed: () {
-                        HapticFeedback.vibrate();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const CheckoutScreen()),
-                        );
-                        // Navigator.pushNamed(context, '/checkout');
-                      },
-                      backgroundColor: Colors.white,
-                      child: const Icon(
-                        Icons.shopping_cart_sharp,
-                        color: Colors.black,
+
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      FloatingActionButton(
+                        hoverColor: Colors.transparent,
+                        elevation: 2,
+                        onPressed: () {
+                          HapticFeedback.vibrate();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                          );
+                          // Navigator.pushNamed(context, '/checkout');
+                        },
+                        backgroundColor: Colors.white,
+                        child: const Icon(
+                          Icons.shopping_cart_sharp,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
+                      if (itemCount > 0)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: badges.Badge(
+                            badgeContent: Text(
+                              itemCount.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                            badgeStyle: const badges.BadgeStyle(
+                              badgeColor: Colors.red,
+                            ),
+                          ),
+                        ),
+                    ],
                   );
                 },
               ),

@@ -215,35 +215,38 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
             // ),
             Center(
               child: ElevatedButton(
-                onPressed: isLoading ? null : () async {
-                  if (nameController.text.isEmpty) {
-                    showMessage("Please fill necessary details");
-                    log("Please fill all the fields");
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        if (nameController.text.isEmpty) {
+                          showMessage("Please fill necessary details");
+                          log("Please fill all the fields");
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    return;
-                  }
+                          return;
+                        }
 
-                  setState(() {
-                    isLoading = true;
-                  });
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                  await addNewCategory(context);
+                        await addNewCategory(context);
 
-                  setState(() {
-                    isLoading = false;
-                  });
+                        setState(() {
+                          isLoading = false;
+                        });
 
-                  Navigator.pop(context, true);
-                },
+                        Navigator.pop(context, true);
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isLoading
                       ? Colors.black.withOpacity(0.3)
                       : Colors.black, // Set the color directly
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -255,16 +258,16 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : const Text(
-                  "Add",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Gilroy-Bold',
-                  ),
-                ),
+                        "Add",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Gilroy-Bold',
+                        ),
+                      ),
               ),
             )
           ],
