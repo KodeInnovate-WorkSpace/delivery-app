@@ -37,6 +37,12 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    // initialize cart provider for loading cart items
+    final initiateCartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+    //calling method to load the cart items
+    initiateCartProvider.loadCart();
+
     checkLocationService();
     fetchDataFuture = fetchData();
   }
@@ -80,7 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     // Get the placemarks from the coordinates
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String postalCode = place.postalCode ?? '';
 
@@ -94,7 +100,7 @@ class HomeScreenState extends State<HomeScreen> {
     try {
       // Fetch all documents from the "location" collection
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('location').get();
+          await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
@@ -154,7 +160,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
+          await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -185,7 +191,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchSubCategory() async {
     try {
       final subSnapshot =
-      await FirebaseFirestore.instance.collection("sub_category").get();
+          await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
         setState(() {
@@ -460,8 +466,6 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-
-              // Removing this later!!
               Positioned(
                 bottom: 25,
                 right: 20,
@@ -471,7 +475,7 @@ class HomeScreenState extends State<HomeScreen> {
                         .totalItemsCount(); // Assuming this method exists in CartProvider
 
                     return Stack(
-                      alignment: Alignment.center,
+                      alignment: Alignment.topRight,
                       children: [
                         FloatingActionButton(
                           hoverColor: Colors.transparent,
@@ -492,19 +496,21 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         if (itemCount > 0)
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: badges.Badge(
-                              badgeContent: Text(
+                          badges.Badge(
+                            badgeContent: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
                                 itemCount.toString(),
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Gilroy-SemiBold',
+                                    fontSize: 10),
                               ),
-                              position:
-                                  badges.BadgePosition.topEnd(top: 0, end: 0),
-                              badgeStyle: const badges.BadgeStyle(
-                                badgeColor: Colors.red,
-                              ),
+                            ),
+                            position:
+                                badges.BadgePosition.topEnd(top: 0, end: 0),
+                            badgeStyle: const badges.BadgeStyle(
+                              badgeColor: Colors.green,
                             ),
                           ),
                       ],

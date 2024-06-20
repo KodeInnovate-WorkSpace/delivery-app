@@ -31,7 +31,7 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
   }
 
   void _startPeriodicCheck() {
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!isLoading) {
         checkLocation();
       }
