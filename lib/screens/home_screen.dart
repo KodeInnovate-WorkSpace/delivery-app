@@ -31,21 +31,124 @@ class HomeScreenState extends State<HomeScreen> {
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
 
-  bool _isLoading = true;
-
   // products
   List<Product> products = [];
 
   @override
   void initState() {
     super.initState();
-    fetchDataFuture = fetchData();
     checkLocationService();
+    fetchDataFuture = fetchData();
   }
 
   Future<void> fetchData() async {
     await fetchCategory();
     await fetchSubCategory();
+  }
+
+  Future<void> _handleRefresh() async {
+    checkLocationService();
+    fetchData();
+  }
+
+  Future<void> checkLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      showLocationDialog();
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        showLocationDialog();
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      showLocationDialog();
+      return;
+    }
+
+    // Location services are enabled and permission is granted, get the current location
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    log("Current Position: ${position.latitude}, ${position.longitude}");
+
+    // Get the placemarks from the coordinates
+    List<Placemark> placemarks =
+    await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+    String postalCode = place.postalCode ?? '';
+
+    log("PostalCode: $postalCode");
+
+    // Check Firestore for status
+    await checkAccess(postalCode);
+  }
+
+  Future<void> checkAccess(String postalCode) async {
+    try {
+      // Fetch all documents from the "location" collection
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('location').get();
+
+      // Check if there are any documents in the collection
+      if (querySnapshot.docs.isNotEmpty) {
+        // Iterate through each document
+        for (DocumentSnapshot document in querySnapshot.docs) {
+          // Assuming each document has 'postal_code' and 'status' fields
+          int docPostalCode = document['postal_code'];
+          int status = document['status'];
+
+          // Check if the postal code matches and the status is 1
+          if (postalCode == docPostalCode.toString() && status == 1) {
+            log("Access granted");
+            return; // Exit the function if access is granted
+          }
+        }
+        // If no document with matching postal code and status 1 is found
+        log("No document with matching postal code and status 1 found in Firestore");
+      } else {
+        log("No documents found in Firestore");
+      }
+      // If no document with matching postal code and status 1 is found or no documents are found
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+      );
+    } catch (e) {
+      log("Error checking access: $e");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+      );
+    }
+  }
+
+  void showLocationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enable Location'),
+          content: const Text('Please enable location services to proceed.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    ).then((_) =>
+        checkLocationService()); // Check location service again after dialog is closed
   }
 
   Future<void> fetchCategory() async {
@@ -113,125 +216,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _handleRefresh() async {
-    fetchData();
-    checkLocationService();
-  }
-
-  Future<void> checkLocationService() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      showLocationDialog();
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        showLocationDialog();
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      showLocationDialog();
-      return;
-    }
-
-    // Location services are enabled and permission is granted, get the current location
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    log("Current Position: ${position.latitude}, ${position.longitude}");
-
-    // Get the placemarks from the coordinates
-    List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark place = placemarks[0];
-    String subLocality = place.subLocality ?? '';
-    String postalCode = place.postalCode ?? '';
-
-    log("SubLocality: $subLocality, PostalCode: $postalCode");
-
-    // Check Firestore for status
-    await checkAccess();
-  }
-
-  Future<void> checkAccess() async {
-    try {
-      // Fetch all documents from the "location" collection
-      QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('location').get();
-
-      // Check if there are any documents in the collection
-      if (querySnapshot.docs.isNotEmpty) {
-        // Get the placemarks from the coordinates
-        Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-        List<Placemark> placemarks = await placemarkFromCoordinates(
-            position.latitude, position.longitude);
-        Placemark place = placemarks[0];
-        String subLocality = place.subLocality ?? '';
-        int postalCode = int.parse(place.postalCode ?? '');
-
-        // Iterate through each document
-        for (DocumentSnapshot document in querySnapshot.docs) {
-          // Assuming each document has 'sublocality', 'postal_code', and 'status' fields
-          String docSubLocality = document['sublocality'];
-          int docPostalCode = document['postal_code'];
-          int status = document['status'];
-
-          // Check if the sublocality and postal code match
-          if (subLocality == docSubLocality &&
-              postalCode == docPostalCode &&
-              status == 1) {
-            log("Access granted");
-            return; // Exit the function if access is granted
-          }
-        }
-        // If no document with matching sublocality, postal code, and status 1 is found
-        log("No document with matching sublocality, postal code, and status 1 found in Firestore");
-      } else {
-        log("No documents found in Firestore");
-      }
-      // If no document with matching sublocality, postal code, and status 1 is found or no documents are found
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-      );
-    } catch (e) {
-      log("Error checking access: $e");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-      );
-    }
-  }
-
-  void showLocationDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Enable Location'),
-          content: const Text('Please enable location services to proceed.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-          ],
-        );
-      },
-    ).then((_) =>
-        checkLocationService()); // Check location service again after dialog is closed
-  }
-
   @override
   Widget build(BuildContext context) {
     return NetworkHandler(
@@ -271,20 +255,20 @@ class HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             const SizedBox(
                                                 height:
-                                                20), // Add SizedBox for spacing
+                                                    20), // Add SizedBox for spacing
                                             Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
                                                   'Delivery within ',
                                                   style: TextStyle(
                                                       fontFamily:
-                                                      'Gilroy-ExtraBold',
+                                                          'Gilroy-ExtraBold',
                                                       color: Colors.black,
                                                       fontSize: 12),
                                                 ),
@@ -292,7 +276,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                   '$deliveryTime minutes',
                                                   style: const TextStyle(
                                                       fontFamily:
-                                                      'Gilroy-Black',
+                                                          'Gilroy-Black',
                                                       color: Colors.black,
                                                       fontSize: 28),
                                                 ),
@@ -338,7 +322,7 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
+                      (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15.0, vertical: 0),
@@ -348,10 +332,10 @@ class HomeScreenState extends State<HomeScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                  // child: CircularProgressIndicator(
-                                  //   color: Colors.black,
-                                  // ),
-                                );
+                                    // child: CircularProgressIndicator(
+                                    //   color: Colors.black,
+                                    // ),
+                                    );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
                               } else {
@@ -359,7 +343,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   children: categories.map((category) {
                                     final filteredSubCategories = subCategories
                                         .where((subCategory) =>
-                                    subCategory.catId == category.id)
+                                            subCategory.catId == category.id)
                                         .toList();
 
                                     return Stack(
@@ -369,7 +353,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8.0,
                                               vertical:
-                                              0.0), // Reduced vertical padding
+                                                  0.0), // Reduced vertical padding
                                           child: Text(
                                             category.name,
                                             style: const TextStyle(
@@ -381,17 +365,17 @@ class HomeScreenState extends State<HomeScreen> {
                                         GridView.builder(
                                           shrinkWrap: true,
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemCount:
-                                          filteredSubCategories.length,
+                                              filteredSubCategories.length,
                                           gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
                                             childAspectRatio: 0.65,
                                           ),
                                           itemBuilder: (context, subIndex) {
                                             final subCategory =
-                                            filteredSubCategories[subIndex];
+                                                filteredSubCategories[subIndex];
                                             return Column(
                                               children: [
                                                 GestureDetector(
@@ -401,14 +385,14 @@ class HomeScreenState extends State<HomeScreen> {
                                                       MaterialPageRoute(
                                                         builder: (context) =>
                                                             CategoryScreen(
-                                                              categoryTitle:
+                                                          categoryTitle:
                                                               category.name,
-                                                              subCategories:
+                                                          subCategories:
                                                               filteredSubCategories,
-                                                              selectedSubCategoryId:
+                                                          selectedSubCategoryId:
                                                               subCategory
                                                                   .id, // Pass the selected sub-category ID
-                                                            ),
+                                                        ),
                                                       ),
                                                     );
                                                   },
@@ -418,39 +402,39 @@ class HomeScreenState extends State<HomeScreen> {
                                                         .symmetric(
                                                         horizontal: 4,
                                                         vertical:
-                                                        0), // Reduced vertical margin
+                                                            0), // Reduced vertical margin
                                                     decoration:
-                                                    const BoxDecoration(
+                                                        const BoxDecoration(
                                                       color: Color(0xffeaf1fc),
                                                       borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10)),
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                      const EdgeInsets.all(
-                                                          8.0),
+                                                          const EdgeInsets.all(
+                                                              8.0),
                                                       child: CachedNetworkImage(
                                                         height: 60,
                                                         imageUrl:
-                                                        subCategory.img,
+                                                            subCategory.img,
                                                         placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(
-                                                            color: Colors
-                                                                .amberAccent),
+                                                                url) =>
+                                                            const CircularProgressIndicator(
+                                                                color: Colors
+                                                                    .amberAccent),
                                                         errorWidget: (context,
-                                                            url, error) =>
-                                                        const Icon(
-                                                            Icons.error),
+                                                                url, error) =>
+                                                            const Icon(
+                                                                Icons.error),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                                 const SizedBox(
                                                     height:
-                                                    4), // Reduced height for the SizedBox
+                                                        4), // Reduced height for the SizedBox
                                                 // sub-category name
                                                 Text(
                                                   subCategory.name,
@@ -483,7 +467,8 @@ class HomeScreenState extends State<HomeScreen> {
                 right: 20,
                 child: Consumer<CartProvider>(
                   builder: (context, cartProvider, child) {
-                    int itemCount = cartProvider.totalItemsCount(); // Assuming this method exists in CartProvider
+                    int itemCount = cartProvider
+                        .totalItemsCount(); // Assuming this method exists in CartProvider
 
                     return Stack(
                       alignment: Alignment.center,
@@ -495,7 +480,8 @@ class HomeScreenState extends State<HomeScreen> {
                             HapticFeedback.vibrate();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => const CheckoutScreen()),
                             );
                             // Navigator.pushNamed(context, '/checkout');
                           },
@@ -514,7 +500,8 @@ class HomeScreenState extends State<HomeScreen> {
                                 itemCount.toString(),
                                 style: const TextStyle(color: Colors.white),
                               ),
-                              position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                              position:
+                                  badges.BadgePosition.topEnd(top: 0, end: 0),
                               badgeStyle: const badges.BadgeStyle(
                                 badgeColor: Colors.red,
                               ),
@@ -525,7 +512,7 @@ class HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-            ] ,
+            ],
           ),
         ),
       ),

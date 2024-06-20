@@ -1,21 +1,104 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
+import 'dart:developer';
 
-class NotInLocationScreen extends StatelessWidget {
+class NotInLocationScreen extends StatefulWidget {
   const NotInLocationScreen({super.key});
+
+  @override
+  _NotInLocationScreenState createState() => _NotInLocationScreenState();
+}
+
+class _NotInLocationScreenState extends State<NotInLocationScreen> {
+  bool locationCorrect = false;
+  bool isLoading = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startPeriodicCheck();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startPeriodicCheck() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (!isLoading) {
+        checkLocation();
+      }
+    });
+  }
+
+  Future<void> checkLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark place = placemarks[0];
+      String postalCode = place.postalCode ?? '';
+
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('location').get();
+      for (DocumentSnapshot document in querySnapshot.docs) {
+        int docPostalCode = document['postal_code'];
+        int status = document['status'];
+        if (postalCode == docPostalCode.toString() && status == 1) {
+          setState(() {
+            locationCorrect = true;
+            isLoading = false;
+          });
+          if (!mounted) return;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+          return;
+        }
+      }
+      setState(() {
+        locationCorrect = false;
+        isLoading = false;
+      });
+    } catch (e) {
+      log("Error checking location: $e");
+      setState(() {
+        locationCorrect = false;
+        isLoading = false;
+      });
+    }
+  }
+
+  void refreshLocationCheck() async {
+    setState(() {
+      isLoading = true;
+    });
+    await checkLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false, // Prevent back button press
+      onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Location Check'),
-          automaticallyImplyLeading: false, // Removes the back button
+          automaticallyImplyLeading: false,
         ),
         body: Center(
-          child: Column(
+          child: locationCorrect
+              ? const Text('Location is correct, proceed further')
+              : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Icon(
@@ -30,12 +113,7 @@ class NotInLocationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    (Route<dynamic> route) => false,
-                  );
-                },
+                onPressed: isLoading ? null : refreshLocationCheck,
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
@@ -43,16 +121,21 @@ class NotInLocationScreen extends StatelessWidget {
                     ),
                   ),
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                       return Colors.black;
                     },
                   ),
                 ),
-                child: const SizedBox(
+                child: SizedBox(
                   width: 200,
                   height: 58,
                   child: Center(
-                    child: Text(
+                    child: isLoading
+                        ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white),
+                    )
+                        : const Text(
                       "Try changing location",
                       style: TextStyle(
                         color: Colors.white,

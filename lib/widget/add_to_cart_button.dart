@@ -135,26 +135,26 @@ class AddToCartButtonState extends State<AddToCartButton> {
             },
             style: ButtonStyle(
               backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.transparent),
-              overlayColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.hovered)) {
+                  WidgetStateProperty.all<Color>(Colors.transparent),
+              overlayColor: WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) {
+                  if (states.contains(WidgetState.hovered)) {
                     return Colors.green.withOpacity(0.1);
                   }
-                  if (states.contains(MaterialState.pressed)) {
+                  if (states.contains(WidgetState.pressed)) {
                     return Colors.green.withOpacity(0.3);
                   }
                   return Colors.green.withOpacity(0.6);
                 },
               ),
-              side: MaterialStateProperty.all<BorderSide>(
+              side: WidgetStateProperty.all<BorderSide>(
                   const BorderSide(color: Colors.green)),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(4)),
                 ),
               ),
-              minimumSize: MaterialStateProperty.all<Size>(const Size(70, 30)),
+              minimumSize: WidgetStateProperty.all<Size>(const Size(70, 30)),
             ),
             child: const Text(
               'Add',
