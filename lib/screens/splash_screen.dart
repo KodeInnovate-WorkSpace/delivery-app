@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +13,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  String? userPhone;
-
   @override
   void initState() {
     super.initState();
@@ -25,9 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkIfLogin() async {
-    // await Future.delayed(
-    //     const Duration(seconds: 3));
-    // Simulate a delay for the splash screen
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       if (mounted) {
         if (user != null) {
@@ -36,7 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         } else {
-          // User is not logged in, navigate to SignInScreen
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const SigninScreen()),
@@ -47,11 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Widget splashHome() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset("assets/images/delivo.png"),
-      ],
+    return Center(
+      child: Image.asset("assets/images/delivo.png"),
     );
   }
 
@@ -59,9 +49,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(color: Colors.amberAccent),
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.amberAccent,
         child: splashHome(),
       ),
     );
