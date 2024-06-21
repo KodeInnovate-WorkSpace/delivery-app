@@ -39,21 +39,19 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               style: TextStyle(
                   fontFamily: "Gilroy-Regular",
                   color: Colors.grey,
-                  // fontWeight: FontWeight.bold,
                   fontSize: 16),
             ),
             Text(
               "+91 ${widget.phoneNumber}",
               style: const TextStyle(
                   fontFamily: "Gilroy-SemiBold",
-                  // color: Colors.grey,
                   fontSize: 17),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Pinput(
                 controller: _otpController,
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.number,
                 length: 6,
                 autofocus: true,
                 defaultPinTheme: PinTheme(
@@ -62,81 +60,105 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(10))),
+                onCompleted: (pin) async {
+                  await _verifyOtp(pin);
+                },
               ),
             ),
             ElevatedButton(
               onPressed: () async {
                 HapticFeedback.selectionClick();
-
-                try {
-                  if (_otpController.text.length != 6) {
-                    // showMessage("Invalid OTP");
-                    throw Exception("Invalid OTP");
-                  }
-                  PhoneAuthCredential credential = PhoneAuthProvider.credential(
-                      verificationId: widget.verificationId,
-                      smsCode: _otpController.text);
-
-                  await FirebaseAuth.instance.signInWithCredential(credential);
-
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    (route) => false,
-                  );
-
-                  // Navigator.pushNamedAndRemoveUntil(
-                  //     context, 'home', (route) => false);
-
-                  setState(() {
-                    _isLoading = !_isLoading;
-                  });
-                } catch (e) {
-                  log("Error: $e");
-                }
+                await _verifyOtp(_otpController.text);
               },
               style: ButtonStyle(
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.0),
                   ),
                 ),
-                backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                  (Set<WidgetState> states) {
-                    if (states.contains(WidgetState.disabled)) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.disabled)) {
                       return Colors.black.withOpacity(0.3);
                     }
                     return Colors.black;
                   },
                 ),
-              ), // Disable the button by setting onPressed to null
+              ),
               child: _isLoading
                   ? const SizedBox(
-                      width: 250,
-                      height: 50.0,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white, // Adjust color as needed
-                        ),
-                      ),
-                    )
+                width: 250,
+                height: 50.0,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ),
+              )
                   : const SizedBox(
-                      width: 250,
-                      height: 50.0,
-                      child: Center(
-                        child: Text(
-                          "Verify",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                      ),
+                width: 250,
+                height: 50.0,
+                child: Center(
+                  child: Text(
+                    "Verify",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
                     ),
+                  ),
+                ),
+              ),
             ),
             termsPrivacyLine(),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> _verifyOtp(String otp) async {
+    if (otp.isEmpty) {
+      _showSnackBar("Please enter the OTP.", Colors.red);
+      return;
+    }
+
+    if (otp.length != 6) {
+      _showSnackBar("Invalid OTP. Please enter a 6-digit code.", Colors.red);
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: widget.verificationId, smsCode: otp);
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      _showSnackBar("Login Successful", Colors.green);
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (route) => false,
+      );
+    } catch (e) {
+      log("Error: $e");
+      _showSnackBar("Incorrect OTP. Please try again.", Colors.red);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
       ),
     );
   }

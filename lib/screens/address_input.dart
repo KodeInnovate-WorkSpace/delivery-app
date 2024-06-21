@@ -130,6 +130,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
                     keyboardType: TextInputType.phone,
                     cursorColor: Colors.black,
                     autofocus: true,
+                    readOnly: true,  // Make the field uneditable
                     decoration: InputDecoration(
                       hintText: "Phone",
                       hintStyle: const TextStyle(

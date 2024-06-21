@@ -119,9 +119,6 @@ class _SigninScreenState extends State<SigninScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               const AccountDisabled()));
-                                  // authProvider.setButtonEnabled(
-                                  //     true);
-                                  // Re-enable the button after operation
                                 }
                               }
                             : null,
