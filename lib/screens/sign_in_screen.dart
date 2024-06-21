@@ -191,7 +191,7 @@ Widget splashWidget() {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Image.asset("assets/images/speedy.png"),
+      Image.asset("assets/images/delivo.png"),
     ],
   );
 }

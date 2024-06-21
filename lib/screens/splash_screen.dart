@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset("assets/images/speedy.png"), // Assuming your image is here
+        Image.asset("assets/images/delivo.png"),
       ],
     );
   }

@@ -68,7 +68,6 @@ class MyAuthProvider with ChangeNotifier {
                         phoneNumber: phoneNumber)));
           },
           codeAutoRetrievalTimeout: (String verificationId) {
-            showMessage("Auto Retrieval Timeout");
             log("Auto Retrieval Timeout");
           },
           phoneNumber: "+91$phoneNumber");
