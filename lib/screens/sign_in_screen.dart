@@ -62,7 +62,7 @@ class _SigninScreenState extends State<SigninScreen> {
                           controller: authProvider.textController,
                           maxLength: 10,
                           autofocus: true,
-                          keyboardType: TextInputType.phone,
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             hintText: "Enter Mobile Number",
                             hintStyle: TextStyle(
@@ -109,6 +109,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
                                 await userProvider.checkUserStatus(
                                     authProvider.textController.text);
+
                                 if (userProvider.isUserActive) {
                                   authProvider.verifyPhoneNumber(context,
                                       authProvider.textController.text);
@@ -118,6 +119,9 @@ class _SigninScreenState extends State<SigninScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               const AccountDisabled()));
+                                  // authProvider.setButtonEnabled(
+                                  //     true);
+                                  // Re-enable the button after operation
                                 }
                               }
                             : null,
@@ -163,6 +167,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                 ),
                               ),
                       ),
+
                       termsPrivacyLine(),
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.center,

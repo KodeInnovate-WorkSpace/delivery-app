@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/shared/show_msg.dart';
 import '../screens/home_screen.dart';
 import '../screens/verify_phone_num_screen.dart';
 
@@ -11,6 +12,12 @@ class MyAuthProvider with ChangeNotifier {
   bool isLoading = false;
 
   String get phone => textController.text;
+
+  //disable/enable button
+  void setButtonEnabled(bool value) {
+    isButtonEnabled = value;
+    notifyListeners();
+  }
 
   MyAuthProvider() {
     textController.addListener(checkInputLength);
@@ -42,12 +49,14 @@ class MyAuthProvider with ChangeNotifier {
           verificationCompleted: (PhoneAuthCredential credential) async {
             await FirebaseAuth.instance.signInWithCredential(credential);
             await _setLoginState(true);
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const HomeScreen()),
             );
           },
           verificationFailed: (FirebaseAuthException ex) {
+            showMessage("Verification Failed, Please try again");
             log("Verification failed: ${ex.message}");
           },
           codeSent: (String verificationId, int? resendToken) {
@@ -59,6 +68,7 @@ class MyAuthProvider with ChangeNotifier {
                         phoneNumber: phoneNumber)));
           },
           codeAutoRetrievalTimeout: (String verificationId) {
+            showMessage("Auto Retrieval Timeout");
             log("Auto Retrieval Timeout");
           },
           phoneNumber: "+91$phoneNumber");
