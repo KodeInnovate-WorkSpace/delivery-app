@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/screens/orders_screen.dart';
 
 class OrderConfirmationPage extends StatefulWidget {
   const OrderConfirmationPage({super.key});
@@ -20,7 +21,11 @@ class _OrderConfirmationPageState extends State<OrderConfirmationPage> {
       });
       // Navigate to home after 2 seconds (1 second for the tick animation and 1 second delay)
       Future.delayed(const Duration(seconds: 2), () {
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        // Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const OrderHistoryScreen()));
       });
     });
   }

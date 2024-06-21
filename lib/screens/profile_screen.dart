@@ -9,6 +9,7 @@ import 'package:speedy_delivery/screens/notification_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import '../shared/constants.dart';
 import 'about_us_screen.dart';
 import 'address_screen.dart';
 import 'orders_screen.dart';
@@ -235,7 +236,7 @@ class ProfilePage extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Speedy',
+                    'Delivo',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -243,7 +244,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'v15.113.0',
+                    appVer,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
