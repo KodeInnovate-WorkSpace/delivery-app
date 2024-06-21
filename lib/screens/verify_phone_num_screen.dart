@@ -70,6 +70,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
 
                 try {
                   if (_otpController.text.length != 6) {
+                    // showMessage("Invalid OTP");
                     throw Exception("Invalid OTP");
                   }
                   PhoneAuthCredential credential = PhoneAuthProvider.credential(
