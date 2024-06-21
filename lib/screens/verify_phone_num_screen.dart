@@ -71,14 +71,14 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                 await _verifyOtp(_otpController.text);
               },
               style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.0),
                   ),
                 ),
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.disabled)) {
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
+                    if (states.contains(WidgetState.disabled)) {
                       return Colors.black.withOpacity(0.3);
                     }
                     return Colors.black;

@@ -72,9 +72,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     );
                   },
                   child: Container(
-                    // color: const Color(0xffeaf1fc), // baby blue color
-                    // color: Colors.white,
-                    // elevation: 0,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border(
@@ -112,14 +109,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                               title: Text(order.productName),
                               subtitle: Text(
                                   'Price: ₹${order.price}, Quantity: ${order.quantity}'),
-                              // trailing: IconButton(
-                              //   icon: const Icon(Icons.delete),
-                              //   onPressed: () async {
-                              //     setState(() {
-                              //       orderProvider.deleteOrder(order);
-                              //     });
-                              //   },
-                              // ),
                             );
                           }).toList(),
                         ),

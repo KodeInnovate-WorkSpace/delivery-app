@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/admin_screen.dart';
+import 'package:speedy_delivery/deliveryPartner/screen/delivery_home.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/notification_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
@@ -25,6 +26,8 @@ class ProfilePage extends StatelessWidget {
       "9326500602",
       "9876543210"
     ];
+
+    List<String> deliveryPhone = ["9876543210"];
 
     return Scaffold(
       appBar: AppBar(
@@ -110,6 +113,7 @@ class ProfilePage extends StatelessWidget {
               },
             ),
 
+            //display admin tile
             if (selectedPhone.contains(authProvider.phone))
               ListTile(
                 leading: const Icon(Icons.settings),
@@ -120,6 +124,24 @@ class ProfilePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const AdminScreen()),
+                  );
+                  // Navigator.pushNamed(context, '/admin');
+                },
+              )
+            else
+              const SizedBox(),
+
+            //display delivery tile
+            if (deliveryPhone.contains(authProvider.phone))
+              ListTile(
+                leading: const Icon(Icons.two_wheeler),
+                title: const Text('Delivery Partner'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>  DeliveryHomeScreen()),
                   );
                   // Navigator.pushNamed(context, '/admin');
                 },

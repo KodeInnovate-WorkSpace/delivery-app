@@ -11,6 +11,8 @@ import 'package:speedy_delivery/screens/search_functionality.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'package:speedy_delivery/screens/splash_screen.dart';
 
+import 'deliveryPartner/provider/delivery_order_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -24,6 +26,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CheckUserProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => AllOrderProvider()),
         // Add other providers if needed
       ],
       child: const MyApp(),
