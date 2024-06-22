@@ -16,13 +16,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkIfLogin();
+    _initAuthProvider();
+    _navigateBasedOnAuth();
+  }
+
+  void _initAuthProvider() {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     authProvider.setPhone();
   }
 
-  Future<void> _checkIfLogin() async {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+  Future<void> _navigateBasedOnAuth() async {
+    await Future.delayed(
+        const Duration(seconds: 2)); // Add a delay to show the splash screen
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (mounted) {
         if (user != null) {
           Navigator.pushReplacement(
@@ -41,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget splashHome() {
     return Center(
-      child: Image.asset("assets/images/delivo.png"),
+      child: Image.asset("assets/icon.png"),
     );
   }
 
@@ -57,3 +63,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+//updated the splash screen

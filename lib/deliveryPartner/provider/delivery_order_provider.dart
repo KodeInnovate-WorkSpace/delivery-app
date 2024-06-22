@@ -42,6 +42,7 @@ class AllOrderProvider with ChangeNotifier {
           overallTotal: data['overallTotal'],
           paymentMode: data['paymentMode'],
           status: data['status'],
+          phone: data['phone'],
         );
         _allOrders.add(newOrder);
 

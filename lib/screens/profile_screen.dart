@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/deliveryPartner/screen/delivery_home.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/notification_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,21 +15,30 @@ import 'about_us_screen.dart';
 import 'address_screen.dart';
 import 'orders_screen.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+
+    final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
+
+    userProvider.checkUserType(authProvider.textController.text);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
 
-    List<String> selectedPhone = [
-      // "+917977542667",
-      "9136307745",
-      "9326500602",
-      "9876543210"
-    ];
-
-    List<String> deliveryPhone = ["9876543210"];
+    final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -115,7 +125,7 @@ class ProfilePage extends StatelessWidget {
             ),
 
             //display admin tile
-            if (selectedPhone.contains(authProvider.phone))
+            if (userProvider.userType == 1)
               ListTile(
                 leading: const Icon(Icons.settings),
                 title: const Text('Admin Screen'),
@@ -133,7 +143,7 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(),
 
             //display delivery tile
-            if (deliveryPhone.contains(authProvider.phone))
+            if (userProvider.userType == 1)
               ListTile(
                 leading: const Icon(Icons.two_wheeler),
                 title: const Text('Delivery Partner'),
@@ -142,7 +152,7 @@ class ProfilePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  const DeliveryHomeScreen()),
+                        builder: (context) => const DeliveryHomeScreen()),
                   );
                   // Navigator.pushNamed(context, '/admin');
                 },

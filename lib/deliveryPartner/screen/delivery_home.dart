@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/screens/order_tracking.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../provider/delivery_order_provider.dart';
+import 'delivery_order_tracking.dart';
 
 class DeliveryHomeScreen extends StatelessWidget {
   const DeliveryHomeScreen({super.key});
@@ -26,7 +26,7 @@ class DeliveryHomeScreen extends StatelessWidget {
               labelStyle:
                   TextStyle(fontSize: 17, fontFamily: 'Gilroy-SemiBold'),
               tabs: [
-                Tab(text: "Pending"),
+                Tab(text: "Pending Orders"),
                 Tab(text: "Completed Orders"),
               ],
             ),
@@ -76,30 +76,36 @@ class DeliveryHomeScreen extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          OrderTrackingScreen(orderId: order.orderId)));
+                      builder: (context) => DeliveryTrackingScreen(
+                            orderId: order.orderId,
+                            orderTotalPrice: order.overallTotal,
+                            order: order.orders,
+                            paymentMode: order.paymentMode,
+                            customerAddress: order.address,
+                            customerPhone: order.phone,
+                          )));
             },
             child: ListTile(
               title: Text(order.orderId),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: order.orders.map((orderDetail) {
-                  return Text(
-                      '${orderDetail.productName} - ${orderDetail.quantity} x Rs.${orderDetail.price}');
-                }).toList(),
-              ),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Total: Rs.${order.overallTotal}',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                  Text(
-                    'Status: ${order.status}',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                ],
+              trailing: GestureDetector(
+                onTap: () async {
+                  Uri dialNumber = Uri(scheme: 'tel', path: order.phone);
+
+                  await launchUrl(dialNumber);
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.phone,
+                      size: 12,
+                    ),
+                    Text(
+                      order.phone,
+                      style: const TextStyle(fontFamily: 'Gilroy-Bold'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -118,16 +124,11 @@ class DeliveryHomeScreen extends StatelessWidget {
         final order = orders[index];
         return ListTile(
           title: Text(order.orderId),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: order.orders.map((orderDetail) {
-              return Text(
-                  '${orderDetail.productName} - ${orderDetail.quantity} x Rs.${orderDetail.price}');
-            }).toList(),
+          trailing: const Text(
+            'Done',
+            style: TextStyle(fontSize: 12, fontFamily: 'Gilroy-ExtraBold'),
           ),
-          trailing: Text(
-            'Total: Rs.${order.overallTotal}',
-          ),
+          // Text('Total: Rs.${order.overallTotal}',),
         );
       },
     );

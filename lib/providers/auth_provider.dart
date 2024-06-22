@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../screens/home_screen.dart';
+import '../screens/sign_in_screen.dart';
 import '../screens/verify_phone_num_screen.dart';
 
 class MyAuthProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   bool isButtonEnabled = false;
   bool isLoading = false;
+  String? _verificationId;
 
   String get phone => textController.text;
 
@@ -46,42 +48,54 @@ class MyAuthProvider with ChangeNotifier {
 
       // phone number verification logic
       await FirebaseAuth.instance.verifyPhoneNumber(
-          verificationCompleted: (PhoneAuthCredential credential) async {
-            await FirebaseAuth.instance.signInWithCredential(credential);
-            await _setLoginState(true);
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await FirebaseAuth.instance.signInWithCredential(credential);
+          await _setLoginState(true);
 
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          },
-          verificationFailed: (FirebaseAuthException ex) {
-            showMessage("Verification Failed, Please try again");
-            log("Verification failed: ${ex.message}");
-          },
-          codeSent: (String verificationId, int? resendToken) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => VerifyPhoneNumScreen(
-                        verificationId: verificationId,
-                        phoneNumber: phoneNumber)));
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {
-            log("Auto Retrieval Timeout");
-          },
-          phoneNumber: "+91$phoneNumber");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        },
+        verificationFailed: (FirebaseAuthException ex) {
+          showMessage("Verification Failed, Please try again");
+          log("Verification failed: ${ex.message}");
+          isLoading = false;
+          notifyListeners();
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          _verificationId = verificationId;
+          isLoading = false;
+          notifyListeners();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerifyPhoneNumScreen(
+                  verificationId: verificationId, phoneNumber: phoneNumber),
+            ),
+          );
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          _verificationId = verificationId;
+          isLoading = false;
+          notifyListeners();
+        },
+        timeout: const Duration(seconds: 60),
+        phoneNumber: "+91$phoneNumber",
+      );
     }
   }
 
   Future<void> _setLoginState(bool isLoggedIn) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', isLoggedIn);
   }
 
-  @override
-  void dispose() {
-    textController.dispose();
-    super.dispose();
+  void reset() {
+    textController.clear();
+    isButtonEnabled = false;
+    isLoading = false;
+    _verificationId = '';
+    notifyListeners();
   }
 }

@@ -5,6 +5,7 @@ class AllOrder {
   final double overallTotal;
   final String paymentMode;
   final int status;
+  final String phone;
 
   AllOrder({
     required this.orderId,
@@ -13,6 +14,7 @@ class AllOrder {
     required this.overallTotal,
     required this.paymentMode,
     required this.status,
+    required this.phone,
   });
 }
 

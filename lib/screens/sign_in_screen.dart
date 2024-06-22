@@ -42,7 +42,7 @@ class _SigninScreenState extends State<SigninScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                splashWidget(),
+                splashWidget(context),
                 const SizedBox(height: 50),
                 const SizedBox(height: 50),
                 Container(
@@ -127,6 +127,10 @@ class _SigninScreenState extends State<SigninScreen> {
                                 if (userProvider.isUserActive) {
                                   authProvider.verifyPhoneNumber(context,
                                       authProvider.textController.text);
+
+                                  //check user type
+                                  userProvider.checkUserType(
+                                      authProvider.textController.text);
                                 } else {
                                   Navigator.pushReplacement(
                                       context,
@@ -205,11 +209,17 @@ class _SigninScreenState extends State<SigninScreen> {
   }
 }
 
-Widget splashWidget() {
+Widget splashWidget(BuildContext context) {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Image.asset("assets/images/delivo.png"),
+      const SizedBox(height: 130,),
+      Image.asset(
+        "assets/icon.png",
+        height: MediaQuery.of(context).size.height / 2.4,
+        // height: MediaQuery.of(context).size.height / 1.7,
+        // height: 460,
+      ),
     ],
   );
 }

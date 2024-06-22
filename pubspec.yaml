@@ -53,6 +53,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/icon.png
     - assets/images/dog.png
     - assets/images/stop.png
 

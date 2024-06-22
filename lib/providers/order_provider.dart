@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Add this import
-
 class Order {
   final String orderId;
   final String productName;
@@ -141,26 +139,30 @@ class OrderProvider with ChangeNotifier {
       _orders = decodedList.map((orderMap) => Order.fromMap(orderMap)).toList();
     } else {
       final snapshot =
-          await FirebaseFirestore.instance.collection('OrderHistory').get();
+      await FirebaseFirestore.instance.collection('OrderHistory').get();
       _orders = snapshot.docs.expand((doc) {
         final data = doc.data();
         List<dynamic> ordersData = data['orders'];
         return ordersData
             .map((orderData) => Order(
-                  orderId: data['orderId'],
-                  productName: orderData['productName'],
-                  productImage: orderData['productImage'],
-                  quantity: orderData['quantity'],
-                  price: 0.0,
-                  totalPrice: orderData['totalPrice'],
-                  paymentMode: data['paymentMode'],
-                  address: data['address'],
-                  phone: data['phone'],
-                  status: data['status'] ?? 0,
-                ))
+          orderId: data['orderId'],
+          productName: orderData['productName'],
+          productImage: orderData['productImage'],
+          quantity: orderData['quantity'],
+          price: 0.0,
+          totalPrice: orderData['totalPrice'],
+          paymentMode: data['paymentMode'],
+          address: data['address'],
+          phone: data['phone'],
+          status: data['status'] ?? 0,
+        ))
             .toList();
       }).toList();
     }
+
+    // Sort orders by some criteria if needed (e.g., timestamp)
+    // For simplicity, assuming that orders have an orderId that can be sorted
+    _orders.sort((a, b) => b.orderId.compareTo(a.orderId)); // descending order
 
     notifyListeners();
   }
@@ -177,7 +179,7 @@ class OrderProvider with ChangeNotifier {
 
   Future<void> _updateOrderStatusInFirebase(String orderId, int status) async {
     final docRef =
-        FirebaseFirestore.instance.collection('OrderHistory').doc(orderId);
+    FirebaseFirestore.instance.collection('OrderHistory').doc(orderId);
     final doc = await docRef.get();
     if (doc.exists) {
       await docRef.update({'status': status});
@@ -198,7 +200,8 @@ class OrderProvider with ChangeNotifier {
   Future<void> _saveOrdersToPreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String encodedData =
-        jsonEncode(_orders.map((order) => order.toMap()).toList());
+    jsonEncode(_orders.map((order) => order.toMap()).toList());
     await prefs.setString('orders', encodedData);
   }
 }
+//updated orderscreen and provider with the descending order

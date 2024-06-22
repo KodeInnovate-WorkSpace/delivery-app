@@ -22,12 +22,10 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => MyAuthProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
-        // ChangeNotifierProvider(create: (_) => NewCartProvider()),
         ChangeNotifierProvider(create: (_) => CheckUserProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => AllOrderProvider()),
-        // Add other providers if needed
       ],
       child: const MyApp(),
     ),
@@ -45,8 +43,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Gilroy-Regular",
         scaffoldBackgroundColor: Colors.white,
         textSelectionTheme: const TextSelectionThemeData(
-          selectionHandleColor: Colors.amberAccent
-        ),
+            selectionHandleColor: Colors.amberAccent),
         appBarTheme: const AppBarTheme(
           elevation: 3,
           shadowColor: Colors.black54,
