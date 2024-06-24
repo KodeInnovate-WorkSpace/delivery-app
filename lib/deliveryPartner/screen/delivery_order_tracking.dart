@@ -253,7 +253,7 @@
 //   }
 // }
 
-//New Code
+//Latest ChatGPT Code (might fix app freeze)
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/model.dart';
@@ -265,6 +265,7 @@ class DeliveryTrackingScreen extends StatefulWidget {
   final String paymentMode;
   final String customerAddress;
   final String customerPhone;
+
   const DeliveryTrackingScreen({
     super.key,
     required this.order,
@@ -326,6 +327,10 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
+                    _buildCustomerDetailsTable(),
+                    const SizedBox(height: 20),
+                    _buildOrderDetailsTable(),
+                    const SizedBox(height: 20),
                     _buildOrderFailedCard(
                         'Order Failed',
                         'Your order has failed due to a transaction issue.',
@@ -344,6 +349,10 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                     Text(widget.orderId,
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    _buildCustomerDetailsTable(),
+                    const SizedBox(height: 20),
+                    _buildOrderDetailsTable(),
                     const SizedBox(height: 20),
                     _buildOrderStatusCard(
                         'Order Cancelled',
@@ -365,34 +374,26 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 _buildOrderStatusCard('Order Pickup',
                     'Your order is ready for pickup.', status >= 3),
                 _buildOrderStatusCard('Order Delivered',
-                    'You order has been delivered', status >= 4),
+                    'Your order has been delivered', status >= 4),
               ];
 
               return Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.orderId,
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 20),
-                    _buildOrderDetailsTable(),
-                    _buildCustomerDetailsTable(),
-                    const SizedBox(height: 20),
-                    // Text(
-                    //     "Payment Mode: ${widget.paymentMode} | Price: ${widget.orderTotalPrice}",
-                    //     style: const TextStyle(
-                    //         fontSize: 16, fontWeight: FontWeight.bold)),
-                    // Text("Address: ${widget.customerAddress}",
-                    //     style: const TextStyle(
-                    //         fontSize: 16, fontWeight: FontWeight.bold)),
-                    // Text("Phone: ${widget.customerPhone}",
-                    //     style: const TextStyle(
-                    //         fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 20),
-                    Column(children: statusCards),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.orderId,
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      _buildCustomerDetailsTable(),
+                      const SizedBox(height: 20),
+                      _buildOrderDetailsTable(),
+                      const SizedBox(height: 20),
+                      Column(children: statusCards),
+                    ],
+                  ),
                 ),
               );
             }
@@ -432,143 +433,125 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
             return Container(
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey[300]!,
+                    width: 1.0,
+                  ),
+                ),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(orderDetail.productName,
-                      style: const TextStyle(fontSize: 16)),
-                  Text(orderDetail.quantity.toString(),
-                      style: const TextStyle(fontSize: 16)),
-                  Text(
-                      (orderDetail.quantity * orderDetail.price)
-                          .toStringAsFixed(2),
-                      style: const TextStyle(fontSize: 16)),
+                  Text(orderDetail.productName),
+                  Text(orderDetail.quantity.toString()),
+                  Text(orderDetail.totalPrice.toString()),
                 ],
               ),
             );
           },
-        ),
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("Total Price",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("₹${widget.orderTotalPrice.toStringAsFixed(2)}",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
-            ],
-          ),
         ),
       ],
     );
   }
 
   Widget _buildCustomerDetailsTable() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          color: Colors.grey[200],
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Customer Details",
+              style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
+          const SizedBox(height: 8.0),
+          Text("Payment Mode: ${widget.paymentMode}",
+              style: const TextStyle(
+                fontSize: 16,
+              )),
+
+          //Amount
+          Row(
             children: [
-              Text("Payment Mode",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Address",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Phone No.",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            return Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.customerAddress,
-                      style: const TextStyle(fontSize: 16)),
-                  Text(widget.paymentMode,
-                      style: const TextStyle(fontSize: 16)),
-                  Text(widget.customerPhone,
-                      style: const TextStyle(fontSize: 16)),
-                ],
+              const Text("Total Amount:",
+                  style: TextStyle(
+                    fontSize: 16,
+                  )),
+              const Icon(
+                Icons.phone,
+                size: 15,
               ),
-            );
-          },
-        ),
-      ],
+              Text(widget.orderTotalPrice.toString(),
+                  style:
+                      const TextStyle(fontSize: 16, fontFamily: 'Gilroy-Bold')),
+            ],
+          ),
+          //Phone
+          Row(
+            children: [
+              const Text("Phone: ",
+                  style: TextStyle(
+                    fontSize: 16,
+                  )),
+              const Icon(
+                Icons.phone,
+                size: 15,
+              ),
+              Text(widget.customerPhone,
+                  style:
+                      const TextStyle(fontSize: 16, fontFamily: 'Gilroy-Bold')),
+            ],
+          ),
+          //Address
+          // Row(
+          //   children: [
+          //     const Text("Address: ",
+          //         style: TextStyle(
+          //           fontSize: 16,
+          //         )),
+          //
+          //     Text(widget.customerAddress,
+          //         style:
+          //         const TextStyle(fontSize: 16, fontFamily: 'Gilroy-Bold')),
+          //   ],
+          // ),
+          Text("Address: ${widget.customerAddress}",
+              style: const TextStyle(
+                fontSize: 16,
+              )),
+        ],
+      ),
     );
   }
 
-  Widget _buildOrderStatusCard(String title, String description, bool isActive,
+  Widget _buildOrderStatusCard(String title, String description, bool done,
       [Color color = Colors.green, IconData icon = Icons.check_circle]) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: isActive ? color.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(isActive ? icon : Icons.radio_button_unchecked,
-                  color: isActive ? color : Colors.grey),
-              const SizedBox(width: 16.0),
-              Text(title,
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: isActive ? color : Colors.black)),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Text(description,
-              style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
-        ],
+    return Card(
+      color: done ? color : Colors.grey[300],
+      child: ListTile(
+        leading: Icon(icon, color: done ? Colors.white : Colors.grey),
+        title: Text(title,
+            style: TextStyle(color: done ? Colors.white : Colors.grey)),
+        subtitle: Text(description,
+            style: TextStyle(color: done ? Colors.white : Colors.grey)),
       ),
     );
   }
 
-  Widget _buildOrderFailedCard(String title, String description, bool isActive,
+  Widget _buildOrderFailedCard(String title, String description, bool done,
       [Color color = Colors.red, IconData icon = Icons.error]) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: isActive ? color.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(isActive ? icon : Icons.radio_button_unchecked,
-                  color: isActive ? color : Colors.grey),
-              const SizedBox(width: 16.0),
-              Text(title,
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: isActive ? color : Colors.black)),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Text(description,
-              style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
-        ],
+    return Card(
+      color: done ? color : Colors.grey[300],
+      child: ListTile(
+        leading: Icon(icon, color: done ? Colors.white : Colors.grey),
+        title: Text(title,
+            style: TextStyle(color: done ? Colors.white : Colors.grey)),
+        subtitle: Text(description,
+            style: TextStyle(color: done ? Colors.white : Colors.grey)),
       ),
     );
   }

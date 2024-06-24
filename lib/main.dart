@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         child: SplashScreen(),
       ),
       routes: {
-        '/profile': (context) => const NetworkHandler(
+        '/profile': (context) =>  const NetworkHandler(
               child: ProfilePage(),
             ),
         '/search': (context) => const NetworkHandler(

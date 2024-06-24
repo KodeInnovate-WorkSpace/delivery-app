@@ -19,25 +19,24 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late Future<void> _checkUserTypeFuture;
+
   @override
   void initState() {
-    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-
-    final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
-
-    userProvider.checkUserType(authProvider.textController.text);
-
     super.initState();
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
+    _checkUserTypeFuture =
+        userProvider.checkUserType(authProvider.textController.text);
   }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-
     final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
 
     return Scaffold(
@@ -50,222 +49,236 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            const Text(
-              'My Account',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            Text(
-              authProvider.phone.isEmpty
-                  ? "Please Login"
-                  : "+91 ${authProvider.textController.text}",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 50),
-            Text(
-              'YOUR INFORMATION',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.receipt_long),
-              title: const Text('Your orders'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const OrderHistoryScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.home_work),
-              title: const Text('Your address'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AddressScreen()),
-                );
-              },
-            ),
-            const Divider(),
-            Text(
-              'OTHER INFORMATION',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
-              ),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text('Share the app'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                _shareApp();
-              },
-            ),
-
-            //display admin tile
-            if (userProvider.userType == 1)
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Admin Screen'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AdminScreen()),
-                  );
-                  // Navigator.pushNamed(context, '/admin');
-                },
-              )
-            else
-              const SizedBox(),
-
-            //display delivery tile
-            if (userProvider.userType == 1)
-              ListTile(
-                leading: const Icon(Icons.two_wheeler),
-                title: const Text('Delivery Partner'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const DeliveryHomeScreen()),
-                  );
-                  // Navigator.pushNamed(context, '/admin');
-                },
-              )
-            else
-              const SizedBox(),
-
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About us'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AboutUsPage()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Rate us on the Play Store'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                _launchPlayStore();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.notifications_sharp),
-              title: const Text('Notification Preferences'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const NotificationSettingsPage()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Log out'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () async {
-                showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          backgroundColor: Colors.white,
-                          title: const Text(
-                            "Logout",
-                            style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
-                          ),
-                          content:
-                              const Text("Are you sure you want to logout?"),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text(
-                                      "No",
-                                      style: TextStyle(color: Colors.red),
-                                    )),
-                                TextButton(
-                                    onPressed: () async {
-                                      await FirebaseAuth.instance.signOut();
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      await prefs.remove('isLoggedIn');
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SigninScreen()),
-                                        (route) => false,
-                                      );
-                                    },
-                                    child: const Text(
-                                      "Yes",
-                                      style: TextStyle(color: Colors.black),
-                                    )),
-                              ],
-                            )
-                          ],
-                        ));
-              },
-            ),
-            const SizedBox(height: 40), // Add space below "Log out"
-            Center(
-              child: Column(
+      body: FutureBuilder<void>(
+        future: _checkUserTypeFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error loading user data'));
+          } else {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
                 children: [
+                  const Text(
+                    'My Account',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Text(
-                    'Delivo',
+                    authProvider.phone.isEmpty
+                        ? "Please Login"
+                        : "+91 ${authProvider.textController.text}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  Text(
+                    'YOUR INFORMATION',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey[600],
                     ),
                   ),
+                  // Your orders
+                  ListTile(
+                    leading: const Icon(Icons.receipt_long),
+                    title: const Text('Your orders'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const OrderHistoryScreen()),
+                      );
+                    },
+                  ),
+                  // Addresses
+                  ListTile(
+                    leading: const Icon(Icons.home_work),
+                    title: const Text('Your address'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddressScreen()),
+                      );
+                    },
+                  ),
+                  const Divider(),
                   Text(
-                    appVer,
+                    'OTHER INFORMATION',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey[600],
                     ),
                   ),
+                  //Share the app
+                  ListTile(
+                    leading: const Icon(Icons.share),
+                    title: const Text('Share the app'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      _shareApp();
+                    },
+                  ),
+                  // Admin Screen
+                  if (userProvider.userType == 1)
+                    ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text('Admin Screen'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AdminScreen()),
+                        );
+                      },
+                    ),
+                  // Delivery Partner Screen
+                  if (userProvider.userType == 1)
+                    ListTile(
+                      leading: const Icon(Icons.motorcycle),
+                      title: const Text('Delivery Partner'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DeliveryHomeScreen()),
+                        );
+                      },
+                    ),
+                  //About us
+                  ListTile(
+                    leading: const Icon(Icons.info),
+                    title: const Text('About us'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AboutUsPage()),
+                      );
+                    },
+                  ),
+                  // Rate on playstore
+                  ListTile(
+                    leading: const Icon(Icons.star),
+                    title: const Text('Rate us on the Play Store'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      _launchPlayStore();
+                    },
+                  ),
+                  //Notification
+                  ListTile(
+                    leading: const Icon(Icons.notifications_sharp),
+                    title: const Text('Notification Preferences'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const NotificationSettingsPage()),
+                      );
+                    },
+                  ),
+                  //Logout
+                  ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text('Log out'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () async {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                backgroundColor: Colors.white,
+                                title: const Text(
+                                  "Logout",
+                                  style:
+                                      TextStyle(fontFamily: 'Gilroy-ExtraBold'),
+                                ),
+                                content: const Text(
+                                    "Are you sure you want to logout?"),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text(
+                                            "No",
+                                            style: TextStyle(color: Colors.red),
+                                          )),
+                                      TextButton(
+                                          onPressed: () async {
+                                            await FirebaseAuth.instance
+                                                .signOut();
+                                            SharedPreferences prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            await prefs.remove('isLoggedIn');
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const SigninScreen()),
+                                              (route) => false,
+                                            );
+                                          },
+                                          child: const Text(
+                                            "Yes",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          )),
+                                    ],
+                                  ),
+                                ],
+                              ));
+                    },
+                  ),
+                  const SizedBox(height: 40),
+                  Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          'Delivo',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          appVer,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-            ),
-          ],
-        ),
+            );
+          }
+        },
       ),
     );
   }

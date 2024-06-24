@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/deliveryPartner/model/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../provider/delivery_order_provider.dart';
 import 'delivery_order_tracking.dart';
@@ -56,63 +58,154 @@ class DeliveryHomeScreen extends StatelessWidget {
     );
   }
 
+  // Widget pendingOrders(BuildContext context, AllOrderProvider orderProvider) {
+  //   final orders = orderProvider.allOrders
+  //       .where((order) => order.status != 4)
+  //       .toList(); // Filter for pending orders
+  //   return ListView.builder(
+  //     itemCount: orders.length,
+  //     itemBuilder: (context, index) {
+  //       final order = orders[index];
+  //       return Container(
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           border: Border(
+  //             bottom: BorderSide(width: 1.5, color: Colors.grey.shade300),
+  //           ),
+  //         ),
+  //         child: GestureDetector(
+  //           onTap: () {
+  //             Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                     builder: (context) => DeliveryTrackingScreen(
+  //                           orderId: order.orderId,
+  //                           orderTotalPrice: order.overallTotal,
+  //                           order: order.orders,
+  //                           paymentMode: order.paymentMode,
+  //                           customerAddress: order.address,
+  //                           customerPhone: order.phone,
+  //                         )));
+  //           },
+  //           child: ListTile(
+  //             title: Text(order.orderId),
+  //             trailing: GestureDetector(
+  //               onTap: () async {
+  //                 Uri dialNumber = Uri(scheme: 'tel', path: order.phone);
+  //
+  //                 await launchUrl(dialNumber);
+  //               },
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   const Icon(
+  //                     Icons.phone,
+  //                     size: 12,
+  //                   ),
+  //                   Text(
+  //                     order.phone,
+  //                     style: const TextStyle(fontFamily: 'Gilroy-Bold'),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
   Widget pendingOrders(BuildContext context, AllOrderProvider orderProvider) {
-    final orders = orderProvider.allOrders
-        .where((order) => order.status != 4)
-        .toList(); // Filter for pending orders
-    return ListView.builder(
-      itemCount: orders.length,
-      itemBuilder: (context, index) {
-        final order = orders[index];
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(
-              bottom: BorderSide(width: 1.5, color: Colors.grey.shade300),
-            ),
-          ),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DeliveryTrackingScreen(
-                            orderId: order.orderId,
-                            orderTotalPrice: order.overallTotal,
-                            order: order.orders,
-                            paymentMode: order.paymentMode,
-                            customerAddress: order.address,
-                            customerPhone: order.phone,
-                          )));
-            },
-            child: ListTile(
-              title: Text(order.orderId),
-              trailing: GestureDetector(
-                onTap: () async {
-                  Uri dialNumber = Uri(scheme: 'tel', path: order.phone);
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('OrderHistory').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-                  await launchUrl(dialNumber);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.phone,
-                      size: 12,
-                    ),
-                    Text(
-                      order.phone,
-                      style: const TextStyle(fontFamily: 'Gilroy-Bold'),
-                    ),
-                  ],
+        final orders = snapshot.data?.docs
+            .map((doc) {
+          final data = doc.data();
+          final orderDetails = (data['orders'] as List<dynamic>).map((order) {
+            return OrderDetail(
+              price: order['price'],
+              productImage: order['productImage'],
+              productName: order['productName'],
+              quantity: order['quantity'],
+              totalPrice: order['totalPrice'],
+            );
+          }).toList();
+
+          return AllOrder(
+            orderId: data['orderId'],
+            address: data['address'],
+            orders: orderDetails,
+            overallTotal: data['overallTotal'],
+            paymentMode: data['paymentMode'],
+            status: data['status'],
+            phone: data['phone'],
+          );
+        })
+            .where((order) => order.status != 4)
+            .toList();
+
+        return ListView.builder(
+          itemCount: orders?.length,
+          itemBuilder: (context, index) {
+            final order = orders?[index];
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom: BorderSide(width: 1.5, color: Colors.grey.shade300),
                 ),
               ),
-            ),
-          ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DeliveryTrackingScreen(
+                        orderId: order.orderId,
+                        orderTotalPrice: order.overallTotal,
+                        order: order.orders,
+                        paymentMode: order.paymentMode,
+                        customerAddress: order.address,
+                        customerPhone: order.phone,
+                      ),
+                    ),
+                  );
+                },
+                child: ListTile(
+                  title: Text(order!.orderId),
+                  trailing: GestureDetector(
+                    onTap: () async {
+                      Uri dialNumber = Uri(scheme: 'tel', path: order.phone);
+                      await launchUrl(dialNumber);
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.phone,
+                          size: 12,
+                        ),
+                        Text(
+                          order.phone,
+                          style: const TextStyle(fontFamily: 'Gilroy-Bold'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
+
 
   Widget completedOrders(BuildContext context, AllOrderProvider orderProvider) {
     final orders = orderProvider.allOrders

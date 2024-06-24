@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../screens/home_screen.dart';
-import '../screens/sign_in_screen.dart';
 import '../screens/verify_phone_num_screen.dart';
 
 class MyAuthProvider with ChangeNotifier {

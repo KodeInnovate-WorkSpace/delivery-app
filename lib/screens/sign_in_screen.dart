@@ -125,11 +125,9 @@ class _SigninScreenState extends State<SigninScreen> {
                                     authProvider.textController.text);
 
                                 if (userProvider.isUserActive) {
-                                  authProvider.verifyPhoneNumber(context,
+                                  await userProvider.checkUserType(
                                       authProvider.textController.text);
-
-                                  //check user type
-                                  userProvider.checkUserType(
+                                  authProvider.verifyPhoneNumber(context,
                                       authProvider.textController.text);
                                 } else {
                                   Navigator.pushReplacement(
@@ -140,6 +138,30 @@ class _SigninScreenState extends State<SigninScreen> {
                                 }
                               }
                             : null,
+                        //     HapticFeedback.selectionClick();
+                        //
+                        //     await userProvider.storeDetail(context, 'phone',
+                        //         authProvider.textController.text);
+                        //
+                        //     await userProvider.checkUserStatus(
+                        //         authProvider.textController.text);
+                        //
+                        //     if (userProvider.isUserActive) {
+                        //       authProvider.verifyPhoneNumber(context,
+                        //           authProvider.textController.text);
+                        //
+                        //       //check user type
+                        //       userProvider.checkUserType(
+                        //           authProvider.textController.text);
+                        //     } else {
+                        //       Navigator.pushReplacement(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //               builder: (context) =>
+                        //                   const AccountDisabled()));
+                        //     }
+                        //   }
+                        // : null,
                         style: ButtonStyle(
                           shape:
                               WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -213,7 +235,9 @@ Widget splashWidget(BuildContext context) {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      const SizedBox(height: 130,),
+      const SizedBox(
+        height: 130,
+      ),
       Image.asset(
         "assets/icon.png",
         height: MediaQuery.of(context).size.height / 2.4,
