@@ -16,6 +16,35 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        SystemChannels.textInput.invokeMethod('TextInput.setKeyboard', 'number');
+      }
+    });
+    resetAuthProviderState();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  void resetAuthProviderState() {
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    authProvider.reset();
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context);
@@ -30,19 +59,17 @@ class _SigninScreenState extends State<SigninScreen> {
     }
 
     return Scaffold(
-      resizeToAvoidBottomInset:
-          true, // This will adjust the layout when the keyboard is shown
+      resizeToAvoidBottomInset: true,
       body: NetworkHandler(
         child: Container(
           decoration: const BoxDecoration(
             color: Colors.amberAccent,
           ),
           child: SingleChildScrollView(
-            // Added SingleChildScrollView
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                splashWidget(context),
+                splashWidget(),
                 const SizedBox(height: 50),
                 const SizedBox(height: 50),
                 Container(
@@ -62,12 +89,12 @@ class _SigninScreenState extends State<SigninScreen> {
                       const SizedBox(height: 8),
                       const Text(
                         "Log in or sign up",
-                        style:
-                            TextStyle(fontFamily: "Gilroy-Bold", fontSize: 20),
+                        style: TextStyle(fontFamily: "Gilroy-Bold", fontSize: 20),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: TextField(
+                          focusNode: _focusNode,
                           controller: authProvider.textController,
                           maxLength: 10,
                           autofocus: true,
@@ -80,35 +107,29 @@ class _SigninScreenState extends State<SigninScreen> {
                           decoration: InputDecoration(
                             hintText: "Enter Mobile Number",
                             hintStyle: TextStyle(
-                                color: Colors.grey[400],
-                                fontFamily: 'Gilroy-SemiBold'),
+                                color: Colors.grey[400], fontFamily: 'Gilroy-SemiBold'),
                             prefixIcon: const Padding(
                               padding: EdgeInsets.all(18.0),
                               child: Text(
                                 "+91",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Gilroy-SemiBold'),
+                                    fontWeight: FontWeight.bold, fontFamily: 'Gilroy-SemiBold'),
                               ),
                             ),
-                            prefixIconConstraints:
-                                const BoxConstraints(minWidth: 0, minHeight: 0),
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 20),
+                            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                            contentPadding:
+                            const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade50),
+                              borderSide: BorderSide(color: Colors.grey.shade50),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade100),
+                              borderSide: BorderSide(color: Colors.grey.shade100),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.grey, width: 1.0),
+                              borderSide: const BorderSide(color: Colors.grey, width: 1.0),
                             ),
                           ),
                         ),
@@ -116,63 +137,34 @@ class _SigninScreenState extends State<SigninScreen> {
                       ElevatedButton(
                         onPressed: authProvider.isButtonEnabled
                             ? () async {
-                                HapticFeedback.selectionClick();
+                          HapticFeedback.selectionClick();
 
-                                await userProvider.storeDetail(context, 'phone',
-                                    authProvider.textController.text);
+                          await userProvider.storeDetail(context, 'phone',
+                              authProvider.textController.text);
 
-                                await userProvider.checkUserStatus(
-                                    authProvider.textController.text);
+                          await userProvider.checkUserStatus(
+                              authProvider.textController.text);
 
-                                if (userProvider.isUserActive) {
-                                  await userProvider.checkUserType(
-                                      authProvider.textController.text);
-                                  authProvider.verifyPhoneNumber(context,
-                                      authProvider.textController.text);
-                                } else {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AccountDisabled()));
-                                }
-                              }
+                          if (userProvider.isUserActive) {
+                            await authProvider.verifyPhoneNumber(
+                                context, authProvider.textController.text);
+                          } else {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AccountDisabled()));
+                          }
+                        }
                             : null,
-                        //     HapticFeedback.selectionClick();
-                        //
-                        //     await userProvider.storeDetail(context, 'phone',
-                        //         authProvider.textController.text);
-                        //
-                        //     await userProvider.checkUserStatus(
-                        //         authProvider.textController.text);
-                        //
-                        //     if (userProvider.isUserActive) {
-                        //       authProvider.verifyPhoneNumber(context,
-                        //           authProvider.textController.text);
-                        //
-                        //       //check user type
-                        //       userProvider.checkUserType(
-                        //           authProvider.textController.text);
-                        //     } else {
-                        //       Navigator.pushReplacement(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //               builder: (context) =>
-                        //                   const AccountDisabled()));
-                        //     }
-                        //   }
-                        // : null,
                         style: ButtonStyle(
-                          shape:
-                              WidgetStateProperty.all<RoundedRectangleBorder>(
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.0),
                             ),
                           ),
-                          backgroundColor:
-                              WidgetStateProperty.resolveWith<Color>(
-                            (Set<WidgetState> states) {
-                              if (states.contains(WidgetState.disabled)) {
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.disabled)) {
                                 return Colors.black.withOpacity(0.3);
                               }
                               return Colors.black;
@@ -181,28 +173,27 @@ class _SigninScreenState extends State<SigninScreen> {
                         ),
                         child: authProvider.isLoading
                             ? const SizedBox(
-                                width: 250,
-                                height: 50.0,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color:
-                                        Colors.white, // Adjust color as needed
-                                  ),
-                                ),
-                              )
+                          width: 250,
+                          height: 50.0,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
                             : const SizedBox(
-                                width: 250,
-                                height: 50.0,
-                                child: Center(
-                                  child: Text(
-                                    "Continue",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
+                          width: 250,
+                          height: 50.0,
+                          child: Center(
+                            child: Text(
+                              "Continue",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.0,
                               ),
+                            ),
+                          ),
+                        ),
                       ),
                       termsPrivacyLine(),
                       Row(
@@ -231,19 +222,11 @@ class _SigninScreenState extends State<SigninScreen> {
   }
 }
 
-Widget splashWidget(BuildContext context) {
+Widget splashWidget() {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      const SizedBox(
-        height: 130,
-      ),
-      Image.asset(
-        "assets/icon.png",
-        height: MediaQuery.of(context).size.height / 2.4,
-        // height: MediaQuery.of(context).size.height / 1.7,
-        // height: 460,
-      ),
+      Image.asset("assets/icon.png"),
     ],
   );
 }
@@ -251,9 +234,8 @@ Widget splashWidget(BuildContext context) {
 class CustomInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+      TextEditingValue oldValue, TextEditingValue newValue) {
     return newValue.copyWith(text: newValue.text.replaceAll(' ', ''));
   }
 }
+//keyboard is coming whenever we get to the signinscreen

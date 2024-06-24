@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/model.dart';
@@ -113,15 +115,21 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
             } else {
               var statusCards = <Widget>[
                 _buildOrderStatusCard('Order Received',
-                    'Your order has been received.', status >= 0),
-                _buildOrderStatusCard('Order Confirmed',
-                    'Your order has been confirmed.', status >= 1),
+                    'Your order has been received.', status >= 0, Colors.green),
+                _buildOrderStatusCard(
+                    'Order Confirmed',
+                    'Your order has been confirmed.',
+                    status >= 1,
+                    Colors.green),
                 _buildOrderStatusCard('Order In Process',
-                    'Your order is in process.', status >= 2),
-                _buildOrderStatusCard('Order Pickup',
-                    'Your order is ready for pickup.', status >= 3),
+                    'Your order is in process.', status >= 2, Colors.green),
+                _buildOrderStatusCard(
+                    'Order Pickup',
+                    'Your order is ready for pickup.',
+                    status >= 3,
+                    Colors.green),
                 _buildOrderStatusCard('Order Delivered',
-                    'Your order has been delivered', status >= 4),
+                    'Your order has been delivered', status >= 4, Colors.green),
               ];
 
               return Padding(
@@ -199,6 +207,23 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
             );
           },
         ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Total Price",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Rs. ${widget.orderTotalPrice}",
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -221,18 +246,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 fontSize: 16,
               )),
 
-          //Amount
-          Row(
-            children: [
-              const Text("Total Amount:",
-                  style: TextStyle(
-                    fontSize: 16,
-                  )),
-              Text(widget.orderTotalPrice.toString(),
-                  style:
-                      const TextStyle(fontSize: 16, fontFamily: 'Gilroy-Bold')),
-            ],
-          ),
           //Phone
           Row(
             children: [
@@ -247,19 +260,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               Text(widget.customerPhone, style: const TextStyle(fontSize: 16)),
             ],
           ),
-          //Address
-          // Row(
-          //   children: [
-          //     const Text("Address: ",
-          //         style: TextStyle(
-          //           fontSize: 16,
-          //         )),
-          //
-          //     Text(widget.customerAddress,
-          //         style:
-          //         const TextStyle(fontSize: 16, fontFamily: 'Gilroy-Bold')),
-          //   ],
-          // ),
+
           Text("Address: ${widget.customerAddress}",
               style: const TextStyle(
                 fontSize: 16,
@@ -271,14 +272,50 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
 
   Widget _buildOrderStatusCard(String title, String description, bool done,
       [Color color = Colors.green, IconData icon = Icons.check_circle]) {
-    return Card(
-      color: done ? color : Colors.grey[300],
-      child: ListTile(
-        leading: Icon(icon, color: done ? Colors.white : Colors.grey),
-        title: Text(title,
-            style: TextStyle(color: done ? Colors.white : Colors.grey)),
-        subtitle: Text(description,
-            style: TextStyle(color: done ? Colors.white : Colors.grey)),
+    return GestureDetector(
+      onTap: () async {
+        if (!done) {
+          int newStatus;
+          switch (title) {
+            case 'Order Received':
+              newStatus = 0;
+              break;
+            case 'Order Confirmed':
+              newStatus = 1;
+              break;
+            case 'Order In Process':
+              newStatus = 2;
+              break;
+            case 'Order Pickup':
+              newStatus = 3;
+              break;
+            case 'Order Delivered':
+              newStatus = 4;
+              break;
+            default:
+              return;
+          }
+
+          try {
+            await FirebaseFirestore.instance
+                .collection('OrderHistory')
+                .doc(widget.orderId)
+                .update({'status': newStatus});
+            setState(() {});
+          } catch (e) {
+            log("Error updating status: $e");
+          }
+        }
+      },
+      child: Card(
+        color: done ? color : Colors.grey[300],
+        child: ListTile(
+          leading: Icon(icon, color: done ? Colors.white : Colors.grey),
+          title: Text(title,
+              style: TextStyle(color: done ? Colors.white : Colors.grey)),
+          subtitle: Text(description,
+              style: TextStyle(color: done ? Colors.white : Colors.grey)),
+        ),
       ),
     );
   }

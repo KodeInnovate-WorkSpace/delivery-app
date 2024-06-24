@@ -58,63 +58,6 @@ class DeliveryHomeScreen extends StatelessWidget {
     );
   }
 
-  // Widget pendingOrders(BuildContext context, AllOrderProvider orderProvider) {
-  //   final orders = orderProvider.allOrders
-  //       .where((order) => order.status != 4)
-  //       .toList(); // Filter for pending orders
-  //   return ListView.builder(
-  //     itemCount: orders.length,
-  //     itemBuilder: (context, index) {
-  //       final order = orders[index];
-  //       return Container(
-  //         decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           border: Border(
-  //             bottom: BorderSide(width: 1.5, color: Colors.grey.shade300),
-  //           ),
-  //         ),
-  //         child: GestureDetector(
-  //           onTap: () {
-  //             Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                     builder: (context) => DeliveryTrackingScreen(
-  //                           orderId: order.orderId,
-  //                           orderTotalPrice: order.overallTotal,
-  //                           order: order.orders,
-  //                           paymentMode: order.paymentMode,
-  //                           customerAddress: order.address,
-  //                           customerPhone: order.phone,
-  //                         )));
-  //           },
-  //           child: ListTile(
-  //             title: Text(order.orderId),
-  //             trailing: GestureDetector(
-  //               onTap: () async {
-  //                 Uri dialNumber = Uri(scheme: 'tel', path: order.phone);
-  //
-  //                 await launchUrl(dialNumber);
-  //               },
-  //               child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   const Icon(
-  //                     Icons.phone,
-  //                     size: 12,
-  //                   ),
-  //                   Text(
-  //                     order.phone,
-  //                     style: const TextStyle(fontFamily: 'Gilroy-Bold'),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
   Widget pendingOrders(BuildContext context, AllOrderProvider orderProvider) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection('OrderHistory').snapshots(),
@@ -125,27 +68,28 @@ class DeliveryHomeScreen extends StatelessWidget {
 
         final orders = snapshot.data?.docs
             .map((doc) {
-          final data = doc.data();
-          final orderDetails = (data['orders'] as List<dynamic>).map((order) {
-            return OrderDetail(
-              price: order['price'],
-              productImage: order['productImage'],
-              productName: order['productName'],
-              quantity: order['quantity'],
-              totalPrice: order['totalPrice'],
-            );
-          }).toList();
+              final data = doc.data();
+              final orderDetails =
+                  (data['orders'] as List<dynamic>).map((order) {
+                return OrderDetail(
+                  price: order['price'],
+                  productImage: order['productImage'],
+                  productName: order['productName'],
+                  quantity: order['quantity'],
+                  totalPrice: order['totalPrice'],
+                );
+              }).toList();
 
-          return AllOrder(
-            orderId: data['orderId'],
-            address: data['address'],
-            orders: orderDetails,
-            overallTotal: data['overallTotal'],
-            paymentMode: data['paymentMode'],
-            status: data['status'],
-            phone: data['phone'],
-          );
-        })
+              return AllOrder(
+                orderId: data['orderId'],
+                address: data['address'],
+                orders: orderDetails,
+                overallTotal: data['overallTotal'],
+                paymentMode: data['paymentMode'],
+                status: data['status'],
+                phone: data['phone'],
+              );
+            })
             .where((order) => order.status != 4)
             .toList();
 
@@ -206,10 +150,9 @@ class DeliveryHomeScreen extends StatelessWidget {
     );
   }
 
-
   Widget completedOrders(BuildContext context, AllOrderProvider orderProvider) {
     final orders = orderProvider.allOrders
-        .where((order) => order.status != 0)
+        .where((order) => order.status == 4)
         .toList(); // Filter for completed orders
     return ListView.builder(
       itemCount: orders.length,
@@ -221,7 +164,6 @@ class DeliveryHomeScreen extends StatelessWidget {
             'Done',
             style: TextStyle(fontSize: 12, fontFamily: 'Gilroy-ExtraBold'),
           ),
-          // Text('Total: Rs.${order.overallTotal}',),
         );
       },
     );
