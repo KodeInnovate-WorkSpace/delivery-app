@@ -203,4 +203,3 @@ class OrderProvider with ChangeNotifier {
     await prefs.setString('orders', encodedData);
   }
 }
-//updated orderscreen and provider with the descending order

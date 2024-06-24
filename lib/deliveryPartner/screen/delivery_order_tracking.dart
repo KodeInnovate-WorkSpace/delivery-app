@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:speedy_delivery/shared/show_msg.dart';
 import '../model/model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -247,12 +248,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
 
   Future<void> uploadAllImages() async {
     if (itemImages.length != widget.order.length) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text('Please upload images for all items before proceeding.'),
-        ),
-      );
+      showMessage("Please upload images for all items before proceeding.");
       return;
     }
 
@@ -272,12 +268,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
 
   Future<void> takePictureAndAddToImages() async {
     if (itemImages.length >= widget.order.length) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text('You have already uploaded the required number of images.'),
-        ),
-      );
+      showMessage("You have already uploaded the required number of images.");
       return;
     }
 
@@ -337,12 +328,10 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       [Color color = Colors.green, IconData icon = Icons.check_circle]) {
     return GestureDetector(
       onTap: () async {
-        if ((title == 'Order Pickup' || title == 'Order Delivered' ) && itemImages.length < widget.order.length) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please upload images for all items before picking up the order.'),
-            ),
-          );
+        if ((title == 'Order Pickup' || title == 'Order Delivered') &&
+            itemImages.length < widget.order.length) {
+          showMessage("Please upload images for all items before picking up the order.");
+
           return;
         }
         if (!done) {

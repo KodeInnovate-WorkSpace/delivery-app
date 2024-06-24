@@ -238,4 +238,3 @@ class CustomInputFormatter extends TextInputFormatter {
     return newValue.copyWith(text: newValue.text.replaceAll(' ', ''));
   }
 }
-//keyboard is coming whenever we get to the signinscreen

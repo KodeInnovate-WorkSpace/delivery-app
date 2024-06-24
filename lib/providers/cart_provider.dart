@@ -156,48 +156,4 @@ class CartProvider extends ChangeNotifier {
       rethrow;
     }
   }
-
-  // // final bool _isLoading = false;
-  // final List<Cart> _cartItemsSP = [];
-  // List<Cart> get cartSP => _cartItemsSP;
-  // // bool get isLoading => _isLoading;
-  //
-  // void addToSP(Cart item) {
-  //   final index =
-  //       _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
-  //
-  //   if (index >= 0) {
-  //     _cartItems[index].qnt++;
-  //   } else {
-  //     _cartItems.add(item);
-  //   }
-  //   logCartContents();
-  //   notifyListeners();
-  // }
-  //
-  // void removeFromSP(Cart item) {
-  //   final index = _cartItemsSP
-  //       .indexWhere((cartItem) => cartItem.itemName == item.itemName);
-  //
-  //   if (index >= 0) {
-  //     if (_cartItemsSP[index].qnt > 1) {
-  //       _cartItemsSP[index].qnt--;
-  //     } else {
-  //       // Remove item from cart when quantity is 1 or 0
-  //       _cartItemsSP.removeAt(index);
-  //
-  //       // Check if the cart is now empty
-  //       if (_cartItemsSP.isEmpty) {
-  //         _cartItemsSP.clear();
-  //       }
-  //     }
-  //   }
-  //
-  //   logCartContents();
-  //   notifyListeners();
-  // }
-  //
-  // void storeInSP() {}
-  //
-  // void retrieveFromSP() {}
 }

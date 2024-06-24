@@ -226,13 +226,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget productSearchCard(Product product) {
-    // Future<void> refreshCart(BuildContext context) async {
-    //   Navigator.of(context).pushReplacement(
-    //     MaterialPageRoute(
-    //       builder: (context) => const SearchPage(),
-    //     ),
-    //   );
-    // }
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

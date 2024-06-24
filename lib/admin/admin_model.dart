@@ -99,27 +99,6 @@ class SubCatModel extends ChangeNotifier {
       log("Error updating sub-category: $e");
     }
   }
-
-  // Future<void> updateSubCategory(String field, dynamic newValue,
-  //     {String? categoryField, dynamic categoryValue}) async {
-  //   try {
-  //     Query query = FirebaseFirestore.instance.collection('sub_category');
-  //
-  //     // Add conditions to your query if any
-  //     if (categoryField != null && categoryValue != null) {
-  //       query = query.where(categoryField, isEqualTo: categoryValue);
-  //     }
-  //
-  //     // Get the documents matching the query
-  //     QuerySnapshot querySnapshot = await query.get();
-  //     for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-  //       await doc.reference.update({field: newValue});
-  //     }
-  //   } catch (e) {
-  //     log("Error updating sub-category: $e");
-  //   }
-  // }
-
   Future<void> newUpdateSubCategory(String field, dynamic newValue,
       {required String categoryId}) async {
     try {

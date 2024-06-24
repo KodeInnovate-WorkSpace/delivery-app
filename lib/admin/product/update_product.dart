@@ -78,28 +78,6 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> _loadSubCatData() async {
-  //   subcatOptions = await subcatObj.manageSubCategories();
-  //
-  //   // Populate the categoryNames and categoryMap
-  //   for (var cat in subcatOptions) {
-  //     subcategoryMap[cat['sub_category_name']] = cat['sub_category_id'];
-  //   }
-  //
-  //   // Set the initial selected category if available
-  //   if (widget.data['id'] != null) {
-  //     selectedSubCategoryId = widget.data['category_id'];
-  //     selectedSubCategoryName = subcategoryMap.entries.isNotEmpty
-  //         ? subcategoryMap.entries
-  //             .firstWhere((entry) => entry.value == selectedSubCategoryId,
-  //                 orElse: () => subcategoryMap.entries.first)
-  //             .key
-  //         : null;
-  //   }
-  //
-  //   notifyListeners();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

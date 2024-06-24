@@ -393,50 +393,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
             const SizedBox(height: 20),
 
-            // Add button
-
-            // Center(
-            //   child: ElevatedButton(
-            //     onPressed: () async {
-            //       if (nameController.text.isEmpty ||
-            //           _image == null ||
-            //           selectedCategory == null) {
-            //         showMessage("Please fill necessary details");
-            //         log("Please fill all the fields");
-            //         return;
-            //       }
-            //
-            //       await addNewProduct(context);
-            //       Navigator.pop(context, true);
-            //     },
-            //     style: ButtonStyle(
-            //       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            //         RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(14.0),
-            //         ),
-            //       ),
-            //       backgroundColor: WidgetStateProperty.resolveWith<Color>(
-            //         (Set<WidgetState> states) {
-            //           return Colors.black;
-            //         },
-            //       ),
-            //     ),
-            //     child: const SizedBox(
-            //       width: 200,
-            //       height: 58,
-            //       child: Center(
-            //         child: Text(
-            //           "Add",
-            //           style: TextStyle(
-            //             color: Colors.white,
-            //             fontFamily: 'Gilroy-Black',
-            //             fontSize: 16.0,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
             Center(
               child: ElevatedButton(
                 onPressed: isLoading

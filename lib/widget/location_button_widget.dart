@@ -186,19 +186,7 @@ class _LocationButtonState extends State<LocationButton> {
               child: Column(
                 children: [
                   _buildSelectAddressTile(context),
-                  // const ListTile(
-                  //   leading: Icon(Icons.search),
-                  //   title: TextField(
-                  //     style: TextStyle(color: Colors.black),
-                  //     decoration: InputDecoration(
-                  //       hintText: 'Search for area, street name...',
-                  //       hintStyle: TextStyle(color: Colors.black),
-                  //       filled: true,
-                  //       fillColor: Colors.transparent,
-                  //       border: OutlineInputBorder(),
-                  //     ),
-                  //   ),
-                  // ),
+
                   _buildCurrentLocationTile(context),
                   ListTile(
                     leading: const Icon(Icons.arrow_downward),

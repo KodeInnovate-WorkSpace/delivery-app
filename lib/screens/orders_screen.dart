@@ -128,4 +128,3 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 }
-//updated orderscreen and provider with the descending order

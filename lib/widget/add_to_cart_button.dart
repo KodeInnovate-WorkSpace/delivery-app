@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
-// import 'package:speedy_delivery/shared/show_msg.dart';
 import '../models/cart_model.dart';
 
 class AddToCartButton extends StatefulWidget {
@@ -120,8 +119,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
                         cartProvider.addItem(cartItem);
                         _saveCartState();
                       });
-                      // Code for shared preference
-                      // await cartProvider.saveCart();
+
                     },
                   ),
                 ),

@@ -146,7 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                     ),
                   // Delivery Partner Screen
-                  if (userProvider.userType == 1)
+                  if (userProvider.userType == 1 || userProvider.userType == 2)
                     ListTile(
                       leading: const Icon(Icons.motorcycle),
                       title: const Text('Delivery Partner'),

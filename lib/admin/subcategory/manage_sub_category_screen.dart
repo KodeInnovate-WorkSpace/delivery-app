@@ -206,13 +206,6 @@ class TableData extends DataTableSource {
         IconButton(
           icon: const Icon(Icons.edit),
           onPressed: () async {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => UpdateSubCategory(data: data),
-            //   ),
-            // );
-
             final result = await Navigator.push(
               context,
               MaterialPageRoute(

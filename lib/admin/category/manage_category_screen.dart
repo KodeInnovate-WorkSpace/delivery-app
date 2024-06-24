@@ -31,9 +31,6 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
     super.dispose();
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
