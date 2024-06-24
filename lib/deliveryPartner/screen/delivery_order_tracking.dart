@@ -212,7 +212,8 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                   Text(orderDetail.totalPrice.toStringAsFixed(2)),
                   IconButton(
                       onPressed: () {
-                        uploadAllImages();
+                        takePictureAndAddToImages()
+                            .then((value) => {uploadAllImages()});
                       },
                       icon: const Icon(
                         Icons.camera_alt,
@@ -243,29 +244,18 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       ],
     );
   }
-  // Old Upload image
-  // Future<void> takePictureAndUpload() async {
-  //   final picker = ImagePicker();
-  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
-  //
-  //   if (pickedFile != null) {
-  //     // Get the file path and name
-  //     String fileName = path.basename(pickedFile.path);
-  //
-  //     // Upload the image to Firebase Storage
-  //     try {
-  //       await firebase_storage.FirebaseStorage.instance
-  //           .ref('order_images/$fileName')
-  //           .putFile(File(pickedFile.path));
-  //       // Upload successful
-  //     } catch (e) {
-  //       // Error uploading image
-  //       log('Error uploading image: $e');
-  //     }
-  //   }
-  // }
 
   Future<void> uploadAllImages() async {
+    if (itemImages.length != widget.order.length) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Please upload images for all items before proceeding.'),
+        ),
+      );
+      return;
+    }
+
     for (var image in itemImages) {
       String fileName = path.basename(image.path);
       try {
@@ -281,12 +271,23 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   }
 
   Future<void> takePictureAndAddToImages() async {
+    if (itemImages.length >= widget.order.length) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('You have already uploaded the required number of images.'),
+        ),
+      );
+      return;
+    }
+
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
-      // Add the picked image to the list
-      itemImages.add(File(pickedFile.path));
+      setState(() {
+        itemImages.add(File(pickedFile.path));
+      });
     }
   }
 
@@ -336,6 +337,14 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       [Color color = Colors.green, IconData icon = Icons.check_circle]) {
     return GestureDetector(
       onTap: () async {
+        if ((title == 'Order Pickup' || title == 'Order Delivered' ) && itemImages.length < widget.order.length) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please upload images for all items before picking up the order.'),
+            ),
+          );
+          return;
+        }
         if (!done) {
           int newStatus;
           switch (title) {
