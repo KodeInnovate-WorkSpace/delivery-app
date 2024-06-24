@@ -122,13 +122,7 @@ class _ProductCardState extends State<ProductCard> {
                                     productUnit: product.unit,
                                     // refreshCart: refreshCart,
                                   ),
-                                  // CheckoutAddToCartButton(
-                                  //     productName: product.name,
-                                  //     productPrice: product.price,
-                                  //     productImage: product.image,
-                                  //     productUnit: product.unit,
-                                  //     // refreshCart: refreshCart,
-                                  // )
+
                                 ],
                               ),
                             ),

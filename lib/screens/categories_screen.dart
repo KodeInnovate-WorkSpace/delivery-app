@@ -46,7 +46,7 @@ class CategoryScreenState extends State<CategoryScreen> {
   Future<void> fetchProducts(int subCategoryId) async {
     try {
       final productSnap =
-      await FirebaseFirestore.instance.collection("products").get();
+          await FirebaseFirestore.instance.collection("products").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
@@ -96,11 +96,11 @@ class CategoryScreenState extends State<CategoryScreen> {
                 // Side navbar
                 sidebar(context, widget.subCategories, fetchProducts,
                     selectedSubCategoryId, (id) {
-                      setState(() {
-                        selectedSubCategoryId = id;
-                        fetchProducts(id);
-                      });
-                    }),
+                  setState(() {
+                    selectedSubCategoryId = id;
+                    fetchProducts(id);
+                  });
+                }),
                 ProductCard(
                   productList: products,
                 ),
@@ -111,7 +111,8 @@ class CategoryScreenState extends State<CategoryScreen> {
               right: 20,
               child: Consumer<CartProvider>(
                 builder: (context, cartProvider, child) {
-                  int itemCount = cartProvider.totalItemsCount(); // Assuming this method exists in CartProvider
+                  int itemCount = cartProvider
+                      .totalItemsCount(); // Assuming this method exists in CartProvider
 
                   return Stack(
                     alignment: Alignment.center,
@@ -123,7 +124,8 @@ class CategoryScreenState extends State<CategoryScreen> {
                           HapticFeedback.vibrate();
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => const CheckoutScreen()),
                           );
                           // Navigator.pushNamed(context, '/checkout');
                         },
@@ -138,13 +140,20 @@ class CategoryScreenState extends State<CategoryScreen> {
                           top: 0,
                           right: 0,
                           child: badges.Badge(
-                            badgeContent: Text(
-                              itemCount.toString(),
-                              style: const TextStyle(color: Colors.white),
+                            badgeContent: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                itemCount.toString(),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Gilroy-SemiBold',
+                                    fontSize: 10),
+                              ),
                             ),
-                            position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                            position:
+                                badges.BadgePosition.topEnd(top: 0, end: 0),
                             badgeStyle: const badges.BadgeStyle(
-                              badgeColor: Colors.red,
+                              badgeColor: Colors.green,
                             ),
                           ),
                         ),

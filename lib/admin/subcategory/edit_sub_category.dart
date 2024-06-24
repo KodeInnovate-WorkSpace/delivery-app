@@ -24,7 +24,6 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
   File? _image;
-
   bool isLoading = false;
 
   SubCatModel subcat = SubCatModel();
@@ -193,13 +192,13 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ElevatedButton(
                   onPressed: openCamera,
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -215,13 +214,13 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ElevatedButton(
                   onPressed: pickImage,
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
                         return Colors.black;
                       },
                     ),
@@ -290,35 +289,40 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             // Add button
             Center(
               child: ElevatedButton(
-                onPressed: isLoading ? null : () async {
-                  if (nameController.text.isEmpty || _image == null || selectedCategoryName == null) {
-                    showMessage("Please fill necessary details");
-                    log("Please fill all the fields");
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        if (nameController.text.isEmpty ||
+                            _image == null ||
+                            selectedCategoryName == null) {
+                          showMessage("Please fill necessary details");
+                          log("Please fill all the fields");
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    return;
-                  }
+                          return;
+                        }
 
-                  setState(() {
-                    isLoading = true;
-                  });
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                  await addNewSubCategory(context);
+                        await addNewSubCategory(context);
 
-                  setState(() {
-                    isLoading = false;
-                  });
+                        setState(() {
+                          isLoading = false;
+                        });
 
-                  Navigator.pop(context, true);
-                },
+                        Navigator.pop(context, true);
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isLoading
                       ? Colors.black.withOpacity(0.3)
                       : Colors.black, // Set the color directly
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -330,78 +334,18 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : const Text(
-                  "Add",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Gilroy-Bold',
-                  ),
-                ),
+                        "Add",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Gilroy-Bold',
+                        ),
+                      ),
               ),
             )
-
-            // Center(
-            //   child: ElevatedButton(
-            //     onPressed: isLoading ? null : () async {
-            //       if (nameController.text.isEmpty || _image == null || selectedCategoryName == null) {
-            //         showMessage("Please fill necessary details");
-            //         log("Please fill all the fields");
-            //
-            //         setState(() {
-            //           isLoading = false;
-            //         });
-            //
-            //         return;
-            //       }
-            //
-            //       setState(() {
-            //         isLoading = true;
-            //       });
-            //
-            //       await addNewSubCategory(context);
-            //
-            //       setState(() {
-            //         isLoading = false;
-            //       });
-            //
-            //       Navigator.pop(context, true);
-            //     },
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-            //             (Set<MaterialState> states) {
-            //           if (states.contains(MaterialState.disabled)) {
-            //             return Colors.black.withOpacity(0.3);
-            //           }
-            //           return Colors.black;
-            //         },
-            //       ),
-            //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            //       textStyle: const TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.bold,
-            //       ),
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(10.0),
-            //       ),
-            //     ),
-            //     child: isLoading
-            //         ? const CircularProgressIndicator(
-            //       color: Colors.white,
-            //       strokeWidth: 2,
-            //     )
-            //         : const Text(
-            //       "Add",
-            //       style: TextStyle(
-            //         color: Colors.white,
-            //         fontFamily: 'Gilroy-Bold',
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

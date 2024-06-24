@@ -171,48 +171,6 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
             const SizedBox(height: 20),
             // Select Category
 
-            // Add button
-            // Center(
-            //   child: ElevatedButton(
-            //     onPressed: () async {
-            //       if (nameController.text.isEmpty) {
-            //         showMessage("Please fill necessary details");
-            //         log("Please fill all the fields");
-            //         return;
-            //       }
-            //
-            //       await addNewCategory(context);
-            //       Navigator.pop(context, true);
-            //       log("Category Length: ${catData.length}");
-            //     },
-            //     style: ButtonStyle(
-            //       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            //         RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(14.0),
-            //         ),
-            //       ),
-            //       backgroundColor: WidgetStateProperty.resolveWith<Color>(
-            //         (Set<WidgetState> states) {
-            //           return Colors.black;
-            //         },
-            //       ),
-            //     ),
-            //     child: const SizedBox(
-            //       width: 200,
-            //       height: 58,
-            //       child: Center(
-            //         child: Text(
-            //           "Add",
-            //           style: TextStyle(
-            //             color: Colors.white,
-            //             fontFamily: 'Gilroy-Black',
-            //             fontSize: 16.0,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
             Center(
               child: ElevatedButton(
                 onPressed: isLoading

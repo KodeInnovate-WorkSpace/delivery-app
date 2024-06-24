@@ -8,17 +8,33 @@ import '../shared/show_msg.dart';
 
 class AddressProvider with ChangeNotifier {
   final List<Address> _addressList = [];
+  String _selectedAddress = "";
 
   List<Address> get address => _addressList;
+  String get selectedAddress => _selectedAddress;
 
   AddressProvider() {
     loadAddresses();
   }
 
   void addAddress(Address userAdd) async {
-    final index = _addressList.indexWhere((address) => address.flat == userAdd.flat);
-    if (index >= 0) {
+    bool addressExists = _addressList.any((address) =>
+    address.flat == userAdd.flat &&
+        address.floor == userAdd.floor &&
+        address.building == userAdd.building &&
+        address.mylandmark == userAdd.mylandmark &&
+        address.phoneNumber == userAdd.phoneNumber);
+
+    if (addressExists) {
+      final index = _addressList.indexWhere((address) =>
+      address.flat == userAdd.flat &&
+          address.floor == userAdd.floor &&
+          address.building == userAdd.building &&
+          address.mylandmark == userAdd.mylandmark &&
+          address.phoneNumber == userAdd.phoneNumber);
+
       _addressList[index] = userAdd;
+      showMessage("Address Updated!");
     } else {
       _addressList.add(userAdd);
 
@@ -26,6 +42,9 @@ class AddressProvider with ChangeNotifier {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('address_${userAdd.flat}', jsonAddress);
+
+      setSelectedAddress(
+          "${userAdd.flat}, ${userAdd.building}, ${userAdd.mylandmark}");
 
       showMessage("Address Saved!");
       log("Address: ${_addressList.map((add) => {
@@ -36,12 +55,17 @@ class AddressProvider with ChangeNotifier {
   }
 
   void removeAddress(Address userAdd) async {
-    final index = _addressList.indexWhere((address) => address.flat == userAdd.flat);
+    final index =
+    _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
       _addressList.removeAt(index);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('address_${userAdd.flat}');
+
+      if (_selectedAddress.contains(userAdd.flat)) {
+        _selectedAddress = "";
+      }
 
       notifyListeners();
     }
@@ -71,6 +95,11 @@ class AddressProvider with ChangeNotifier {
         }
       }
     }
+    notifyListeners();
+  }
+
+  void setSelectedAddress(String address) {
+    _selectedAddress = address;
     notifyListeners();
   }
 }

@@ -138,6 +138,10 @@ class CheckUserProvider with ChangeNotifier {
   int userPhoneNum = 0;
   CheckUserProvider();
 
+  //type of user
+  int? _userType;
+  int? get userType => _userType;
+
   // Check if User Exists
   Future<void> doesUserExists(String phone) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -181,6 +185,7 @@ class CheckUserProvider with ChangeNotifier {
           'date': todayDate,
           'status': 1,
           'name': '',
+          'type': 0,
         });
         log("New user added successfully");
       } else {
@@ -230,6 +235,28 @@ class CheckUserProvider with ChangeNotifier {
     } catch (e) {
       log("Error checking user status: $e");
       _isUserActive = false;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> checkUserType(String phone) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('users')
+          .where('phone', isEqualTo: phone)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first;
+        final userType = userDoc.get('type');
+        _userType = userType;
+        log("User type = $_userType");
+      }
+    } catch (e) {
+      log("Error checking user type: $e");
     }
 
     notifyListeners();

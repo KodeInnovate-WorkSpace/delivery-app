@@ -39,33 +39,3 @@ class _NetworkHandlerState extends State<NetworkHandler> {
     return hasConnection ? widget.child : const NoInternetScreenOverlay();
   }
 }
-
-// class NoInternetScreen extends StatelessWidget {
-//   const NoInternetScreen({Key? key}) : super(key: key);
-//
-//   @override
-//   // Widget build(BuildContext context) {
-//   //   return Scaffold(
-//   //     body: Center(
-//   //       child: Column(
-//   //         mainAxisAlignment: MainAxisAlignment.center,
-//   //         children: [
-//   //           const Icon(Icons.wifi_off, size: 80),
-//   //           const SizedBox(height: 20),
-//   //           const Text(
-//   //             "No Internet Connection",
-//   //             style: TextStyle(fontSize: 20),
-//   //           ),
-//   //           const SizedBox(height: 10),
-//   //           ElevatedButton(
-//   //             onPressed: () {
-//   //               Navigator.pop(context);
-//   //             },
-//   //             child: const Text("Retry"),
-//   //           ),
-//   //         ],
-//   //       ),
-//   //     ),
-//   //   );
-//   // }
-// }

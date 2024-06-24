@@ -11,6 +11,8 @@ import 'package:speedy_delivery/screens/search_functionality.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'package:speedy_delivery/screens/splash_screen.dart';
 
+import 'deliveryPartner/provider/delivery_order_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -20,11 +22,10 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => MyAuthProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
-        // ChangeNotifierProvider(create: (_) => NewCartProvider()),
         ChangeNotifierProvider(create: (_) => CheckUserProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
-        // Add other providers if needed
+        ChangeNotifierProvider(create: (_) => AllOrderProvider()),
       ],
       child: const MyApp(),
     ),
@@ -42,8 +43,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Gilroy-Regular",
         scaffoldBackgroundColor: Colors.white,
         textSelectionTheme: const TextSelectionThemeData(
-          selectionHandleColor: Colors.amberAccent
-        ),
+            selectionHandleColor: Colors.amberAccent),
         appBarTheme: const AppBarTheme(
           elevation: 3,
           shadowColor: Colors.black54,
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         child: SplashScreen(),
       ),
       routes: {
-        '/profile': (context) => const NetworkHandler(
+        '/profile': (context) =>  const NetworkHandler(
               child: ProfilePage(),
             ),
         '/search': (context) => const NetworkHandler(

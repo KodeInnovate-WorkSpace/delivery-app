@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/cart_model.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert' as convert;
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
@@ -13,7 +17,7 @@ class CartProvider extends ChangeNotifier {
 
   String itemCount(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       return _cartItems[index].qnt.toString();
     } else {
@@ -23,7 +27,7 @@ class CartProvider extends ChangeNotifier {
 
   int getItemCount(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       return _cartItems[index].qnt;
     } else {
@@ -38,7 +42,7 @@ class CartProvider extends ChangeNotifier {
 
   void addItem(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
       _cartItems[index].qnt++;
@@ -46,12 +50,13 @@ class CartProvider extends ChangeNotifier {
       _cartItems.add(item);
     }
     logCartContents();
+    saveCart(); // Save cart state to SP after adding an item
     notifyListeners();
   }
 
   void removeItem(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
       if (_cartItems[index].qnt > 1) {
@@ -59,7 +64,8 @@ class CartProvider extends ChangeNotifier {
       } else {
         // Remove item from cart when quantity is 1 or 0
         _cartItems.removeAt(index);
-
+        // Store in SP
+        // saveCart();
         // Check if the cart is now empty
         if (_cartItems.isEmpty) {
           _cartItems.clear();
@@ -68,6 +74,7 @@ class CartProvider extends ChangeNotifier {
     }
 
     logCartContents();
+    saveCart(); // Save cart state to SP after removing an item
     notifyListeners();
   }
 
@@ -107,4 +114,46 @@ class CartProvider extends ChangeNotifier {
     return itemNames.length;
   }
 
+  // loading and saving cart item for SP
+  Future<void> loadCart() async {
+    final List<Cart> cartItemsSP = await retrieveCart();
+    _cartItems.clear(); // Clear existing cart items first
+    _cartItems.addAll(cartItemsSP);
+    notifyListeners();
+  }
+
+  Future<void> saveCart() async {
+    await storeCart(_cartItems);
+  }
+
+  // Shared Preference
+  static const String CARTITEM_KEY = 'cart_items';
+
+  Future<void> storeCart(List<Cart> cartItems) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String encodedCart =
+          convert.jsonEncode(cartItems.map((item) => item.toJson()).toList());
+      await prefs.setString(CARTITEM_KEY, encodedCart);
+      log("Item Stored in SP");
+    } catch (e) {
+      log("Error storing cart in shared preference: $e");
+    }
+  }
+
+  Future<List<Cart>> retrieveCart() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? encodedCart = prefs.getString(CARTITEM_KEY);
+      if (encodedCart == null) {
+        log("No cart data exists");
+        return [];
+      }
+      final List<dynamic> decodedCart = convert.jsonDecode(encodedCart);
+      return decodedCart.map((item) => Cart.fromJson(item)).toList();
+    } catch (e) {
+      log("Error retrieving cart for SP: $e");
+      rethrow;
+    }
+  }
 }

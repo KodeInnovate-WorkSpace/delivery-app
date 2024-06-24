@@ -31,16 +31,20 @@ class HomeScreenState extends State<HomeScreen> {
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
 
-  bool _isLoading = true;
-
   // products
   List<Product> products = [];
 
   @override
   void initState() {
     super.initState();
-    fetchDataFuture = fetchData();
+    // initialize cart provider for loading cart items
+    final initiateCartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+    //calling method to load the cart items
+    initiateCartProvider.loadCart();
+
     checkLocationService();
+    fetchDataFuture = fetchData();
   }
 
   Future<void> fetchData() async {
@@ -48,74 +52,9 @@ class HomeScreenState extends State<HomeScreen> {
     await fetchSubCategory();
   }
 
-  Future<void> fetchCategory() async {
-    try {
-      final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
-
-      if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          categories.clear();
-          for (var doc in snapshot.docs) {
-            final data = doc.data();
-            final category = Category(
-              id: data['category_id'],
-              name: data['category_name'],
-              status: data['status'],
-            );
-
-            if (category.status == 1) {
-              categories.add(category);
-            }
-
-            // log("Category: \n ID: ${category.id} | Name: ${category.name}");
-          }
-        });
-      } else {
-        log("No Category Document Found!");
-      }
-    } catch (e) {
-      log("Error fetching category: $e");
-    }
-  }
-
-  Future<void> fetchSubCategory() async {
-    try {
-      final subSnapshot =
-      await FirebaseFirestore.instance.collection("sub_category").get();
-
-      if (subSnapshot.docs.isNotEmpty) {
-        setState(() {
-          subCategories.clear();
-          for (var doc in subSnapshot.docs) {
-            final data = doc.data();
-            final subCategory = SubCategory(
-              id: data['sub_category_id'],
-              name: data['sub_category_name'],
-              img: data['sub_category_img'],
-              catId: data['category_id'],
-              status: data['status'],
-            );
-
-            if (subCategory.status == 1) {
-              subCategories.add(subCategory);
-            }
-
-            // fetchProducts();
-            // log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
-          }
-        });
-      } else {
-        log("No Sub-Category Document Found!");
-      }
-    } catch (e) {
-      log("Error fetching sub-category: $e");
-    }
-  }
-
   Future<void> _handleRefresh() async {
-    fetchData();
     checkLocationService();
+    fetchData();
   }
 
   Future<void> checkLocationService() async {
@@ -147,56 +86,42 @@ class HomeScreenState extends State<HomeScreen> {
 
     // Get the placemarks from the coordinates
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
-    String subLocality = place.subLocality ?? '';
     String postalCode = place.postalCode ?? '';
 
-    log("SubLocality: $subLocality, PostalCode: $postalCode");
+    log("PostalCode: $postalCode");
 
     // Check Firestore for status
-    await checkAccess();
+    await checkAccess(postalCode);
   }
 
-  Future<void> checkAccess() async {
+  Future<void> checkAccess(String postalCode) async {
     try {
       // Fetch all documents from the "location" collection
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('location').get();
+          await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
-        // Get the placemarks from the coordinates
-        Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-        List<Placemark> placemarks = await placemarkFromCoordinates(
-            position.latitude, position.longitude);
-        Placemark place = placemarks[0];
-        String subLocality = place.subLocality ?? '';
-        int postalCode = int.parse(place.postalCode ?? '');
-
         // Iterate through each document
         for (DocumentSnapshot document in querySnapshot.docs) {
-          // Assuming each document has 'sublocality', 'postal_code', and 'status' fields
-          String docSubLocality = document['sublocality'];
+          // Assuming each document has 'postal_code' and 'status' fields
           int docPostalCode = document['postal_code'];
           int status = document['status'];
 
-          // Check if the sublocality and postal code match
-          if (subLocality == docSubLocality &&
-              postalCode == docPostalCode &&
-              status == 1) {
+          // Check if the postal code matches and the status is 1
+          if (postalCode == docPostalCode.toString() && status == 1) {
             log("Access granted");
             return; // Exit the function if access is granted
           }
         }
-        // If no document with matching sublocality, postal code, and status 1 is found
-        log("No document with matching sublocality, postal code, and status 1 found in Firestore");
+        // If no document with matching postal code and status 1 is found
+        log("No document with matching postal code and status 1 found in Firestore");
       } else {
         log("No documents found in Firestore");
       }
-      // If no document with matching sublocality, postal code, and status 1 is found or no documents are found
+      // If no document with matching postal code and status 1 is found or no documents are found
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
@@ -230,6 +155,71 @@ class HomeScreenState extends State<HomeScreen> {
       },
     ).then((_) =>
         checkLocationService()); // Check location service again after dialog is closed
+  }
+
+  Future<void> fetchCategory() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection("category").get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          categories.clear();
+          for (var doc in snapshot.docs) {
+            final data = doc.data();
+            final category = Category(
+              id: data['category_id'],
+              name: data['category_name'],
+              status: data['status'],
+            );
+
+            if (category.status == 1) {
+              categories.add(category);
+            }
+
+            // log("Category: \n ID: ${category.id} | Name: ${category.name}");
+          }
+        });
+      } else {
+        log("No Category Document Found!");
+      }
+    } catch (e) {
+      log("Error fetching category: $e");
+    }
+  }
+
+  Future<void> fetchSubCategory() async {
+    try {
+      final subSnapshot =
+          await FirebaseFirestore.instance.collection("sub_category").get();
+
+      if (subSnapshot.docs.isNotEmpty) {
+        setState(() {
+          subCategories.clear();
+          for (var doc in subSnapshot.docs) {
+            final data = doc.data();
+            final subCategory = SubCategory(
+              id: data['sub_category_id'],
+              name: data['sub_category_name'],
+              img: data['sub_category_img'],
+              catId: data['category_id'],
+              status: data['status'],
+            );
+
+            if (subCategory.status == 1) {
+              subCategories.add(subCategory);
+            }
+
+            // fetchProducts();
+            // log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
+          }
+        });
+      } else {
+        log("No Sub-Category Document Found!");
+      }
+    } catch (e) {
+      log("Error fetching sub-category: $e");
+    }
   }
 
   @override
@@ -271,20 +261,20 @@ class HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             const SizedBox(
                                                 height:
-                                                20), // Add SizedBox for spacing
+                                                    20), // Add SizedBox for spacing
                                             Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
                                                   'Delivery within ',
                                                   style: TextStyle(
                                                       fontFamily:
-                                                      'Gilroy-ExtraBold',
+                                                          'Gilroy-ExtraBold',
                                                       color: Colors.black,
                                                       fontSize: 12),
                                                 ),
@@ -292,7 +282,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                   '$deliveryTime minutes',
                                                   style: const TextStyle(
                                                       fontFamily:
-                                                      'Gilroy-Black',
+                                                          'Gilroy-Black',
                                                       color: Colors.black,
                                                       fontSize: 28),
                                                 ),
@@ -338,7 +328,7 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
+                      (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15.0, vertical: 0),
@@ -348,10 +338,10 @@ class HomeScreenState extends State<HomeScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                  // child: CircularProgressIndicator(
-                                  //   color: Colors.black,
-                                  // ),
-                                );
+                                    // child: CircularProgressIndicator(
+                                    //   color: Colors.black,
+                                    // ),
+                                    );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
                               } else {
@@ -359,7 +349,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   children: categories.map((category) {
                                     final filteredSubCategories = subCategories
                                         .where((subCategory) =>
-                                    subCategory.catId == category.id)
+                                            subCategory.catId == category.id)
                                         .toList();
 
                                     return Stack(
@@ -369,7 +359,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8.0,
                                               vertical:
-                                              0.0), // Reduced vertical padding
+                                                  0.0), // Reduced vertical padding
                                           child: Text(
                                             category.name,
                                             style: const TextStyle(
@@ -381,17 +371,17 @@ class HomeScreenState extends State<HomeScreen> {
                                         GridView.builder(
                                           shrinkWrap: true,
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemCount:
-                                          filteredSubCategories.length,
+                                              filteredSubCategories.length,
                                           gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
                                             childAspectRatio: 0.65,
                                           ),
                                           itemBuilder: (context, subIndex) {
                                             final subCategory =
-                                            filteredSubCategories[subIndex];
+                                                filteredSubCategories[subIndex];
                                             return Column(
                                               children: [
                                                 GestureDetector(
@@ -401,14 +391,14 @@ class HomeScreenState extends State<HomeScreen> {
                                                       MaterialPageRoute(
                                                         builder: (context) =>
                                                             CategoryScreen(
-                                                              categoryTitle:
+                                                          categoryTitle:
                                                               category.name,
-                                                              subCategories:
+                                                          subCategories:
                                                               filteredSubCategories,
-                                                              selectedSubCategoryId:
+                                                          selectedSubCategoryId:
                                                               subCategory
                                                                   .id, // Pass the selected sub-category ID
-                                                            ),
+                                                        ),
                                                       ),
                                                     );
                                                   },
@@ -418,39 +408,39 @@ class HomeScreenState extends State<HomeScreen> {
                                                         .symmetric(
                                                         horizontal: 4,
                                                         vertical:
-                                                        0), // Reduced vertical margin
+                                                            0), // Reduced vertical margin
                                                     decoration:
-                                                    const BoxDecoration(
+                                                        const BoxDecoration(
                                                       color: Color(0xffeaf1fc),
                                                       borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10)),
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                      const EdgeInsets.all(
-                                                          8.0),
+                                                          const EdgeInsets.all(
+                                                              8.0),
                                                       child: CachedNetworkImage(
                                                         height: 60,
                                                         imageUrl:
-                                                        subCategory.img,
+                                                            subCategory.img,
                                                         placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(
-                                                            color: Colors
-                                                                .amberAccent),
+                                                                url) =>
+                                                            const CircularProgressIndicator(
+                                                                color: Colors
+                                                                    .amberAccent),
                                                         errorWidget: (context,
-                                                            url, error) =>
-                                                        const Icon(
-                                                            Icons.error),
+                                                                url, error) =>
+                                                            const Icon(
+                                                                Icons.error),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                                 const SizedBox(
                                                     height:
-                                                    4), // Reduced height for the SizedBox
+                                                        4), // Reduced height for the SizedBox
                                                 // sub-category name
                                                 Text(
                                                   subCategory.name,
@@ -476,17 +466,16 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-
-              // Removing this later!!
               Positioned(
                 bottom: 25,
                 right: 20,
                 child: Consumer<CartProvider>(
                   builder: (context, cartProvider, child) {
-                    int itemCount = cartProvider.totalItemsCount(); // Assuming this method exists in CartProvider
+                    int itemCount = cartProvider
+                        .totalItemsCount(); // Assuming this method exists in CartProvider
 
                     return Stack(
-                      alignment: Alignment.center,
+                      alignment: Alignment.topRight,
                       children: [
                         FloatingActionButton(
                           hoverColor: Colors.transparent,
@@ -495,7 +484,8 @@ class HomeScreenState extends State<HomeScreen> {
                             HapticFeedback.vibrate();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => const CheckoutScreen()),
                             );
                             // Navigator.pushNamed(context, '/checkout');
                           },
@@ -506,18 +496,21 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         if (itemCount > 0)
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: badges.Badge(
-                              badgeContent: Text(
+                          badges.Badge(
+                            badgeContent: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
                                 itemCount.toString(),
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Gilroy-SemiBold',
+                                    fontSize: 10),
                               ),
-                              position: badges.BadgePosition.topEnd(top: 0, end: 0),
-                              badgeStyle: const badges.BadgeStyle(
-                                badgeColor: Colors.red,
-                              ),
+                            ),
+                            position:
+                                badges.BadgePosition.topEnd(top: 0, end: 0),
+                            badgeStyle: const badges.BadgeStyle(
+                              badgeColor: Colors.green,
                             ),
                           ),
                       ],
@@ -525,7 +518,7 @@ class HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-            ] ,
+            ],
           ),
         ),
       ),

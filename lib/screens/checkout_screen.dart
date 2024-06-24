@@ -188,12 +188,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     // providers
     final cartProvider = Provider.of<CartProvider>(context);
-    final addressProvider = Provider.of<AddressProvider>(context);
     final authProvider = Provider.of<MyAuthProvider>(context);
+    final addressProvider = Provider.of<AddressProvider>(context);
 
     if (addressProvider.address.isNotEmpty) {
       _defaultAdd =
-      "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark},${addressProvider.address[0].phoneNumber}";
+      "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -478,145 +478,81 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     backgroundColor: Colors.white,
                                     builder: (BuildContext context) {
                                       return StatefulBuilder(
-                                        builder: (BuildContext context,
-                                            StateSetter setModalState) {
+                                        builder: (BuildContext context, StateSetter setModalState) {
                                           return Container(
-                                            decoration:
-                                            const BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Colors.white70,
-                                              borderRadius:
-                                              BorderRadius.vertical(
-                                                  top:
-                                                  Radius.circular(
-                                                      16.0)),
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets
-                                                  .symmetric(
-                                                  horizontal: 25.0,
-                                                  vertical: 10),
+                                              padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
                                               child: Column(
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment
-                                                    .start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   // Title
                                                   const Text(
                                                     "Select address",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontFamily:
-                                                        'Gilroy-Bold'),
+                                                    style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-Bold'),
                                                   ),
-                                                  const SizedBox(
-                                                      height: 20),
+                                                  const SizedBox(height: 20),
                                                   // Add new address row
                                                   Container(
-                                                    decoration:
-                                                    BoxDecoration(
+                                                    decoration: BoxDecoration(
                                                       color: Colors.white,
-                                                      borderRadius:
-                                                      const BorderRadius
-                                                          .all(
-                                                          Radius.circular(
-                                                              10.0)),
-                                                      border: Border.all(
-                                                          color: Colors
-                                                              .grey
-                                                              .shade200),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                                      border: Border.all(color: Colors.grey.shade200),
                                                     ),
                                                     child: ListTile(
-                                                      minTileHeight: 50,
-                                                      leading: const Icon(
-                                                          Icons.add,
-                                                          color: Colors
-                                                              .green,
-                                                          size: 18),
+                                                      minLeadingWidth: 50,
+                                                      leading: const Icon(Icons.add, color: Colors.green, size: 18),
                                                       title: const Text(
                                                         "Add new address",
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .green,
-                                                            fontFamily:
-                                                            'Gilroy-SemiBold'),
+                                                        style: TextStyle(color: Colors.green, fontFamily: 'Gilroy-SemiBold'),
                                                       ),
-                                                      trailing:
-                                                      const Icon(Icons
-                                                          .chevron_right),
+                                                      trailing: const Icon(Icons.chevron_right),
                                                       onTap: () {
                                                         Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                              const AddressInputForm()),
+                                                          MaterialPageRoute(builder: (context) => const AddressInputForm()),
                                                         ).then((value) {
                                                           // Refresh the modal state when returning from address input
-                                                          setModalState(
-                                                                  () {});
+                                                          setModalState(() {});
+                                                          setState(() {}); // Refresh the main state
                                                         });
                                                       },
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                      height: 35),
+                                                  const SizedBox(height: 35),
                                                   // Saved addresses
                                                   Text(
                                                     "Your saved addresses",
-                                                    style: TextStyle(
-                                                        fontSize: 13,
-                                                        color: Colors
-                                                            .grey[600]),
+                                                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                                                   ),
-                                                  if (addressProvider
-                                                      .address.isNotEmpty)
+                                                  if (addressProvider.address.isNotEmpty)
                                                     SizedBox(
                                                       height: 250,
-                                                      child: ListView
-                                                          .builder(
+                                                      child: ListView.builder(
                                                         shrinkWrap: true,
-                                                        itemCount:
-                                                        addressProvider
-                                                            .address
-                                                            .length,
-                                                        itemBuilder:
-                                                            (context,
-                                                            index) {
-                                                          final address =
-                                                          addressProvider
-                                                              .address[
-                                                          index];
+                                                        itemCount: addressProvider.address.length,
+                                                        itemBuilder: (context, index) {
+                                                          final address = addressProvider.address[index];
                                                           return Column(
                                                             children: [
                                                               GestureDetector(
-                                                                onTap:
-                                                                    () {
-                                                                  _newAdd =
-                                                                  "${address.flat}, ${address.building}, ${address.mylandmark},${address.phoneNumber}";
-                                                                  setState(
-                                                                          () {
-                                                                        _defaultAdd =
-                                                                            _newAdd;
-                                                                      });
-                                                                  Navigator.pop(
-                                                                      context,
-                                                                      true); // Close the bottom modal
-                                                                  showMessage(
-                                                                      "Address Changed!");
-                                                                  // Redirect to home
-                                                                  Navigator.of(context).popUntil((route) =>
-                                                                  route.isFirst);
+                                                                onTap: () {
+                                                                  _newAdd = "${address.flat}, ${address.building}, ${address.mylandmark}";
+                                                                  setState(() {
+                                                                    _defaultAdd = _newAdd;
+                                                                  });
+                                                                  addressProvider.setSelectedAddress(_newAdd); // Set the selected address in the provider
+                                                                  Navigator.pop(context, true); // Close the bottom modal
+                                                                  showMessage("Address Changed!");
                                                                 },
-                                                                child:
-                                                                ListTile(
-                                                                  title: Text(
-                                                                      '${address.flat}, ${address.floor}, ${address.building},${address.phoneNumber}'),
-                                                                  subtitle:
-                                                                  Text(address.mylandmark),
-                                                                  trailing:
-                                                                  IconButton(
-                                                                    onPressed:
-                                                                        () {
+                                                                child: ListTile(
+                                                                  title: Text('${address.flat}, ${address.floor}, ${address.building}'),
+                                                                  subtitle: Text(address.mylandmark),
+                                                                  trailing: IconButton(
+                                                                    onPressed: () {
                                                                       addressProvider.removeAddress(address);
                                                                       showMessage("Address Deleted!");
                                                                       setModalState(() {}); // Refresh the modal state
@@ -626,12 +562,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                           _newAdd = "";
                                                                         }
                                                                       });
-                                                                      // Redirect to home
-                                                                      Navigator.of(context).popUntil((route) =>
-                                                                      route.isFirst);
                                                                     },
-                                                                    icon:
-                                                                    const Icon(Icons.delete),
+                                                                    icon: const Icon(Icons.delete),
                                                                   ),
                                                                 ),
                                                               ),
@@ -647,45 +579,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         },
                                       );
                                     },
-                                  );
+                                  ).then((value) {
+                                    setState(() {}); // Refresh the main state after the modal is closed
+                                  });
                                 },
                                 child: Container(
                                   color: Colors.transparent,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
                                             const Icon(Icons.place),
                                             const SizedBox(width: 5),
                                             Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
                                                   "Delivering to",
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                      'Gilroy-SemiBold'),
+                                                  style: TextStyle(fontFamily: 'Gilroy-SemiBold'),
                                                 ),
                                                 Text(
-                                                  _defaultAdd.isEmpty
+                                                  addressProvider.selectedAddress.isEmpty
                                                       ? "Please select an address"
-                                                      : _defaultAdd,
+                                                      : addressProvider.selectedAddress,
                                                   maxLines: 1,
-                                                  overflow: TextOverflow
-                                                      .ellipsis,
+                                                  overflow: TextOverflow.ellipsis,
                                                   style: TextStyle(
-                                                      color: Colors
-                                                          .grey[500],
-                                                      fontFamily:
-                                                      'Gilroy-Medium',
+                                                      color: Colors.grey[500],
+                                                      fontFamily: 'Gilroy-Medium',
                                                       fontSize: 12),
                                                 ),
                                               ],
@@ -695,16 +620,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         // Change address button
                                         const Text(
                                           "Change",
-                                          style: TextStyle(
-                                              color: Colors.green,
-                                              fontFamily:
-                                              'Gilroy-SemiBold'),
+                                          style: TextStyle(color: Colors.green, fontFamily: 'Gilroy-SemiBold'),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
+
+
                               const Divider(),
                               // payment mode | place order
                               Row(
@@ -817,13 +741,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               (item.itemPrice *
                                                   item.qnt)
                                                   .toDouble(),
-                                              address: _defaultAdd,
+                                              address: _defaultAdd, phone: authProvider.phone,
                                               //transactionId: '',
                                             );
                                           }).toList();
 
                                           orderProvider.addOrders(
-                                              orders, myOrderId);
+                                              orders, myOrderId, authProvider.phone);
                                           // Clear the cart
                                         });
                                       } else if (_selectedPaymentMethod ==
@@ -855,13 +779,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   item.qnt)
                                                   .toDouble(),
                                               address:
-                                              _defaultAdd, // Add phone number if available
+                                              _defaultAdd, phone: authProvider.phone, // Add phone number if available
                                               // transactionId: '',
                                             );
                                           }).toList();
 
                                           orderProvider.addOrders(
-                                              orders, myOrderId);
+                                              orders, myOrderId, authProvider.phone);
                                           cartProvider
                                               .clearCart(); // Clear the cart
                                         });

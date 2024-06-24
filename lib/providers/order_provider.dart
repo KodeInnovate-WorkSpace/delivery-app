@@ -1,290 +1,7 @@
-//   import 'dart:math';
-//
-//   import 'package:flutter/material.dart';
-//   import 'package:cloud_firestore/cloud_firestore.dart';
-//
-//   class Order {
-//     final String orderId; // New field for order ID
-//     final String productName;
-//     final String productImage;
-//     final int quantity;
-//     final double price;
-//     final double totalPrice;
-//     final String paymentMode;
-//     final String address;
-//     final String phone;
-//     final String transactionId;
-//     final String userId;
-//     int status;
-//
-//     Order({
-//       required this.orderId, // Include order ID in the constructor
-//       required this.productName,
-//       required this.productImage,
-//       required this.quantity,
-//       required this.price,
-//       required this.totalPrice,
-//       required this.paymentMode,
-//       required this.address,
-//       required this.phone,
-//       required this.transactionId,
-//       required this.userId,
-//       this.status = 0,
-//     });
-//
-//     // Custom copyWith method
-//     Order copyWith({
-//       String? orderId,
-//       int? status,
-//     }) {
-//       return Order(
-//         orderId: orderId ?? this.orderId,
-//         productName: productName,
-//         productImage: productImage,
-//         quantity: quantity,
-//         price: price,
-//         totalPrice: totalPrice,
-//         paymentMode: paymentMode,
-//         address: address,
-//         phone: phone,
-//         transactionId: transactionId,
-//         userId: userId,
-//         status: status ?? this.status,
-//       );
-//     }
-//   }
-//
-//   class OrderProvider with ChangeNotifier {
-//     List<Order> _orders = [];
-//
-//     List<Order> get orders => _orders;
-//
-//     OrderProvider() {
-//       fetchOrders();
-//     }
-//
-//     void addOrder(Order order) {
-//       String orderId = _generateOrderId();
-//       order = order.copyWith(orderId: orderId);
-//
-//       _orders.add(order);
-//       FirebaseFirestore.instance.collection('OrderHistory').add({
-//         'orderId': order.orderId,
-//         'productName': order.productName,
-//         'productImage': order.productImage,
-//         'quantity': order.quantity,
-//         'price': order.price,
-//         'totalPrice': order.totalPrice,
-//         'paymentMode': order.paymentMode,
-//         'address': order.address,
-//         'phone': order.phone,
-//         'transactionId': order.transactionId,
-//         'userId': order.userId,
-//         'status': order.status,
-//       });
-//
-//       notifyListeners();
-//     }
-//
-//     String _generateOrderId() {
-//       int randomNumber = Random().nextInt(9000) + 1000;
-//       String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-//       return 'ORD_${timestamp}_$randomNumber';
-//     }
-//
-//
-//     Future<void> fetchOrders() async {
-//       final snapshot = await FirebaseFirestore.instance.collection('OrderHistory').get();
-//       _orders = snapshot.docs.map((doc) {
-//         final data = doc.data();
-//         return Order(
-//           orderId: data['orderId'],
-//           productName: data['productName'],
-//           productImage: data['productImage'],
-//           quantity: data['quantity'],
-//           price: data['price'],
-//           totalPrice: data['totalPrice'],
-//           paymentMode: data['paymentMode'],
-//           address: data['address'],
-//           phone: data['phone'],
-//           transactionId: data['transactionId'],
-//           userId: data['userId'],
-//           status: data['status'] ?? 0,
-//         );
-//       }).toList();
-//       notifyListeners();
-//     }
-//
-//     Future<void> updateOrderStatus(Order order, int status) async {
-//       int orderIndex = _orders.indexWhere((o) => o.orderId == order.orderId);
-//       if (orderIndex != -1) {
-//         _orders[orderIndex] = order.copyWith(status: status);
-//         await FirebaseFirestore.instance
-//             .collection('OrderHistory')
-//             .doc(order.orderId)
-//             .update({'status': status});
-//         notifyListeners();
-//       }
-//     }
-//
-//     void deleteOrder(Order order) {
-//       _orders.remove(order);
-//       notifyListeners();
-//     }
-// // void deleteOrder(Order order) {
-// //   _orders.remove(order);
-// //   FirebaseFirestore.instance
-// //       .collection('OrderHistory')
-// //       .where('orderId', isEqualTo: order.orderId)
-// //       .get()
-// //       .then((snapshot) {
-// //     for (var doc in snapshot.docs) {
-// //       doc.reference.delete();
-// //     }
-// //   });
-// //   notifyListeners();
-// // }
-// }
-// import 'dart:math';
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-//
-// class Order {
-//   final String orderId;
-//   final String productName;
-//   final String productImage;
-//   final int quantity;
-//   final double price;
-//   final double totalPrice;
-//   final String paymentMode;
-//   final String address;
-//   final String phone;
-//   final String transactionId;
-//   final String userId;
-//   int status;
-//
-//   Order({
-//     required this.orderId,
-//     required this.productName,
-//     required this.productImage,
-//     required this.quantity,
-//     required this.price,
-//     required this.totalPrice,
-//     required this.paymentMode,
-//     required this.address,
-//     required this.phone,
-//     required this.transactionId,
-//     required this.userId,
-//     this.status = 0,
-//   });
-//
-//   Order copyWith({
-//     String? orderId,
-//     int? status,
-//   }) {
-//     return Order(
-//       orderId: orderId ?? this.orderId,
-//       productName: productName,
-//       productImage: productImage,
-//       quantity: quantity,
-//       price: price,
-//       totalPrice: totalPrice,
-//       paymentMode: paymentMode,
-//       address: address,
-//       phone: phone,
-//       transactionId: transactionId,
-//       userId: userId,
-//       status: status ?? this.status,
-//     );
-//   }
-// }
-//
-// class OrderProvider with ChangeNotifier {
-//   List<Order> _orders = [];
-//
-//   List<Order> get orders => _orders;
-//
-//   OrderProvider() {
-//     fetchOrders();
-//   }
-//
-//   void addOrders(List<Order> orders) {
-//     String orderId = _generateOrderId();
-//     List<Order> newOrders = orders.map((order) => order.copyWith(orderId: orderId)).toList();
-//     _orders.addAll(newOrders);
-//
-//     for (var order in newOrders) {
-//       FirebaseFirestore.instance.collection('OrderHistory').add({
-//         'orderId': order.orderId,
-//         'productName': order.productName,
-//         'productImage': order.productImage,
-//         'quantity': order.quantity,
-//         'price': order.price,
-//         'totalPrice': order.totalPrice,
-//         'paymentMode': order.paymentMode,
-//         'address': order.address,
-//         'phone': order.phone,
-//         'transactionId': order.transactionId,
-//         'userId': order.userId,
-//         'status': order.status,
-//       });
-//     }
-//
-//     notifyListeners();
-//   }
-//
-//   String _generateOrderId() {
-//     int randomNumber = Random().nextInt(9000) + 1000;
-//     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-//     return 'ORD_${timestamp}_$randomNumber';
-//   }
-//
-//   Future<void> fetchOrders() async {
-//     final snapshot = await FirebaseFirestore.instance.collection('OrderHistory').get();
-//     _orders = snapshot.docs.map((doc) {
-//       final data = doc.data();
-//       return Order(
-//         orderId: data['orderId'],
-//         productName: data['productName'],
-//         productImage: data['productImage'],
-//         quantity: data['quantity'],
-//         price: data['price'],
-//         totalPrice: data['totalPrice'],
-//         paymentMode: data['paymentMode'],
-//         address: data['address'],
-//         phone: data['phone'],
-//         transactionId: data['transactionId'],
-//         userId: data['userId'],
-//         status: data['status'] ?? 0,
-//       );
-//     }).toList();
-//     notifyListeners();
-//   }
-//
-//   Future<void> updateOrderStatus(Order order, int status) async {
-//     int orderIndex = _orders.indexWhere((o) => o.orderId == order.orderId);
-//     if (orderIndex != -1) {
-//       _orders[orderIndex] = order.copyWith(status: status);
-//       await FirebaseFirestore.instance
-//           .collection('OrderHistory')
-//           .doc(order.orderId)
-//           .update({'status': status});
-//       notifyListeners();
-//     }
-//   }
-//
-//   void deleteOrder(Order order) {
-//     _orders.remove(order);
-//     notifyListeners();
-//   }
-// }
-import 'dart:convert'; // Add this import
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-// Add this import
 
 class Order {
   final String orderId;
@@ -295,6 +12,7 @@ class Order {
   final double totalPrice;
   final String paymentMode;
   final String address;
+  final String phone;
   int status;
 
   Order({
@@ -306,12 +24,14 @@ class Order {
     required this.totalPrice,
     required this.paymentMode,
     required this.address,
+    required this.phone,
     this.status = 0,
   });
 
   Order copyWith({
     String? orderId,
     int? status,
+    required String phone,
   }) {
     return Order(
       orderId: orderId ?? this.orderId,
@@ -323,6 +43,7 @@ class Order {
       paymentMode: paymentMode,
       address: address,
       status: status ?? this.status,
+      phone: this.phone,
     );
   }
 
@@ -337,6 +58,7 @@ class Order {
       'paymentMode': paymentMode,
       'address': address,
       'status': status,
+      'phone': phone,
     };
   }
 
@@ -351,9 +73,11 @@ class Order {
       paymentMode: map['paymentMode'],
       address: map['address'],
       status: map['status'],
+      phone: map['phone'],
     );
   }
 }
+
 class OrderProvider with ChangeNotifier {
   List<Order> _orders = [];
 
@@ -363,8 +87,10 @@ class OrderProvider with ChangeNotifier {
     fetchOrders();
   }
 
-  void addOrders(List<Order> orders, String ordId) {
-    List<Order> newOrders = orders.map((order) => order.copyWith(orderId: ordId)).toList();
+  void addOrders(List<Order> orders, String ordId, String phone) {
+    List<Order> newOrders = orders
+        .map((order) => order.copyWith(orderId: ordId, phone: phone))
+        .toList();
     _orders.addAll(newOrders);
 
     _saveOrdersToFirebase(newOrders);
@@ -376,7 +102,8 @@ class OrderProvider with ChangeNotifier {
   void _saveOrdersToFirebase(List<Order> orders) {
     if (orders.isEmpty) return;
 
-    double overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
+    double overallTotal =
+        orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
 
     Map<String, dynamic> combinedOrderData = {
       'orderId': orders.first.orderId,
@@ -384,6 +111,7 @@ class OrderProvider with ChangeNotifier {
       'paymentMode': orders.first.paymentMode,
       'status': orders.first.status,
       'overallTotal': overallTotal,
+      'phone': orders.first.phone,
       'orders': orders.map((order) {
         return {
           'productName': order.productName,
@@ -395,7 +123,10 @@ class OrderProvider with ChangeNotifier {
       }).toList(),
     };
 
-    FirebaseFirestore.instance.collection('OrderHistory').doc(orders.first.orderId).set(combinedOrderData);
+    FirebaseFirestore.instance
+        .collection('OrderHistory')
+        .doc(orders.first.orderId)
+        .set(combinedOrderData);
   }
 
   Future<void> fetchOrders() async {
@@ -406,31 +137,39 @@ class OrderProvider with ChangeNotifier {
       final List<dynamic> decodedList = jsonDecode(ordersString);
       _orders = decodedList.map((orderMap) => Order.fromMap(orderMap)).toList();
     } else {
-      final snapshot = await FirebaseFirestore.instance.collection('OrderHistory').get();
+      final snapshot =
+          await FirebaseFirestore.instance.collection('OrderHistory').get();
       _orders = snapshot.docs.expand((doc) {
         final data = doc.data();
         List<dynamic> ordersData = data['orders'];
-        return ordersData.map((orderData) => Order(
-          orderId: data['orderId'],
-          productName: orderData['productName'],
-          productImage: orderData['productImage'],
-          quantity: orderData['quantity'],
-          price: 0.0,
-          totalPrice: orderData['totalPrice'],
-          paymentMode: data['paymentMode'],
-          address: data['address'],
-          status: data['status'] ?? 0,
-        )).toList();
+        return ordersData
+            .map((orderData) => Order(
+                  orderId: data['orderId'],
+                  productName: orderData['productName'],
+                  productImage: orderData['productImage'],
+                  quantity: orderData['quantity'],
+                  price: 0.0,
+                  totalPrice: orderData['totalPrice'],
+                  paymentMode: data['paymentMode'],
+                  address: data['address'],
+                  phone: data['phone'],
+                  status: data['status'] ?? 0,
+                ))
+            .toList();
       }).toList();
     }
+
+    // Sort orders by some criteria if needed (e.g., timestamp)
+    // For simplicity, assuming that orders have an orderId that can be sorted
+    _orders.sort((a, b) => b.orderId.compareTo(a.orderId)); // descending order
 
     notifyListeners();
   }
 
-  Future<void> updateOrderStatus(Order order, int status) async {
+  Future<void> updateOrderStatus(Order order, int status, String phone) async {
     int orderIndex = _orders.indexWhere((o) => o.orderId == order.orderId);
     if (orderIndex != -1) {
-      _orders[orderIndex] = order.copyWith(status: status);
+      _orders[orderIndex] = order.copyWith(status: status, phone: phone);
       await _updateOrderStatusInFirebase(order.orderId, status);
       _saveOrdersToPreferences();
       notifyListeners();
@@ -438,7 +177,8 @@ class OrderProvider with ChangeNotifier {
   }
 
   Future<void> _updateOrderStatusInFirebase(String orderId, int status) async {
-    final docRef = FirebaseFirestore.instance.collection('OrderHistory').doc(orderId);
+    final docRef =
+        FirebaseFirestore.instance.collection('OrderHistory').doc(orderId);
     final doc = await docRef.get();
     if (doc.exists) {
       await docRef.update({'status': status});
@@ -458,7 +198,8 @@ class OrderProvider with ChangeNotifier {
 
   Future<void> _saveOrdersToPreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String encodedData = jsonEncode(_orders.map((order) => order.toMap()).toList());
+    final String encodedData =
+        jsonEncode(_orders.map((order) => order.toMap()).toList());
     await prefs.setString('orders', encodedData);
   }
 }

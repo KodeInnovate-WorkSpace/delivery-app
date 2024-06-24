@@ -47,6 +47,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
             onRefresh: _refreshPage,
             child: ListView(children: [
               PaginatedDataTable(
+                dataRowHeight: 65,
                 columns: const [
                   DataColumn(label: Text('Id'), tooltip: "Sub-Categoy ID"),
                   DataColumn(
@@ -60,7 +61,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                   DataColumn(label: Text('')),
                 ],
                 source: src,
-                columnSpacing: 15,
+                columnSpacing: 10,
                 rowsPerPage: 8,
               ),
             ]),
@@ -165,7 +166,15 @@ class TableData extends DataTableSource {
           child: Image.network(data['sub_category_img'] ?? ''),
         ),
       ),
-      DataCell(Text(data['sub_category_name'] ?? '')),
+      // DataCell(Text(data['sub_category_name'] ?? '')),
+      DataCell(SizedBox(
+        width: 100,
+        child: Text(
+          data['sub_category_name'],
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      )),
       DataCell(DropdownButton<int>(
         value: data['status'], // Use the status value from data
         onChanged: (int? newValue) {
@@ -197,13 +206,6 @@ class TableData extends DataTableSource {
         IconButton(
           icon: const Icon(Icons.edit),
           onPressed: () async {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => UpdateSubCategory(data: data),
-            //   ),
-            // );
-
             final result = await Navigator.push(
               context,
               MaterialPageRoute(
