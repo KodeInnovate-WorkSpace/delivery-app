@@ -1,8 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:path/path.dart' as path;
 
 class DeliveryTrackingScreen extends StatefulWidget {
   final String orderId;
@@ -37,6 +41,8 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         .doc(widget.orderId)
         .snapshots();
   }
+
+  List<File> itemImages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +180,9 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               Text("Quantity",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Total Price",
+              Text("Price",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("Image",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
@@ -201,7 +209,15 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 children: [
                   Text(orderDetail.productName),
                   Text(orderDetail.quantity.toString()),
-                  Text(orderDetail.totalPrice.toString()),
+                  Text(orderDetail.totalPrice.toStringAsFixed(2)),
+                  IconButton(
+                      onPressed: () {
+                        uploadAllImages();
+                      },
+                      icon: const Icon(
+                        Icons.camera_alt,
+                        size: 18,
+                      )),
                 ],
               ),
             );
@@ -226,6 +242,52 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         ),
       ],
     );
+  }
+  // Old Upload image
+  // Future<void> takePictureAndUpload() async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  //
+  //   if (pickedFile != null) {
+  //     // Get the file path and name
+  //     String fileName = path.basename(pickedFile.path);
+  //
+  //     // Upload the image to Firebase Storage
+  //     try {
+  //       await firebase_storage.FirebaseStorage.instance
+  //           .ref('order_images/$fileName')
+  //           .putFile(File(pickedFile.path));
+  //       // Upload successful
+  //     } catch (e) {
+  //       // Error uploading image
+  //       log('Error uploading image: $e');
+  //     }
+  //   }
+  // }
+
+  Future<void> uploadAllImages() async {
+    for (var image in itemImages) {
+      String fileName = path.basename(image.path);
+      try {
+        await firebase_storage.FirebaseStorage.instance
+            .ref('order_images/$fileName')
+            .putFile(image);
+        // Upload successful
+      } catch (e) {
+        // Error uploading image
+        log('Error uploading image: $e');
+      }
+    }
+  }
+
+  Future<void> takePictureAndAddToImages() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      // Add the picked image to the list
+      itemImages.add(File(pickedFile.path));
+    }
   }
 
   Widget _buildCustomerDetailsTable() {

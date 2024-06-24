@@ -47,8 +47,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               Text(
                 "+91 ${widget.phoneNumber}",
                 style: const TextStyle(
-                    fontFamily: "Gilroy-SemiBold",
-                    fontSize: 17),
+                    fontFamily: "Gilroy-SemiBold", fontSize: 17),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -74,14 +73,14 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                   await _verifyOtp(_otpController.text);
                 },
                 style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14.0),
                     ),
                   ),
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
+                  backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.disabled)) {
                         return Colors.black.withOpacity(0.3);
                       }
                       return Colors.black;
@@ -90,27 +89,27 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                 ),
                 child: _isLoading
                     ? const SizedBox(
-                  width: 250,
-                  height: 50.0,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  ),
-                )
+                        width: 250,
+                        height: 50.0,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
                     : const SizedBox(
-                  width: 250,
-                  height: 50.0,
-                  child: Center(
-                    child: Text(
-                      "Verify",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
+                        width: 250,
+                        height: 50.0,
+                        child: Center(
+                          child: Text(
+                            "Verify",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               ),
               termsPrivacyLine(),
             ],
@@ -146,7 +145,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
-            (route) => false,
+        (route) => false,
       );
     } catch (e) {
       log("Error: $e");
@@ -160,25 +159,32 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text("Edit Phone Number"),
-        content: const Text("Do You Want to Edit the Phone Number ?"),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("No", style: TextStyle(color: Colors.black),),
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text("Edit Phone Number"),
+            content: const Text("Do You Want to Edit the Phone Number ?"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text(
+                  "No",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Restart.restartApp();
+                },
+                child: const Text(
+                  "Yes",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Restart.restartApp();
-            },
-            child: const Text("Yes",style: TextStyle(color: Colors.black),),
-          ),
-        ],
-      ),
-    )) ?? false;
+        )) ??
+        false;
   }
 
   void _showSnackBar(String message, Color color) {
