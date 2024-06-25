@@ -39,6 +39,7 @@ dependencies:
   badges: ^3.1.2
   flutter_native_splash: ^2.4.0
   restart_app: ^1.2.1
+  path: any
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
