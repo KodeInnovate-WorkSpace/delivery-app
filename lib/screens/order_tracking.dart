@@ -52,6 +52,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
+                    _buildValetDetailsTable(),
                     _buildOrderFailedCard('Order Failed', 'Your order has failed due to a transaction issue.', true, Colors.red, Icons.error),
                   ],
                 ),
@@ -65,6 +66,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
+                    _buildValetDetailsTable(),
                     _buildOrderStatusCard('Order Cancelled', 'Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
                   ],
                 ),
@@ -86,6 +88,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
+                    _buildValetDetailsTable(),
+
                     Column(children: statusCards),
                   ],
                 ),
@@ -95,6 +99,40 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
           return const Center(child: Text('No data available'));
         },
+      ),
+    );
+  }
+
+  Widget _buildValetDetailsTable() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Valet Details",
+              style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
+          SizedBox(height: 8.0),
+
+          //Phone
+          Row(
+            children: [
+              Text("Phone: ",
+                  style: TextStyle(
+                    fontSize: 16,
+                  )),
+              Icon(
+                Icons.phone,
+                size: 15,
+              ),
+              Text("+91 8989898989", style: TextStyle(fontSize: 16)),
+            ],
+          ),
+
+        ],
       ),
     );
   }
