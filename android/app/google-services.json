@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:776399631000:android:b03133bc4915dfa3ebd6ed",
+        "mobilesdk_app_id": "1:776399631000:android:097c1f133cc00956ebd6ed",
         "android_client_info": {
           "package_name": "com.delivoapp.app"
         }
@@ -34,7 +34,7 @@
               "client_id": "776399631000-64cn23a4p5guisd6d6gnak705j61jinv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.delivoapp.app"
+                "bundle_id": "com.example.newDeliveryApp"
               }
             }
           ]
@@ -43,12 +43,20 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:776399631000:android:a2896788f0eed044ebd6ed",
+        "mobilesdk_app_id": "1:776399631000:android:b03133bc4915dfa3ebd6ed",
         "android_client_info": {
-          "package_name": "com.delivoapp.app"
+          "package_name": "com.example.speedy_delivery"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "776399631000-sph1n6vec1re9l513c6ae37vrpetm9ii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.speedy_delivery",
+            "certificate_hash": "c2b2eb71258ce359684c9f36a2ee561fee5c97c3"
+          }
+        },
         {
           "client_id": "776399631000-kgagcjehdbre0ho2sdspdlj05mq5dhk9.apps.googleusercontent.com",
           "client_type": 3
@@ -70,7 +78,7 @@
               "client_id": "776399631000-64cn23a4p5guisd6d6gnak705j61jinv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.delivoapp.app"
+                "bundle_id": "com.example.newDeliveryApp"
               }
             }
           ]
