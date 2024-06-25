@@ -122,15 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  //Share the app
-                  ListTile(
-                    leading: const Icon(Icons.share),
-                    title: const Text('Share the app'),
-                    trailing: const Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      _shareApp();
-                    },
-                  ),
+
                   // Admin Screen
                   if (userProvider.userType == 1)
                     ListTile(
@@ -159,6 +151,15 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                       },
                     ),
+                  //Share the app
+                  ListTile(
+                    leading: const Icon(Icons.share),
+                    title: const Text('Share the app'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      _shareApp();
+                    },
+                  ),
                   //About us
                   ListTile(
                     leading: const Icon(Icons.info),
