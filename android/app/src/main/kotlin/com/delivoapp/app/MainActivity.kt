@@ -1,4 +1,4 @@
-package com.delivo.app
+package com.delivoapp.app
 
 import io.flutter.embedding.android.FlutterActivity
 
