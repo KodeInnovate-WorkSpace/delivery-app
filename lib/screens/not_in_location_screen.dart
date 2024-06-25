@@ -194,4 +194,4 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
       ),
     );
   }
-}
+}//locationupdate

@@ -184,3 +184,5 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
     );
   }
 }
+//manual location
+
