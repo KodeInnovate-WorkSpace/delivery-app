@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:776399631000:android:b03133bc4915dfa3ebd6ed",
         "android_client_info": {
-          "package_name": "com.delivo.app"
+          "package_name": "com.delivoapp.app"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "776399631000-64cn23a4p5guisd6d6gnak705j61jinv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.delivo.app"
+                "bundle_id": "com.delivoapp.app"
               }
             }
           ]
@@ -45,7 +45,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:776399631000:android:a2896788f0eed044ebd6ed",
         "android_client_info": {
-          "package_name": "com.delivo.app"
+          "package_name": "com.delivoapp.app"
         }
       },
       "oauth_client": [
@@ -70,7 +70,7 @@
               "client_id": "776399631000-64cn23a4p5guisd6d6gnak705j61jinv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.delivo.app"
+                "bundle_id": "com.delivoapp.app"
               }
             }
           ]
