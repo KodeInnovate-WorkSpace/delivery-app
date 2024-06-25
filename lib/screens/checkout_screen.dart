@@ -824,6 +824,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             .toDouble(),
                                                     address: _defaultAdd,
                                                     phone: authProvider.phone,
+                                                    isOrderAccepted: false,
+                                                    valetPhoneNo: '',
                                                     //transactionId: '',
                                                   );
                                                 }).toList();
@@ -863,8 +865,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 item.qnt)
                                                             .toDouble(),
                                                     address: _defaultAdd,
-                                                    phone: authProvider
-                                                        .phone, // Add phone number if available
+                                                    phone: authProvider.phone,
+                                                    isOrderAccepted: false,
+                                                    valetPhoneNo:
+                                                        '', // Add phone number if available
                                                     // transactionId: '',
                                                   );
                                                 }).toList();

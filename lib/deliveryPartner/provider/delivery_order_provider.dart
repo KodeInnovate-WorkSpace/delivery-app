@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/deliveryPartner/model/model.dart';
@@ -35,6 +34,8 @@ class AllOrderProvider with ChangeNotifier {
           paymentMode: data['paymentMode'],
           status: data['status'],
           phone: data['phone'],
+          isOrderAccepted: data['isOrderAccepted'],
+          valetPhoneNo: data['phone'],
         );
       }).toList();
 
