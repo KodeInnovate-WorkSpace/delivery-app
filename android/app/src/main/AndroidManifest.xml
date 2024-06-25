@@ -24,7 +24,7 @@
 
 
     <application
-        android:label="Delivo"
+        android:label="Delivo App"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         tools:node="merge">
