@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "776399631000",
+    "project_id": "speedy-57c76",
+    "storage_bucket": "speedy-57c76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776399631000:android:b03133bc4915dfa3ebd6ed",
+        "android_client_info": {
+          "package_name": "com.delivo.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776399631000-kgagcjehdbre0ho2sdspdlj05mq5dhk9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsXm1M5BpO4kdzKkx2SoSh9ikect07vew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776399631000-kgagcjehdbre0ho2sdspdlj05mq5dhk9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "776399631000-64cn23a4p5guisd6d6gnak705j61jinv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.delivo.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776399631000:android:a2896788f0eed044ebd6ed",
+        "android_client_info": {
+          "package_name": "com.delivo.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776399631000-kgagcjehdbre0ho2sdspdlj05mq5dhk9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsXm1M5BpO4kdzKkx2SoSh9ikect07vew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776399631000-kgagcjehdbre0ho2sdspdlj05mq5dhk9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "776399631000-64cn23a4p5guisd6d6gnak705j61jinv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.delivo.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

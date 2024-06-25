@@ -1,0 +1,112 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:speedy_delivery/widget/input_box.dart';
+
+import '../admin_model.dart';
+
+class UpdateCategory extends StatefulWidget {
+  final Map<String, dynamic> data;
+
+  const UpdateCategory({super.key, required this.data});
+
+  @override
+  State<UpdateCategory> createState() => _UpdateCategoryState();
+}
+
+class _UpdateCategoryState extends State<UpdateCategory> {
+  int? dropdownValue = 1;
+  final List<int> categories = [];
+  int? selectedCategory;
+  final TextEditingController categoryController = TextEditingController();
+  final CatModel categoryModel = CatModel();
+  List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
+
+  @override
+  void initState() {
+    super.initState();
+    categoryController.text = widget.data['category_name'];
+    dropdownValue = widget.data['status'];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Update Category'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InputBox(
+                hintText: "Update Category name",
+                myIcon: Icons.category,
+                myController: categoryController),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Status: "),
+                DropdownButton<int>(
+                  value:
+                      widget.data['status'], // Use the status value from data
+                  onChanged: (int? newValue) {
+                    categoryModel
+                        .updateCategory(
+                          'status',
+                          newValue,
+                          categoryField: 'category_id',
+                          categoryValue: widget.data['category_id'],
+                        )
+                        .then((_) => categoryModel.manageCategories());
+                  },
+                  items: statusOptions.map<DropdownMenuItem<int>>((int status) {
+                    return DropdownMenuItem<int>(
+                      value: status,
+                      child: Text(status == 0 ? 'Inactive' : 'Active'),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: 280,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  categoryModel
+                      .newupdateCategory(
+                    'category_name',
+                    categoryController.text,
+                    categoryId: widget.data['category_id'].toString(),
+                  )
+                      .then((_) {
+                    Navigator.pop(context, true);
+                  });
+                  log("Data of index: ${widget.data}");
+                },
+                child: const Center(
+                  child: Text(
+                    "UPDATE CATEGORY",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Gilroy-Black',
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
