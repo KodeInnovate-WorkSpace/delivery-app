@@ -404,8 +404,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         ),
                                         Align(
                                           alignment: Alignment.centerRight,
-                                          child: Text(
-                                              '\u20B9 ${cartProvider.deliveryCharge}',
+                                          child: Text('\u20B9 $deliveryCharge',
                                               style: const TextStyle(
                                                   fontSize: 14)),
                                         ),
@@ -430,8 +429,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         ),
                                         Align(
                                           alignment: Alignment.centerRight,
-                                          child: Text(
-                                              '\u20B9 ${cartProvider.handlingCharge}',
+                                          child: Text('\u20B9 $handlingCharge',
                                               style: const TextStyle(
                                                   fontSize: 14)),
                                         ),
@@ -824,8 +822,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             .toDouble(),
                                                     address: _defaultAdd,
                                                     phone: authProvider.phone,
-                                                    isOrderAccepted: false,
-                                                    valetPhoneNo: '',
                                                     //transactionId: '',
                                                   );
                                                 }).toList();
@@ -866,9 +862,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             .toDouble(),
                                                     address: _defaultAdd,
                                                     phone: authProvider.phone,
-                                                    isOrderAccepted: false,
-                                                    valetPhoneNo:
-                                                        '', // Add phone number if available
                                                     // transactionId: '',
                                                   );
                                                 }).toList();

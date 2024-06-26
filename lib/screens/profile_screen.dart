@@ -265,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Text(
-                          appVer,
+                          "${appVer!.isEmpty ? "v0.1.0" : appVer}",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

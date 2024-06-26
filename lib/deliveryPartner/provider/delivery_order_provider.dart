@@ -34,8 +34,6 @@ class AllOrderProvider with ChangeNotifier {
           paymentMode: data['paymentMode'],
           status: data['status'],
           phone: data['phone'],
-          isOrderAccepted: data['isOrderAccepted'],
-          valetPhoneNo: data['phone'],
         );
       }).toList();
 

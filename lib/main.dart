@@ -6,8 +6,10 @@ import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/order_provider.dart';
+import 'package:speedy_delivery/providers/valet_provider.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
 import 'package:speedy_delivery/screens/search_functionality.dart';
+import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'package:speedy_delivery/screens/splash_screen.dart';
 
@@ -17,6 +19,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  await fetchConstantFromFirebase();
   runApp(
     MultiProvider(
       providers: [
@@ -26,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => AllOrderProvider()),
+        ChangeNotifierProvider(create: (_) => ValetProvider()),
       ],
       child: const MyApp(),
     ),
