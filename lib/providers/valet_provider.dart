@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ValetProvider extends ChangeNotifier {
   String? valetName ;
@@ -65,7 +66,17 @@ class ValetProvider extends ChangeNotifier {
                   fontSize: 16,
                 ),
               ),
-              Text(valetPhone!, style: const TextStyle(fontSize: 16)),
+
+              GestureDetector(
+                onTap: () async {
+                  Uri dialNumber = Uri(scheme: 'tel', path: valetPhone!);
+                  await launchUrl(dialNumber);
+                },
+                child: Text(
+                  valetPhone!,
+                  // style:const TextStyle(fontFamily: 'Gilroy-Bold'),
+                ),
+              ),
             ],
           ),
         ],

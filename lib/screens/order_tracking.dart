@@ -122,7 +122,6 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     const SizedBox(height: 20),
                     valetProvider.buildValetDetailsTable(),
 
-
                     Column(children: statusCards),
                   ],
                 ),

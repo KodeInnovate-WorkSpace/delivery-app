@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import '../providers/cart_provider.dart';
+import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
@@ -43,7 +44,7 @@ class HomeScreenState extends State<HomeScreen> {
     //calling method to load the cart items
     initiateCartProvider.loadCart();
 
-    // checkLocationService();
+    checkLocationService();
     fetchDataFuture = fetchData();
   }
 
@@ -53,109 +54,109 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _handleRefresh() async {
-    // checkLocationService();
+    checkLocationService();
     fetchData();
   }
 
-  // Future<void> checkLocationService() async {
-  //   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     showLocationDialog();
-  //     return;
-  //   }
-  //
-  //   LocationPermission permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       showLocationDialog();
-  //       return;
-  //     }
-  //   }
-  //
-  //   if (permission == LocationPermission.deniedForever) {
-  //     showLocationDialog();
-  //     return;
-  //   }
-  //
-  //   // Location services are enabled and permission is granted, get the current location
-  //   Position position = await Geolocator.getCurrentPosition(
-  //     desiredAccuracy: LocationAccuracy.high,
-  //   );
-  //   log("Current Position: ${position.latitude}, ${position.longitude}");
-  //
-  //   // Get the placemarks from the coordinates
-  //   List<Placemark> placemarks =
-  //       await placemarkFromCoordinates(position.latitude, position.longitude);
-  //   Placemark place = placemarks[0];
-  //   String postalCode = place.postalCode ?? '';
-  //
-  //   log("PostalCode: $postalCode");
-  //
-  //   // Check Firestore for status
-  //   await checkAccess(postalCode);
-  // }
-  //
-  // Future<void> checkAccess(String postalCode) async {
-  //   try {
-  //     // Fetch all documents from the "location" collection
-  //     QuerySnapshot querySnapshot =
-  //         await FirebaseFirestore.instance.collection('location').get();
-  //
-  //     // Check if there are any documents in the collection
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       // Iterate through each document
-  //       for (DocumentSnapshot document in querySnapshot.docs) {
-  //         // Assuming each document has 'postal_code' and 'status' fields
-  //         int docPostalCode = document['postal_code'];
-  //         int status = document['status'];
-  //
-  //         // Check if the postal code matches and the status is 1
-  //         if (postalCode == docPostalCode.toString() && status == 1) {
-  //           log("Access granted");
-  //           return; // Exit the function if access is granted
-  //         }
-  //       }
-  //       // If no document with matching postal code and status 1 is found
-  //       log("No document with matching postal code and status 1 found in Firestore");
-  //     } else {
-  //       log("No documents found in Firestore");
-  //     }
-  //     // If no document with matching postal code and status 1 is found or no documents are found
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-  //     );
-  //   } catch (e) {
-  //     log("Error checking access: $e");
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-  //     );
-  //   }
-  // }
-  //
-  // void showLocationDialog() {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('Enable Location'),
-  //         content: const Text('Please enable location services to proceed.'),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: const Text('OK'),
-  //             onPressed: () {
-  //               Navigator.of(context).pop(); // Close the dialog
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   ).then((_) =>
-  //       checkLocationService()); // Check location service again after dialog is closed
-  // }
+  Future<void> checkLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      showLocationDialog();
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        showLocationDialog();
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      showLocationDialog();
+      return;
+    }
+
+    // Location services are enabled and permission is granted, get the current location
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    log("Current Position: ${position.latitude}, ${position.longitude}");
+
+    // Get the placemarks from the coordinates
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+    String postalCode = place.postalCode ?? '';
+
+    log("PostalCode: $postalCode");
+
+    // Check Firestore for status
+    await checkAccess(postalCode);
+  }
+
+  Future<void> checkAccess(String postalCode) async {
+    try {
+      // Fetch all documents from the "location" collection
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('location').get();
+
+      // Check if there are any documents in the collection
+      if (querySnapshot.docs.isNotEmpty) {
+        // Iterate through each document
+        for (DocumentSnapshot document in querySnapshot.docs) {
+          // Assuming each document has 'postal_code' and 'status' fields
+          int docPostalCode = document['postal_code'];
+          int status = document['status'];
+
+          // Check if the postal code matches and the status is 1
+          if (postalCode == docPostalCode.toString() && status == 1) {
+            log("Access granted");
+            return; // Exit the function if access is granted
+          }
+        }
+        // If no document with matching postal code and status 1 is found
+        log("No document with matching postal code and status 1 found in Firestore");
+      } else {
+        log("No documents found in Firestore");
+      }
+      // If no document with matching postal code and status 1 is found or no documents are found
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+      );
+    } catch (e) {
+      log("Error checking access: $e");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+      );
+    }
+  }
+
+  void showLocationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enable Location'),
+          content: const Text('Please enable location services to proceed.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    ).then((_) =>
+        checkLocationService()); // Check location service again after dialog is closed
+  }
 
   Future<void> fetchCategory() async {
     try {
@@ -323,6 +324,20 @@ class HomeScreenState extends State<HomeScreen> {
                             child: searchBar(context),
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+                  // Advertisement Widget
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 10.0),
+                      child: SizedBox(
+                        height: 200, // Adjust height as needed
+                        child: AdvertisementWidget(
+                          cardWidth: 300.0,
+                          cardHeight: 200.0,
+                        ),
                       ),
                     ),
                   ),
