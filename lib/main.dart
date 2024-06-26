@@ -6,6 +6,8 @@ import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/order_provider.dart';
+import 'package:speedy_delivery/screens/advertisement_widget.dart';
+import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
 import 'package:speedy_delivery/screens/search_functionality.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
@@ -57,7 +59,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const NetworkHandler(
-        child: SplashScreen(),
+        child: HomeScreen(),
       ),
       routes: {
         '/profile': (context) =>  const NetworkHandler(
