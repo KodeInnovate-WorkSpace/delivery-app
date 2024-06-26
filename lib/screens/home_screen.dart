@@ -332,7 +332,10 @@ class HomeScreenState extends State<HomeScreen> {
                     child: Padding(
                       padding:
                       EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-                      child: AdvertisementWidget(),
+                      child: SizedBox(
+                        height: 200, // Adjust height as needed
+                        child: AdvertisementWidget(),
+                      ),
                     ),
                   ),
                   SliverList(
