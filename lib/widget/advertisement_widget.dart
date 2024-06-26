@@ -90,6 +90,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Card(
+                      color: Colors.white,
                       margin: EdgeInsets.zero, // Remove default margin
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
