@@ -43,7 +43,6 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
     //   }
     // });
   }
-
   @override
   void dispose() {
     // _timer.cancel();

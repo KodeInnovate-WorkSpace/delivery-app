@@ -20,7 +20,9 @@ import 'checkout_screen.dart';
 import 'advertisement_widget.dart'; // Import the AdvertisementWidget
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final bool temporaryAccess;
+
+  const HomeScreen({super.key, this.temporaryAccess = false});
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -38,13 +40,16 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    if (!widget.temporaryAccess) {
+      checkLocationService();
+    }
     // initialize cart provider for loading cart items
-    final initiateCartProvider =
-    Provider.of<CartProvider>(context, listen: false);
-    //calling method to load the cart items
+    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
+    // calling method to load the cart items
     initiateCartProvider.loadCart();
 
-    checkLocationService();
+
     fetchDataFuture = fetchData();
   }
 
@@ -54,7 +59,9 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _handleRefresh() async {
-    checkLocationService();
+    if (!widget.temporaryAccess) {
+      checkLocationService();
+    }
     fetchData();
   }
 
@@ -154,8 +161,7 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    ).then((_) =>
-        checkLocationService()); // Check location service again after dialog is closed
+    ).then((_) => checkLocationService()); // Check location service again after dialog is closed
   }
 
   Future<void> fetchCategory() async {

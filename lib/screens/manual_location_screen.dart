@@ -1,9 +1,7 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 
 class ManualLocationScreen extends StatefulWidget {
   const ManualLocationScreen({super.key});
@@ -14,138 +12,51 @@ class ManualLocationScreen extends StatefulWidget {
 
 class _ManualLocationScreenState extends State<ManualLocationScreen> {
   final TextEditingController _locationController = TextEditingController();
-  bool isLoading = false;
+  late SharedPreferences _prefs;
 
-  Future<void> _setLocation(String location) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      List<Location> locations = await locationFromAddress(location);
-      if (locations.isNotEmpty) {
-        Location loc = locations.first;
-        List<Placemark> placemarks =
-        await placemarkFromCoordinates(loc.latitude, loc.longitude);
-        if (placemarks.isNotEmpty) {
-          Placemark place = placemarks.first;
-          String postalCode = place.postalCode ?? '';
-
-          // Update Firebase status for the given postal code
-          QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('location').get();
-
-          for (DocumentSnapshot document in querySnapshot.docs) {
-            int docPostalCode = document['postal_code'];
-            if (postalCode == docPostalCode.toString()) {
-              await document.reference.update({'status': 1});
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    (Route<dynamic> route) => false,
-              );
-              return;
-            }
-          }
-
-          // If the postal code is not found in Firestore, add it
-          await FirebaseFirestore.instance.collection('location').add({
-            'postal_code': int.parse(postalCode),
-            'status': 1,
-          });
-
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-                (Route<dynamic> route) => false,
-          );
-        } else {
-          _showErrorDialog("Location not found. Please try again.");
-        }
-      } else {
-        _showErrorDialog("Location not found. Please try again.");
-      }
-    } catch (e) {
-      log("Error setting location: $e");
-      _showErrorDialog("An error occurred. Please try again.");
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    _initPrefs();
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
-  Future<void> _getCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+  void _checkManualLocation() {
+    String location = _locationController.text.trim();
+    if (location.toLowerCase() == 'mumbra') {
+      _prefs.setBool('manualLocationSet', true);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen(temporaryAccess: true)),
+            (route) => false, // Removes all previous routes
       );
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks.first;
-        String postalCode = place.postalCode ?? '';
-
-        // Update Firebase status for the current location
-        QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('location').get();
-
-        for (DocumentSnapshot document in querySnapshot.docs) {
-          int docPostalCode = document['postal_code'];
-          if (postalCode == docPostalCode.toString()) {
-            await document.reference.update({'status': 1});
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  (Route<dynamic> route) => false,
-            );
-            return;
-          }
-        }
-
-        // If the postal code is not found in Firestore, add it
-        await FirebaseFirestore.instance.collection('location').add({
-          'postal_code': int.parse(postalCode),
-          'status': 1,
-        });
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-              (Route<dynamic> route) => false,
-        );
-      } else {
-        _showErrorDialog("Unable to fetch current location. Please try again.");
-      }
-    } catch (e) {
-      log("Error getting current location: $e");
-      _showErrorDialog("An error occurred. Please try again.");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location not supported')),
+      );
     }
+  }
+
+  void _checkCurrentLocation() {
+    // Logic to check the current location
+    // You can reuse the widget from the third code snippet here
+  }
+
+  void navigateToManualLocation() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manual Location Input'),
+        title: const Text('Add Location Manually'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -155,34 +66,58 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
               controller: _locationController,
               decoration: const InputDecoration(
                 labelText: 'Enter Location',
+                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: isLoading
-                  ? null
-                  : () {
-                _setLocation(_locationController.text);
-              },
-              child: isLoading
-                  ? const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
-                  : const Text('Set Location'),
+              onPressed: _checkManualLocation,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.0),
+                ),
+              ),
+              child: const SizedBox(
+                width: 200,
+                height: 58,
+                child: Center(
+                  child: const Text(
+                    'Check Location',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: _getCurrentLocation,
-            //   style: ButtonStyle(
-            //     backgroundColor: MaterialStateProperty.all(Colors.green),
-            //   ),
-            //   child: const Text('Use Current Location'),
-            // ),
+            ElevatedButton(
+              onPressed: navigateToManualLocation,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.0),
+                ),
+              ),
+              child: const SizedBox(
+                width: 200,
+                height: 58,
+                child: Center(
+                  child: const Text(
+                    'Add Location Manually',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-//manual location
-

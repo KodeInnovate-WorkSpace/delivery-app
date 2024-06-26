@@ -4,11 +4,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:speedy_delivery/screens/manual_location_screen.dart';
 import 'dart:developer';
-import 'manual_location_screen.dart';
 
 class NotInLocationScreen extends StatefulWidget {
-  const NotInLocationScreen({Key? key}) : super(key: key);
+  const NotInLocationScreen({super.key});
 
   @override
   _NotInLocationScreenState createState() => _NotInLocationScreenState();
@@ -60,7 +60,6 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
             isLoading = false;
           });
           if (!mounted) return;
-          _timer?.cancel();
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -86,6 +85,13 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
       isLoading = true;
     });
     await checkLocation();
+  }
+
+  void navigateToManualLocation() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ManualLocationScreen()),
+    );
   }
 
   @override
@@ -134,8 +140,8 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
                   child: Center(
                     child: isLoading
                         ? const CircularProgressIndicator(
-                      valueColor:
-                      AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white),
                     )
                         : const Text(
                       "Try changing location",
@@ -149,14 +155,7 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: isLoading ? null : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                        const ManualLocationScreen()),
-                  );
-                },
+                onPressed: navigateToManualLocation,
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
@@ -169,17 +168,12 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
                     },
                   ),
                 ),
-                child: SizedBox(
+                child: const SizedBox(
                   width: 200,
                   height: 58,
                   child: Center(
-                    child: isLoading
-                        ? const CircularProgressIndicator(
-                      valueColor:
-                      AlwaysStoppedAnimation<Color>(Colors.white),
-                    )
-                        : const Text(
-                      "Change Location Manually",
+                    child: Text(
+                      "Add location manually",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,
@@ -194,4 +188,4 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
       ),
     );
   }
-}//locationupdate
+}
