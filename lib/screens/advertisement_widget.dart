@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdvertisementWidget extends StatefulWidget {
-  const AdvertisementWidget({super.key});
+  final double cardWidth;
+  final double cardHeight;
+
+  const AdvertisementWidget({super.key, required this.cardWidth, required this.cardHeight});
 
   @override
   _AdvertisementWidgetState createState() => _AdvertisementWidgetState();
@@ -64,19 +67,23 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          // Sort documents based on 'priority' field
+          List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+          docs.sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
+
           return SizedBox(
-            height: 200, // Adjust height as needed
+            height: widget.cardHeight + 16, // Adjust height as needed to include padding
             width: double.infinity,
             child: ListView.builder(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.docs.length,
+              itemCount: docs.length,
               itemBuilder: (context, index) {
-                var imageUrl = snapshot.data!.docs[index]['image'];
+                var imageUrl = docs[index]['image'];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: MediaQuery.of(context).size.width, // Full screen width
+                    width: widget.cardWidth, // Set the card width
                     decoration: BoxDecoration(
                       color: const Color(0xffeaf1fc), // Specify the color here
                       borderRadius: BorderRadius.circular(10),
@@ -94,12 +101,13 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
                           imageUrl,
+                          width: widget.cardWidth, // Set the card width
+                          height: widget.cardHeight, // Set the card height
                           fit: BoxFit.fill, // Stretch the image to fill the container
                         ),
                       ),
                     ),
                   ),
-
                 );
               },
             ),

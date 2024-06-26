@@ -334,7 +334,10 @@ class HomeScreenState extends State<HomeScreen> {
                       EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                       child: SizedBox(
                         height: 200, // Adjust height as needed
-                        child: AdvertisementWidget(),
+                        child: AdvertisementWidget(
+                          cardWidth: 300.0,
+                          cardHeight: 200.0,
+                        ),
                       ),
                     ),
                   ),
