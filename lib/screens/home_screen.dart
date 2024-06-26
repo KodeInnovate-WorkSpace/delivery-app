@@ -20,7 +20,9 @@ import 'categories_screen.dart';
 import 'checkout_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final bool temporaryAccess;
+
+  const HomeScreen({super.key, this.temporaryAccess = false});
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -38,13 +40,16 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    if (!widget.temporaryAccess) {
+      checkLocationService();
+    }
     // initialize cart provider for loading cart items
     final initiateCartProvider =
         Provider.of<CartProvider>(context, listen: false);
-    //calling method to load the cart items
+    // calling method to load the cart items
     initiateCartProvider.loadCart();
 
-    checkLocationService();
     fetchDataFuture = fetchData();
   }
 
@@ -54,7 +59,9 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _handleRefresh() async {
-    checkLocationService();
+    if (!widget.temporaryAccess) {
+      checkLocationService();
+    }
     fetchData();
   }
 

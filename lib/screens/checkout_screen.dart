@@ -265,12 +265,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 fontSize: 18,
                                                 fontFamily: 'Gilroy-ExtraBold'),
                                           ),
-                                          const Text(
-                                            'Shipment of 1 item',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
-                                          ),
+                                          // const Text(
+                                          //   'Shipment of 1 item',
+                                          //   style: TextStyle(
+                                          //       fontSize: 12,
+                                          //       color: Colors.grey),
+                                          // ),
                                         ],
                                       ),
                                     ),
@@ -349,17 +349,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             const SizedBox(height: 10),
                             Card(
                               elevation: 0,
-                              color:
-                                  Colors.white, // Set the card color to white
+                              color: Colors.white,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('Bill details',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontFamily: 'Gilroy-Black')),
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text('Bill details',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontFamily: 'Gilroy-Black')),
+                                    ),
+                                    // const Divider(),
                                     // Row 1
                                     Row(
                                       mainAxisAlignment:
@@ -367,10 +370,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       children: [
                                         const Row(
                                           children: [
-                                            Icon(
-                                              Icons.receipt_long,
-                                              size: 14,
-                                            ),
+                                            Icon(Icons.receipt_long, size: 14),
                                             SizedBox(width: 4),
                                             Text('Item total',
                                                 style: TextStyle(fontSize: 14)),
@@ -379,14 +379,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         Align(
                                           alignment: Alignment.centerRight,
                                           child: Text(
-                                            '\u20B9 ${cartProvider.calculateTotalPrice()}',
+                                            '\u{20B9}${cartProvider.calculateTotalPrice().toStringAsFixed(2)}',
                                             style:
                                                 const TextStyle(fontSize: 14),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 8),
                                     // Row 2
                                     Row(
                                       mainAxisAlignment:
@@ -394,10 +394,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       children: [
                                         const Row(
                                           children: [
-                                            Icon(
-                                              Icons.sports_motorsports,
-                                              size: 14,
-                                            ),
+                                            Icon(Icons.local_shipping,
+                                                size: 14),
                                             SizedBox(width: 4),
                                             Text('Delivery Charge',
                                                 style: TextStyle(fontSize: 14)),
@@ -405,13 +403,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         ),
                                         Align(
                                           alignment: Alignment.centerRight,
-                                          child: Text('\u20B9 $deliveryCharge',
-                                              style: const TextStyle(
-                                                  fontSize: 14)),
+                                          child: Text(
+                                            '\u{20B9}${deliveryCharge!.toStringAsFixed(2)}',
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 8),
                                     // Row 3
                                     Row(
                                       mainAxisAlignment:
@@ -419,44 +419,188 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       children: [
                                         const Row(
                                           children: [
-                                            Icon(
-                                              Icons.shopping_bag,
-                                              size: 14,
-                                            ),
+                                            Icon(Icons.payment, size: 14),
                                             SizedBox(width: 4),
-                                            Text('Convenience Fee',
+                                            Text('Handling Charges',
                                                 style: TextStyle(fontSize: 14)),
                                           ],
                                         ),
                                         Align(
                                           alignment: Alignment.centerRight,
-                                          child: Text('\u20B9 $handlingCharge',
-                                              style: const TextStyle(
-                                                  fontSize: 14)),
+                                          child: Text(
+                                            '\u{20B9}${handlingCharge!.toStringAsFixed(2)}',
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 4),
-                                    // Row 4
+                                    const SizedBox(height: 8),
+                                    // Discount Row
+                                    if (cartProvider.Discount > 0)
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Row(
+                                            children: [
+                                              Icon(Icons.local_offer, size: 14),
+                                              SizedBox(width: 4),
+                                              Text('Discount',
+                                                  style:
+                                                      TextStyle(fontSize: 14)),
+                                            ],
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Text(
+                                              '-${cartProvider.Discount.toStringAsFixed(2)}%',
+                                              style:
+                                                  const TextStyle(fontSize: 14),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    const Divider(),
+                                    // Grand Total Row
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text('Grand total',
+                                        const Text('To pay',
                                             style: TextStyle(
                                                 fontSize: 16,
-                                                fontFamily: 'Gilroy-Medium')),
+                                                fontFamily: 'Gilroy-Black')),
                                         Text(
-                                            '\u20B9 ${cartProvider.calculateGrandTotal()}',
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Gilroy-Medium')),
+                                          '\u{20B9}${cartProvider.calculateGrandTotal().toStringAsFixed(2)}',
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
                                       ],
                                     ),
                                   ],
                                 ),
                               ),
                             ),
+
+                            // Card(
+                            //   elevation: 0,
+                            //   color:
+                            //       Colors.white, // Set the card color to white
+                            //   child: Padding(
+                            //     padding: const EdgeInsets.all(8.0),
+                            //     child: Column(
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         const Padding(
+                            //           padding: EdgeInsets.all(8.0),
+                            //           child: Text('Bill details',
+                            //               style: TextStyle(
+                            //                   fontSize: 18,
+                            //                   fontFamily: 'Gilroy-Black')),
+                            //         ),
+                            //         const Divider(
+                            //             // color: Colors.white,
+                            //             ),
+                            //         // Row 1
+                            //         Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.spaceBetween,
+                            //           children: [
+                            //             const Row(
+                            //               children: [
+                            //                 Icon(
+                            //                   Icons.receipt_long,
+                            //                   size: 14,
+                            //                 ),
+                            //                 SizedBox(width: 4),
+                            //                 Text('Item total',
+                            //                     style: TextStyle(fontSize: 14)),
+                            //               ],
+                            //             ),
+                            //             Align(
+                            //               alignment: Alignment.centerRight,
+                            //               child: Text(
+                            //                 '\u20B9 ${cartProvider.calculateTotalPrice()}',
+                            //                 style:
+                            //                     const TextStyle(fontSize: 14),
+                            //               ),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //         const SizedBox(height: 4),
+                            //         // Row 2
+                            //         Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.spaceBetween,
+                            //           children: [
+                            //             const Row(
+                            //               children: [
+                            //                 Icon(
+                            //                   Icons.sports_motorsports,
+                            //                   size: 14,
+                            //                 ),
+                            //                 SizedBox(width: 4),
+                            //                 Text('Delivery Charge',
+                            //                     style: TextStyle(fontSize: 14)),
+                            //               ],
+                            //             ),
+                            //             Align(
+                            //               alignment: Alignment.centerRight,
+                            //               child: Text('\u20B9 $deliveryCharge',
+                            //                   style: const TextStyle(
+                            //                       fontSize: 14)),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //         const SizedBox(height: 4),
+                            //         // Row 3
+                            //         Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.spaceBetween,
+                            //           children: [
+                            //             const Row(
+                            //               children: [
+                            //                 Icon(
+                            //                   Icons.shopping_bag,
+                            //                   size: 14,
+                            //                 ),
+                            //                 SizedBox(width: 4),
+                            //                 Text('Convenience Fee',
+                            //                     style: TextStyle(fontSize: 14)),
+                            //               ],
+                            //             ),
+                            //             Align(
+                            //               alignment: Alignment.centerRight,
+                            //               child: Text('\u20B9 $handlingCharge',
+                            //                   style: const TextStyle(
+                            //                       fontSize: 14)),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //         const SizedBox(height: 4),
+                            //         // Row 4
+                            //         Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.spaceBetween,
+                            //           children: [
+                            //             const Text('Grand total',
+                            //                 style: TextStyle(
+                            //                     fontSize: 16,
+                            //                     fontFamily: 'Gilroy-Medium')),
+                            //             Text(
+                            //                 '\u20B9 ${cartProvider.calculateGrandTotal()}',
+                            //                 style: const TextStyle(
+                            //                     fontSize: 16,
+                            //                     fontFamily: 'Gilroy-Medium')),
+                            //           ],
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
                             const SizedBox(height: 35),
 
                             //coupon section
@@ -494,7 +638,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         BorderRadius.vertical(
                                                             top:
                                                                 Radius.circular(
-                                                                    16.0)),
+                                                                    10.0)),
                                                   ),
                                                   child: Padding(
                                                     padding: const EdgeInsets
@@ -888,7 +1032,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(14.0),
+                                                    BorderRadius.circular(10.0),
                                               ),
                                             ),
                                             backgroundColor: WidgetStateProperty
