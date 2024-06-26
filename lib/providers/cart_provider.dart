@@ -6,10 +6,11 @@ import '../models/cart_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 
+import '../shared/constants.dart';
+
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
-  double deliveryCharge = 29;
-  double handlingCharge = 1.85;
+
 
   final List<Cart> _cartItems = [];
   List<Cart> get cart => _cartItems;
@@ -88,7 +89,7 @@ class CartProvider extends ChangeNotifier {
 
   double calculateGrandTotal() {
     double grandTotal = 0.0;
-    grandTotal += calculateTotalPrice() + deliveryCharge + handlingCharge;
+    grandTotal += calculateTotalPrice() + deliveryCharge! + handlingCharge!;
     return grandTotal;
   }
 

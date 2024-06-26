@@ -14,8 +14,6 @@ class Order {
   final String address;
   final String phone;
   int status;
-  final bool isOrderAccepted;
-  final String valetPhoneNo;
 
   Order({
     required this.orderId,
@@ -28,8 +26,6 @@ class Order {
     required this.address,
     required this.phone,
     this.status = 0,
-    required this.isOrderAccepted,
-    required this.valetPhoneNo,
   });
 
   Order copyWith({
@@ -48,8 +44,6 @@ class Order {
       address: address,
       status: status ?? this.status,
       phone: this.phone,
-      isOrderAccepted: isOrderAccepted,
-      valetPhoneNo: valetPhoneNo,
     );
   }
 
@@ -80,8 +74,6 @@ class Order {
       address: map['address'],
       status: map['status'],
       phone: map['phone'],
-      isOrderAccepted: map['isOrderAccepted'],
-      valetPhoneNo: map['valetPhoneNo'],
     );
   }
 }
@@ -120,8 +112,6 @@ class OrderProvider with ChangeNotifier {
       'status': orders.first.status,
       'overallTotal': overallTotal,
       'phone': orders.first.phone,
-      'isOrderAccepted': orders.first.isOrderAccepted,
-      'valetPhoneNo': orders.first.valetPhoneNo,
       'orders': orders.map((order) {
         return {
           'productName': order.productName,
@@ -164,8 +154,6 @@ class OrderProvider with ChangeNotifier {
                   address: data['address'],
                   phone: data['phone'],
                   status: data['status'] ?? 0,
-                  isOrderAccepted: data['isOrderAccepted'],
-                  valetPhoneNo: data['phone'],
                 ))
             .toList();
       }).toList();

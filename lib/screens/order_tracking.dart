@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/valet_provider.dart';
 
 class OrderTrackingScreen extends StatefulWidget {
   final String orderId;
@@ -16,14 +18,20 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   @override
   void initState() {
     super.initState();
-    _orderStatusStream = FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).snapshots();
+    _orderStatusStream = FirebaseFirestore.instance
+        .collection('OrderHistory')
+        .doc(widget.orderId)
+        .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
+    final valetProvider = Provider.of<ValetProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Tracking', style: TextStyle(color: Colors.black)),
+        title: Text(widget.orderId,
+            style: const TextStyle(fontSize: 20, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -49,11 +57,20 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const Text('Order Status',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
-                    _buildValetDetailsTable(),
-                    _buildOrderFailedCard('Order Failed', 'Your order has failed due to a transaction issue.', true, Colors.red, Icons.error),
+                    //                     valetProvider.buildValetDetailsTable(),
+
+                    valetProvider.buildValetDetailsTable(),
+                    _buildOrderFailedCard(
+                        'Order Failed',
+                        'Your order has failed due to a transaction issue.',
+                        true,
+                        Colors.red,
+                        Icons.error),
                   ],
                 ),
               );
@@ -63,21 +80,34 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const Text('Order Status',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
-                    _buildValetDetailsTable(),
-                    _buildOrderStatusCard('Order Cancelled', 'Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
+                    valetProvider.buildValetDetailsTable(),
+
+                    _buildOrderStatusCard(
+                        'Order Cancelled',
+                        'Unfortunately, your order has been cancelled.',
+                        true,
+                        Colors.red,
+                        Icons.cancel),
                   ],
                 ),
               );
             } else {
               var statusCards = <Widget>[
-                _buildOrderStatusCard('Order Received', 'Your order has been received.', status >= 0),
-                _buildOrderStatusCard('Order Confirmed', 'Your order has been confirmed.', status >= 1),
-                _buildOrderStatusCard('Order In Process', 'Your order is in process.', status >= 2),
-                _buildOrderStatusCard('Order Pickup', 'Your order is ready for pickup.', status >= 3),
-                _buildOrderStatusCard('Order Delivered', 'You order has been delivered', status >= 4),
+                _buildOrderStatusCard('Order Received',
+                    'Your order has been received.', status >= 0),
+                _buildOrderStatusCard('Order Confirmed',
+                    'Your order has been confirmed.', status >= 1),
+                _buildOrderStatusCard('Order In Process',
+                    'Your order is in process.', status >= 2),
+                _buildOrderStatusCard('Order Pickup',
+                    'Your order is ready for pickup.', status >= 3),
+                _buildOrderStatusCard('Order Delivered',
+                    'You order has been delivered', status >= 4),
               ];
 
               return Padding(
@@ -85,10 +115,13 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const Text('Order Status',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
-                    _buildValetDetailsTable(),
+                    valetProvider.buildValetDetailsTable(),
+
 
                     Column(children: statusCards),
                   ],
@@ -103,41 +136,73 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     );
   }
 
-  Widget _buildValetDetailsTable() {
+  // Widget _buildValetDetailsTable() {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey[200],
+  //       borderRadius: BorderRadius.circular(5.0),
+  //     ),
+  //     child: const Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text("Valet Details",
+  //             style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
+  //         SizedBox(height: 8.0),
+  //
+  //         //Phone
+  //         Row(
+  //           children: [
+  //             Text("Phone: ",
+  //                 style: TextStyle(
+  //                   fontSize: 16,
+  //                 )),
+  //             Icon(
+  //               Icons.phone,
+  //               size: 15,
+  //             ),
+  //             Text("+91 8989898989", style: TextStyle(fontSize: 16)),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget _buildOrderStatusCard(String title, String description, bool isActive,
+      [Color color = Colors.green, IconData icon = Icons.check_circle]) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(5.0),
+        color: isActive ? color.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.0),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Valet Details",
-              style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
-          SizedBox(height: 8.0),
-
-          //Phone
           Row(
             children: [
-              Text("Phone: ",
+              Icon(isActive ? icon : Icons.radio_button_unchecked,
+                  color: isActive ? color : Colors.grey),
+              const SizedBox(width: 16.0),
+              Text(title,
                   style: TextStyle(
-                    fontSize: 16,
-                  )),
-              Icon(
-                Icons.phone,
-                size: 15,
-              ),
-              Text("+91 8989898989", style: TextStyle(fontSize: 16)),
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: isActive ? color : Colors.black)),
             ],
           ),
-
+          const SizedBox(height: 8.0),
+          Text(description,
+              style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
         ],
       ),
     );
   }
 
-  Widget _buildOrderStatusCard(String title, String description, bool isActive, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
+  Widget _buildOrderFailedCard(String title, String description, bool isActive,
+      [Color color = Colors.red, IconData icon = Icons.error]) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       padding: const EdgeInsets.all(16.0),
@@ -150,38 +215,19 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
         children: [
           Row(
             children: [
-              Icon(isActive ? icon : Icons.radio_button_unchecked, color: isActive ? color : Colors.grey),
+              Icon(isActive ? icon : Icons.radio_button_unchecked,
+                  color: isActive ? color : Colors.grey),
               const SizedBox(width: 16.0),
-              Text(title, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: isActive ? color : Colors.black)),
+              Text(title,
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: isActive ? color : Colors.black)),
             ],
           ),
           const SizedBox(height: 8.0),
-          Text(description, style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOrderFailedCard(String title, String description, bool isActive, [Color color = Colors.red, IconData icon = Icons.error]) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: isActive ? color.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(isActive ? icon : Icons.radio_button_unchecked, color: isActive ? color : Colors.grey),
-              const SizedBox(width: 16.0),
-              Text(title, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: isActive ? color : Colors.black)),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Text(description, style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
+          Text(description,
+              style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
         ],
       ),
     );

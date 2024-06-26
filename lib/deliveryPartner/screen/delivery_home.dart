@@ -222,8 +222,6 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                 paymentMode: data['paymentMode'],
                 status: data['status'],
                 phone: data['phone'],
-                isOrderAccepted: data['isOrderAccepted'], // Add this field
-                valetPhoneNo: data['valetPhoneNo'], // Add this field
               );
             })
             .where((order) => order.status != 4)
@@ -263,40 +261,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                       Uri dialNumber = Uri(scheme: 'tel', path: order.phone);
                       await launchUrl(dialNumber);
                     },
-                    child: !order.isOrderAccepted
-                        ? ElevatedButton(
-                            onPressed: () async {
-                              // Update Firestore when the order is accepted
-                              await FirebaseFirestore.instance
-                                  .collection('OrderHistory')
-                                  .doc(order.orderId)
-                                  .update({
-                                'isOrderAccepted': true,
-                                'valetPhoneNo':
-                                    'delivery_guy_phone_number', // Set the delivery guy's phone number
-                              });
-
-                              setState(() {});
-                              log("Order Accepted!");
-
-                              showMessage("Delivery Accepted!");
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.lightGreenAccent, // Background color
-                              elevation: 0, // Remove elevation
-                              minimumSize: const Size(40, 40),
-                            ),
-                            child: const Text(
-                              "Accept",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF569f48),
-                                fontFamily: 'Gilroy-ExtraBold',
-                              ),
-                            ),
-                          )
-                        : Column(
+                    child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
