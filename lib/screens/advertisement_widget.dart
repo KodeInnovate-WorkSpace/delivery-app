@@ -13,31 +13,30 @@ class AdvertisementWidget extends StatefulWidget {
 }
 
 class _AdvertisementWidgetState extends State<AdvertisementWidget> {
-  late ScrollController _scrollController;
+  late PageController _pageController;
   // late Timer _timer;
   int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    _pageController = PageController();
 
-    // // Start auto-scrolling every 2 seconds
+    // Start auto-scrolling every 2 seconds
     // _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
-    //   if (_scrollController.hasClients) {
-    //     double maxScrollExtent = _scrollController.position.maxScrollExtent;
-    //     double viewportWidth = _scrollController.position.viewportDimension;
-    //     double targetScroll = (_currentIndex + 1) * viewportWidth;
-
-    //     if (targetScroll > maxScrollExtent) {
-    //       targetScroll = 0;
+    //   if (_pageController.hasClients) {
+    //     double maxPage = _pageController.page!.toInt().toDouble();
+    //     double nextPage = _currentIndex + 1.0;
+    //
+    //     if (nextPage > maxPage) {
+    //       nextPage = 0;
     //       _currentIndex = 0;
     //     } else {
     //       _currentIndex++;
     //     }
-
-    //     _scrollController.animateTo(
-    //       targetScroll,
+    //
+    //     _pageController.animateToPage(
+    //       _currentIndex,
     //       duration: Duration(seconds: 1),
     //       curve: Curves.easeOut,
     //     );
@@ -48,7 +47,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   @override
   void dispose() {
     // _timer.cancel();
-    _scrollController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -74,9 +73,8 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
           return SizedBox(
             height: widget.cardHeight + 16, // Adjust height as needed to include padding
             width: double.infinity,
-            child: ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
+            child: PageView.builder(
+              controller: _pageController,
               itemCount: docs.length,
               itemBuilder: (context, index) {
                 var imageUrl = docs[index]['image'];
@@ -87,13 +85,6 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                     decoration: BoxDecoration(
                       color: const Color(0xffeaf1fc), // Specify the color here
                       borderRadius: BorderRadius.circular(10),
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //     color: Colors.black26,
-                      //     offset: Offset(0, 2),
-                      //     blurRadius: 4.0,
-                      //   ),
-                      // ],
                     ),
                     child: Card(
                       margin: EdgeInsets.zero, // Remove default margin
