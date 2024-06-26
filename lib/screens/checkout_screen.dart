@@ -14,6 +14,7 @@ import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
+import '../widget/apply_coupon_widget.dart';
 import '../widget/checkout_add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
@@ -457,6 +458,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                             ),
                             const SizedBox(height: 35),
+
+                            //coupon section
+                            const ApplyCouponWidget(),
+
+                            const SizedBox(height: 35),
+
+                            //checkout button
                             Container(
                               decoration: const BoxDecoration(
                                 borderRadius:
