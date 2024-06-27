@@ -262,19 +262,18 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                       await launchUrl(dialNumber);
                     },
                     child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.phone,
-                                size: 12,
-                              ),
-                              Text(
-                                order.phone,
-                                style:
-                                    const TextStyle(fontFamily: 'Gilroy-Bold'),
-                              ),
-                            ],
-                          ),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.phone,
+                          size: 12,
+                        ),
+                        Text(
+                          order.phone,
+                          style: const TextStyle(fontFamily: 'Gilroy-Bold'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

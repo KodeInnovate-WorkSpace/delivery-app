@@ -7,7 +7,6 @@ class AllOrder {
   final int status;
   final String phone;
 
-
   AllOrder({
     required this.orderId,
     required this.address,

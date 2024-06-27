@@ -170,14 +170,19 @@ class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
   final List<Cart> _cartItems = [];
   double _discount = 0.0;
+  String? _selectedCoupon;
 
   List<Cart> get cart => _cartItems;
   bool get isLoading => _isLoading;
   double get Discount => _discount;
 
+  CartProvider() {
+    loadCart();
+  }
+
   String itemCount(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       return _cartItems[index].qnt.toString();
     } else {
@@ -187,7 +192,7 @@ class CartProvider extends ChangeNotifier {
 
   int getItemCount(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       return _cartItems[index].qnt;
     } else {
@@ -195,14 +200,63 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  // void applyCoupon(String coupon, double discount) {
+  //   _selectedCoupon = coupon;
+  //   _discount = discount;
+  //   notifyListeners();
+  // }
+  //
+  // void clearCoupon() {
+  //   _selectedCoupon = null;
+  //   _discount = 0.0;
+  //   notifyListeners();
+  // }
+  //
+  // void clearCart() {
+  //   _cartItems.clear();
+  //   clearCoupon(); // Clear the coupon state
+  //   saveCart();
+  //   notifyListeners();
+  // }
+
+  double calculateTotalPrice() {
+    double total = 0.0;
+    for (var item in _cartItems) {
+      total += item.itemPrice * item.qnt;
+    }
+    return total;
+  }
+
+  double calculateGrandTotal() {
+    double total = calculateTotalPrice() +
+        (deliveryCharge ?? 0) +
+        (handlingCharge ?? 0) -
+        _discount;
+    return total;
+  }
+
+  void applyCoupon(String coupon, double discount) {
+    _selectedCoupon = coupon;
+    _discount = discount;
+    notifyListeners();
+  }
+
+  void clearCoupon() {
+    _selectedCoupon = null;
+    _discount = 0.0;
+    notifyListeners();
+  }
+
   void clearCart() {
     _cartItems.clear();
+    clearCoupon(); // Clear the coupon state
+    saveCart();
     notifyListeners();
   }
 
   void addItem(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
       _cartItems[index].qnt++;
@@ -216,7 +270,7 @@ class CartProvider extends ChangeNotifier {
 
   void removeItem(Cart item) {
     final index =
-    _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
       if (_cartItems[index].qnt > 1) {
@@ -234,22 +288,22 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  double calculateTotalPrice() {
-    double totalPrice = 0.0;
-    for (var item in _cartItems) {
-      totalPrice += item.itemPrice * item.qnt;
-    }
-    return totalPrice;
-  }
-
-  double calculateGrandTotal() {
-    double grandTotal = calculateTotalPrice();
-    grandTotal += deliveryCharge! + handlingCharge!;
-    if (_discount > 0) {
-      grandTotal -= (grandTotal * _discount / 100);
-    }
-    return grandTotal;
-  }
+  // double calculateTotalPrice() {
+  //   double totalPrice = 0.0;
+  //   for (var item in _cartItems) {
+  //     totalPrice += item.itemPrice * item.qnt;
+  //   }
+  //   return totalPrice;
+  // }
+  //
+  // double calculateGrandTotal() {
+  //   double grandTotal = calculateTotalPrice();
+  //   grandTotal += deliveryCharge! + handlingCharge!;
+  //   if (_discount > 0) {
+  //     grandTotal -= _discount;
+  //   }
+  //   return grandTotal;
+  // }
 
   void applyDiscount(double discount) {
     _discount = discount;
@@ -291,7 +345,7 @@ class CartProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final String encodedCart =
-      convert.jsonEncode(cartItems.map((item) => item.toJson()).toList());
+          convert.jsonEncode(cartItems.map((item) => item.toJson()).toList());
       await prefs.setString(CARTITEM_KEY, encodedCart);
       log("Item Stored in SP");
     } catch (e) {

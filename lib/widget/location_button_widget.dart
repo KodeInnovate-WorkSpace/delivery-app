@@ -5,6 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
+import 'package:speedy_delivery/screens/manual_location_screen.dart';
 
 class LocationButton extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -75,7 +76,7 @@ class _LocationButtonState extends State<LocationButton> {
 
         setState(() {
           completeAddress =
-          '${pMark.street}, ${pMark.subLocality}, ${pMark.locality} - ${pMark.postalCode} ';
+              '${pMark.street}, ${pMark.subLocality}, ${pMark.locality} - ${pMark.postalCode} ';
         });
 
         // Save the address to SharedPreferences
@@ -186,7 +187,6 @@ class _LocationButtonState extends State<LocationButton> {
               child: Column(
                 children: [
                   _buildSelectAddressTile(context),
-
                   _buildCurrentLocationTile(context),
                   ListTile(
                     leading: const Icon(Icons.arrow_downward),
