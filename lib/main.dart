@@ -1,4 +1,3 @@
-// import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +12,8 @@ import 'package:speedy_delivery/screens/search_functionality.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'package:speedy_delivery/screens/splash_screen.dart';
-
 import 'deliveryPartner/provider/delivery_order_provider.dart';
+// import 'package:firebase_app_check/firebase_app_check.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
