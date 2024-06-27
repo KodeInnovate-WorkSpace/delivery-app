@@ -1,10 +1,8 @@
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/deliveryPartner/model/model.dart';
-import 'package:speedy_delivery/shared/show_msg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../provider/delivery_order_provider.dart';
 import 'delivery_order_tracking.dart';

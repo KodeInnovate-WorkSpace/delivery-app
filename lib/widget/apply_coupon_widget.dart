@@ -84,8 +84,8 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height / 12;
+    // final width = MediaQuery.of(context).size.width;
+    // final height = MediaQuery.of(context).size.height / 12;
 
     return Container(
       decoration: const BoxDecoration(

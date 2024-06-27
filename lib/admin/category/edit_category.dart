@@ -17,6 +17,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   final List<int> categories = [];
   int? selectedCategory;
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController priorityController = TextEditingController();
 
   CatModel category = CatModel();
 
@@ -33,7 +34,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+      await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -44,6 +45,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               id: data['category_id'],
               name: data['category_name'],
               status: data['status'],
+              priority: data['priority'],  // Added priority field
             );
 
             if (category.status == 1) {
@@ -53,6 +55,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
 
           if (categories.isNotEmpty) {
             selectedCategory = categories.first;
+            fetchCategoryDetails(selectedCategory!);
           }
         });
       } else {
@@ -63,49 +66,51 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
     }
   }
 
-  Future<void> addNewCategory(BuildContext context) async {
+  Future<void> fetchCategoryDetails(int categoryId) async {
     try {
-      // Fetch all categories from Firestore
-      final snapshot =
-          await FirebaseFirestore.instance.collection('category').get();
-
-      // Find the maximum category_id in the existing documents
-      int maxId = 0;
-      if (snapshot.docs.isNotEmpty) {
-        for (var doc in snapshot.docs) {
-          final data = doc.data();
-          final categoryId = data['category_id'] as int;
-          if (categoryId > maxId) {
-            maxId = categoryId;
-          }
-        }
+      final doc = await FirebaseFirestore.instance.collection("category").doc(categoryId.toString()).get();
+      if (doc.exists) {
+        final data = doc.data();
+        setState(() {
+          nameController.text = data!['category_name'];
+          priorityController.text = data['priority'].toString();
+          dropdownValue = data['status'];
+        });
+      } else {
+        log("Category details not found for ID: $categoryId");
       }
+    } catch (e) {
+      log("Error fetching category details: $e");
+    }
+  }
 
+  Future<void> addOrUpdateCategory(BuildContext context) async {
+    try {
       // Check if category already exists
       final querySnapshot = await FirebaseFirestore.instance
           .collection('category')
           .where('category_name', isEqualTo: nameController.text)
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
+      if (querySnapshot.docs.isNotEmpty && querySnapshot.docs.first.id != selectedCategory.toString()) {
         showMessage("Category already exists");
         log("Category already exists");
         return;
       }
 
-      // Add new category to Firestore with the correct category_id
-      final catDoc = FirebaseFirestore.instance.collection('category').doc();
+      // Update existing category in Firestore
+      final catDoc = FirebaseFirestore.instance.collection('category').doc(selectedCategory.toString());
       await catDoc.set({
-        'category_id': maxId + 1,
         'category_name': nameController.text,
         'status': dropdownValue,
+        'priority': int.parse(priorityController.text),  // Updated priority field
       });
 
-      showMessage("Category added to database");
-      log("Category added successfully");
+      showMessage("Category updated successfully");
+      log("Category updated successfully");
     } catch (e) {
-      showMessage("Error adding category: $e");
-      log("Error adding category: $e");
+      showMessage("Error updating category: $e");
+      log("Error updating category: $e");
     }
   }
 
@@ -145,7 +150,34 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               ),
             ),
             const SizedBox(height: 20),
-
+            SizedBox(
+              width: 250,
+              child: TextFormField(
+                controller: priorityController,
+                cursorColor: Colors.black,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter Priority',
+                  hintStyle: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons.sort),
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -169,42 +201,40 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               ],
             ),
             const SizedBox(height: 20),
-            // Select Category
-
             Center(
               child: ElevatedButton(
                 onPressed: isLoading
                     ? null
                     : () async {
-                        if (nameController.text.isEmpty) {
-                          showMessage("Please fill necessary details");
-                          log("Please fill all the fields");
+                  if (nameController.text.isEmpty || priorityController.text.isEmpty) {
+                    showMessage("Please fill necessary details");
+                    log("Please fill all the fields");
 
-                          setState(() {
-                            isLoading = false;
-                          });
+                    setState(() {
+                      isLoading = false;
+                    });
 
-                          return;
-                        }
+                    return;
+                  }
 
-                        setState(() {
-                          isLoading = true;
-                        });
+                  setState(() {
+                    isLoading = true;
+                  });
 
-                        await addNewCategory(context);
+                  await addOrUpdateCategory(context);
 
-                        setState(() {
-                          isLoading = false;
-                        });
+                  setState(() {
+                    isLoading = false;
+                  });
 
-                        Navigator.pop(context, true);
-                      },
+                  Navigator.pop(context, true);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isLoading
                       ? Colors.black.withOpacity(0.3)
                       : Colors.black, // Set the color directly
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -216,16 +246,16 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
                     : const Text(
-                        "Add",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Gilroy-Bold',
-                        ),
-                      ),
+                  "Save",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Gilroy-Bold',
+                  ),
+                ),
               ),
             )
           ],
