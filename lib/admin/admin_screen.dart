@@ -14,7 +14,7 @@ class AdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin"),
+        title: const Text("Admin Panel"),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -95,13 +95,22 @@ class AdminScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              "Hello, Admin",
-              style: TextStyle(fontSize: 30, fontFamily: 'Gilroy-ExtraBold'),
-            ),
+            // const Text(
+            //   "Hello, Admin",
+            //   style: TextStyle(fontSize: 30, fontFamily: 'Gilroy-ExtraBold'),
+            // ),
+            // Manage User
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: WidgetStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
               ),
               onPressed: () {
                 Navigator.push(
@@ -115,9 +124,22 @@ class AdminScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
+            const SizedBox(
+              height: 18,
+            ),
+
+            // Manage Category
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: WidgetStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
               ),
               onPressed: () {
                 Navigator.push(
@@ -131,9 +153,21 @@ class AdminScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
+            const SizedBox(
+              height: 18,
+            ),
+            // Manage Sub-Category
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: WidgetStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
               ),
               onPressed: () {
                 Navigator.push(
@@ -147,9 +181,22 @@ class AdminScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
+            const SizedBox(
+              height: 18,
+            ),
+
+            // Manage Products
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: WidgetStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
               ),
               onPressed: () {
                 Navigator.push(
@@ -163,16 +210,24 @@ class AdminScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-              ),
-              onPressed: null,
-              child: const Text(
-                "Manage Notification",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
+            const SizedBox(
+              height: 18,
             ),
+
+            //Manage Notification
+            // ElevatedButton(
+            //   style: ButtonStyle(
+            //       backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+            //       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //           RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(10),
+            //       ))),
+            //   onPressed: null,
+            //   child: const Text(
+            //     "Manage Notification",
+            //     style: TextStyle(color: Colors.white, fontSize: 20),
+            //   ),
+            // ),
           ],
         ),
       ),

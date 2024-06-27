@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 
-import '../widget/location_button_widget.dart';
 
 class ManualLocationScreen extends StatefulWidget {
   const ManualLocationScreen({super.key});
@@ -69,7 +68,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
                 labelText: 'Enter  Location',
                 border: OutlineInputBorder(),
               ),
-              ),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _checkManualLocation,
@@ -107,7 +106,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
                 height: 58,
                 child: Center(
                   child: const Text(
-                    'Get Current Location',
+                    'Add Location Manually',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,

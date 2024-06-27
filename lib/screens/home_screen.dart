@@ -1,232 +1,232 @@
-  import 'dart:developer';
-  import 'package:cached_network_image/cached_network_image.dart';
-  import 'package:cloud_firestore/cloud_firestore.dart';
-  import 'package:badges/badges.dart' as badges;
-  import 'package:flutter/material.dart';
-  import 'package:flutter/services.dart';
-  import 'package:geolocator/geolocator.dart';
-  import 'package:geocoding/geocoding.dart';
-  import 'package:provider/provider.dart';
-  import 'package:speedy_delivery/screens/not_in_location_screen.dart';
-  import 'package:speedy_delivery/shared/constants.dart';
-  import '../providers/cart_provider.dart';
-  import '../widget/network_handler.dart';
-  import '../models/category_model.dart';
-  import '../models/product_model.dart';
-  import '../shared/search_bar.dart';
-  import '../widget/location_button_widget.dart';
-  import 'categories_screen.dart';
-  import 'checkout_screen.dart';
-  import 'advertisement_widget.dart'; // Import the AdvertisementWidget
-  class HomeScreen extends StatefulWidget {
-    final bool temporaryAccess;
+import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
+import 'package:speedy_delivery/screens/not_in_location_screen.dart';
+import 'package:speedy_delivery/shared/constants.dart';
+import '../providers/cart_provider.dart';
+import '../widget/advertisement_widget.dart';
+import '../widget/network_handler.dart';
+import '../models/category_model.dart';
+import '../models/product_model.dart';
+import '../shared/search_bar.dart';
+import '../widget/location_button_widget.dart';
+import 'categories_screen.dart';
+import 'checkout_screen.dart';
+class HomeScreen extends StatefulWidget {
+  final bool temporaryAccess;
 
-    const HomeScreen({super.key, this.temporaryAccess = false});
+  const HomeScreen({super.key, this.temporaryAccess = false});
 
-    @override
-    HomeScreenState createState() => HomeScreenState();
+  @override
+  HomeScreenState createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final List<Category> categories = [];
+  final List<SubCategory> subCategories = [];
+  late Future<void> fetchDataFuture;
+
+  // products
+  List<Product> products = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (!widget.temporaryAccess) {
+      checkLocationService();
+    }
+    // initialize cart provider for loading cart items
+    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
+    // calling method to load the cart items
+    initiateCartProvider.loadCart();
+
+    fetchDataFuture = fetchData();
   }
 
-  class HomeScreenState extends State<HomeScreen> {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-    final List<Category> categories = [];
-    final List<SubCategory> subCategories = [];
-    late Future<void> fetchDataFuture;
+  Future<void> fetchData() async {
+    await fetchCategory();
+    await fetchSubCategory();
+  }
 
-    // products
-    List<Product> products = [];
+  Future<void> _handleRefresh() async {
+    if (!widget.temporaryAccess) {
+      checkLocationService();
+    }
+    fetchData();
+  }
 
-    @override
-    void initState() {
-      super.initState();
-
-      if (!widget.temporaryAccess) {
-        checkLocationService();
-      }
-      // initialize cart provider for loading cart items
-      final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
-      // calling method to load the cart items
-      initiateCartProvider.loadCart();
-
-      fetchDataFuture = fetchData();
+  Future<void> checkLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      showLocationDialog();
+      return;
     }
 
-    Future<void> fetchData() async {
-      await fetchCategory();
-      await fetchSubCategory();
-    }
-
-    Future<void> _handleRefresh() async {
-      if (!widget.temporaryAccess) {
-        checkLocationService();
-      }
-      fetchData();
-    }
-
-    Future<void> checkLocationService() async {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        showLocationDialog();
-        return;
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          showLocationDialog();
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
         showLocationDialog();
         return;
       }
-
-      // Location services are enabled and permission is granted, get the current location
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      log("Current Position: ${position.latitude}, ${position.longitude}");
-
-      // Get the placemarks from the coordinates
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
-      Placemark place = placemarks[0];
-      String postalCode = place.postalCode ?? '';
-
-      log("PostalCode: $postalCode");
-
-      // Check Firestore for status
-      await checkAccess(postalCode);
     }
 
-    Future<void> checkAccess(String postalCode) async {
-      try {
-        // Fetch all documents from the "location" collection
-        QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('location').get();
+    if (permission == LocationPermission.deniedForever) {
+      showLocationDialog();
+      return;
+    }
 
-        // Check if there are any documents in the collection
-        if (querySnapshot.docs.isNotEmpty) {
-          // Iterate through each document
-          for (DocumentSnapshot document in querySnapshot.docs) {
-            // Assuming each document has 'postal_code' and 'status' fields
-            int docPostalCode = document['postal_code'];
-            int status = document['status'];
+    // Location services are enabled and permission is granted, get the current location
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    log("Current Position: ${position.latitude}, ${position.longitude}");
 
-            // Check if the postal code matches and the status is 1
-            if (postalCode == docPostalCode.toString() && status == 1) {
-              log("Access granted");
-              return; // Exit the function if access is granted
+    // Get the placemarks from the coordinates
+    List<Placemark> placemarks =
+    await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+    String postalCode = place.postalCode ?? '';
+
+    log("PostalCode: $postalCode");
+
+    // Check Firestore for status
+    await checkAccess(postalCode);
+  }
+
+  Future<void> checkAccess(String postalCode) async {
+    try {
+      // Fetch all documents from the "location" collection
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('location').get();
+
+      // Check if there are any documents in the collection
+      if (querySnapshot.docs.isNotEmpty) {
+        // Iterate through each document
+        for (DocumentSnapshot document in querySnapshot.docs) {
+          // Assuming each document has 'postal_code' and 'status' fields
+          int docPostalCode = document['postal_code'];
+          int status = document['status'];
+
+          // Check if the postal code matches and the status is 1
+          if (postalCode == docPostalCode.toString() && status == 1) {
+            log("Access granted");
+            return; // Exit the function if access is granted
+          }
+        }
+        // If no document with matching postal code and status 1 is found
+        log("No document with matching postal code and status 1 found in Firestore");
+      } else {
+        log("No documents found in Firestore");
+      }
+      // If no document with matching postal code and status 1 is found or no documents are found
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+      );
+    } catch (e) {
+      log("Error checking access: $e");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+      );
+    }
+  }
+
+  void showLocationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enable Location'),
+          content: const Text('Please enable location services to proceed.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    ).then((_) => checkLocationService()); // Check location service again after dialog is closed
+  }
+
+  Future<void> fetchCategory() async {
+    try {
+      final snapshot =
+      await FirebaseFirestore.instance.collection("category").get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          categories.clear();
+          for (var doc in snapshot.docs) {
+            final data = doc.data();
+            final category = Category(
+              id: data['category_id'],
+              name: data['category_name'],
+              status: data['status'],
+              priority: data['priority'],
+            );
+
+            if (category.status == 1) {
+              categories.add(category);
             }
           }
-          // If no document with matching postal code and status 1 is found
-          log("No document with matching postal code and status 1 found in Firestore");
-        } else {
-          log("No documents found in Firestore");
-        }
-        // If no document with matching postal code and status 1 is found or no documents are found
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-        );
-      } catch (e) {
-        log("Error checking access: $e");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-        );
+          // Sort categories by priority
+          categories.sort((a, b) => a.priority.compareTo(b.priority));
+        });
+      } else {
+        log("No Category Document Found!");
       }
+    } catch (e) {
+      log("Error fetching category: $e");
     }
+  }
 
-    void showLocationDialog() {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Enable Location'),
-            content: const Text('Please enable location services to proceed.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-              ),
-            ],
-          );
-        },
-      ).then((_) => checkLocationService()); // Check location service again after dialog is closed
-    }
+  Future<void> fetchSubCategory() async {
+    try {
+      final subSnapshot =
+      await FirebaseFirestore.instance.collection("sub_category").get();
 
-    Future<void> fetchCategory() async {
-      try {
-        final snapshot =
-        await FirebaseFirestore.instance.collection("category").get();
+      if (subSnapshot.docs.isNotEmpty) {
+        setState(() {
+          subCategories.clear();
+          for (var doc in subSnapshot.docs) {
+            final data = doc.data();
+            final subCategory = SubCategory(
+              id: data['sub_category_id'],
+              name: data['sub_category_name'],
+              img: data['sub_category_img'],
+              catId: data['category_id'],
+              status: data['status'],
+              // priority: data['priority'], // Ensure priority is included in the model
+            );
 
-        if (snapshot.docs.isNotEmpty) {
-          setState(() {
-            categories.clear();
-            for (var doc in snapshot.docs) {
-              final data = doc.data();
-              final category = Category(
-                id: data['category_id'],
-                name: data['category_name'],
-                status: data['status'],
-                priority: data['priority'],
-              );
-
-              if (category.status == 1) {
-                categories.add(category);
-              }
+            if (subCategory.status == 1) {
+              subCategories.add(subCategory);
             }
-            // Sort categories by priority
-            categories.sort((a, b) => a.priority.compareTo(b.priority));
-          });
-        } else {
-          log("No Category Document Found!");
-        }
-      } catch (e) {
-        log("Error fetching category: $e");
+          }
+          // Sort subcategories by priority
+          // subCategories.sort((a, b) => a.priority.compareTo(b.priority));
+        });
+      } else {
+        log("No Sub-Category Document Found!");
       }
+    } catch (e) {
+      log("Error fetching sub-category: $e");
     }
-
-    Future<void> fetchSubCategory() async {
-      try {
-        final subSnapshot =
-        await FirebaseFirestore.instance.collection("sub_category").get();
-
-        if (subSnapshot.docs.isNotEmpty) {
-          setState(() {
-            subCategories.clear();
-            for (var doc in subSnapshot.docs) {
-              final data = doc.data();
-              final subCategory = SubCategory(
-                id: data['sub_category_id'],
-                name: data['sub_category_name'],
-                img: data['sub_category_img'],
-                catId: data['category_id'],
-                status: data['status'],
-                // priority: data['priority'], // Ensure priority is included in the model
-              );
-
-              if (subCategory.status == 1) {
-                subCategories.add(subCategory);
-              }
-            }
-            // Sort subcategories by priority
-            // subCategories.sort((a, b) => a.priority.compareTo(b.priority));
-          });
-        } else {
-          log("No Sub-Category Document Found!");
-        }
-      } catch (e) {
-        log("Error fetching sub-category: $e");
-      }
-    }
+  }
 
 
   @override

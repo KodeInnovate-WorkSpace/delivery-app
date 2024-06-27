@@ -18,7 +18,7 @@ class AboutUsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
                Text(
-                'Delivo $appVer',
+                'Delivo ${appVer!.isEmpty ? "v0.1.0" : appVer}',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

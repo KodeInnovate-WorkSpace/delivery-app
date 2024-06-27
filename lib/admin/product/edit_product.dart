@@ -453,7 +453,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       ),
               ),
             ),
-
           ],
         ),
       ),
