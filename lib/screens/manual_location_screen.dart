@@ -69,7 +69,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
                 labelText: 'Enter  Location',
                 border: OutlineInputBorder(),
               ),
-            ),
+              ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _checkManualLocation,

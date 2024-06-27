@@ -55,6 +55,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
 
           if (categories.isNotEmpty) {
             selectedCategory = categories.first;
+            fetchCategoryDetails(selectedCategory!);
           }
         });
       } else {
@@ -65,50 +66,51 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
     }
   }
 
-  Future<void> addNewCategory(BuildContext context) async {
+  Future<void> fetchCategoryDetails(int categoryId) async {
     try {
-      // Fetch all categories from Firestore
-      final snapshot =
-      await FirebaseFirestore.instance.collection('category').get();
-
-      // Find the maximum category_id in the existing documents
-      int maxId = 0;
-      if (snapshot.docs.isNotEmpty) {
-        for (var doc in snapshot.docs) {
-          final data = doc.data();
-          final categoryId = data['category_id'] as int;
-          if (categoryId > maxId) {
-            maxId = categoryId;
-          }
-        }
+      final doc = await FirebaseFirestore.instance.collection("category").doc(categoryId.toString()).get();
+      if (doc.exists) {
+        final data = doc.data();
+        setState(() {
+          nameController.text = data!['category_name'];
+          priorityController.text = data['priority'].toString();
+          dropdownValue = data['status'];
+        });
+      } else {
+        log("Category details not found for ID: $categoryId");
       }
+    } catch (e) {
+      log("Error fetching category details: $e");
+    }
+  }
 
+  Future<void> addOrUpdateCategory(BuildContext context) async {
+    try {
       // Check if category already exists
       final querySnapshot = await FirebaseFirestore.instance
           .collection('category')
           .where('category_name', isEqualTo: nameController.text)
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
+      if (querySnapshot.docs.isNotEmpty && querySnapshot.docs.first.id != selectedCategory.toString()) {
         showMessage("Category already exists");
         log("Category already exists");
         return;
       }
 
-      // Add new category to Firestore with the correct category_id
-      final catDoc = FirebaseFirestore.instance.collection('category').doc();
+      // Update existing category in Firestore
+      final catDoc = FirebaseFirestore.instance.collection('category').doc(selectedCategory.toString());
       await catDoc.set({
-        'category_id': maxId + 1,
         'category_name': nameController.text,
         'status': dropdownValue,
-        'priority': int.parse(priorityController.text),  // Added priority field
+        'priority': int.parse(priorityController.text),  // Updated priority field
       });
 
-      showMessage("Category added to database");
-      log("Category added successfully");
+      showMessage("Category updated successfully");
+      log("Category updated successfully");
     } catch (e) {
-      showMessage("Error adding category: $e");
-      log("Error adding category: $e");
+      showMessage("Error updating category: $e");
+      log("Error updating category: $e");
     }
   }
 
@@ -219,7 +221,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                     isLoading = true;
                   });
 
-                  await addNewCategory(context);
+                  await addOrUpdateCategory(context);
 
                   setState(() {
                     isLoading = false;
@@ -248,7 +250,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                   strokeWidth: 2,
                 )
                     : const Text(
-                  "Add",
+                  "Save",
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Gilroy-Bold',

@@ -18,7 +18,6 @@
   import 'categories_screen.dart';
   import 'checkout_screen.dart';
   import 'advertisement_widget.dart'; // Import the AdvertisementWidget
-
   class HomeScreen extends StatefulWidget {
     final bool temporaryAccess;
 
@@ -183,9 +182,9 @@
               if (category.status == 1) {
                 categories.add(category);
               }
-
-              // log("Category: \n ID: ${category.id} | Name: ${category.name}");
             }
+            // Sort categories by priority
+            categories.sort((a, b) => a.priority.compareTo(b.priority));
           });
         } else {
           log("No Category Document Found!");
@@ -211,15 +210,15 @@
                 img: data['sub_category_img'],
                 catId: data['category_id'],
                 status: data['status'],
+                // priority: data['priority'], // Ensure priority is included in the model
               );
 
               if (subCategory.status == 1) {
                 subCategories.add(subCategory);
               }
-
-              // fetchProducts();
-              // log("Sub-Category \n ID: ${subCategory.id} | Name: ${subCategory.name} | Cat Id: ${subCategory.catId}");
             }
+            // Sort subcategories by priority
+            // subCategories.sort((a, b) => a.priority.compareTo(b.priority));
           });
         } else {
           log("No Sub-Category Document Found!");
@@ -228,6 +227,7 @@
         log("Error fetching sub-category: $e");
       }
     }
+
 
   @override
   Widget build(BuildContext context) {
