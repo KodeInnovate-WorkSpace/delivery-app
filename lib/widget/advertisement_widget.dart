@@ -112,7 +112,8 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
             ),
           );
         } else {
-          return const Center(child: Text('No active advertisements'));
+          // return const Center(child: Text('No active advertisements'));
+          return const SizedBox.shrink();
         }
       },
     );
