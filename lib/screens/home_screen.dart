@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -18,6 +19,7 @@ import '../shared/search_bar.dart';
 import '../widget/location_button_widget.dart';
 import 'categories_screen.dart';
 import 'checkout_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   final bool temporaryAccess;
 
@@ -44,7 +46,8 @@ class HomeScreenState extends State<HomeScreen> {
       checkLocationService();
     }
     // initialize cart provider for loading cart items
-    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
+    final initiateCartProvider =
+        Provider.of<CartProvider>(context, listen: false);
     // calling method to load the cart items
     initiateCartProvider.loadCart();
 
@@ -92,7 +95,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     // Get the placemarks from the coordinates
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String postalCode = place.postalCode ?? '';
 
@@ -106,7 +109,7 @@ class HomeScreenState extends State<HomeScreen> {
     try {
       // Fetch all documents from the "location" collection
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('location').get();
+          await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
@@ -159,13 +162,14 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    ).then((_) => checkLocationService()); // Check location service again after dialog is closed
+    ).then((_) =>
+        checkLocationService()); // Check location service again after dialog is closed
   }
 
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
+          await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -197,7 +201,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchSubCategory() async {
     try {
       final subSnapshot =
-      await FirebaseFirestore.instance.collection("sub_category").get();
+          await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
         setState(() {
@@ -227,7 +231,6 @@ class HomeScreenState extends State<HomeScreen> {
       log("Error fetching sub-category: $e");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -268,20 +271,20 @@ class HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             const SizedBox(
                                                 height:
-                                                20), // Add SizedBox for spacing
+                                                    20), // Add SizedBox for spacing
                                             Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
                                                   'Delivery within ',
                                                   style: TextStyle(
                                                       fontFamily:
-                                                      'Gilroy-ExtraBold',
+                                                          'Gilroy-ExtraBold',
                                                       color: Colors.black,
                                                       fontSize: 14),
                                                 ),
@@ -289,7 +292,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                   '$deliveryTime minutes',
                                                   style: const TextStyle(
                                                       fontFamily:
-                                                      'Gilroy-Black',
+                                                          'Gilroy-Black',
                                                       color: Colors.black,
                                                       fontSize: 28),
                                                 ),
@@ -351,32 +354,34 @@ class HomeScreenState extends State<HomeScreen> {
 
                       return showAlertLabel
                           ? SliverToBoxAdapter(
-                        child: Container(
-                          color: Colors.red,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: const Center(
-                            child: Text(
-                              'Orders might be delayed due to heavy rain',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                              child: Container(
+                                color: Colors.red,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: const Center(
+                                  child: Text(
+                                    'Orders might be delayed due to heavy rain',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      )
+                            )
                           : SliverToBoxAdapter(child: Container());
                     },
                   ),
                   // Advertisement Widget
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
-                      padding:
-                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 10.0),
                       child: SizedBox(
-                        height: 300, // Adjust height as needed
-                        child: AdvertisementWidget(
+                        height: MediaQuery.of(context).size.height /
+                            2.8, // Adjust height as needed
+                        child: const AdvertisementWidget(
                           cardWidth: 400.0,
                           cardHeight: 300.0,
                         ),
@@ -385,7 +390,7 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
+                      (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15.0, vertical: 0),
@@ -395,10 +400,10 @@ class HomeScreenState extends State<HomeScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                  // child: CircularProgressIndicator(
-                                  //   color: Colors.black,
-                                  // ),
-                                );
+                                    // child: CircularProgressIndicator(
+                                    //   color: Colors.black,
+                                    // ),
+                                    );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
                               } else {
@@ -406,7 +411,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   children: categories.map((category) {
                                     final filteredSubCategories = subCategories
                                         .where((subCategory) =>
-                                    subCategory.catId == category.id)
+                                            subCategory.catId == category.id)
                                         .toList();
 
                                     return Stack(
@@ -416,7 +421,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8.0,
                                               vertical:
-                                              0.0), // Reduced vertical padding
+                                                  0.0), // Reduced vertical padding
                                           child: Text(
                                             category.name,
                                             style: const TextStyle(
@@ -428,17 +433,17 @@ class HomeScreenState extends State<HomeScreen> {
                                         GridView.builder(
                                           shrinkWrap: true,
                                           physics:
-                                          const NeverScrollableScrollPhysics(),
+                                              const NeverScrollableScrollPhysics(),
                                           itemCount:
-                                          filteredSubCategories.length,
+                                              filteredSubCategories.length,
                                           gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
                                             childAspectRatio: 0.65,
                                           ),
                                           itemBuilder: (context, subIndex) {
                                             final subCategory =
-                                            filteredSubCategories[subIndex];
+                                                filteredSubCategories[subIndex];
                                             return Column(
                                               children: [
                                                 GestureDetector(
@@ -448,14 +453,14 @@ class HomeScreenState extends State<HomeScreen> {
                                                       MaterialPageRoute(
                                                         builder: (context) =>
                                                             CategoryScreen(
-                                                              categoryTitle:
+                                                          categoryTitle:
                                                               category.name,
-                                                              subCategories:
+                                                          subCategories:
                                                               filteredSubCategories,
-                                                              selectedSubCategoryId:
+                                                          selectedSubCategoryId:
                                                               subCategory
                                                                   .id, // Pass the selected sub-category ID
-                                                            ),
+                                                        ),
                                                       ),
                                                     );
                                                   },
@@ -465,39 +470,39 @@ class HomeScreenState extends State<HomeScreen> {
                                                         .symmetric(
                                                         horizontal: 4,
                                                         vertical:
-                                                        0), // Reduced vertical margin
+                                                            0), // Reduced vertical margin
                                                     decoration:
-                                                    const BoxDecoration(
+                                                        const BoxDecoration(
                                                       color: Color(0xffeaf1fc),
                                                       borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10)),
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                      const EdgeInsets.all(
-                                                          8.0),
+                                                          const EdgeInsets.all(
+                                                              8.0),
                                                       child: CachedNetworkImage(
                                                         height: 60,
                                                         imageUrl:
-                                                        subCategory.img,
+                                                            subCategory.img,
                                                         placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(
-                                                            color: Colors
-                                                                .amberAccent),
+                                                                url) =>
+                                                            const CircularProgressIndicator(
+                                                                color: Colors
+                                                                    .amberAccent),
                                                         errorWidget: (context,
-                                                            url, error) =>
-                                                        const Icon(
-                                                            Icons.error),
+                                                                url, error) =>
+                                                            const Icon(
+                                                                Icons.error),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                                 const SizedBox(
                                                     height:
-                                                    4), // Reduced height for the SizedBox
+                                                        4), // Reduced height for the SizedBox
                                                 // sub-category name
                                                 Text(
                                                   subCategory.name,
@@ -565,7 +570,7 @@ class HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             position:
-                            badges.BadgePosition.topEnd(top: 0, end: 0),
+                                badges.BadgePosition.topEnd(top: 0, end: 0),
                             badgeStyle: const badges.BadgeStyle(
                               badgeColor: Colors.green,
                             ),

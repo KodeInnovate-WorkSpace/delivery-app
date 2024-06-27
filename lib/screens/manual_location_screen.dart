@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 
-
 class ManualLocationScreen extends StatefulWidget {
   const ManualLocationScreen({super.key});
 
@@ -31,8 +30,9 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
       _prefs.setBool('manualLocationSet', true);
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen(temporaryAccess: true)),
-            (route) => false, // Removes all previous routes
+        MaterialPageRoute(
+            builder: (context) => const HomeScreen(temporaryAccess: true)),
+        (route) => false, // Removes all previous routes
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -106,7 +106,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
                 height: 58,
                 child: Center(
                   child: const Text(
-                    'Add Location Manually',
+                    'Get current location',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,
