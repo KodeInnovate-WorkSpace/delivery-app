@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 
+import '../widget/location_button_widget.dart';
+
 class ManualLocationScreen extends StatefulWidget {
   const ManualLocationScreen({super.key});
 
@@ -41,8 +43,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
   }
 
   void _checkCurrentLocation() {
-    // Logic to check the current location
-    // You can reuse the widget from the third code snippet here
+    // LocationButton(scaffoldKey: null,),
   }
 
   void navigateToManualLocation() {
@@ -65,7 +66,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
             TextField(
               controller: _locationController,
               decoration: const InputDecoration(
-                labelText: 'Enter Location',
+                labelText: 'Enter  Location',
                 border: OutlineInputBorder(),
               ),
             ),
