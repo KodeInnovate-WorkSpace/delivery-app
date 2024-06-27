@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
@@ -9,13 +8,14 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/order_tracking.dart';
-import 'package:speedy_delivery/screens/orders_screen.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
+import 'package:speedy_delivery/widget/address_selection.dart';
+import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
 import '../widget/apply_coupon_widget.dart';
-import '../widget/checkout_add_to_cart_button.dart';
+import '../widget/bill_details_widget.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
 import 'order_confirmation_screen.dart';
@@ -36,8 +36,6 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  String _defaultAdd = "No address available";
-  String _newAdd = '';
   String _selectedPaymentMethod = 'Banks';
   double totalAmt = 0.0;
   String customerId = '';
@@ -192,17 +190,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final authProvider = Provider.of<MyAuthProvider>(context);
     final addressProvider = Provider.of<AddressProvider>(context);
 
-    if (addressProvider.address.isNotEmpty) {
-      _defaultAdd =
-          "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        addressProvider.loadAddresses();
-      }
-    });
-
     setState(() {
       totalAmt = cartProvider.calculateGrandTotal();
       customerPhone =
@@ -265,12 +252,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 fontSize: 18,
                                                 fontFamily: 'Gilroy-ExtraBold'),
                                           ),
-                                          // const Text(
-                                          //   'Shipment of 1 item',
-                                          //   style: TextStyle(
-                                          //       fontSize: 12,
-                                          //       color: Colors.grey),
-                                          // ),
                                         ],
                                       ),
                                     ),
@@ -278,335 +259,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 20),
+
                             // Display cart items
-                            Consumer<CartProvider>(
-                              builder: (context, cartProvider, _) {
-                                return Column(
-                                  children: cartProvider.cart.map((item) {
-                                    return Card(
-                                      elevation: 0,
-                                      color: Colors.white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            CachedNetworkImage(
-                                              imageUrl: item.itemImage,
-                                              width: 50,
-                                              height: 50,
-                                            ),
-                                            const SizedBox(width: 15),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    item.itemName,
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                  ),
-                                                  Text(
-                                                    item.itemUnit.toString(),
-                                                    style: const TextStyle(
-                                                        color: Colors.grey),
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    'Total: ₹${item.itemPrice * item.qnt}',
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(width: 2),
-                                            Column(
-                                              children: [
-                                                CheckoutAddToCartButton(
-                                                  productName: item.itemName,
-                                                  productPrice: item.itemPrice,
-                                                  productImage: item.itemImage,
-                                                  productUnit: item.itemUnit,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                );
-                              },
-                            ),
+                            const DisplayCartItems(),
+                            const SizedBox(height: 20),
 
-                            const SizedBox(height: 10),
                             // Bill details
-                            const SizedBox(height: 10),
-                            Card(
-                              elevation: 0,
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text('Bill details',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontFamily: 'Gilroy-Black')),
-                                    ),
-                                    // const Divider(),
-                                    // Row 1
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Row(
-                                          children: [
-                                            Icon(Icons.receipt_long, size: 14),
-                                            SizedBox(width: 4),
-                                            Text('Item total',
-                                                style: TextStyle(fontSize: 14)),
-                                          ],
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                            '\u{20B9}${cartProvider.calculateTotalPrice().toStringAsFixed(2)}',
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    // Row 2
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Row(
-                                          children: [
-                                            Icon(Icons.local_shipping,
-                                                size: 14),
-                                            SizedBox(width: 4),
-                                            Text('Delivery Charge',
-                                                style: TextStyle(fontSize: 14)),
-                                          ],
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                            '\u{20B9}${deliveryCharge!.toStringAsFixed(2)}',
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    // Row 3
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Row(
-                                          children: [
-                                            Icon(Icons.payment, size: 14),
-                                            SizedBox(width: 4),
-                                            Text('Handling Charges',
-                                                style: TextStyle(fontSize: 14)),
-                                          ],
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                            '\u{20B9}${handlingCharge!.toStringAsFixed(2)}',
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    // Discount Row
-                                    if (cartProvider.Discount > 0)
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Row(
-                                            children: [
-                                              Icon(Icons.local_offer, size: 14),
-                                              SizedBox(width: 4),
-                                              Text('Discount',
-                                                  style:
-                                                      TextStyle(fontSize: 14)),
-                                            ],
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Text(
-                                              '-${cartProvider.Discount.toStringAsFixed(2)}%',
-                                              style:
-                                                  const TextStyle(fontSize: 14),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    const Divider(),
-                                    // Grand Total Row
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text('To pay',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Gilroy-Black')),
-                                        Text(
-                                          '\u{20B9}${cartProvider.calculateGrandTotal().toStringAsFixed(2)}',
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            // Card(
-                            //   elevation: 0,
-                            //   color:
-                            //       Colors.white, // Set the card color to white
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.all(8.0),
-                            //     child: Column(
-                            //       crossAxisAlignment: CrossAxisAlignment.start,
-                            //       children: [
-                            //         const Padding(
-                            //           padding: EdgeInsets.all(8.0),
-                            //           child: Text('Bill details',
-                            //               style: TextStyle(
-                            //                   fontSize: 18,
-                            //                   fontFamily: 'Gilroy-Black')),
-                            //         ),
-                            //         const Divider(
-                            //             // color: Colors.white,
-                            //             ),
-                            //         // Row 1
-                            //         Row(
-                            //           mainAxisAlignment:
-                            //               MainAxisAlignment.spaceBetween,
-                            //           children: [
-                            //             const Row(
-                            //               children: [
-                            //                 Icon(
-                            //                   Icons.receipt_long,
-                            //                   size: 14,
-                            //                 ),
-                            //                 SizedBox(width: 4),
-                            //                 Text('Item total',
-                            //                     style: TextStyle(fontSize: 14)),
-                            //               ],
-                            //             ),
-                            //             Align(
-                            //               alignment: Alignment.centerRight,
-                            //               child: Text(
-                            //                 '\u20B9 ${cartProvider.calculateTotalPrice()}',
-                            //                 style:
-                            //                     const TextStyle(fontSize: 14),
-                            //               ),
-                            //             ),
-                            //           ],
-                            //         ),
-                            //         const SizedBox(height: 4),
-                            //         // Row 2
-                            //         Row(
-                            //           mainAxisAlignment:
-                            //               MainAxisAlignment.spaceBetween,
-                            //           children: [
-                            //             const Row(
-                            //               children: [
-                            //                 Icon(
-                            //                   Icons.sports_motorsports,
-                            //                   size: 14,
-                            //                 ),
-                            //                 SizedBox(width: 4),
-                            //                 Text('Delivery Charge',
-                            //                     style: TextStyle(fontSize: 14)),
-                            //               ],
-                            //             ),
-                            //             Align(
-                            //               alignment: Alignment.centerRight,
-                            //               child: Text('\u20B9 $deliveryCharge',
-                            //                   style: const TextStyle(
-                            //                       fontSize: 14)),
-                            //             ),
-                            //           ],
-                            //         ),
-                            //         const SizedBox(height: 4),
-                            //         // Row 3
-                            //         Row(
-                            //           mainAxisAlignment:
-                            //               MainAxisAlignment.spaceBetween,
-                            //           children: [
-                            //             const Row(
-                            //               children: [
-                            //                 Icon(
-                            //                   Icons.shopping_bag,
-                            //                   size: 14,
-                            //                 ),
-                            //                 SizedBox(width: 4),
-                            //                 Text('Convenience Fee',
-                            //                     style: TextStyle(fontSize: 14)),
-                            //               ],
-                            //             ),
-                            //             Align(
-                            //               alignment: Alignment.centerRight,
-                            //               child: Text('\u20B9 $handlingCharge',
-                            //                   style: const TextStyle(
-                            //                       fontSize: 14)),
-                            //             ),
-                            //           ],
-                            //         ),
-                            //         const SizedBox(height: 4),
-                            //         // Row 4
-                            //         Row(
-                            //           mainAxisAlignment:
-                            //               MainAxisAlignment.spaceBetween,
-                            //           children: [
-                            //             const Text('Grand total',
-                            //                 style: TextStyle(
-                            //                     fontSize: 16,
-                            //                     fontFamily: 'Gilroy-Medium')),
-                            //             Text(
-                            //                 '\u20B9 ${cartProvider.calculateGrandTotal()}',
-                            //                 style: const TextStyle(
-                            //                     fontSize: 16,
-                            //                     fontFamily: 'Gilroy-Medium')),
-                            //           ],
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // ),
-                            const SizedBox(height: 35),
+                            const BillDetails(),
+                            const SizedBox(height: 20),
 
                             //coupon section
                             const ApplyCouponWidget(),
-
-                            const SizedBox(height: 35),
+                            const SizedBox(height: 20),
 
                             //checkout button
                             Container(
@@ -619,246 +284,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   children: [
-                                    //New address
-                                    GestureDetector(
-                                      onTap: () {
-                                        // Address selection sheet
-                                        showModalBottomSheet(
-                                          context: context,
-                                          backgroundColor: Colors.white,
-                                          builder: (BuildContext context) {
-                                            return StatefulBuilder(
-                                              builder: (BuildContext context,
-                                                  StateSetter setModalState) {
-                                                return Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.white70,
-                                                    borderRadius:
-                                                        BorderRadius.vertical(
-                                                            top:
-                                                                Radius.circular(
-                                                                    10.0)),
-                                                  ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 25.0,
-                                                        vertical: 10),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        // Title
-                                                        const Text(
-                                                          "Select address",
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontFamily:
-                                                                  'Gilroy-Bold'),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 20),
-                                                        // Add new address row
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                    .all(
-                                                                    Radius.circular(
-                                                                        10.0)),
-                                                            border: Border.all(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade200),
-                                                          ),
-                                                          child: ListTile(
-                                                            minLeadingWidth: 50,
-                                                            leading: const Icon(
-                                                                Icons.add,
-                                                                color: Colors
-                                                                    .green,
-                                                                size: 18),
-                                                            title: const Text(
-                                                              "Add new address",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .green,
-                                                                  fontFamily:
-                                                                      'Gilroy-SemiBold'),
-                                                            ),
-                                                            trailing:
-                                                                const Icon(Icons
-                                                                    .chevron_right),
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            const AddressInputForm()),
-                                                              ).then((value) {
-                                                                // Refresh the modal state when returning from address input
-                                                                setModalState(
-                                                                    () {});
-                                                                setState(
-                                                                    () {}); // Refresh the main state
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 35),
-                                                        // Saved addresses
-                                                        Text(
-                                                          "Your saved addresses",
-                                                          style: TextStyle(
-                                                              fontSize: 13,
-                                                              color: Colors
-                                                                  .grey[600]),
-                                                        ),
-                                                        if (addressProvider
-                                                            .address.isNotEmpty)
-                                                          SizedBox(
-                                                            height: 250,
-                                                            child: ListView
-                                                                .builder(
-                                                              shrinkWrap: true,
-                                                              itemCount:
-                                                                  addressProvider
-                                                                      .address
-                                                                      .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                final address =
-                                                                    addressProvider
-                                                                            .address[
-                                                                        index];
-                                                                return Column(
-                                                                  children: [
-                                                                    GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        _newAdd =
-                                                                            "${address.flat}, ${address.building}, ${address.mylandmark}";
-                                                                        setState(
-                                                                            () {
-                                                                          _defaultAdd =
-                                                                              _newAdd;
-                                                                        });
-                                                                        addressProvider
-                                                                            .setSelectedAddress(_newAdd); // Set the selected address in the provider
-                                                                        Navigator.pop(
-                                                                            context,
-                                                                            true); // Close the bottom modal
-                                                                        showMessage(
-                                                                            "Address Changed!");
-                                                                      },
-                                                                      child:
-                                                                          ListTile(
-                                                                        title: Text(
-                                                                            '${address.flat}, ${address.floor}, ${address.building}'),
-                                                                        subtitle:
-                                                                            Text(address.mylandmark),
-                                                                        trailing:
-                                                                            IconButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                            addressProvider.removeAddress(address);
-                                                                            showMessage("Address Deleted!");
-                                                                            setModalState(() {}); // Refresh the modal state
-                                                                            setState(() {
-                                                                              if (_defaultAdd == _newAdd) {
-                                                                                _defaultAdd = "";
-                                                                                _newAdd = "";
-                                                                              }
-                                                                            });
-                                                                          },
-                                                                          icon:
-                                                                              const Icon(Icons.delete),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                        ).then((value) {
-                                          setState(
-                                              () {}); // Refresh the main state after the modal is closed
-                                        });
-                                      },
-                                      child: Container(
-                                        color: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.place),
-                                                  const SizedBox(width: 5),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      const Text(
-                                                        "Delivering to",
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Gilroy-SemiBold'),
-                                                      ),
-                                                      Text(
-                                                        addressProvider
-                                                                .selectedAddress
-                                                                .isEmpty
-                                                            ? "Please select an address"
-                                                            : addressProvider
-                                                                .selectedAddress,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .grey[500],
-                                                            fontFamily:
-                                                                'Gilroy-Medium',
-                                                            fontSize: 12),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              // Change address button
-                                              const Text(
-                                                "Change",
-                                                style: TextStyle(
-                                                    color: Colors.green,
-                                                    fontFamily:
-                                                        'Gilroy-SemiBold'),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    //Address Selection
+                                    const AddressSelection(),
 
                                     const Divider(),
                                     // payment mode | place order
@@ -951,46 +378,35 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     context,
                                                     listen: false);
 
-                                            if (_selectedPaymentMethod ==
-                                                'Banks') {
+                                            if (_selectedPaymentMethod =='Banks') {
                                               pay(myOrderId).then((value) {
                                                 List<Order> orders =
                                                     cartProvider.cart
                                                         .map((item) {
                                                   return Order(
-                                                    orderId:
-                                                        myOrderId, // Use the same order ID for all items
-                                                    paymentMode:
-                                                        _selectedPaymentMethod,
+                                                    orderId:myOrderId, // Use the same order ID for all items
+                                                    paymentMode:_selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage:
-                                                        item.itemImage,
+                                                    productImage:item.itemImage,
                                                     quantity: item.qnt,
-                                                    price: item.itemPrice
-                                                        .toDouble(),
-                                                    totalPrice:
-                                                        (item.itemPrice *
-                                                                item.qnt)
-                                                            .toDouble(),
-                                                    address: _defaultAdd,
+                                                    price: item.itemPrice.toDouble(),
+                                                    totalPrice:(item.itemPrice *item.qnt).toDouble(),
+                                                    address: addressProvider.selectedAddress,
                                                     phone: authProvider.phone,
                                                     //transactionId: '',
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(
-                                                    orders,
-                                                    myOrderId,
-                                                    authProvider.phone);
+                                                orderProvider.addOrders(orders,myOrderId,authProvider.phone);
                                                 // Clear the cart
+                                                cartProvider.clearCart();
                                               });
-                                            } else if (_selectedPaymentMethod ==
-                                                'Cash') {
-                                              Navigator.of(context)
+                                            }
+
+                                            else if (_selectedPaymentMethod =='Cash') {Navigator.of(context)
                                                   .push(
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const OrderConfirmationPage(),
+                                                  builder: (context) =>const OrderConfirmationPage(),
                                                 ),
                                               )
                                                   .then((value) {
@@ -998,32 +414,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     cartProvider.cart
                                                         .map((item) {
                                                   return Order(
-                                                    orderId:
-                                                        myOrderId, // Use the same order ID for all items
-                                                    paymentMode:
-                                                        _selectedPaymentMethod,
+                                                    orderId:myOrderId, // Use the same order ID for all items
+                                                    paymentMode:_selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage:
-                                                        item.itemImage,
+                                                    productImage:item.itemImage,
                                                     quantity: item.qnt,
-                                                    price: item.itemPrice
-                                                        .toDouble(),
-                                                    totalPrice:
-                                                        (item.itemPrice *
-                                                                item.qnt)
-                                                            .toDouble(),
-                                                    address: _defaultAdd,
+                                                    price: item.itemPrice.toDouble(),
+                                                    totalPrice:(item.itemPrice * item.qnt).toDouble(),
+                                                    address: addressProvider.selectedAddress,
                                                     phone: authProvider.phone,
                                                     // transactionId: '',
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(
-                                                    orders,
-                                                    myOrderId,
-                                                    authProvider.phone);
-                                                cartProvider
-                                                    .clearCart(); // Clear the cart
+                                                orderProvider.addOrders(orders,myOrderId,authProvider.phone);
+                                                cartProvider.clearCart();
                                               });
                                             }
                                           },

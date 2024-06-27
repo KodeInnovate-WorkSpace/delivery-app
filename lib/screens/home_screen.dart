@@ -179,6 +179,7 @@ class HomeScreenState extends State<HomeScreen> {
               id: data['category_id'],
               name: data['category_name'],
               status: data['status'],
+              // priority: data['priority'],
             );
 
             if (category.status == 1) {
@@ -284,7 +285,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                       fontFamily:
                                                           'Gilroy-ExtraBold',
                                                       color: Colors.black,
-                                                      fontSize: 12),
+                                                      fontSize: 14),
                                                 ),
                                                 Text(
                                                   '$deliveryTime minutes',
@@ -301,7 +302,7 @@ class HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(width: 90),
+                                        //const SizedBox(width: 90),
                                       ],
                                     ),
                                     Positioned(
@@ -334,16 +335,53 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+                  // Conditional Red Label using StreamBuilder
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('AlertLabel')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return SliverToBoxAdapter(
+                          child: Container(),
+                        );
+                      }
+
+                      bool showAlertLabel = snapshot.data!.docs.any((doc) {
+                        return doc['status'] == 1;
+                      });
+
+                      return showAlertLabel
+                          ? SliverToBoxAdapter(
+                              child: Container(
+                                color: Colors.red,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: const Center(
+                                  child: Text(
+                                    'Orders might be delayed due to heavy rain',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : SliverToBoxAdapter(child: Container());
+                    },
+                  ),
                   // Advertisement Widget
                   const SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 15.0, vertical: 10.0),
                       child: SizedBox(
-                        height: 200, // Adjust height as needed
+                        height: 250, // Adjust height as needed
                         child: AdvertisementWidget(
-                          cardWidth: 300.0,
-                          cardHeight: 200.0,
+                          cardWidth: 400.0,
+                          cardHeight: 300.0,
                         ),
                       ),
                     ),

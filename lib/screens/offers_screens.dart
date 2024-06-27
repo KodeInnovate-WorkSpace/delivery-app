@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -33,14 +34,35 @@ class _OffersScreensState extends State<OffersScreens> {
               final offer = offers[index];
               final offerName = offer['offerName'];
               final discount = offer['discount'];
+              String offerImage = offer['image'];
+              final status = offer["status"];
 
-              return ListTile(
-                title: Text(offerName),
-                subtitle: Text('Discount: $discount%'),
-                onTap: () {
-                  Navigator.pop(context, offer);
-                },
-              );
+              return status == 1
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context, offer);
+                      },
+                      child: Stack(
+                        children: [
+                          Card(
+                            color: Colors.white,
+                            child: offerImage.isNotEmpty
+                                ? CachedNetworkImage(imageUrl: offerImage)
+                                : Image.asset(
+                                    "assets/images/placeholder_banner.png"),
+                          ),
+                          Positioned(
+                              top: 10,
+                              left: 20,
+                              child: Text(
+                                "$offerName: Rs.$discount Off",
+                                style: const TextStyle(
+                                    fontFamily: 'Gilroy-Black', fontSize: 20),
+                              )),
+                        ],
+                      ),
+                    )
+                  : const SizedBox();
             },
           );
         },

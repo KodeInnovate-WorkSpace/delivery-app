@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -7,7 +6,8 @@ class AdvertisementWidget extends StatefulWidget {
   final double cardHeight;
 
   const AdvertisementWidget(
-      {super.key, required this.cardWidth, required this.cardHeight});
+      {Key? key, required this.cardWidth, required this.cardHeight})
+      : super(key: key);
 
   @override
   _AdvertisementWidgetState createState() => _AdvertisementWidgetState();
@@ -15,13 +15,16 @@ class AdvertisementWidget extends StatefulWidget {
 
 class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   late PageController _pageController;
+
   // late Timer _timer;
   int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(
+      viewportFraction: 0.8, // Adjust this value to control the visible portion
+    );
 
     // Start auto-scrolling every 2 seconds
     // _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
@@ -73,8 +76,8 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
               (a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
 
           return SizedBox(
-            height: widget.cardHeight +
-                16, // Adjust height as needed to include padding
+            height: widget.cardHeight + 16,
+            // Adjust height as needed to include padding
             width: double.infinity,
             child: PageView.builder(
               controller: _pageController,
@@ -90,13 +93,12 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Card(
-                      color: Colors.white,
+                      color: const Color(0xffeaf1fc),
                       margin: EdgeInsets.zero, // Remove default margin
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
                           imageUrl,
-                          // "assets/images/banner.png",
                           width: widget.cardWidth, // Set the card width
                           height: widget.cardHeight, // Set the card height
                           fit: BoxFit
