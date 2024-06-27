@@ -178,7 +178,8 @@ class AdminScreen extends StatelessWidget {
               },
               child: const Text(
                 "Manage Sub-Categories",
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                style: TextStyle(color: Colors.white, fontSize: 17),
+                //changed size
               ),
             ),
             const SizedBox(
