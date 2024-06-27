@@ -1,24 +1,20 @@
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:badges/badges.dart' as badges;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/shared/constants.dart';
+import 'package:speedy_delivery/widget/cart_button.dart';
+import 'package:speedy_delivery/widget/home_top_widget.dart';
 import '../providers/cart_provider.dart';
 import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
-import '../shared/search_bar.dart';
-import '../widget/location_button_widget.dart';
 import 'categories_screen.dart';
-import 'checkout_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool temporaryAccess;
@@ -46,8 +42,7 @@ class HomeScreenState extends State<HomeScreen> {
       checkLocationService();
     }
     // initialize cart provider for loading cart items
-    final initiateCartProvider =
-        Provider.of<CartProvider>(context, listen: false);
+    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
     // calling method to load the cart items
     initiateCartProvider.loadCart();
 
@@ -64,6 +59,7 @@ class HomeScreenState extends State<HomeScreen> {
       checkLocationService();
     }
     fetchData();
+    fetchConstantFromFirebase();
   }
 
   Future<void> checkLocationService() async {
@@ -94,8 +90,7 @@ class HomeScreenState extends State<HomeScreen> {
     log("Current Position: ${position.latitude}, ${position.longitude}");
 
     // Get the placemarks from the coordinates
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String postalCode = place.postalCode ?? '';
 
@@ -108,8 +103,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> checkAccess(String postalCode) async {
     try {
       // Fetch all documents from the "location" collection
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('location').get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
@@ -162,14 +156,12 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    ).then((_) =>
-        checkLocationService()); // Check location service again after dialog is closed
+    ).then((_) => checkLocationService()); // Check location service again after dialog is closed
   }
 
   Future<void> fetchCategory() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+      final snapshot = await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -200,8 +192,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchSubCategory() async {
     try {
-      final subSnapshot =
-          await FirebaseFirestore.instance.collection("sub_category").get();
+      final subSnapshot = await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
         setState(() {
@@ -247,100 +238,10 @@ class HomeScreenState extends State<HomeScreen> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   // Heading
-                  SliverAppBar(
-                    pinned: true,
-                    floating: true,
-                    expandedHeight: 190.0,
-                    collapsedHeight: 80,
-                    elevation: 2,
-                    flexibleSpace: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      child: Stack(
-                        fit: StackFit.expand, // Ensures full-width search bar
-                        children: [
-                          FlexibleSpaceBar(
-                            centerTitle: true,
-                            background: Column(
-                              children: [
-                                // Head Section
-                                const SizedBox(height: 15),
-                                Stack(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(
-                                                height:
-                                                    20), // Add SizedBox for spacing
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  'Delivery within ',
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          'Gilroy-ExtraBold',
-                                                      color: Colors.black,
-                                                      fontSize: 14),
-                                                ),
-                                                Text(
-                                                  '$deliveryTime minutes',
-                                                  style: const TextStyle(
-                                                      fontFamily:
-                                                          'Gilroy-Black',
-                                                      color: Colors.black,
-                                                      fontSize: 28),
-                                                ),
-                                                LocationButton(
-                                                    scaffoldKey: scaffoldKey),
-                                                const SizedBox(height: 18),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        //const SizedBox(width: 90),
-                                      ],
-                                    ),
-                                    Positioned(
-                                      top: 27,
-                                      right: 0,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                              context, '/profile');
-                                        },
-                                        child: Image.asset(
-                                          "assets/images/profile_photo.png",
-                                          width: 40,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            // Position the search bar with some bottom padding
-                            bottom: 0.0, // Adjust padding as needed
-                            left: 0,
-                            right: 0,
-                            child: searchBar(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  HomeTop(scaffoldKey: scaffoldKey),
                   // Conditional Red Label using StreamBuilder
                   StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('AlertLabel')
-                        .snapshots(),
+                    stream: FirebaseFirestore.instance.collection('AlertLabel').snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return SliverToBoxAdapter(
@@ -356,8 +257,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ? SliverToBoxAdapter(
                               child: Container(
                                 color: Colors.red,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
+                                padding: const EdgeInsets.symmetric(vertical: 10),
                                 child: const Center(
                                   child: Text(
                                     'Orders might be delayed due to heavy rain',
@@ -376,11 +276,9 @@ class HomeScreenState extends State<HomeScreen> {
                   // Advertisement Widget
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15.0, vertical: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height /
-                            2.8, // Adjust height as needed
+                        height: MediaQuery.of(context).size.height / 2.8, // Adjust height as needed
                         child: const AdvertisementWidget(
                           cardWidth: 400.0,
                           cardHeight: 300.0,
@@ -388,40 +286,33 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+// Displaying categories
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15.0, vertical: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
                           child: FutureBuilder<void>(
                             future: fetchDataFuture,
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
                                 return const Center(
-                                    // child: CircularProgressIndicator(
-                                    //   color: Colors.black,
-                                    // ),
-                                    );
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  ),
+                                );
                               } else if (snapshot.hasError) {
                                 return const Center(child: Text("Error"));
                               } else {
                                 return Column(
                                   children: categories.map((category) {
-                                    final filteredSubCategories = subCategories
-                                        .where((subCategory) =>
-                                            subCategory.catId == category.id)
-                                        .toList();
+                                    final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
 
                                     return Stack(
                                       // replace column with stack
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0,
-                                              vertical:
-                                                  0.0), // Reduced vertical padding
+                                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Reduced vertical padding
                                           child: Text(
                                             category.name,
                                             style: const TextStyle(
@@ -432,18 +323,14 @@ class HomeScreenState extends State<HomeScreen> {
                                         ),
                                         GridView.builder(
                                           shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              filteredSubCategories.length,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          itemCount: filteredSubCategories.length,
+                                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
                                             childAspectRatio: 0.65,
                                           ),
                                           itemBuilder: (context, subIndex) {
-                                            final subCategory =
-                                                filteredSubCategories[subIndex];
+                                            final subCategory = filteredSubCategories[subIndex];
                                             return Column(
                                               children: [
                                                 GestureDetector(
@@ -451,64 +338,38 @@ class HomeScreenState extends State<HomeScreen> {
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            CategoryScreen(
-                                                          categoryTitle:
-                                                              category.name,
-                                                          subCategories:
-                                                              filteredSubCategories,
-                                                          selectedSubCategoryId:
-                                                              subCategory
-                                                                  .id, // Pass the selected sub-category ID
+                                                        builder: (context) => CategoryScreen(
+                                                          categoryTitle: category.name,
+                                                          subCategories: filteredSubCategories,
+                                                          selectedSubCategoryId: subCategory.id, // Pass the selected sub-category ID
                                                         ),
                                                       ),
                                                     );
                                                   },
                                                   child: Container(
                                                     width: 100,
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 4,
-                                                        vertical:
-                                                            0), // Reduced vertical margin
-                                                    decoration:
-                                                        const BoxDecoration(
+                                                    margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
+                                                    decoration: const BoxDecoration(
                                                       color: Color(0xffeaf1fc),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      borderRadius: BorderRadius.all(Radius.circular(10)),
                                                     ),
                                                     child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
+                                                      padding: const EdgeInsets.all(8.0),
                                                       child: CachedNetworkImage(
                                                         height: 60,
-                                                        imageUrl:
-                                                            subCategory.img,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            const CircularProgressIndicator(
-                                                                color: Colors
-                                                                    .amberAccent),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            const Icon(
-                                                                Icons.error),
+                                                        imageUrl: subCategory.img,
+                                                        placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
+                                                        errorWidget: (context, url, error) => const Icon(Icons.error),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                    height:
-                                                        4), // Reduced height for the SizedBox
+                                                const SizedBox(height: 4), // Reduced height for the SizedBox
                                                 // sub-category name
                                                 Text(
                                                   subCategory.name,
                                                   textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12),
+                                                  style: const TextStyle(fontSize: 12),
                                                 ),
                                               ],
                                             );
@@ -528,58 +389,7 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              Positioned(
-                bottom: 25,
-                right: 20,
-                child: Consumer<CartProvider>(
-                  builder: (context, cartProvider, child) {
-                    int itemCount = cartProvider
-                        .totalItemsCount(); // Assuming this method exists in CartProvider
-
-                    return Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        FloatingActionButton(
-                          hoverColor: Colors.transparent,
-                          elevation: 2,
-                          onPressed: () {
-                            HapticFeedback.vibrate();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const CheckoutScreen()),
-                            );
-                            // Navigator.pushNamed(context, '/checkout');
-                          },
-                          backgroundColor: Colors.white,
-                          child: const Icon(
-                            Icons.shopping_cart_sharp,
-                            color: Colors.black,
-                          ),
-                        ),
-                        if (itemCount > 0)
-                          badges.Badge(
-                            badgeContent: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                itemCount.toString(),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Gilroy-SemiBold',
-                                    fontSize: 10),
-                              ),
-                            ),
-                            position:
-                                badges.BadgePosition.topEnd(top: 0, end: 0),
-                            badgeStyle: const badges.BadgeStyle(
-                              badgeColor: Colors.green,
-                            ),
-                          ),
-                      ],
-                    );
-                  },
-                ),
-              ),
+              const CartButton(),
             ],
           ),
         ),
