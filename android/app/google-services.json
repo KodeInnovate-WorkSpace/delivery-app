@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "776399631000-gubgohpr7bq1uinueeas9itqovft9hri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.delivoapp.app",
+            "certificate_hash": "7f6fd99f17e0444402852d38ec65b00e87c1fd7c"
+          }
+        },
+        {
           "client_id": "776399631000-kgagcjehdbre0ho2sdspdlj05mq5dhk9.apps.googleusercontent.com",
           "client_type": 3
         }
