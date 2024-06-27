@@ -17,6 +17,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   final List<int> categories = [];
   int? selectedCategory;
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController priorityController = TextEditingController();
 
   CatModel category = CatModel();
 
@@ -33,7 +34,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   Future<void> fetchCategory() async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+      await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -44,6 +45,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               id: data['category_id'],
               name: data['category_name'],
               status: data['status'],
+              priority: data['priority'],  // Added priority field
             );
 
             if (category.status == 1) {
@@ -67,7 +69,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
     try {
       // Fetch all categories from Firestore
       final snapshot =
-          await FirebaseFirestore.instance.collection('category').get();
+      await FirebaseFirestore.instance.collection('category').get();
 
       // Find the maximum category_id in the existing documents
       int maxId = 0;
@@ -99,6 +101,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
         'category_id': maxId + 1,
         'category_name': nameController.text,
         'status': dropdownValue,
+        'priority': int.parse(priorityController.text),  // Added priority field
       });
 
       showMessage("Category added to database");
@@ -145,7 +148,34 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               ),
             ),
             const SizedBox(height: 20),
-
+            SizedBox(
+              width: 250,
+              child: TextFormField(
+                controller: priorityController,
+                cursorColor: Colors.black,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter Priority',
+                  hintStyle: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons.sort),
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -169,42 +199,40 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               ],
             ),
             const SizedBox(height: 20),
-            // Select Category
-
             Center(
               child: ElevatedButton(
                 onPressed: isLoading
                     ? null
                     : () async {
-                        if (nameController.text.isEmpty) {
-                          showMessage("Please fill necessary details");
-                          log("Please fill all the fields");
+                  if (nameController.text.isEmpty || priorityController.text.isEmpty) {
+                    showMessage("Please fill necessary details");
+                    log("Please fill all the fields");
 
-                          setState(() {
-                            isLoading = false;
-                          });
+                    setState(() {
+                      isLoading = false;
+                    });
 
-                          return;
-                        }
+                    return;
+                  }
 
-                        setState(() {
-                          isLoading = true;
-                        });
+                  setState(() {
+                    isLoading = true;
+                  });
 
-                        await addNewCategory(context);
+                  await addNewCategory(context);
 
-                        setState(() {
-                          isLoading = false;
-                        });
+                  setState(() {
+                    isLoading = false;
+                  });
 
-                        Navigator.pop(context, true);
-                      },
+                  Navigator.pop(context, true);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isLoading
                       ? Colors.black.withOpacity(0.3)
                       : Colors.black, // Set the color directly
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -216,16 +244,16 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
                     : const Text(
-                        "Add",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Gilroy-Bold',
-                        ),
-                      ),
+                  "Add",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Gilroy-Bold',
+                  ),
+                ),
               ),
             )
           ],

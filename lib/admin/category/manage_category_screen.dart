@@ -1,4 +1,3 @@
-// manage_category_screen.dart
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/admin/category/edit_category.dart';
 import 'package:speedy_delivery/admin/category/update_category.dart';
@@ -48,6 +47,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
                     DataColumn(label: Text('ID')),
                     DataColumn(label: Text('Category')),
                     DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('Priority')), // Added priority column
                     DataColumn(label: Text('')),
                     DataColumn(label: Text('')),
                   ],
@@ -102,6 +102,8 @@ class TableData extends DataTableSource {
 
   Future<void> _loadCatData() async {
     catData = await category.manageCategories();
+    // Sort categories by priority (ascending)
+    catData.sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
     notifyListeners(); // Notify the listeners that data has changed
   }
   Future<void> _refreshCategoryList() async {
@@ -115,7 +117,6 @@ class TableData extends DataTableSource {
     return DataRow(cells: [
       DataCell(Text(data['category_id'].toString())),
       DataCell(Text(data['category_name'].toString())),
-
       DataCell(
         DropdownButton<int>(
           value: data['status'], // Use the status value from data
@@ -135,6 +136,7 @@ class TableData extends DataTableSource {
           }).toList(),
         ),
       ),
+      DataCell(Text(data['priority'].toString())), // Display priority
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
@@ -146,11 +148,11 @@ class TableData extends DataTableSource {
       DataCell(
         IconButton(
           icon: const Icon(Icons.edit),
-          onPressed: () async{
+          onPressed: () async {
             final result = await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>  UpdateCategory(data: data),
+                builder: (context) => UpdateCategory(data: data),
               ),
             );
 
@@ -158,10 +160,6 @@ class TableData extends DataTableSource {
             if (result != null && result as bool) {
               _refreshCategoryList(); // Call refresh function here
             }
-
-            // Navigator.push(context,
-            //     MaterialPageRoute(builder: (context) =>  UpdateCategory(data: data)));
-
           },
         ),
       ),

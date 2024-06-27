@@ -107,7 +107,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
                 height: 58,
                 child: Center(
                   child: const Text(
-                    'Add Location Manually',
+                    'Get Current Location',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,

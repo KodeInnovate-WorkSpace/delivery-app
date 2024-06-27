@@ -50,6 +50,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
               id: data['category_id'],
               name: data['category_name'],
               status: data['status'],
+              priority: data['priority'],
             );
 
             if (category.status == 1) {
