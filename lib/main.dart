@@ -1,4 +1,4 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
+// import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +19,10 @@ import 'deliveryPartner/provider/delivery_order_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await FirebaseAppCheck.instance.activate(
-    // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.playIntegrity,
-  );
+  // await FirebaseAppCheck.instance.activate(
+  // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+  //   androidProvider: AndroidProvider.playIntegrity,
+  // );
   await fetchConstantFromFirebase();
   runApp(
     MultiProvider(
@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
         child: SplashScreen(),
       ),
       routes: {
-        '/profile': (context) =>  const NetworkHandler(
+        '/profile': (context) => const NetworkHandler(
               child: ProfilePage(),
             ),
         '/search': (context) => const NetworkHandler(

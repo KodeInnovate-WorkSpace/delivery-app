@@ -19,6 +19,7 @@ class _UpdateCategoryState extends State<UpdateCategory> {
   final List<int> categories = [];
   int? selectedCategory;
   final TextEditingController categoryController = TextEditingController();
+  final TextEditingController priorityController = TextEditingController();
   final CatModel categoryModel = CatModel();
   List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
 
@@ -26,6 +27,7 @@ class _UpdateCategoryState extends State<UpdateCategory> {
   void initState() {
     super.initState();
     categoryController.text = widget.data['category_name'];
+    priorityController.text = widget.data['priority'].toString();
     dropdownValue = widget.data['status'];
   }
 
@@ -41,25 +43,34 @@ class _UpdateCategoryState extends State<UpdateCategory> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InputBox(
-                hintText: "Update Category name",
-                myIcon: Icons.category,
-                myController: categoryController),
+              hintText: "Update Category name",
+              myIcon: Icons.category,
+              myController: categoryController,
+            ),
+            const SizedBox(height: 20),
+            InputBox(
+              hintText: "Update Priority",
+              myIcon: Icons.sort,
+              myController: priorityController,
+            ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Status: "),
                 DropdownButton<int>(
-                  value:
-                      widget.data['status'], // Use the status value from data
+                  value: dropdownValue, // Use the status value from data
                   onChanged: (int? newValue) {
+                    setState(() {
+                      dropdownValue = newValue;
+                    });
                     categoryModel
                         .updateCategory(
-                          'status',
-                          newValue,
-                          categoryField: 'category_id',
-                          categoryValue: widget.data['category_id'],
-                        )
+                      'status',
+                      newValue,
+                      categoryField: 'category_id',
+                      categoryValue: widget.data['category_id'],
+                    )
                         .then((_) => categoryModel.manageCategories());
                   },
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
@@ -88,6 +99,11 @@ class _UpdateCategoryState extends State<UpdateCategory> {
                     categoryId: widget.data['category_id'].toString(),
                   )
                       .then((_) {
+                    categoryModel.newupdateCategory(
+                      'priority',
+                      int.parse(priorityController.text),
+                      categoryId: widget.data['category_id'].toString(),
+                    );
                     Navigator.pop(context, true);
                   });
                   log("Data of index: ${widget.data}");

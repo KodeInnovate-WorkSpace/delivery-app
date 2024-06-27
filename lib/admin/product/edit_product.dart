@@ -55,6 +55,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               id: data['sub_category_id'],
               name: data['sub_category_name'],
               status: data['status'],
+              priority: data['priority'],
             );
 
             if (sub.status == 1) {
@@ -452,7 +453,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       ),
               ),
             ),
-
           ],
         ),
       ),
