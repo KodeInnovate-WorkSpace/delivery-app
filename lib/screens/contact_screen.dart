@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,7 +17,7 @@ class ContactScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Contact Us"),
+        title: const Text("Contact Us", style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold')),
         backgroundColor: const Color(0xfff7f7f7),
         elevation: 0,
       ),
@@ -33,7 +32,7 @@ class ContactScreen extends StatelessWidget {
               ''' You can get in touch with us through below platforms. Our Team will react out to you as soon as it would be possible
          ''',
               textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(fontSize: 12, color: Color(0xff666666)),
             ),
 
             // Contact Info
@@ -53,12 +52,11 @@ class ContactScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15.0, left: 18.0),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 15.0, left: 18.0),
                     child: Text(
                       "Customer Support",
-                      // style: TextStyle(color: Color(0xffc9cace), fontFamily: 'Gilroy-Black'),
-                      style: TextStyle(color: Colors.grey[400], fontFamily: 'Gilroy-SemiBold'),
+                      style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-SemiBold'),
                     ),
                   ),
 
@@ -77,7 +75,7 @@ class ContactScreen extends StatelessWidget {
                             size: 15,
                           ),
                         )),
-                    title: const Text("info@kodeinnovate.in"),
+                    title: const Text("info@kodeinnovate.in", style: TextStyle(color: Color(0xff666666))),
                     onTap: () async {
                       Uri email = Uri(scheme: 'mailto', path: "info@kodeinnovate.in");
                       await launchUrl(email);
@@ -99,7 +97,7 @@ class ContactScreen extends StatelessWidget {
                             size: 15,
                           ),
                         )),
-                    title: const Text("+91 9326500602"),
+                    title: const Text("+91 9326500602", style: TextStyle(color: Color(0xff666666))),
                     onTap: () async {
                       Uri dialNumber = Uri(scheme: 'tel', path: "9326500602");
                       await launchUrl(dialNumber);
@@ -121,7 +119,7 @@ class ContactScreen extends StatelessWidget {
                             size: 15,
                           ),
                         )),
-                    title: const Text("kodeinnovate.in"),
+                    title: const Text("kodeinnovate.in", style: TextStyle(color: Color(0xff666666))),
                     onTap: () {
                       _launchURL('https://kodeinnovate.in/');
                     },
@@ -142,7 +140,7 @@ class ContactScreen extends StatelessWidget {
                             size: 15,
                           ),
                         )),
-                    title: const Text("delivoapp.com"),
+                    title: const Text("delivoapp.com", style: TextStyle(color: Color(0xff666666))),
                     onTap: () {
                       _launchURL('https://www.delivoapp.com/');
                     },
@@ -170,11 +168,11 @@ class ContactScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15.0, left: 18.0),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 15.0, left: 18.0),
                     child: Text(
                       "Social Media",
-                      style: TextStyle(color: Colors.grey[400], fontFamily: 'Gilroy-SemiBold'),
+                      style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-SemiBold'),
                     ),
                   ),
 
@@ -184,7 +182,7 @@ class ContactScreen extends StatelessWidget {
                       "assets/images/instagram.png",
                       height: 30,
                     ),
-                    title: const Text("Delivo Instagram"),
+                    title: const Text("Delivo Instagram", style: TextStyle(color: Color(0xff666666))),
                     onTap: () {
                       _launchURL('https://www.instagram.com/delivo.app');
                     },
@@ -196,7 +194,7 @@ class ContactScreen extends StatelessWidget {
                       "assets/images/instagram.png",
                       height: 30,
                     ),
-                    title: const Text("Kodeinnovate Instagram"),
+                    title: const Text("Kodeinnovate Instagram", style: TextStyle(color: Color(0xff666666))),
                     onTap: () {
                       _launchURL('https://www.instagram.com/kodeinnovate');
                     },
@@ -208,7 +206,7 @@ class ContactScreen extends StatelessWidget {
                       "assets/images/facebook.png",
                       height: 28,
                     ),
-                    title: const Text("Kodeinnovate Facebook"),
+                    title: const Text("Kodeinnovate Facebook", style: TextStyle(color: Color(0xff666666))),
                     onTap: () {
                       _launchURL('https://www.facebook.com/people/Kodeinnovate-solutions/61552635723546/');
                     },
