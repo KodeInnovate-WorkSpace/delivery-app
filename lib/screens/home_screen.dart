@@ -239,7 +239,7 @@ class HomeScreenState extends State<HomeScreen> {
                 slivers: [
                   // Heading
                   HomeTop(scaffoldKey: scaffoldKey),
-                  // Conditional Red Label using StreamBuilder
+                  // Alerts
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('AlertLabel').snapshots(),
                     builder: (context, snapshot) {
@@ -286,7 +286,7 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-// Displaying categories
+                  // Displaying categories
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {

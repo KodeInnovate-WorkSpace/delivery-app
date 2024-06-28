@@ -5,9 +5,7 @@ class AdvertisementWidget extends StatefulWidget {
   final double cardWidth;
   final double cardHeight;
 
-  const AdvertisementWidget(
-      {Key? key, required this.cardWidth, required this.cardHeight})
-      : super(key: key);
+  const AdvertisementWidget({super.key, required this.cardWidth, required this.cardHeight});
 
   @override
   _AdvertisementWidgetState createState() => _AdvertisementWidgetState();
@@ -17,7 +15,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   late PageController _pageController;
 
   // late Timer _timer;
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   @override
   void initState() {
@@ -58,10 +56,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('Advertisement')
-          .where('status', isEqualTo: 1)
-          .snapshots(),
+      stream: FirebaseFirestore.instance.collection('Advertisement').where('status', isEqualTo: 1).snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -72,8 +67,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           // Sort documents based on 'priority' field
           List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
-          docs.sort(
-              (a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
+          docs.sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
 
           return SizedBox(
             height: widget.cardHeight + 16,
@@ -101,8 +95,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                           imageUrl,
                           width: widget.cardWidth, // Set the card width
                           height: widget.cardHeight, // Set the card height
-                          fit: BoxFit
-                              .fill, // Stretch the image to fill the container
+                          fit: BoxFit.fill, // Stretch the image to fill the container
                         ),
                       ),
                     ),
