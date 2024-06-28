@@ -14,6 +14,14 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
   String? selectedOffer;
   double? selectedDiscount;
 
+  // void _removeCoupon() {
+  //   setState(() {
+  //     selectedOffer = null;
+  //     selectedDiscount = null;
+  //     Provider.of<CartProvider>(context, listen: false).clearCoupon();
+  //   });
+  // }
+
   void _removeCoupon() {
     setState(() {
       selectedOffer = null;
@@ -21,6 +29,21 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
       Provider.of<CartProvider>(context, listen: false).clearCoupon();
     });
   }
+
+  Future<void> applyCoupon(BuildContext context) async {
+    final offer = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const OffersScreens()),
+    );
+    if (offer != null) {
+      setState(() {
+        selectedOffer = offer['offerName'];
+        selectedDiscount = offer['discount'].toDouble();
+        Provider.of<CartProvider>(context, listen: false).applyCoupon(selectedOffer!, selectedDiscount!);
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

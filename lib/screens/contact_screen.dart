@@ -116,7 +116,7 @@ class ContactScreen extends StatelessWidget {
                         child: const Padding(
                           padding: EdgeInsets.all(6.0),
                           child: Icon(
-                            Icons.public,
+                            Icons.language,
                             color: Colors.white,
                             size: 15,
                           ),
@@ -137,7 +137,7 @@ class ContactScreen extends StatelessWidget {
                         child: const Padding(
                           padding: EdgeInsets.all(6.0),
                           child: Icon(
-                            Icons.public,
+                            Icons.language,
                             color: Colors.white,
                             size: 15,
                           ),
