@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
@@ -17,8 +16,6 @@ import 'package:speedy_delivery/widget/bill_details_widget.dart';
 import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
-import '../shared/constants.dart';
-import '../widget/checkout_add_to_cart_button.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
 import 'order_confirmation_screen.dart';
