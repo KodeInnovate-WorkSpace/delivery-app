@@ -8,6 +8,7 @@ import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/notification_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
+import 'package:speedy_delivery/screens/contact_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../shared/constants.dart';
@@ -30,8 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
-    _checkUserTypeFuture =
-        userProvider.checkUserType(authProvider.textController.text);
+    _checkUserTypeFuture = userProvider.checkUserType(authProvider.textController.text);
   }
 
   @override
@@ -70,9 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    authProvider.phone.isEmpty
-                        ? "Please Login"
-                        : "+91 ${authProvider.textController.text}",
+                    authProvider.phone.isEmpty ? "Please Login" : "+91 ${authProvider.textController.text}",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[700],
@@ -95,8 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const OrderHistoryScreen()),
+                        MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
                       );
                     },
                   ),
@@ -108,8 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddressScreen()),
+                        MaterialPageRoute(builder: (context) => const AddressScreen()),
                       );
                     },
                   ),
@@ -132,8 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const AdminScreen()),
+                          MaterialPageRoute(builder: (context) => const AdminScreen()),
                         );
                       },
                     ),
@@ -146,8 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const DeliveryHomeScreen()),
+                          MaterialPageRoute(builder: (context) => const DeliveryHomeScreen()),
                         );
                       },
                     ),
@@ -168,8 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const AboutUsPage()),
+                        MaterialPageRoute(builder: (context) => const AboutUsPage()),
                       );
                     },
                   ),
@@ -190,10 +183,17 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const NotificationSettingsPage()),
+                        MaterialPageRoute(builder: (context) => const NotificationSettingsPage()),
                       );
+                    },
+                  ),
+                  //Support
+                  ListTile(
+                    leading: const Icon(Icons.support_agent),
+                    title: const Text('Contact Us'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactScreen()));
                     },
                   ),
                   //Logout
@@ -208,43 +208,33 @@ class _ProfilePageState extends State<ProfilePage> {
                                 backgroundColor: Colors.white,
                                 title: const Text(
                                   "Logout",
-                                  style:
-                                      TextStyle(fontFamily: 'Gilroy-ExtraBold'),
+                                  style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
                                 ),
-                                content: const Text(
-                                    "Are you sure you want to logout?"),
+                                content: const Text("Are you sure you want to logout?"),
                                 actions: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
+                                          onPressed: () => Navigator.of(context).pop(),
                                           child: const Text(
                                             "No",
                                             style: TextStyle(color: Colors.red),
                                           )),
                                       TextButton(
                                           onPressed: () async {
-                                            await FirebaseAuth.instance
-                                                .signOut();
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
+                                            await FirebaseAuth.instance.signOut();
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
                                             await prefs.remove('isLoggedIn');
                                             Navigator.pushAndRemoveUntil(
                                               context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const SigninScreen()),
+                                              MaterialPageRoute(builder: (context) => const SigninScreen()),
                                               (route) => false,
                                             );
                                           },
                                           child: const Text(
                                             "Yes",
-                                            style:
-                                                TextStyle(color: Colors.black),
+                                            style: TextStyle(color: Colors.black),
                                           )),
                                     ],
                                   ),
@@ -286,8 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 void _shareApp() {
-  Share.share(
-      'Check out this amazing delivery app : https://play.google.com/store/apps');
+  Share.share('Check out this amazing delivery app : https://play.google.com/store/apps');
 }
 
 void _launchPlayStore() async {

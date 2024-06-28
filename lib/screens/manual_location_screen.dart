@@ -41,9 +41,9 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
     }
   }
 
-  void _checkCurrentLocation() {
-    // LocationButton(scaffoldKey: null,),
-  }
+  // void _checkCurrentLocation() {
+  //   // LocationButton(scaffoldKey: null,),
+  // }
 
   void navigateToManualLocation() {
     Navigator.push(
@@ -82,7 +82,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
                 width: 200,
                 height: 58,
                 child: Center(
-                  child: const Text(
+                  child:  Text(
                     'Check Location',
                     style: TextStyle(
                       color: Colors.white,
@@ -105,7 +105,7 @@ class _ManualLocationScreenState extends State<ManualLocationScreen> {
                 width: 200,
                 height: 58,
                 child: Center(
-                  child: const Text(
+                  child:  Text(
                     'Get current location',
                     style: TextStyle(
                       color: Colors.white,

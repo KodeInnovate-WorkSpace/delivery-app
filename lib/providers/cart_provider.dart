@@ -181,8 +181,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   String itemCount(Cart item) {
-    final index =
-        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       return _cartItems[index].qnt.toString();
     } else {
@@ -191,8 +190,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   int getItemCount(Cart item) {
-    final index =
-        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
       return _cartItems[index].qnt;
     } else {
@@ -228,10 +226,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   double calculateGrandTotal() {
-    double total = calculateTotalPrice() +
-        (deliveryCharge ?? 0) +
-        (handlingCharge ?? 0) -
-        _discount;
+    double total = calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - _discount;
     return total;
   }
 
@@ -255,8 +250,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   void addItem(Cart item) {
-    final index =
-        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
       _cartItems[index].qnt++;
@@ -269,8 +263,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   void removeItem(Cart item) {
-    final index =
-        _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
       if (_cartItems[index].qnt > 1) {
@@ -313,8 +306,7 @@ class CartProvider extends ChangeNotifier {
   void logCartContents() {
     debugPrint("Current cart contents:");
     for (var item in _cartItems) {
-      debugPrint(
-          "Item: ${item.itemName}, Price: ${item.itemPrice}, Image: ${item.itemImage}, Unit: ${item.itemUnit}, Quantity: ${item.qnt}");
+      debugPrint("Item: ${item.itemName}, Price: ${item.itemPrice}, Image: ${item.itemImage}, Unit: ${item.itemUnit}, Quantity: ${item.qnt}");
     }
   }
 
@@ -344,8 +336,7 @@ class CartProvider extends ChangeNotifier {
   Future<void> storeCart(List<Cart> cartItems) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final String encodedCart =
-          convert.jsonEncode(cartItems.map((item) => item.toJson()).toList());
+      final String encodedCart = convert.jsonEncode(cartItems.map((item) => item.toJson()).toList());
       await prefs.setString(CARTITEM_KEY, encodedCart);
       log("Item Stored in SP");
     } catch (e) {

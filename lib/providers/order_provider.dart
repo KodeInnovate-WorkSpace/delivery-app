@@ -13,6 +13,7 @@ class Order {
   final String paymentMode;
   final String address;
   final String phone;
+  final int discount;
   int status;
 
   Order({
@@ -25,6 +26,7 @@ class Order {
     required this.paymentMode,
     required this.address,
     required this.phone,
+    required this.discount,
     this.status = 0,
   });
 
@@ -44,6 +46,7 @@ class Order {
       address: address,
       status: status ?? this.status,
       phone: this.phone,
+      discount: discount,
     );
   }
 
@@ -59,6 +62,7 @@ class Order {
       'address': address,
       'status': status,
       'phone': phone,
+      'discount': discount,
     };
   }
 
@@ -74,6 +78,7 @@ class Order {
       address: map['address'],
       status: map['status'],
       phone: map['phone'],
+      discount: map['discount'],
     );
   }
 }
@@ -109,6 +114,7 @@ class OrderProvider with ChangeNotifier {
       'status': orders.first.status,
       'overallTotal': overallTotal,
       'phone': orders.first.phone,
+      // 'discount': orders.first.discount,
       'orders': orders.map((order) {
         return {
           'productName': order.productName,
@@ -116,6 +122,7 @@ class OrderProvider with ChangeNotifier {
           'quantity': order.quantity,
           'price': order.price,
           'totalPrice': order.totalPrice,
+          'discount': order.discount,
         };
       }).toList(),
     };
@@ -146,6 +153,7 @@ class OrderProvider with ChangeNotifier {
                   paymentMode: data['paymentMode'],
                   address: data['address'],
                   phone: data['phone'],
+                  discount: data['discount'],
                   status: data['status'] ?? 0,
                 ))
             .toList();

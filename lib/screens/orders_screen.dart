@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/cart_provider.dart';
 import '../providers/order_provider.dart';
 import 'order_tracking.dart';
 
@@ -14,6 +15,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
 
     // Group orders by orderId
     final groupedOrders = <String, List<Order>>{};
@@ -59,7 +61,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 final orders = groupedOrders[orderId]!;
 
                 // Calculate overall total
-                final overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
+                // final overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
+                final overallTotal = cartProvider.calculateGrandTotal();
 
                 return InkWell(
                   onTap: () {

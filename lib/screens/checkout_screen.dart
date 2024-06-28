@@ -49,10 +49,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
     customerId = _generateCustomerId();
-    cfPaymentGatewayService.setCallback(
-        verifyPayment,
-        (errorResponse, orderId) =>
-            onError(errorResponse, orderId, context, orderProvider));
+    cfPaymentGatewayService.setCallback(verifyPayment, (errorResponse, orderId) => onError(errorResponse, orderId, context, orderProvider));
   }
 
   String generateOrderId() {
@@ -72,13 +69,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'Content-Type': 'application/json',
       'x-client-id': "TEST102073159c36086010050049f41951370201",
       // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      'x-client-secret':
-          "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       // 'x-client-secret':"cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
-    var request = http.Request(
-        'POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
+    var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
     request.body = json.encode({
       "order_amount": totalAmt,
       "order_id": myOrderId,
@@ -118,8 +113,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     showMessage("Payment Successful");
   }
 
-  void onError(CFErrorResponse errorResponse, String orderId,
-      BuildContext context, OrderProvider orderProvider) async {
+  void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
     debugPrint(errorResponse.getMessage().toString());
     debugPrint("Error while making payment");
     debugPrint("Order ID is $orderId");
@@ -138,8 +132,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<void> webCheckout(String myOrdId) async {
     try {
       CFSession? session = await createSession(myOrdId);
-      var cfWebCheckout =
-          CFWebCheckoutPaymentBuilder().setSession(session!).build();
+      var cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session!).build();
       cfPaymentGatewayService.doPayment(cfWebCheckout);
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -149,11 +142,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      var session = CFSessionBuilder()
-          .setEnvironment(CFEnvironment.SANDBOX)
-          .setOrderId(myOrdId)
-          .setPaymentSessionId(paymentSessionId["payment_session_id"])
-          .build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -165,18 +154,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       var session = await createSession(myOrdId);
       List<CFPaymentModes> components = <CFPaymentModes>[];
-      var paymentComponent =
-          CFPaymentComponentBuilder().setComponents(components).build();
-      var theme = CFThemeBuilder()
-          .setNavigationBarBackgroundColorColor("#f7ce34")
-          .setPrimaryFont("Menlo")
-          .setSecondaryFont("Futura")
-          .build();
-      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder()
-          .setSession(session!)
-          .setPaymentComponent(paymentComponent)
-          .setTheme(theme)
-          .build();
+      var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
+      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session!).setPaymentComponent(paymentComponent).setTheme(theme).build();
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -192,14 +172,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     setState(() {
       totalAmt = cartProvider.calculateGrandTotal();
-      customerPhone =
-          authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
+      customerPhone = authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
 
     return NetworkHandler(
       child: Scaffold(
-        resizeToAvoidBottomInset:
-            true, // Enable auto-resizing when keyboard appears
+        resizeToAvoidBottomInset: true, // Enable auto-resizing when keyboard appears
         appBar: AppBar(
           title: const Text('Checkout'),
         ),
@@ -219,11 +197,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             : Stack(
                 children: [
                   Container(
-                    height: MediaQuery.of(context)
-                        .size
-                        .height, //covers the entire screen (responsive)
-                    color: const Color(
-                        0xffeaf1fc), // Set the background color to grey
+                    height: MediaQuery.of(context).size.height, //covers the entire screen (responsive)
+                    color: const Color(0xffeaf1fc), // Set the background color to grey
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SingleChildScrollView(
@@ -233,8 +208,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             // Delivery information
                             Card(
                               elevation: 0,
-                              color:
-                                  Colors.white, // Set the card color to white
+                              color: Colors.white, // Set the card color to white
                               child: Padding(
                                 padding: const EdgeInsets.all(18.0),
                                 child: Row(
@@ -243,14 +217,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Delivery within $deliveryTime minutes',
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: 'Gilroy-ExtraBold'),
+                                            style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
                                           ),
                                         ],
                                       ),
@@ -276,8 +247,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             //checkout button
                             Container(
                               decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
                                 color: Colors.white,
                               ),
                               child: Padding(
@@ -290,19 +260,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     const Divider(),
                                     // payment mode | place order
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             // payment mode dropdown
                                             Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 const Icon(
                                                   Icons.account_balance,
@@ -311,33 +277,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 const SizedBox(width: 10),
                                                 DropdownButton<String>(
                                                   value: _selectedPaymentMethod,
-                                                  icon: const Icon(
-                                                      Icons.arrow_drop_down),
+                                                  icon: const Icon(Icons.arrow_drop_down),
                                                   iconSize: 24,
                                                   elevation: 16,
-                                                  style: const TextStyle(
-                                                      color: Colors.black),
+                                                  style: const TextStyle(color: Colors.black),
                                                   // underline: Container(
                                                   //   height: 2,
                                                   //   color: Colors.green,
                                                   // ),
                                                   underline: Container(),
-                                                  onChanged:
-                                                      (String? newValue) {
+                                                  onChanged: (String? newValue) {
                                                     setState(() {
-                                                      _selectedPaymentMethod =
-                                                          newValue!;
+                                                      _selectedPaymentMethod = newValue!;
                                                     });
                                                   },
-                                                  items: <String>[
-                                                    'Banks',
-                                                    'Cash'
-                                                  ].map<
-                                                          DropdownMenuItem<
-                                                              String>>(
-                                                      (String value) {
-                                                    return DropdownMenuItem<
-                                                        String>(
+                                                  items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
+                                                    return DropdownMenuItem<String>(
                                                       value: value,
                                                       child: Text(value),
                                                     );
@@ -360,88 +315,76 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               return;
                                             }
 
-                                            if (addressProvider
-                                                .address.isEmpty) {
-                                              showMessage(
-                                                  "Please select an address");
+                                            if (addressProvider.address.isEmpty) {
+                                              showMessage("Please select an address");
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const AddressInputForm(),
+                                                  builder: (context) => const AddressInputForm(),
                                                 ),
                                               );
                                               return; // Exit the function to prevent navigation to payment screen
                                             }
 
-                                            final orderProvider =
-                                                Provider.of<OrderProvider>(
-                                                    context,
-                                                    listen: false);
+                                            final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
-                                            if (_selectedPaymentMethod =='Banks') {
+                                            if (_selectedPaymentMethod == 'Banks') {
                                               pay(myOrderId).then((value) {
-                                                List<Order> orders =
-                                                    cartProvider.cart
-                                                        .map((item) {
+                                                List<Order> orders = cartProvider.cart.map((item) {
                                                   return Order(
-                                                    orderId:myOrderId, // Use the same order ID for all items
-                                                    paymentMode:_selectedPaymentMethod,
+                                                    orderId: myOrderId, // Use the same order ID for all items
+                                                    paymentMode: _selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage:item.itemImage,
+                                                    productImage: item.itemImage,
                                                     quantity: item.qnt,
                                                     price: item.itemPrice.toDouble(),
-                                                    totalPrice:(item.itemPrice *item.qnt).toDouble(),
+                                                    totalPrice: (item.itemPrice * item.qnt).toDouble(),
                                                     address: addressProvider.selectedAddress,
                                                     phone: authProvider.phone,
+                                                    discount: cartProvider.Discount.toInt(),
                                                     //transactionId: '',
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(orders,myOrderId,authProvider.phone);
+                                                orderProvider.addOrders(orders, myOrderId, authProvider.phone);
                                                 // Clear the cart
                                                 cartProvider.clearCart();
                                               });
-                                            }
-
-                                            else if (_selectedPaymentMethod =='Cash') {Navigator.of(context)
+                                            } else if (_selectedPaymentMethod == 'Cash') {
+                                              Navigator.of(context)
                                                   .push(
                                                 MaterialPageRoute(
-                                                  builder: (context) =>const OrderConfirmationPage(),
+                                                  builder: (context) => const OrderConfirmationPage(),
                                                 ),
                                               )
                                                   .then((value) {
-                                                List<Order> orders =
-                                                    cartProvider.cart
-                                                        .map((item) {
+                                                List<Order> orders = cartProvider.cart.map((item) {
                                                   return Order(
-                                                    orderId:myOrderId, // Use the same order ID for all items
-                                                    paymentMode:_selectedPaymentMethod,
+                                                    orderId: myOrderId, // Use the same order ID for all items
+                                                    paymentMode: _selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage:item.itemImage,
+                                                    productImage: item.itemImage,
                                                     quantity: item.qnt,
                                                     price: item.itemPrice.toDouble(),
-                                                    totalPrice:(item.itemPrice * item.qnt).toDouble(),
+                                                    totalPrice: (item.itemPrice * item.qnt).toDouble(),
                                                     address: addressProvider.selectedAddress,
                                                     phone: authProvider.phone,
+                                                    discount: cartProvider.Discount.toInt(),
                                                     // transactionId: '',
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(orders,myOrderId,authProvider.phone);
+                                                orderProvider.addOrders(orders, myOrderId, authProvider.phone);
                                                 cartProvider.clearCart();
                                               });
                                             }
                                           },
                                           style: ButtonStyle(
-                                            shape: WidgetStateProperty.all<
-                                                RoundedRectangleBorder>(
+                                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(10.0),
                                               ),
                                             ),
-                                            backgroundColor: WidgetStateProperty
-                                                .resolveWith<Color>(
+                                            backgroundColor: WidgetStateProperty.resolveWith<Color>(
                                               (Set<WidgetState> states) {
                                                 return Colors.black;
                                               },

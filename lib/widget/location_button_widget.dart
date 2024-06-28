@@ -5,7 +5,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
-import 'package:speedy_delivery/screens/manual_location_screen.dart';
 
 class LocationButton extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
