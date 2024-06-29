@@ -54,9 +54,24 @@ class AddressProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // void removeAddress(Address userAdd) async {
+  //   final index =
+  //   _addressList.indexWhere((address) => address.flat == userAdd.flat);
+  //   if (index >= 0) {
+  //     _addressList.removeAt(index);
+  //
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     await prefs.remove('address_${userAdd.flat}');
+  //
+  //     if (_selectedAddress.contains(userAdd.flat)) {
+  //       _selectedAddress = "";
+  //     }
+  //
+  //     notifyListeners();
+  //   }
+  // }
   void removeAddress(Address userAdd) async {
-    final index =
-    _addressList.indexWhere((address) => address.flat == userAdd.flat);
+    final index = _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
       _addressList.removeAt(index);
 
@@ -64,12 +79,20 @@ class AddressProvider with ChangeNotifier {
       await prefs.remove('address_${userAdd.flat}');
 
       if (_selectedAddress.contains(userAdd.flat)) {
+        // Clear the selected address if it was the one being removed
         _selectedAddress = "";
+
+        // Automatically select another address if available
+        if (_addressList.isNotEmpty) {
+          final newAddress = _addressList.first;
+          _selectedAddress = "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark}";
+        }
       }
 
       notifyListeners();
     }
   }
+
 
   Future<Address?> getAddress(String flat) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
