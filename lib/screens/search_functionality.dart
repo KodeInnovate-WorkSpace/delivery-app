@@ -147,7 +147,7 @@ class _SearchPageState extends State<SearchPage> {
       }
     });
 
-    if (query.length >= 4 && !_hasStoredQuery) {
+    if (query.length == 4 && !_hasStoredQuery) {
       final userSuggestedProducts = FirebaseFirestore.instance.collection('UserSuggestedProducts');
       final existingQuery = await userSuggestedProducts.where('searchQuery', isEqualTo: query).get();
 
@@ -167,6 +167,7 @@ class _SearchPageState extends State<SearchPage> {
       _hasStoredQuery = false;
     }
   }
+
 
   void saveSearch(Product product) {
     setState(() {
