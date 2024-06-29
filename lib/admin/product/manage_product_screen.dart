@@ -61,6 +61,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Unit')),
                   DataColumn(label: Text('Price')),
+                  DataColumn(label: Text('MRP')),
                   DataColumn(label: Text('Stock')),
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Sub-Category')),
@@ -79,10 +80,7 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
               hoverColor: Colors.transparent,
               elevation: 2,
               onPressed: () async {
-                final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const EditProduct()));
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
 
                 if (result != null && result as bool) {
                   // Sub-category added successfully, refresh the list
@@ -121,25 +119,20 @@ class TableData extends DataTableSource {
   }
 
   Future<void> loadProductData() async {
-    await _loadCategoryData();
+    await _loadSubCategoryData();
     productData = await productObj.manageProducts();
     debugPrint('Product Data: $productData');
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  Future<void> _loadCategoryData() async {
+  Future<void> _loadSubCategoryData() async {
     final categories = await subCatObj.manageSubCategories();
-    subCatData = {
-      for (var cat in categories)
-        cat['sub_category_id']: cat['sub_category_name']
-    };
+    subCatData = {for (var cat in categories) cat['sub_category_id']: cat['sub_category_name']};
     notifyListeners();
   }
 
-  Future<void> _updateProduct(String field, dynamic newValue,
-      {String? categoryField, dynamic categoryValue}) async {
-    await productObj.updateProduct(field, newValue,
-        categoryField: categoryField, categoryValue: categoryValue);
+  Future<void> _updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
+    await productObj.updateProduct(field, newValue, categoryField: categoryField, categoryValue: categoryValue);
     loadProductData(); // Reload data after update
   }
 
@@ -162,8 +155,7 @@ class TableData extends DataTableSource {
       DataCell(
         SizedBox(
           width: 35,
-          child:
-              Image.network(data['image'] ?? 'https://via.placeholder.com/35'),
+          child: Image.network(data['image'] ?? 'https://via.placeholder.com/35'),
         ),
       ),
       // name column
@@ -213,6 +205,21 @@ class TableData extends DataTableSource {
         ),
       ),
 
+      // mrp column
+      DataCell(
+        TextFormField(
+          initialValue: data['mrp'].toString(),
+          onFieldSubmitted: (newValue) {
+            _updateProduct(
+              'mrp',
+              int.parse(newValue),
+              categoryField: 'id',
+              categoryValue: data['id'],
+            );
+          },
+        ),
+      ),
+
       // stock column
       DataCell(
         TextFormField(
@@ -251,9 +258,7 @@ class TableData extends DataTableSource {
       DataCell(DropdownButton<String>(
         value: subCatName,
         onChanged: (String? newValue) {
-          final newSubCatId = subCatData.entries
-              .firstWhere((entry) => entry.value == newValue)
-              .key;
+          final newSubCatId = subCatData.entries.firstWhere((entry) => entry.value == newValue).key;
           _updateProduct(
             'sub_category_id',
             newSubCatId,
@@ -274,7 +279,7 @@ class TableData extends DataTableSource {
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            _deleteProduct(data['sub_category_id']);
+            _deleteProduct(data['id']);
           },
         ),
       ),

@@ -79,8 +79,7 @@ class _ProductCardState extends State<ProductCard> {
                                 imageUrl: product.image,
                                 height: 75,
                                 fit: BoxFit.contain,
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                                errorWidget: (context, url, error) => const Icon(Icons.error),
                               ),
                             ),
                             const SizedBox(height: 15),
@@ -101,13 +100,20 @@ class _ProductCardState extends State<ProductCard> {
                                 color: Colors.grey,
                               ),
                             ),
+                            Text(
+                              product.mrp.toString(),
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+
                             const SizedBox(height: 10),
                             // Item price
                             SizedBox(
                               height: 50,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "\u20B9 ${product.price}",
@@ -122,7 +128,6 @@ class _ProductCardState extends State<ProductCard> {
                                     productUnit: product.unit,
                                     // refreshCart: refreshCart,
                                   ),
-
                                 ],
                               ),
                             ),
