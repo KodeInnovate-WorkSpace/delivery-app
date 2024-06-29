@@ -40,6 +40,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
   restart_app: ^1.2.1
   path: any
+  accordion: ^2.6.0
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
