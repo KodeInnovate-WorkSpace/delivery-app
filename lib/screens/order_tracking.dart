@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/valet_provider.dart';
 
 class OrderTrackingScreen extends StatefulWidget {
   final String orderId;
@@ -21,83 +23,125 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final valetProvider = Provider.of<ValetProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Tracking', style: TextStyle(color: Colors.black)),
+        title: Text(widget.orderId, style: const TextStyle(fontSize: 20, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: _orderStatusStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          if (snapshot.hasData) {
-            var orderData = snapshot.data!;
-            var status = orderData['status'];
-
-            if (status == 5) {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 20),
-                    _buildOrderFailedCard('Order Failed', 'Your order has failed due to a transaction issue.', true, Colors.red, Icons.error),
-                  ],
-                ),
-              );
-            } else if (status == 6) {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 20),
-                    _buildOrderStatusCard('Order Cancelled', 'Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
-                  ],
-                ),
-              );
-            } else {
-              var statusCards = <Widget>[
-                _buildOrderStatusCard('Order Received', 'Your order has been received.', status >= 0),
-                _buildOrderStatusCard('Order Confirmed', 'Your order has been confirmed.', status >= 1),
-                _buildOrderStatusCard('Order In Process', 'Your order is in process.', status >= 2),
-                _buildOrderStatusCard('Order Pickup', 'Your order is ready for pickup.', status >= 3),
-                _buildOrderStatusCard('Order Delivered', 'You order has been delivered', status >= 4),
-              ];
-
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 20),
-                    Column(children: statusCards),
-                  ],
-                ),
-              );
+      body: SingleChildScrollView(
+        child: StreamBuilder<DocumentSnapshot>(
+          stream: _orderStatusStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
             }
-          }
 
-          return const Center(child: Text('No data available'));
-        },
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            if (snapshot.hasData) {
+              var orderData = snapshot.data!;
+              var status = orderData['status'];
+
+              if (status == 5) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      //                     valetProvider.buildValetDetailsTable(),
+
+                      _buildOrderFailedCard('Order Failed', 'Your order has failed due to a transaction issue.', true, Colors.red, Icons.error),
+                    ],
+                  ),
+                );
+              } else if (status == 6) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+
+                      _buildOrderStatusCard('Order Cancelled', 'Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
+                    ],
+                  ),
+                );
+              } else {
+                var statusCards = <Widget>[
+                  _buildOrderStatusCard('Order Received', 'Your order has been received.', status >= 0),
+                  _buildOrderStatusCard('Order Confirmed', 'Your order has been confirmed.', status >= 1),
+                  _buildOrderStatusCard('Order In Process', 'Your order is in process.', status >= 2),
+                  _buildOrderStatusCard('Order Pickup', 'Your order is ready for pickup.', status >= 3),
+                  _buildOrderStatusCard('Order Delivered', 'You order has been delivered', status >= 4),
+                ];
+
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      valetProvider.buildValetDetailsTable(),
+
+                      Column(children: statusCards),
+                    ],
+                  ),
+                );
+              }
+            }
+
+            return const Center(child: Text('No data available'));
+          },
+        ),
       ),
     );
   }
+
+  // Widget _buildValetDetailsTable() {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey[200],
+  //       borderRadius: BorderRadius.circular(5.0),
+  //     ),
+  //     child: const Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text("Valet Details",
+  //             style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
+  //         SizedBox(height: 8.0),
+  //
+  //         //Phone
+  //         Row(
+  //           children: [
+  //             Text("Phone: ",
+  //                 style: TextStyle(
+  //                   fontSize: 16,
+  //                 )),
+  //             Icon(
+  //               Icons.phone,
+  //               size: 15,
+  //             ),
+  //             Text("+91 8989898989", style: TextStyle(fontSize: 16)),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildOrderStatusCard(String title, String description, bool isActive, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
     return Container(

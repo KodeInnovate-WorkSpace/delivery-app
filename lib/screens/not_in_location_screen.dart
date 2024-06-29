@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
+import 'package:speedy_delivery/screens/manual_location_screen.dart';
 import 'dart:developer';
 
 class NotInLocationScreen extends StatefulWidget {
@@ -86,6 +87,13 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
     await checkLocation();
   }
 
+  void navigateToManualLocation() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ManualLocationScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -137,6 +145,35 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
                     )
                         : const Text(
                       "Try changing location",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: navigateToManualLocation,
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                    ),
+                  ),
+                  backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                      return Colors.green;
+                    },
+                  ),
+                ),
+                child: const SizedBox(
+                  width: 200,
+                  height: 58,
+                  child: Center(
+                    child: Text(
+                      "Add location manually",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,

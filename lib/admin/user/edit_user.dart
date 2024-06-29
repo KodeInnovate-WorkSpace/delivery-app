@@ -51,6 +51,7 @@ class _EditUserState extends State<EditUser> with ChangeNotifier {
               id: data['category_id'],
               name: data['category_name'],
               status: data['status'],
+              priority: data['priority'],
             );
 
             if (category.status == 1) {

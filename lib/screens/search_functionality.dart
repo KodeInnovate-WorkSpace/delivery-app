@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product_model.dart';
+import '../providers/auth_provider.dart';
 import '../widget/add_to_cart_button.dart';
 
 class SearchPage extends StatefulWidget {
@@ -17,7 +19,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
   List<Product> _productSearches = [];
-  // final Map<String, int> _productCounts = {};
+  bool _hasStoredQuery = false;
 
   @override
   void initState() {
@@ -25,18 +27,18 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(filterProducts);
     fetchProductsFromFirestore();
     loadRecentSearches();
-    loadProductSearches(); // Load product searches
+    loadProductSearches();
   }
 
   Future<void> fetchProductsFromFirestore() async {
     try {
-      final productsCollection =
-          FirebaseFirestore.instance.collection('products');
+      final productsCollection = FirebaseFirestore.instance.collection('products');
       final snapshot = await productsCollection.get();
       final products = snapshot.docs.map((doc) {
         return Product(
           name: doc['name'] as String,
           price: doc['price'],
+          mrp: doc['mrp'],
           id: doc['id'],
           image: doc['image'],
           stock: doc['stock'],
@@ -57,8 +59,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> loadProductSearches() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final List<String>? productSearches =
-          prefs.getStringList('productSearches');
+      final List<String>? productSearches = prefs.getStringList('productSearches');
       if (productSearches != null) {
         setState(() {
           _productSearches = productSearches.map((search) {
@@ -67,6 +68,7 @@ class _SearchPageState extends State<SearchPage> {
               name: searchValues[0],
               image: searchValues[1],
               price: int.parse(searchValues[2]),
+              mrp: int.parse(searchValues[2]),
               id: int.parse(searchValues[3]),
               stock: int.parse(searchValues[4]),
               unit: searchValues[5],
@@ -96,8 +98,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> loadRecentSearches() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final List<String>? recentSearches =
-          prefs.getStringList('recentSearches');
+      final List<String>? recentSearches = prefs.getStringList('recentSearches');
       if (recentSearches != null) {
         setState(() {
           _recentSearches = recentSearches.map((search) {
@@ -106,6 +107,7 @@ class _SearchPageState extends State<SearchPage> {
               name: searchValues[0],
               image: searchValues[1],
               price: int.parse(searchValues[2]),
+              mrp: int.parse(searchValues[2]),
               id: int.parse(searchValues[3]),
               stock: int.parse(searchValues[4]),
               unit: searchValues[5],
@@ -128,17 +130,42 @@ class _SearchPageState extends State<SearchPage> {
     prefs.setStringList('recentSearches', recentSearches);
   }
 
-  void filterProducts() {
-    final query = _controller.text.toLowerCase();
+  void filterProducts() async {
+    final query = _controller.text;
+    final lowerCaseQuery = query.toLowerCase();
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    final phoneNumber = authProvider.phone;
+
     setState(() {
       if (query.isEmpty) {
         _filteredProducts.clear();
+        _hasStoredQuery = false;
       } else {
         _filteredProducts = _allProducts.where((product) {
-          return product.name.toLowerCase().contains(query);
+          return product.name.toLowerCase().contains(lowerCaseQuery);
         }).toList();
       }
     });
+
+    if (query.length == 4 && !_hasStoredQuery) {
+      final userSuggestedProducts = FirebaseFirestore.instance.collection('UserSuggestedProducts');
+      final existingQuery = await userSuggestedProducts.where('searchQuery', isEqualTo: query).get();
+
+      if (existingQuery.docs.isEmpty) {
+        try {
+          await userSuggestedProducts.add({
+            'searchQuery': query,
+            'timestamp': Timestamp.now(),
+            'phoneNumber': phoneNumber,
+          });
+          _hasStoredQuery = true;
+        } catch (e) {
+          debugPrint("$e");
+        }
+      }
+    } else if (query.isEmpty) {
+      _hasStoredQuery = false;
+    }
   }
 
   void saveSearch(Product product) {
@@ -151,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
         _recentSearches = _recentSearches.sublist(0, 5);
       }
       saveRecentSearches();
-      saveProductSearches(); // Save product searches
+      saveProductSearches();
     });
   }
 
@@ -160,7 +187,7 @@ class _SearchPageState extends State<SearchPage> {
       _recentSearches.clear();
       saveRecentSearches();
       _productSearches.clear();
-      saveProductSearches(); // Clear product searches
+      saveProductSearches();
     });
   }
 
@@ -190,6 +217,12 @@ class _SearchPageState extends State<SearchPage> {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 15),
         prefixIcon: const Icon(Icons.search),
+        suffixIcon: _controller.text.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: clearSearch,
+              )
+            : null,
       ),
       style: const TextStyle(color: Colors.black),
       onTap: () {
@@ -205,13 +238,15 @@ class _SearchPageState extends State<SearchPage> {
 
   void clearSearch() {
     setState(() {
+      _controller.clear();
       _productSearches.clear();
+      _filteredProducts.clear();
+      _hasStoredQuery = false;
     });
   }
 
   Widget productCard(Product product) {
     return Card(
-      // color: const Color(0xffeaf1fc),
       elevation: 0,
       color: Colors.white,
       child: ListTile(
@@ -219,15 +254,12 @@ class _SearchPageState extends State<SearchPage> {
         title: Text(product.name),
         onTap: () {
           saveSearch(product);
-          // Navigate to product details page or any other action
         },
       ),
     );
   }
 
   Widget productSearchCard(Product product) {
-
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -256,6 +288,13 @@ class _SearchPageState extends State<SearchPage> {
                       'Price: ₹${product.price.toStringAsFixed(2)}',
                       style: const TextStyle(color: Colors.grey),
                     ),
+                    Text(
+                      "₹${product.mrp.toString()}",
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -281,7 +320,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget recentSearchCard(Product product) {
     return Card(
-      // color: const Color(0xffeaf1fc),
       color: Colors.white,
       elevation: 0,
       child: Padding(
@@ -358,8 +396,7 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           const Text(
                             'Search Results',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           const SizedBox(height: 10),
                           ListView.builder(
@@ -373,14 +410,10 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ],
                       ),
-                    if (_filteredProducts.isEmpty &&
-                        _controller.text.isNotEmpty)
+                    if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
                       Text(
                         'Product not found',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.grey[600]),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
                       ),
                     if (_recentSearches.isNotEmpty) ...[
                       const SizedBox(height: 20),
@@ -389,13 +422,11 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           const Text(
                             'Recently Searched',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           TextButton(
                             onPressed: clearRecentSearches,
-                            child: const Text('Clear',
-                                style: TextStyle(color: Colors.red)),
+                            child: const Text('Clear', style: TextStyle(color: Colors.red)),
                           ),
                         ],
                       ),
@@ -421,8 +452,7 @@ class _SearchPageState extends State<SearchPage> {
                       const SizedBox(height: 20),
                       const Text(
                         'Product Searches',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       const SizedBox(height: 10),
                       SizedBox(

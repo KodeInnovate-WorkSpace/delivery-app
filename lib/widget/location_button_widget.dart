@@ -75,7 +75,7 @@ class _LocationButtonState extends State<LocationButton> {
 
         setState(() {
           completeAddress =
-          '${pMark.street}, ${pMark.subLocality}, ${pMark.locality} - ${pMark.postalCode} ';
+              '${pMark.street}, ${pMark.subLocality}, ${pMark.locality} - ${pMark.postalCode} ';
         });
 
         // Save the address to SharedPreferences
@@ -186,7 +186,6 @@ class _LocationButtonState extends State<LocationButton> {
               child: Column(
                 children: [
                   _buildSelectAddressTile(context),
-
                   _buildCurrentLocationTile(context),
                   ListTile(
                     leading: const Icon(Icons.arrow_downward),
