@@ -83,10 +83,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        //Product ID and icon
                         Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Row(
+                          child:
+                              // ID Row
+                              Row(
                             children: [
+                              //Oder Id
                               Text(
                                 'Order ID: $orderId',
                                 style: const TextStyle(fontFamily: 'Gilroy-Bold', fontSize: 15),
@@ -99,17 +103,22 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             ],
                           ),
                         ),
+                        // Product Details
                         Column(
                           children: orders.map((order) {
                             return ListTile(
+                              //Image
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(order.productImage),
                               ),
+                              //Name
                               title: Text(order.productName),
+                              // Price and Quantity
                               subtitle: Text('Price: ₹${order.price}, Quantity: ${order.quantity}'),
                             );
                           }).toList(),
                         ),
+                        //Total
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text('Total: ₹$overallTotal', style: const TextStyle(fontSize: 16)),
