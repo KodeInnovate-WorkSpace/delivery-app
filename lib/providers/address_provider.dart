@@ -97,11 +97,9 @@ class AddressProvider with ChangeNotifier {
   Future<Address?> getAddress(String flat) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? addressJson = prefs.getString('address_$flat');
-    if (addressJson != null) {
-      Map<String, dynamic> addressMap = json.decode(addressJson);
-      return Address.fromJson(addressMap);
-    }
-    return null;
+    Map<String, dynamic> addressMap = json.decode(addressJson!);
+    return Address.fromJson(addressMap);
+      return null;
   }
 
   Future<void> loadAddresses() async {
@@ -112,11 +110,9 @@ class AddressProvider with ChangeNotifier {
     for (String key in keys) {
       if (key.startsWith('address_')) {
         String? jsonAddress = prefs.getString(key);
-        if (jsonAddress != null) {
-          Map<String, dynamic> addressMap = json.decode(jsonAddress);
-          _addressList.add(Address.fromJson(addressMap));
-        }
-      }
+        Map<String, dynamic> addressMap = json.decode(jsonAddress!);
+        _addressList.add(Address.fromJson(addressMap));
+            }
     }
     notifyListeners();
   }

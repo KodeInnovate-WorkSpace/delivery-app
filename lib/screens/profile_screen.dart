@@ -20,7 +20,7 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -89,15 +89,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
 
-                        /*//Phone Number
-                  Text(
-                    authProvider.phone.isEmpty ? "Please Login" : "+91 ${authProvider.textController.text}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[700],
-                    ),
-                  ),*/
-
                         // Phone Number
                         ListTile(
                           leading: Container(
@@ -150,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
                                 child: Icon(
-                                  Icons.language,
+                                  Icons.home_work,
                                   color: Colors.white,
                                   size: 15,
                                 ),
@@ -299,7 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
                                 child: Icon(
-                                  Icons.info,
+                                  Icons.star,
                                   color: Colors.white,
                                   size: 15,
                                 ),
@@ -358,52 +349,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
 
-                  //About us
-                  // ListTile(
-                  //   leading: const Icon(Icons.info),
-                  //   title: const Text('About us'),
-                  //   trailing: const Icon(Icons.arrow_forward_ios),
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (context) => const AboutUsPage()),
-                  //     );
-                  //   },
-                  // ),
-                  // Rate on playstore
-                  // ListTile(
-                  //   leading: const Icon(Icons.star),
-                  //   title: const Text('Rate us on the Play Store'),
-                  //   trailing: const Icon(Icons.arrow_forward_ios),
-                  //   onTap: () {
-                  //     _launchPlayStore();
-                  //   },
-                  // ),
-                  //Notification
-                  // ListTile(
-                  //   leading: const Icon(Icons.notifications_sharp),
-                  //   title: const Text('Notification Preferences'),
-                  //   trailing: const Icon(Icons.arrow_forward_ios),
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (context) => const NotificationSettingsPage()),
-                  //     );
-                  //   },
-                  // ),
-                  //Contact Us
-                  // ListTile(
-                  //   leading: const Icon(Icons.support_agent),
-                  //   title: const Text('Contact Us'),
-                  //   trailing: const Icon(Icons.arrow_forward_ios),
-                  //   onTap: () {
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactScreen()));
-                  //   },
-                  // ),
-                  //Logout
                   const SizedBox(
                     height: 20,
                   ),
+
                   //Logout
                   Container(
                     decoration: BoxDecoration(
@@ -444,19 +393,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                       backgroundColor: Colors.white,
                                       title: const Text(
                                         "Logout",
-                                        style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
+                                        style: TextStyle(fontFamily: 'Gilroy-Bold', color: Color(0xff1c1c1c)),
                                       ),
                                       content: const Text("Are you sure you want to logout?"),
                                       actions: [
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            TextButton(
-                                                onPressed: () => Navigator.of(context).pop(),
-                                                child: const Text(
-                                                  "No",
-                                                  style: TextStyle(color: Colors.red),
-                                                )),
+                                            //Yes
                                             TextButton(
                                                 onPressed: () async {
                                                   await FirebaseAuth.instance.signOut();
@@ -472,6 +416,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   "Yes",
                                                   style: TextStyle(color: Colors.black),
                                                 )),
+
+                                            //No
+                                            TextButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: const Text(
+                                                  "No",
+                                                  style: TextStyle(
+                                                    color: Color(0xffEF4B4B),
+                                                  ),
+                                                )),
                                           ],
                                         ),
                                       ],
@@ -482,7 +436,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
 
+                  const SizedBox(
+                    height: 20,
+                  ),
+
                   const SizedBox(height: 20),
+                  //App name
                   Center(
                     child: Column(
                       children: [
@@ -516,11 +475,11 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 void _shareApp() {
-  Share.share('Check out this amazing delivery app : https://play.google.com/store/apps');
+  Share.share('Check out this amazing delivery app: https://play.google.com/store/apps/details?id=com.delivoapp.app');
 }
 
 void _launchPlayStore() async {
-  final Uri url = Uri.parse('https://play.google.com/store/apps');
+  final Uri url = Uri.parse('https://play.google.com/store/apps/details?id=com.delivoapp.app');
   if (!await launchUrl(url)) {
     throw Exception('Could not launch $url');
   }

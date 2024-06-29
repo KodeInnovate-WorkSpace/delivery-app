@@ -28,11 +28,14 @@ class ContactScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Info
-            const Text(
-              ''' You can get in touch with us through below platforms. Our Team will react out to you as soon as it would be possible
+            const Padding(
+              padding: EdgeInsets.all(2.0),
+              child: Text(
+                ''' You can get in touch with us through below platforms. Our Team will react out to you as soon as it would be possible
          ''',
-              textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 12, color: Color(0xff666666)),
+                // textAlign: TextAlign.justify,
+                style: TextStyle(fontSize: 10, color: Color(0xff666666)),
+              ),
             ),
 
             // Contact Info

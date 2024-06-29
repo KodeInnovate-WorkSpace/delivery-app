@@ -278,11 +278,9 @@ class HomeScreenState extends State<HomeScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height / 2.8, // Adjust height as needed
-                        child: const AdvertisementWidget(
-                          cardWidth: 400.0,
-                          cardHeight: 300.0,
-                        ),
+                        height: MediaQuery.of(context).size.height / 3.8, // Adjust height as needed
+                        // width: MediaQuery.of(context).size.width,
+                        child: const AdvertisementWidget(),
                       ),
                     ),
                   ),

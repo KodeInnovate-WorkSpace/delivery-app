@@ -16,18 +16,22 @@ class EditProduct extends StatefulWidget {
 }
 
 class _EditProductState extends State<EditProduct> with ChangeNotifier {
-  int? dropdownValue = 1;
-  final List<int> categories = [];
-  final List<String> subcategories = [];
-  Map<String, int> subcategoriesMap = {};
-  int? selectedCategory;
-  String? selectedSubCategory;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  final TextEditingController mrpController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
   File? _image;
+
+  int? dropdownValue = 1;
+  // final List<String> subcategories = [];
+  // Map<String, int> subcategoriesMap = {};
+  // int? selectedSubCategory;
+  final List<String> subCategoryNames = [];
+  final Map<String, int> subCategoryMap = {};
+  String? selectedSubCategoryName;
+  int? selectedSubCategoryId;
 
   ProductModel product = ProductModel();
   List<Map<String, dynamic>> productData = [];
@@ -46,33 +50,34 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
-          subcategories.clear();
-          subcategoriesMap.clear();
+          subCategoryNames.clear();
+          subCategoryMap.clear();
           for (var doc in snapshot.docs) {
             final data = doc.data();
-            final sub = Category(
+            final category = SubCategory(
               id: data['sub_category_id'],
               name: data['sub_category_name'],
               status: data['status'],
-              priority: data['priority'],
+              img: '',
+              catId: data['category_id'],
             );
 
-            if (sub.status == 1) {
-              subcategories.add(sub.name);
-              subcategoriesMap[sub.name] = sub.id;
+            if (category.status == 1) {
+              subCategoryNames.add(category.name);
+              subCategoryMap[category.name] = category.id;
             }
           }
 
-          if (subcategories.isNotEmpty) {
-            selectedSubCategory = subcategories.first;
-            selectedCategory = subcategoriesMap[selectedSubCategory!];
+          if (subCategoryNames.isNotEmpty) {
+            selectedSubCategoryName = subCategoryNames.first;
+            selectedSubCategoryId = subCategoryMap[selectedSubCategoryName!];
           }
         });
       } else {
-        log("No Sub-Category Document Found!");
+        log("No Category Document Found!");
       }
     } catch (e) {
-      log("Error fetching Sub-Category: $e");
+      log("Error fetching category: $e");
     }
   }
 
@@ -100,9 +105,10 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         'image': imageUrl,
         'name': nameController.text,
         'price': int.parse(priceController.text),
+        'mrp': int.parse(mrpController.text),
         'status': dropdownValue,
         'stock': int.parse(stockController.text),
-        'sub_category_id': selectedCategory,
+        'sub_category_id': selectedSubCategoryId,
         'unit': unitController.text,
       });
 
@@ -187,6 +193,10 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
+            Row(
+              children: [],
+            ),
+
             // Enter Price
             SizedBox(
               width: 250,
@@ -196,6 +206,36 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter product price',
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons.currency_rupee),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Enter MRP
+            SizedBox(
+              width: 250,
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                controller: mrpController,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Enter product MRP',
                   hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
@@ -350,23 +390,24 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               ],
             ),
             const SizedBox(height: 20),
-            // Select Category
+
+            // Select Sub-Category
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Sub-Category: "),
                 DropdownButton<String>(
-                  value: selectedSubCategory,
+                  value: selectedSubCategoryName,
                   onChanged: (String? newValue) {
                     setState(() {
-                      selectedSubCategory = newValue!;
-                      selectedCategory = subcategoriesMap[selectedSubCategory!];
+                      selectedSubCategoryName = newValue!;
+                      selectedSubCategoryId = subCategoryMap[selectedSubCategoryName]!;
                     });
                   },
-                  items: subcategories.map<DropdownMenuItem<String>>((String subcat) {
+                  items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
                     return DropdownMenuItem<String>(
                       value: subcat,
-                      child: Text(subcat),
+                      child: Text(subcat.toString()),
                     );
                   }).toList(),
                   hint: const Text("Select a sub-category"),
@@ -381,7 +422,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 onPressed: isLoading
                     ? null
                     : () async {
-                        if (nameController.text.isEmpty || _image == null || selectedCategory == null) {
+                        if (nameController.text.isEmpty || _image == null || selectedSubCategoryName == null) {
                           showMessage("Please fill necessary details");
                           log("Please fill all the fields");
 

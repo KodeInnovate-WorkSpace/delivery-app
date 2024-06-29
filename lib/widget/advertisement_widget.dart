@@ -1,20 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdvertisementWidget extends StatefulWidget {
-  final double cardWidth;
-  final double cardHeight;
-
-  const AdvertisementWidget({super.key, required this.cardWidth, required this.cardHeight});
+  const AdvertisementWidget({
+    super.key,
+  });
 
   @override
-  _AdvertisementWidgetState createState() => _AdvertisementWidgetState();
+  State<AdvertisementWidget> createState() => _AdvertisementWidgetState();
 }
 
 class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   late PageController _pageController;
 
-  // late Timer _timer;
   final int _currentIndex = 0;
 
   @override
@@ -70,9 +69,10 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
           docs.sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
 
           return SizedBox(
-            height: widget.cardHeight + 16,
+            // height: widget.cardHeight + 16,
+            height: 600,
             // Adjust height as needed to include padding
-            width: double.infinity,
+            // width: double.infinity,
             child: PageView.builder(
               controller: _pageController,
               itemCount: docs.length,
@@ -81,22 +81,24 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: widget.cardWidth, // Set the card width
+                    // width: widget.cardWidth,
                     decoration: BoxDecoration(
-                      color: const Color(0xffeaf1fc), // Specify the color here
+                      color: const Color(0xffeaf1fc),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Card(
+                      elevation: 0,
                       color: const Color(0xffeaf1fc),
-                      margin: EdgeInsets.zero, // Remove default margin
+                      margin: EdgeInsets.zero,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          imageUrl,
-                          width: widget.cardWidth, // Set the card width
-                          height: widget.cardHeight, // Set the card height
-                          fit: BoxFit.fill, // Stretch the image to fill the container
-                        ),
+                        // child: Image.network(
+                        //   imageUrl,
+                        //   width: widget.cardWidth,
+                        //   height: widget.cardHeight,
+                        //   fit: BoxFit.fill,
+                        // ),
+                        child: CachedNetworkImage(imageUrl: imageUrl),
                       ),
                     ),
                   ),

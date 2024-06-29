@@ -30,13 +30,13 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> fetchProductsFromFirestore() async {
     try {
-      final productsCollection =
-      FirebaseFirestore.instance.collection('products');
+      final productsCollection = FirebaseFirestore.instance.collection('products');
       final snapshot = await productsCollection.get();
       final products = snapshot.docs.map((doc) {
         return Product(
           name: doc['name'] as String,
           price: doc['price'],
+          mrp: doc['mrp'],
           id: doc['id'],
           image: doc['image'],
           stock: doc['stock'],
@@ -57,8 +57,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> loadProductSearches() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final List<String>? productSearches =
-      prefs.getStringList('productSearches');
+      final List<String>? productSearches = prefs.getStringList('productSearches');
       if (productSearches != null) {
         setState(() {
           _productSearches = productSearches.map((search) {
@@ -67,6 +66,7 @@ class _SearchPageState extends State<SearchPage> {
               name: searchValues[0],
               image: searchValues[1],
               price: int.parse(searchValues[2]),
+              mrp: int.parse(searchValues[2]),
               id: int.parse(searchValues[3]),
               stock: int.parse(searchValues[4]),
               unit: searchValues[5],
@@ -96,8 +96,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> loadRecentSearches() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final List<String>? recentSearches =
-      prefs.getStringList('recentSearches');
+      final List<String>? recentSearches = prefs.getStringList('recentSearches');
       if (recentSearches != null) {
         setState(() {
           _recentSearches = recentSearches.map((search) {
@@ -106,6 +105,7 @@ class _SearchPageState extends State<SearchPage> {
               name: searchValues[0],
               image: searchValues[1],
               price: int.parse(searchValues[2]),
+              mrp: int.parse(searchValues[2]),
               id: int.parse(searchValues[3]),
               stock: int.parse(searchValues[4]),
               unit: searchValues[5],
@@ -166,8 +166,6 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-
-
   void saveSearch(Product product) {
     setState(() {
       _productSearches.clear();
@@ -219,9 +217,9 @@ class _SearchPageState extends State<SearchPage> {
         prefixIcon: const Icon(Icons.search),
         suffixIcon: _controller.text.isNotEmpty
             ? IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: clearSearch,
-        )
+                icon: const Icon(Icons.clear),
+                onPressed: clearSearch,
+              )
             : null,
       ),
       style: const TextStyle(color: Colors.black),
@@ -244,6 +242,7 @@ class _SearchPageState extends State<SearchPage> {
       _hasStoredQuery = false; // Reset when clear button is pressed
     });
   }
+
   Widget productCard(Product product) {
     return Card(
       // color: const Color(0xffeaf1fc),
@@ -288,6 +287,13 @@ class _SearchPageState extends State<SearchPage> {
                     Text(
                       'Price: ₹${product.price.toStringAsFixed(2)}',
                       style: const TextStyle(color: Colors.grey),
+                    ),
+                    Text(
+                      "₹${product.mrp.toString()}",
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        decoration: TextDecoration.lineThrough,
+                      ),
                     ),
                   ],
                 ),
@@ -391,8 +397,7 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           const Text(
                             'Search Results',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           const SizedBox(height: 10),
                           ListView.builder(
@@ -406,14 +411,10 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ],
                       ),
-                    if (_filteredProducts.isEmpty &&
-                        _controller.text.isNotEmpty)
+                    if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
                       Text(
                         'Product not found',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.grey[600]),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
                       ),
                     if (_recentSearches.isNotEmpty) ...[
                       const SizedBox(height: 20),
@@ -422,13 +423,11 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           const Text(
                             'Recently Searched',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           TextButton(
                             onPressed: clearRecentSearches,
-                            child: const Text('Clear',
-                                style: TextStyle(color: Colors.red)),
+                            child: const Text('Clear', style: TextStyle(color: Colors.red)),
                           ),
                         ],
                       ),
@@ -454,8 +453,7 @@ class _SearchPageState extends State<SearchPage> {
                       const SizedBox(height: 20),
                       const Text(
                         'Product Searches',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       const SizedBox(height: 10),
                       SizedBox(
