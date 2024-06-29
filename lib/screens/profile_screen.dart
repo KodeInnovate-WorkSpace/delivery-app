@@ -31,8 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
-    _checkUserTypeFuture =
-        userProvider.checkUserType(authProvider.textController.text);
+    _checkUserTypeFuture = userProvider.checkUserType(authProvider.textController.text);
   }
 
   @override
@@ -42,9 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile',
-            style:
-                TextStyle(color: Color(0xff1c1c1c), fontFamily: 'Gilroy-Bold')),
+        title: const Text('Profile', style: TextStyle(color: Color(0xff1c1c1c), fontFamily: 'Gilroy-Bold')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -71,8 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(
-                          10), // Adjust the radius as needed
+                      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.1), // Shadow color
@@ -89,9 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           padding: EdgeInsets.only(top: 15.0, left: 18.0),
                           child: Text(
                             "My Account",
-                            style: TextStyle(
-                                color: Color(0xff666666),
-                                fontFamily: 'Gilroy-SemiBold'),
+                            style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-SemiBold'),
                           ),
                         ),
 
@@ -100,8 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -111,11 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: Text(
-                              authProvider.phone.isEmpty
-                                  ? "Please Login"
-                                  : "+91 ${authProvider.textController.text}",
-                              style: const TextStyle(color: Color(0xff1c1c1c))),
+                          title: Text(authProvider.phone.isEmpty ? "Please Login" : "+91 ${authProvider.textController.text}", style: const TextStyle(color: Color(0xff1c1c1c))),
                         ),
 
                         // Your Orders
@@ -123,8 +112,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -134,14 +122,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Orders",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Orders", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const OrderHistoryScreen()),
+                              MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
                             );
                           },
                         ),
@@ -151,8 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -162,13 +146,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Adderss",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Adderss", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => const AddressScreen()),
+                              MaterialPageRoute(builder: (context) => const AddressScreen()),
                             );
                           },
                         ),
@@ -183,8 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(
-                          10), // Adjust the radius as needed
+                      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.1), // Shadow color
@@ -201,9 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           padding: EdgeInsets.only(top: 15.0, left: 18.0),
                           child: Text(
                             "Other Information",
-                            style: TextStyle(
-                                color: Color(0xff666666),
-                                fontFamily: 'Gilroy-SemiBold'),
+                            style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-SemiBold'),
                           ),
                         ),
 
@@ -213,8 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             leading: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xffc9cace),
-                                  borderRadius: BorderRadius.circular(
-                                      50), // Adjust the radius as needed
+                                  borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                                 ),
                                 child: const Padding(
                                   padding: EdgeInsets.all(6.0),
@@ -224,25 +202,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                     size: 15,
                                   ),
                                 )),
-                            title: const Text("Admin Screen",
-                                style: TextStyle(color: Color(0xff1c1c1c))),
+                            title: const Text("Admin Screen", style: TextStyle(color: Color(0xff1c1c1c))),
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => const AdminScreen()),
+                                MaterialPageRoute(builder: (context) => const AdminScreen()),
                               );
                             },
                           ),
                         // Delivery Partner Screen
-                        if (userProvider.userType == 1 ||
-                            userProvider.userType == 2)
+                        if (userProvider.userType == 1 || userProvider.userType == 2)
                           ListTile(
                             leading: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xffc9cace),
-                                  borderRadius: BorderRadius.circular(
-                                      50), // Adjust the radius as needed
+                                  borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                                 ),
                                 child: const Padding(
                                   padding: EdgeInsets.all(6.0),
@@ -252,14 +226,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                     size: 15,
                                   ),
                                 )),
-                            title: const Text("Delivery Partner",
-                                style: TextStyle(color: Color(0xff1c1c1c))),
+                            title: const Text("Delivery Partner", style: TextStyle(color: Color(0xff1c1c1c))),
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const DeliveryHomeScreen()),
+                                MaterialPageRoute(builder: (context) => const DeliveryHomeScreen()),
                               );
                             },
                           ),
@@ -269,8 +240,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -280,8 +250,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Share the app",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Share the app", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             _shareApp();
                           },
@@ -292,8 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -303,13 +271,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("About Us",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("About Us", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => const AboutUsPage()),
+                              MaterialPageRoute(builder: (context) => const AboutUsPage()),
                             );
                           },
                         ),
@@ -319,8 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -330,8 +295,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Rate Us on Play Store",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Rate Us on Play Store", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             _launchPlayStore();
                           },
@@ -342,8 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -353,14 +316,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Notification",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Notification", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const NotificationSettingsPage()),
+                              MaterialPageRoute(builder: (context) => const NotificationSettingsPage()),
                             );
                           },
                         ),
@@ -370,8 +330,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           leading: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xffc9cace),
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -381,14 +340,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Contact Us",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Contact Us", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ContactScreen()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactScreen()));
                           },
                         ),
                       ],
@@ -403,8 +357,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(
-                          10), // Adjust the radius as needed
+                      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.1), // Shadow color
@@ -422,8 +375,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               decoration: BoxDecoration(
                                 color: const Color(0xffEF4B4B),
 
-                                borderRadius: BorderRadius.circular(
-                                    50), // Adjust the radius as needed
+                                borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.all(6.0),
@@ -433,8 +385,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Logout",
-                              style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Logout", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () async {
                             showDialog(
                                 context: context,
@@ -442,45 +393,33 @@ class _ProfilePageState extends State<ProfilePage> {
                                       backgroundColor: Colors.white,
                                       title: const Text(
                                         "Logout",
-                                        style: TextStyle(
-                                            fontFamily: 'Gilroy-Bold',
-                                            color: Color(0xff1c1c1c)),
+                                        style: TextStyle(fontFamily: 'Gilroy-Bold', color: Color(0xff1c1c1c)),
                                       ),
-                                      content: const Text(
-                                          "Are you sure you want to logout?"),
+                                      content: const Text("Are you sure you want to logout?"),
                                       actions: [
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children: [
                                             //Yes
                                             TextButton(
                                                 onPressed: () async {
-                                                  await FirebaseAuth.instance
-                                                      .signOut();
-                                                  SharedPreferences prefs =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  await prefs
-                                                      .remove('isLoggedIn');
+                                                  await FirebaseAuth.instance.signOut();
+                                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                  await prefs.remove('isLoggedIn');
                                                   Navigator.pushAndRemoveUntil(
                                                     context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const SigninScreen()),
+                                                    MaterialPageRoute(builder: (context) => const SigninScreen()),
                                                     (route) => false,
                                                   );
                                                 },
                                                 child: const Text(
                                                   "Yes",
-                                                  style: TextStyle(
-                                                      color: Colors.black),
+                                                  style: TextStyle(color: Colors.black),
                                                 )),
 
                                             //No
                                             TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                onPressed: () => Navigator.of(context).pop(),
                                                 child: const Text(
                                                   "No",
                                                   style: TextStyle(
@@ -536,12 +475,11 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 void _shareApp() {
-  Share.share(
-      'Check out this amazing delivery app : https://play.google.com/store/apps');
+  Share.share('Check out this amazing delivery app: https://play.google.com/store/apps/details?id=com.delivoapp.app');
 }
 
 void _launchPlayStore() async {
-  final Uri url = Uri.parse('https://play.google.com/store/apps');
+  final Uri url = Uri.parse('https://play.google.com/store/apps/details?id=com.delivoapp.app');
   if (!await launchUrl(url)) {
     throw Exception('Could not launch $url');
   }
