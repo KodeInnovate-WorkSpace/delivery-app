@@ -18,6 +18,7 @@ class EditProduct extends StatefulWidget {
 class _EditProductState extends State<EditProduct> with ChangeNotifier {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  final TextEditingController mrpController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
@@ -104,6 +105,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         'image': imageUrl,
         'name': nameController.text,
         'price': int.parse(priceController.text),
+        'mrp': int.parse(mrpController.text),
         'status': dropdownValue,
         'stock': int.parse(stockController.text),
         'sub_category_id': selectedSubCategoryId,
@@ -191,6 +193,10 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
+            Row(
+              children: [],
+            ),
+
             // Enter Price
             SizedBox(
               width: 250,
@@ -200,6 +206,36 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter product price',
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons.currency_rupee),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Enter MRP
+            SizedBox(
+              width: 250,
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                controller: mrpController,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Enter product MRP',
                   hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),

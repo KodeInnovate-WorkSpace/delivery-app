@@ -54,6 +54,7 @@ class CategoryScreenState extends State<CategoryScreen> {
               image: data['image'] ?? '',
               unit: data['unit'] ?? '0',
               price: data['price'] ?? 0,
+              mrp: data['mrp'] ?? 0,
               stock: data['stock'] ?? 0,
               subCatId: data['sub_category_id'] ?? 0,
               status: data['status'],
