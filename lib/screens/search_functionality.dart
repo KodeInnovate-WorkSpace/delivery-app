@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product_model.dart';
+import '../providers/auth_provider.dart';
 import '../widget/add_to_cart_button.dart';
 
 class SearchPage extends StatefulWidget {
@@ -17,7 +19,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
   List<Product> _productSearches = [];
-  bool _hasStoredQuery = false; // Add this variable
+  bool _hasStoredQuery = false;
 
   @override
   void initState() {
@@ -25,7 +27,7 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(filterProducts);
     fetchProductsFromFirestore();
     loadRecentSearches();
-    loadProductSearches(); // Load product searches
+    loadProductSearches();
   }
 
   Future<void> fetchProductsFromFirestore() async {
@@ -131,11 +133,13 @@ class _SearchPageState extends State<SearchPage> {
   void filterProducts() async {
     final query = _controller.text;
     final lowerCaseQuery = query.toLowerCase();
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    final phoneNumber = authProvider.phone;
 
     setState(() {
       if (query.isEmpty) {
         _filteredProducts.clear();
-        _hasStoredQuery = false; // Reset the flag when query is cleared
+        _hasStoredQuery = false;
       } else {
         _filteredProducts = _allProducts.where((product) {
           return product.name.toLowerCase().contains(lowerCaseQuery);
@@ -143,11 +147,8 @@ class _SearchPageState extends State<SearchPage> {
       }
     });
 
-    // Store user search query in Firestore if it has exactly 4 characters and hasn't been stored already
     if (query.length == 4 && !_hasStoredQuery) {
       final userSuggestedProducts = FirebaseFirestore.instance.collection('UserSuggestedProducts');
-
-      // Check if the query already exists
       final existingQuery = await userSuggestedProducts.where('searchQuery', isEqualTo: query).get();
 
       if (existingQuery.docs.isEmpty) {
@@ -155,14 +156,15 @@ class _SearchPageState extends State<SearchPage> {
           await userSuggestedProducts.add({
             'searchQuery': query,
             'timestamp': Timestamp.now(),
+            'phoneNumber': phoneNumber,
           });
-          _hasStoredQuery = true; // Set the flag after storing the query
+          _hasStoredQuery = true;
         } catch (e) {
           debugPrint("$e");
         }
       }
     } else if (query.isEmpty) {
-      _hasStoredQuery = false; // Reset the flag when query is cleared
+      _hasStoredQuery = false;
     }
   }
 
@@ -176,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
         _recentSearches = _recentSearches.sublist(0, 5);
       }
       saveRecentSearches();
-      saveProductSearches(); // Save product searches
+      saveProductSearches();
     });
   }
 
@@ -185,7 +187,7 @@ class _SearchPageState extends State<SearchPage> {
       _recentSearches.clear();
       saveRecentSearches();
       _productSearches.clear();
-      saveProductSearches(); // Clear product searches
+      saveProductSearches();
     });
   }
 
@@ -239,13 +241,12 @@ class _SearchPageState extends State<SearchPage> {
       _controller.clear();
       _productSearches.clear();
       _filteredProducts.clear();
-      _hasStoredQuery = false; // Reset when clear button is pressed
+      _hasStoredQuery = false;
     });
   }
 
   Widget productCard(Product product) {
     return Card(
-      // color: const Color(0xffeaf1fc),
       elevation: 0,
       color: Colors.white,
       child: ListTile(
@@ -253,7 +254,6 @@ class _SearchPageState extends State<SearchPage> {
         title: Text(product.name),
         onTap: () {
           saveSearch(product);
-          // Navigate to product details page or any other action
         },
       ),
     );
@@ -320,7 +320,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget recentSearchCard(Product product) {
     return Card(
-      // color: const Color(0xffeaf1fc),
       color: Colors.white,
       elevation: 0,
       child: Padding(

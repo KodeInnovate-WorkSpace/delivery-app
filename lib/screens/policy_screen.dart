@@ -16,7 +16,14 @@ class _PolicyScreenState extends State<PolicyScreen> {
       appBar: AppBar(
         title: Text(widget.policyTitle),
       ),
-      body: SingleChildScrollView(child: Column(children: [Text(widget.content)],),),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [Padding(
+            padding: const EdgeInsets.all(17.0),
+            child: Text(widget.content),
+          )],
+        ),
+      ),
     );
   }
 }
