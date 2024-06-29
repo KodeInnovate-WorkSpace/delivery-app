@@ -28,30 +28,27 @@ class AdminScreen extends StatelessWidget {
                             "Logout",
                             style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
                           ),
-                          content:
-                              const Text("Are you sure you want to logout?"),
+                          content: const Text("Are you sure you want to logout?"),
                           actions: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
+                                    onPressed: () => Navigator.of(context).pop(),
                                     child: const Text(
                                       "No",
-                                      style: TextStyle(color: Colors.redAccent),
+                                      style: TextStyle(
+                                        color: Color(0xffEF4B4B),
+                                      ),
                                     )),
                                 TextButton(
                                     onPressed: () async {
                                       await FirebaseAuth.instance.signOut();
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
                                       await prefs.remove('isLoggedIn');
                                       Navigator.pushAndRemoveUntil(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SigninScreen()),
+                                        MaterialPageRoute(builder: (context) => const SigninScreen()),
                                         (route) => false,
                                       );
                                     },
@@ -67,7 +64,7 @@ class AdminScreen extends StatelessWidget {
               style: ButtonStyle(
                 shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.0),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
                 backgroundColor: WidgetStateProperty.resolveWith<Color>(
@@ -75,7 +72,7 @@ class AdminScreen extends StatelessWidget {
                     if (states.contains(WidgetState.disabled)) {
                       return Colors.black.withOpacity(0.3);
                     }
-                    return Colors.redAccent;
+                    return const Color(0xffEF4B4B);
                   },
                 ),
               ),

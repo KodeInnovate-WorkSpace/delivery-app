@@ -16,14 +16,16 @@ class EditSubCategory extends StatefulWidget {
 }
 
 class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController imageController = TextEditingController();
+  File? _image;
+
   int? dropdownValue = 1;
   final List<String> categoryNames = [];
   final Map<String, int> categoryMap = {};
   String? selectedCategoryName;
   int? selectedCategoryId;
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController imageController = TextEditingController();
-  File? _image;
+
   bool isLoading = false;
 
   SubCatModel subcat = SubCatModel();
@@ -37,8 +39,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
   Future<void> fetchCategory() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection("category").get();
+      final snapshot = await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -79,10 +80,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
       notifyListeners();
 
       // Check if sub-category already exists
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('sub_category')
-          .where('sub_category_name', isEqualTo: nameController.text)
-          .get();
+      final querySnapshot = await FirebaseFirestore.instance.collection('sub_category').where('sub_category_name', isEqualTo: nameController.text).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         showMessage("Sub-Category already exists");
@@ -92,8 +90,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
-      final subCategoryDoc =
-          FirebaseFirestore.instance.collection('sub_category').doc();
+      final subCategoryDoc = FirebaseFirestore.instance.collection('sub_category').doc();
 
       await subCategoryDoc.set({
         'sub_category_id': subData.length + 1,
@@ -113,8 +110,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
   Future<String> uploadImage(File image) async {
     try {
-      final storageRef = FirebaseStorage.instance.ref().child(
-          'sub_category_images/${DateTime.now().millisecondsSinceEpoch}');
+      final storageRef = FirebaseStorage.instance.ref().child('sub_category_images/${DateTime.now().millisecondsSinceEpoch}');
       final uploadTask = storageRef.putFile(image);
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();
@@ -127,8 +123,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   }
 
   Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -137,8 +132,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   }
 
   Future<void> openCamera() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -164,8 +158,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter Name',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -206,8 +199,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                   ),
                   child: const Text(
                     "Open Camera",
-                    style: TextStyle(
-                        color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -228,17 +220,15 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                   ),
                   child: const Text(
                     "Pick Image",
-                    style: TextStyle(
-                        color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
                   ),
                 ),
               ],
             ),
 
-            _image != null
-                ? Image.file(_image!, height: 100, width: 100)
-                : const Text("No image selected"),
+            _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
             const SizedBox(height: 20),
+            //Status Dropdown
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -261,7 +251,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
               ],
             ),
             const SizedBox(height: 20),
-            // Select Category
+            // Select Category Dropdown
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -274,8 +264,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                       selectedCategoryId = categoryMap[selectedCategoryName]!;
                     });
                   },
-                  items: categoryNames
-                      .map<DropdownMenuItem<String>>((String category) {
+                  items: categoryNames.map<DropdownMenuItem<String>>((String category) {
                     return DropdownMenuItem<String>(
                       value: category,
                       child: Text(category.toString()),
@@ -293,9 +282,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                 onPressed: isLoading
                     ? null
                     : () async {
-                        if (nameController.text.isEmpty ||
-                            _image == null ||
-                            selectedCategoryName == null) {
+                        if (nameController.text.isEmpty || _image == null || selectedCategoryName == null) {
                           showMessage("Please fill necessary details");
                           log("Please fill all the fields");
 
@@ -319,11 +306,8 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                         Navigator.pop(context, true);
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isLoading
-                      ? Colors.black.withOpacity(0.3)
-                      : Colors.black, // Set the color directly
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
