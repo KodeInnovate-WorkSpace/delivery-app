@@ -8,14 +8,14 @@ import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/order_tracking.dart';
+import 'package:speedy_delivery/screens/orders_screen.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
-import 'package:speedy_delivery/widget/address_selection.dart';
+import 'package:speedy_delivery/widget/apply_coupon_widget.dart';
+import 'package:speedy_delivery/widget/bill_details_widget.dart';
 import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
-import '../widget/apply_coupon_widget.dart';
-import '../widget/bill_details_widget.dart';
 import '../widget/network_handler.dart';
 import 'address_input.dart';
 import 'order_confirmation_screen.dart';
@@ -36,6 +36,8 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
+  String _defaultAdd = "No address available";
+  String _newAdd = '';
   String _selectedPaymentMethod = 'Banks';
   double totalAmt = 0.0;
   String customerId = '';
@@ -49,10 +51,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
     customerId = _generateCustomerId();
-    cfPaymentGatewayService.setCallback(
-        verifyPayment,
-        (errorResponse, orderId) =>
-            onError(errorResponse, orderId, context, orderProvider));
+    cfPaymentGatewayService.setCallback(verifyPayment, (errorResponse, orderId) => onError(errorResponse, orderId, context, orderProvider));
   }
 
   String generateOrderId() {
@@ -72,15 +71,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'Content-Type': 'application/json',
       'x-client-id': "TEST102073159c36086010050049f41951370201",
       // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      'x-client-secret':
-          "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       // 'x-client-secret':"cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
-    var request = http.Request(
-        'POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
+    var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
     request.body = json.encode({
-      "order_amount": totalAmt,
+      "order_amount": totalAmt.toStringAsFixed(2),
       "order_id": myOrderId,
       "order_currency": "INR",
       "customer_details": {
@@ -112,14 +109,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     cartProvider.clearCart();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
+      MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
     );
 
     showMessage("Payment Successful");
   }
 
-  void onError(CFErrorResponse errorResponse, String orderId,
-      BuildContext context, OrderProvider orderProvider) async {
+  void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
     debugPrint(errorResponse.getMessage().toString());
     debugPrint("Error while making payment");
     debugPrint("Order ID is $orderId");
@@ -138,8 +134,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<void> webCheckout(String myOrdId) async {
     try {
       CFSession? session = await createSession(myOrdId);
-      var cfWebCheckout =
-          CFWebCheckoutPaymentBuilder().setSession(session!).build();
+      var cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session!).build();
       cfPaymentGatewayService.doPayment(cfWebCheckout);
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -149,11 +144,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      var session = CFSessionBuilder()
-          .setEnvironment(CFEnvironment.SANDBOX)
-          .setOrderId(myOrdId)
-          .setPaymentSessionId(paymentSessionId["payment_session_id"])
-          .build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -161,25 +152,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return null;
   }
 
+  // Future<void> pay(String myOrdId) async {
+  //   try {
+  //     var session = await createSession(myOrdId);
+  //     List<CFPaymentModes> components = <CFPaymentModes>[];
+  //     var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
+  //     var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+  //     var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session!).setPaymentComponent(paymentComponent).setTheme(theme).build();
+  //     cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
+  //   } on CFException catch (e) {
+  //     debugPrint(e.message);
+  //   }
+  // }
   Future<void> pay(String myOrdId) async {
     try {
       var session = await createSession(myOrdId);
+      if (session == null) {
+        debugPrint("Session creation failed");
+        return;
+      }
       List<CFPaymentModes> components = <CFPaymentModes>[];
-      var paymentComponent =
-          CFPaymentComponentBuilder().setComponents(components).build();
-      var theme = CFThemeBuilder()
-          .setNavigationBarBackgroundColorColor("#f7ce34")
-          .setPrimaryFont("Menlo")
-          .setSecondaryFont("Futura")
-          .build();
-      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder()
-          .setSession(session!)
-          .setPaymentComponent(paymentComponent)
-          .setTheme(theme)
-          .build();
+      var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
+      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session).setPaymentComponent(paymentComponent).setTheme(theme).build();
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
-      debugPrint(e.message);
+      debugPrint("Payment exception: ${e.message}");
     }
   }
 
@@ -190,16 +188,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final authProvider = Provider.of<MyAuthProvider>(context);
     final addressProvider = Provider.of<AddressProvider>(context);
 
+    if (addressProvider.address.isNotEmpty) {
+      _defaultAdd = "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        addressProvider.loadAddresses();
+      }
+    });
+
     setState(() {
       totalAmt = cartProvider.calculateGrandTotal();
-      customerPhone =
-          authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
+      customerPhone = authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
 
     return NetworkHandler(
       child: Scaffold(
-        resizeToAvoidBottomInset:
-            true, // Enable auto-resizing when keyboard appears
+        resizeToAvoidBottomInset: true, // Enable auto-resizing when keyboard appears
         appBar: AppBar(
           title: const Text('Checkout'),
         ),
@@ -219,11 +225,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             : Stack(
                 children: [
                   Container(
-                    height: MediaQuery.of(context)
-                        .size
-                        .height, //covers the entire screen (responsive)
-                    color: const Color(
-                        0xffeaf1fc), // Set the background color to grey
+                    height: MediaQuery.of(context).size.height, //covers the entire screen (responsive)
+                    color: const Color(0xffeaf1fc), // Set the background color to grey
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SingleChildScrollView(
@@ -233,8 +236,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             // Delivery information
                             Card(
                               elevation: 0,
-                              color:
-                                  Colors.white, // Set the card color to white
+                              color: Colors.white, // Set the card color to white
                               child: Padding(
                                 padding: const EdgeInsets.all(18.0),
                                 child: Row(
@@ -243,14 +245,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Delivery within $deliveryTime minutes',
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: 'Gilroy-ExtraBold'),
+                                            style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                          ),
+                                          const Text(
+                                            'Shipment of 1 item',
+                                            style: TextStyle(fontSize: 12, color: Colors.grey),
                                           ),
                                         ],
                                       ),
@@ -260,49 +263,192 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                             ),
                             const SizedBox(height: 20),
-
                             // Display cart items
                             const DisplayCartItems(),
                             const SizedBox(height: 20),
-
                             // Bill details
                             const BillDetails(),
                             const SizedBox(height: 20),
 
-                            //coupon section
+                            //Apply coupon
                             const ApplyCouponWidget(),
                             const SizedBox(height: 20),
 
-                            //checkout button
                             Container(
                               decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
                                 color: Colors.white,
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   children: [
-                                    //Address Selection
-                                    const AddressSelection(),
+                                    //New address
+                                    GestureDetector(
+                                      onTap: () {
+                                        // Address selection sheet
+                                        showModalBottomSheet(
+                                          context: context,
+                                          backgroundColor: Colors.white,
+                                          builder: (BuildContext context) {
+                                            return StatefulBuilder(
+                                              builder: (BuildContext context, StateSetter setModalState) {
+                                                return Container(
+                                                  decoration: const BoxDecoration(
+                                                    color: Colors.white70,
+                                                    borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        // Title
+                                                        const Text(
+                                                          "Select address",
+                                                          style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-Bold'),
+                                                        ),
+                                                        const SizedBox(height: 20),
+                                                        // Add new address row
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                                            border: Border.all(color: Colors.grey.shade200),
+                                                          ),
+                                                          child: ListTile(
+                                                            minLeadingWidth: 50,
+                                                            leading: const Icon(Icons.add, color: Colors.green, size: 18),
+                                                            title: const Text(
+                                                              "Add new address",
+                                                              style: TextStyle(color: Colors.green, fontFamily: 'Gilroy-SemiBold'),
+                                                            ),
+                                                            trailing: const Icon(Icons.chevron_right),
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => const AddressInputForm()),
+                                                              ).then((value) {
+                                                                // Refresh the modal state when returning from address input
+                                                                setModalState(() {});
+                                                                setState(() {}); // Refresh the main state
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 35),
+                                                        // Saved addresses
+                                                        Text(
+                                                          "Your saved addresses",
+                                                          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                                                        ),
+                                                        if (addressProvider.address.isNotEmpty)
+                                                          SizedBox(
+                                                            height: 250,
+                                                            child: ListView.builder(
+                                                              shrinkWrap: true,
+                                                              itemCount: addressProvider.address.length,
+                                                              itemBuilder: (context, index) {
+                                                                final address = addressProvider.address[index];
+                                                                return Column(
+                                                                  children: [
+                                                                    GestureDetector(
+                                                                      onTap: () {
+                                                                        _newAdd = "${address.flat}, ${address.building}, ${address.mylandmark}";
+                                                                        setState(() {
+                                                                          _defaultAdd = _newAdd;
+                                                                        });
+                                                                        addressProvider.setSelectedAddress(_newAdd); // Set the selected address in the provider
+                                                                        Navigator.pop(context, true); // Close the bottom modal
+                                                                        showMessage("Address Changed!");
+                                                                      },
+                                                                      child: ListTile(
+                                                                        title: Text('${address.flat}, ${address.floor}, ${address.building}'),
+                                                                        subtitle: Text(address.mylandmark),
+                                                                        trailing: IconButton(
+                                                                          onPressed: () {
+                                                                            addressProvider.removeAddress(address);
+                                                                            showMessage("Address Deleted!");
+                                                                            setModalState(() {}); // Refresh the modal state
+                                                                            setState(() {
+                                                                              if (_defaultAdd == _newAdd) {
+                                                                                _defaultAdd = "";
+                                                                                _newAdd = "";
+                                                                              }
+                                                                            });
+                                                                          },
+                                                                          icon: const Icon(Icons.delete),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ).then((value) {
+                                          setState(() {}); // Refresh the main state after the modal is closed
+                                        });
+                                      },
+                                      child: Container(
+                                        color: Colors.transparent,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.place),
+                                                  const SizedBox(width: 5),
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      const Text(
+                                                        "Delivering to",
+                                                        style: TextStyle(fontFamily: 'Gilroy-SemiBold'),
+                                                      ),
+                                                      Text(
+                                                        addressProvider.selectedAddress.isEmpty ? "Please select an address" : addressProvider.selectedAddress,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(color: Colors.grey[500], fontFamily: 'Gilroy-Medium', fontSize: 12),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              // Change address button
+                                              const Text(
+                                                "Change",
+                                                style: TextStyle(color: Colors.green, fontFamily: 'Gilroy-SemiBold'),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
 
                                     const Divider(),
                                     // payment mode | place order
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             // payment mode dropdown
                                             Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 const Icon(
                                                   Icons.account_balance,
@@ -311,33 +457,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 const SizedBox(width: 10),
                                                 DropdownButton<String>(
                                                   value: _selectedPaymentMethod,
-                                                  icon: const Icon(
-                                                      Icons.arrow_drop_down),
+                                                  icon: const Icon(Icons.arrow_drop_down),
                                                   iconSize: 24,
                                                   elevation: 16,
-                                                  style: const TextStyle(
-                                                      color: Colors.black),
+                                                  style: const TextStyle(color: Colors.black),
                                                   // underline: Container(
                                                   //   height: 2,
                                                   //   color: Colors.green,
                                                   // ),
                                                   underline: Container(),
-                                                  onChanged:
-                                                      (String? newValue) {
+                                                  onChanged: (String? newValue) {
                                                     setState(() {
-                                                      _selectedPaymentMethod =
-                                                          newValue!;
+                                                      _selectedPaymentMethod = newValue!;
                                                     });
                                                   },
-                                                  items: <String>[
-                                                    'Banks',
-                                                    'Cash'
-                                                  ].map<
-                                                          DropdownMenuItem<
-                                                              String>>(
-                                                      (String value) {
-                                                    return DropdownMenuItem<
-                                                        String>(
+                                                  items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
+                                                    return DropdownMenuItem<String>(
                                                       value: value,
                                                       child: Text(value),
                                                     );
@@ -360,88 +495,65 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               return;
                                             }
 
-                                            if (addressProvider
-                                                .address.isEmpty) {
-                                              showMessage(
-                                                  "Please select an address");
+                                            if (addressProvider.address.isEmpty && addressProvider.selectedAddress.isEmpty) {
+                                              showMessage("Please select an address");
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const AddressInputForm(),
+                                                  builder: (context) => const AddressInputForm(),
                                                 ),
                                               );
                                               return; // Exit the function to prevent navigation to payment screen
                                             }
 
-                                            final orderProvider =
-                                                Provider.of<OrderProvider>(
-                                                    context,
-                                                    listen: false);
+                                            final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
-                                            if (_selectedPaymentMethod =='Banks') {
+                                            if (_selectedPaymentMethod == 'Banks') {
                                               pay(myOrderId).then((value) {
-                                                List<Order> orders =
-                                                    cartProvider.cart
-                                                        .map((item) {
+                                                List<Order> orders = cartProvider.cart.map((item) {
                                                   return Order(
-                                                    orderId:myOrderId, // Use the same order ID for all items
-                                                    paymentMode:_selectedPaymentMethod,
+                                                    orderId: myOrderId,
+                                                    paymentMode: _selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage:item.itemImage,
+                                                    productImage: item.itemImage,
                                                     quantity: item.qnt,
                                                     price: item.itemPrice.toDouble(),
-                                                    totalPrice:(item.itemPrice *item.qnt).toDouble(),
-                                                    address: addressProvider.selectedAddress,
+                                                    totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                                                    address: _defaultAdd,
                                                     phone: authProvider.phone,
-                                                    //transactionId: '',
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(orders,myOrderId,authProvider.phone);
-                                                // Clear the cart
+                                                orderProvider.addOrders(orders, myOrderId, authProvider.phone);
                                                 cartProvider.clearCart();
                                               });
-                                            }
-
-                                            else if (_selectedPaymentMethod =='Cash') {Navigator.of(context)
-                                                  .push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>const OrderConfirmationPage(),
-                                                ),
-                                              )
-                                                  .then((value) {
-                                                List<Order> orders =
-                                                    cartProvider.cart
-                                                        .map((item) {
+                                            } else if (_selectedPaymentMethod == 'Cash') {
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
+                                                List<Order> orders = cartProvider.cart.map((item) {
                                                   return Order(
-                                                    orderId:myOrderId, // Use the same order ID for all items
-                                                    paymentMode:_selectedPaymentMethod,
+                                                    orderId: myOrderId,
+                                                    paymentMode: _selectedPaymentMethod,
                                                     productName: item.itemName,
-                                                    productImage:item.itemImage,
+                                                    productImage: item.itemImage,
                                                     quantity: item.qnt,
                                                     price: item.itemPrice.toDouble(),
-                                                    totalPrice:(item.itemPrice * item.qnt).toDouble(),
-                                                    address: addressProvider.selectedAddress,
+                                                    totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                                                    address: _defaultAdd,
                                                     phone: authProvider.phone,
-                                                    // transactionId: '',
                                                   );
                                                 }).toList();
 
-                                                orderProvider.addOrders(orders,myOrderId,authProvider.phone);
+                                                orderProvider.addOrders(orders, myOrderId, authProvider.phone);
                                                 cartProvider.clearCart();
                                               });
                                             }
                                           },
                                           style: ButtonStyle(
-                                            shape: WidgetStateProperty.all<
-                                                RoundedRectangleBorder>(
+                                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                                                borderRadius: BorderRadius.circular(14.0),
                                               ),
                                             ),
-                                            backgroundColor: WidgetStateProperty
-                                                .resolveWith<Color>(
+                                            backgroundColor: WidgetStateProperty.resolveWith<Color>(
                                               (Set<WidgetState> states) {
                                                 return Colors.black;
                                               },

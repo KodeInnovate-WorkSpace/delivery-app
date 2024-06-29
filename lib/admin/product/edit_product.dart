@@ -42,8 +42,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<void> fetchSubCategory() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection("sub_category").get();
+      final snapshot = await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -84,10 +83,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       notifyListeners();
 
       // Check if sub-category already exists
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .where('name', isEqualTo: nameController.text)
-          .get();
+      final querySnapshot = await FirebaseFirestore.instance.collection('products').where('name', isEqualTo: nameController.text).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         showMessage("Product already exists");
@@ -97,8 +93,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
-      final productDoc =
-          FirebaseFirestore.instance.collection('products').doc();
+      final productDoc = FirebaseFirestore.instance.collection('products').doc();
 
       await productDoc.set({
         'id': productData.length + 1,
@@ -121,9 +116,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<String> uploadImage(File image) async {
     try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('image/${DateTime.now().millisecondsSinceEpoch}');
+      final storageRef = FirebaseStorage.instance.ref().child('image/${DateTime.now().millisecondsSinceEpoch}');
       final uploadTask = storageRef.putFile(image);
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();
@@ -136,8 +129,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   }
 
   Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -146,8 +138,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   }
 
   Future<void> openCamera() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -175,8 +166,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter Name',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -206,8 +196,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter product price',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -237,8 +226,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter Available Stock',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -267,8 +255,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter Unit Eg: 100g, 5 L',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -310,8 +297,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   child: const Text(
                     "Open Camera",
-                    style: TextStyle(
-                        color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -332,16 +318,13 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   child: const Text(
                     "Pick Image",
-                    style: TextStyle(
-                        color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
                   ),
                 ),
               ],
             ),
 
-            _image != null
-                ? Image.file(_image!, height: 100, width: 100)
-                : const Text("No image selected"),
+            _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
             const SizedBox(height: 20),
 
             // Status
@@ -380,8 +363,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       selectedCategory = subcategoriesMap[selectedSubCategory!];
                     });
                   },
-                  items: subcategories
-                      .map<DropdownMenuItem<String>>((String subcat) {
+                  items: subcategories.map<DropdownMenuItem<String>>((String subcat) {
                     return DropdownMenuItem<String>(
                       value: subcat,
                       child: Text(subcat),
@@ -399,9 +381,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 onPressed: isLoading
                     ? null
                     : () async {
-                        if (nameController.text.isEmpty ||
-                            _image == null ||
-                            selectedCategory == null) {
+                        if (nameController.text.isEmpty || _image == null || selectedCategory == null) {
                           showMessage("Please fill necessary details");
                           log("Please fill all the fields");
 
@@ -425,11 +405,8 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                         Navigator.pop(context, true);
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isLoading
-                      ? Colors.black.withOpacity(0.3)
-                      : Colors.black, // Set the color directly
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,

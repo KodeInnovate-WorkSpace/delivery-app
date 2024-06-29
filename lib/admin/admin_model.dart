@@ -99,6 +99,7 @@ class SubCatModel extends ChangeNotifier {
       log("Error updating sub-category: $e");
     }
   }
+
   Future<void> newUpdateSubCategory(String field, dynamic newValue,
       {required String categoryId}) async {
     try {
