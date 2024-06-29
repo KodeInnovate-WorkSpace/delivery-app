@@ -17,7 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
   List<Product> _productSearches = [];
-  // final Map<String, int> _productCounts = {};
+  bool _hasStoredQuery = false; // Add this variable
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> fetchProductsFromFirestore() async {
     try {
       final productsCollection =
-          FirebaseFirestore.instance.collection('products');
+      FirebaseFirestore.instance.collection('products');
       final snapshot = await productsCollection.get();
       final products = snapshot.docs.map((doc) {
         return Product(
@@ -58,7 +58,7 @@ class _SearchPageState extends State<SearchPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final List<String>? productSearches =
-          prefs.getStringList('productSearches');
+      prefs.getStringList('productSearches');
       if (productSearches != null) {
         setState(() {
           _productSearches = productSearches.map((search) {
@@ -97,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final List<String>? recentSearches =
-          prefs.getStringList('recentSearches');
+      prefs.getStringList('recentSearches');
       if (recentSearches != null) {
         setState(() {
           _recentSearches = recentSearches.map((search) {
@@ -128,18 +128,45 @@ class _SearchPageState extends State<SearchPage> {
     prefs.setStringList('recentSearches', recentSearches);
   }
 
-  void filterProducts() {
-    final query = _controller.text.toLowerCase();
+  void filterProducts() async {
+    final query = _controller.text;
+    final lowerCaseQuery = query.toLowerCase();
+
     setState(() {
       if (query.isEmpty) {
         _filteredProducts.clear();
+        _hasStoredQuery = false; // Reset the flag when query is cleared
       } else {
         _filteredProducts = _allProducts.where((product) {
-          return product.name.toLowerCase().contains(query);
+          return product.name.toLowerCase().contains(lowerCaseQuery);
         }).toList();
       }
     });
+
+    // Store user search query in Firestore if it has exactly 4 characters and hasn't been stored already
+    if (query.length == 4 && !_hasStoredQuery) {
+      final userSuggestedProducts = FirebaseFirestore.instance.collection('UserSuggestedProducts');
+
+      // Check if the query already exists
+      final existingQuery = await userSuggestedProducts.where('searchQuery', isEqualTo: query).get();
+
+      if (existingQuery.docs.isEmpty) {
+        try {
+          await userSuggestedProducts.add({
+            'searchQuery': query,
+            'timestamp': Timestamp.now(),
+          });
+          _hasStoredQuery = true; // Set the flag after storing the query
+        } catch (e) {
+          debugPrint("$e");
+        }
+      }
+    } else if (query.isEmpty) {
+      _hasStoredQuery = false; // Reset the flag when query is cleared
+    }
   }
+
+
 
   void saveSearch(Product product) {
     setState(() {
@@ -190,6 +217,12 @@ class _SearchPageState extends State<SearchPage> {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 15),
         prefixIcon: const Icon(Icons.search),
+        suffixIcon: _controller.text.isNotEmpty
+            ? IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: clearSearch,
+        )
+            : null,
       ),
       style: const TextStyle(color: Colors.black),
       onTap: () {
@@ -205,10 +238,12 @@ class _SearchPageState extends State<SearchPage> {
 
   void clearSearch() {
     setState(() {
+      _controller.clear();
       _productSearches.clear();
+      _filteredProducts.clear();
+      _hasStoredQuery = false; // Reset when clear button is pressed
     });
   }
-
   Widget productCard(Product product) {
     return Card(
       // color: const Color(0xffeaf1fc),
@@ -226,8 +261,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget productSearchCard(Product product) {
-
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
