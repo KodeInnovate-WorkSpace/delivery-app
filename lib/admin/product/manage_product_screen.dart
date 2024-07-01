@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../admin_model.dart';
 import 'edit_product.dart';
@@ -152,14 +153,15 @@ class TableData extends DataTableSource {
       // id column
       DataCell(Text(data['id']?.toString() ?? 'N/A')),
       // image column
+
       DataCell(
         SizedBox(
           width: 35,
-          child: Image.network(data['image'] ?? 'https://via.placeholder.com/35'),
+          child: CachedNetworkImage(
+            imageUrl: data['image'] ?? 'No Image',
+          ),
         ),
       ),
-      // name column
-      // DataCell((Text(data['name']))),
 
       //Name Column
       DataCell(

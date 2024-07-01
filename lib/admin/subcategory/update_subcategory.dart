@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/input_box.dart';
 
@@ -13,8 +12,7 @@ class UpdateSubCategory extends StatefulWidget {
   State<UpdateSubCategory> createState() => _UpdateSubCategoryState();
 }
 
-class _UpdateSubCategoryState extends State<UpdateSubCategory>
-    with ChangeNotifier {
+class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifier {
   int? dropdownValue = 1;
   List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
   final TextEditingController categoryController = TextEditingController();
@@ -51,9 +49,7 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory>
     // Set the initial selected category if available
     if (widget.data['category_id'] != null) {
       selectedCategoryId = widget.data['category_id'];
-      selectedCategoryName = categoryMap.entries
-          .firstWhere((entry) => entry.value == selectedCategoryId)
-          .key;
+      selectedCategoryName = categoryMap.entries.firstWhere((entry) => entry.value == selectedCategoryId).key;
     }
     setState(() {});
     notifyListeners();
@@ -70,10 +66,7 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            InputBox(
-                hintText: "Update Sub-Category name",
-                myIcon: Icons.category,
-                myController: categoryController),
+            InputBox(hintText: "Update Sub-Category name", myIcon: Icons.category, myController: categoryController),
             const SizedBox(height: 20),
 
             // category dropdown
@@ -89,8 +82,7 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory>
                       selectedCategoryId = categoryMap[selectedCategoryName]!;
                     });
                   },
-                  items: categoryMap.keys
-                      .map<DropdownMenuItem<String>>((String category) {
+                  items: categoryMap.keys.map<DropdownMenuItem<String>>((String category) {
                     return DropdownMenuItem<String>(
                       value: category,
                       child: Text(category),
@@ -144,23 +136,15 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory>
               child: TextButton(
                 onPressed: () async {
                   // Update name
-                  await subcatObj.updateSubCategory(
-                      'sub_category_name', categoryController.text,
-                      categoryField: 'sub_category_id',
-                      categoryValue: widget.data['sub_category_id']);
+                  await subcatObj.updateSubCategory('sub_category_name', categoryController.text, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
 
                   // Update category (if selected)
                   if (selectedCategoryId != -1) {
-                    await subcatObj.updateSubCategory(
-                        'category_id', selectedCategoryId,
-                        categoryField: 'sub_category_id',
-                        categoryValue: widget.data['sub_category_id']);
+                    await subcatObj.updateSubCategory('category_id', selectedCategoryId, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
                   }
 
                   // Update status
-                  await subcatObj.updateSubCategory('status', dropdownValue,
-                      categoryField: 'sub_category_id',
-                      categoryValue: widget.data['sub_category_id']);
+                  await subcatObj.updateSubCategory('status', dropdownValue, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
 
                   // After successful updates
                   Navigator.pop(context, true);

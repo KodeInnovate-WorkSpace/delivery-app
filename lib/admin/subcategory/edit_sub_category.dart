@@ -151,6 +151,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            //Name
             SizedBox(
               width: 250,
               child: TextFormField(
@@ -179,6 +180,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
+            // Camera
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -228,6 +230,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
 
             _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
             const SizedBox(height: 20),
+
             //Status Dropdown
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

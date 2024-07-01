@@ -39,11 +39,28 @@ class MyAuthProvider with ChangeNotifier {
     });
   }
 
-  Future<void> verifyPhoneNumber(
-      BuildContext context, String phoneNumber) async {
+  Future<void> verifyPhoneNumber(BuildContext context, String phoneNumber) async {
     if (isButtonEnabled) {
       isLoading = true;
       notifyListeners();
+
+      /*
+       FirebaseAuth auth = FirebaseAuth.instance;
+
+await auth.verifyPhoneNumber(
+  phoneNumber: '+91$phoneNumber',
+  codeSent: (String verificationId, int? resendToken) async {
+    // Update the UI - wait for the user to enter the SMS code
+    String smsCode = 'xxxx';
+
+    // Create a PhoneAuthCredential with the code
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+
+    // Sign the user in (or link) with the credential
+    await auth.signInWithCredential(credential);
+  },
+);
+       */
 
       // phone number verification logic
       await FirebaseAuth.instance.verifyPhoneNumber(
@@ -69,8 +86,7 @@ class MyAuthProvider with ChangeNotifier {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VerifyPhoneNumScreen(
-                  verificationId: verificationId, phoneNumber: phoneNumber),
+              builder: (context) => VerifyPhoneNumScreen(verificationId: verificationId, phoneNumber: phoneNumber),
             ),
           );
         },

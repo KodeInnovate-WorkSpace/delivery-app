@@ -55,7 +55,8 @@ class _ProductCardState extends State<ProductCard> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 5.0,
                   crossAxisSpacing: 5.0,
-                  childAspectRatio: 0.58,
+                  childAspectRatio: 0.52,
+                  // childAspectRatio: 0.58,
                 ),
                 itemBuilder: (context, index) {
                   final product = widget.productList[index];
@@ -66,7 +67,8 @@ class _ProductCardState extends State<ProductCard> {
                         borderRadius: BorderRadius.circular(6.0),
                       ),
                       color: Colors.white,
-                      elevation: 1.6,
+                      elevation: 1,
+                      shadowColor: const Color(0xfff1f1f1),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -90,7 +92,8 @@ class _ProductCardState extends State<ProductCard> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontFamily: 'Gilroy-SemiBold',
+                                fontSize: 20,
+                                fontFamily: 'Gilroy-Bold',
                               ),
                             ),
                             // Item unit
@@ -100,37 +103,52 @@ class _ProductCardState extends State<ProductCard> {
                                 color: Colors.grey,
                               ),
                             ),
-                            Text(
-                              product.mrp.toString(),
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
 
                             const SizedBox(height: 10),
                             // Item price
                             SizedBox(
-                              height: 50,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              height: 40,
+                              child: Column(
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "\u20B9 ${product.price}",
+                                    "Rs.${product.price}",
                                     style: const TextStyle(
-                                      fontFamily: "Gilroy-medium",
+                                      fontSize: 14,
+                                      fontFamily: "Gilroy-SemiBold",
                                     ),
                                   ),
-                                  AddToCartButton(
-                                    productName: product.name,
-                                    productPrice: product.price,
-                                    productImage: product.image,
-                                    productUnit: product.unit,
-                                    // refreshCart: refreshCart,
+                                  Text(
+                                    "Rs.${product.mrp.toString()}",
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
                                   ),
+                                  // AddToCartButton(
+                                  //   productName: product.name,
+                                  //   productPrice: product.price,
+                                  //   productImage: product.image,
+                                  //   productUnit: product.unit,
+                                  //   // refreshCart: refreshCart,
+                                  // ),
                                 ],
                               ),
                             ),
+
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height / 22,
+                              child: AddToCartButton(
+                                productName: product.name,
+                                productPrice: product.price,
+                                productImage: product.image,
+                                productUnit: product.unit,
+                                // refreshCart: refreshCart,
+                              ),
+                            )
                           ],
                         ),
                       ),

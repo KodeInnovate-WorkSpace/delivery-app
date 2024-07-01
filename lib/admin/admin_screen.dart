@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/admin/banner/manage_banner_screen.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
@@ -205,6 +206,35 @@ class AdminScreen extends StatelessWidget {
               },
               child: const Text(
                 "Manage Products",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            const SizedBox(
+              height: 18,
+            ),
+
+            // Manage Add images
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: WidgetStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageBannerScreen(),
+                    ));
+              },
+              child: const Text(
+                "Manage Banner",
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
