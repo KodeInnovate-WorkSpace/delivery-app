@@ -103,7 +103,7 @@ class OrderProvider with ChangeNotifier {
   void _saveOrdersToFirebase(List<Order> orders) {
     if (orders.isEmpty) return;
 
-    double overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
+    double overallTotal = orders.fold(0.0, (sum, order) => sum + order.price);
 
     Map<String, dynamic> combinedOrderData = {
       'orderId': orders.first.orderId,
@@ -163,27 +163,23 @@ class OrderProvider with ChangeNotifier {
   }
 
   Stream<List<Order>> streamOrdersByPhone(String phone) {
-    return FirebaseFirestore.instance
-        .collection('OrderHistory')
-        .where('phone', isEqualTo: phone)
-        .snapshots()
-        .map((snapshot) {
+    return FirebaseFirestore.instance.collection('OrderHistory').where('phone', isEqualTo: phone).snapshots().map((snapshot) {
       return snapshot.docs.expand((doc) {
         final data = doc.data();
         List<dynamic> ordersData = data['orders'];
         return ordersData
             .map((orderData) => Order(
-          orderId: data['orderId'],
-          productName: orderData['productName'],
-          productImage: orderData['productImage'],
-          quantity: orderData['quantity'],
-          price: orderData['price'], // fixed the price field
-          totalPrice: orderData['totalPrice'],
-          paymentMode: data['paymentMode'],
-          address: data['address'],
-          phone: data['phone'],
-          status: data['status'] ?? 0,
-        ))
+                  orderId: data['orderId'],
+                  productName: orderData['productName'],
+                  productImage: orderData['productImage'],
+                  quantity: orderData['quantity'],
+                  price: orderData['price'], // fixed the price field
+                  totalPrice: orderData['totalPrice'],
+                  paymentMode: data['paymentMode'],
+                  address: data['address'],
+                  phone: data['phone'],
+                  status: data['status'] ?? 0,
+                ))
             .toList();
       }).toList();
     });
