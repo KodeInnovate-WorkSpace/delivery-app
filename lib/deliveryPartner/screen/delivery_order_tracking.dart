@@ -195,23 +195,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         ),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Discount",
-                style: TextStyle(fontSize: 16),
-              ),
-              Text(
-                // "Rs. ${widget.order.first.d}",
-                "Rs. ",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
