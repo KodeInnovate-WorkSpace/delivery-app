@@ -254,7 +254,7 @@ class HomeScreenState extends State<HomeScreen> {
                           .map((doc) => {
                         'message': doc['message'],
                         'color': doc['color'],
-                        'id':doc['id'],
+                        'textcolor': doc['textcolor'],
                       })
                           .toList();
 
@@ -267,13 +267,13 @@ class HomeScreenState extends State<HomeScreen> {
                               (context, index) {
                             final alert = alerts[index];
                             return Container(
-                              color: Color(int.parse(alert['color'].replaceFirst('#','0xff'))),
+                              color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: Center(
                                 child: Text(
                                   alert['message'],
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: Color(int.parse(alert['textcolor'].replaceFirst('#', '0xff'))),
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
