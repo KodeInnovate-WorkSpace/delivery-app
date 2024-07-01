@@ -18,10 +18,8 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  // String _defaultAdd = "No address available";
-  // String _newAdd = '';
-
   String _selectedPaymentMethod = 'Banks';
+  IconData _paymentIcon = Icons.account_balance;
 
   @override
   void initState() {
@@ -31,23 +29,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // providers
     final cartProvider = Provider.of<CartProvider>(context);
-    // final addressProvider = Provider.of<AddressProvider>(context);
-
-    // if (addressProvider.address.isNotEmpty) {
-    //   _defaultAdd = "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
-    // }
-    //
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (mounted) {
-    //     addressProvider.loadAddresses();
-    //   }
-    // });
 
     return NetworkHandler(
       child: Scaffold(
-        resizeToAvoidBottomInset: true, // Enable auto-resizing when keyboard appears
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Checkout'),
         ),
@@ -67,18 +53,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             : Stack(
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height, //covers the entire screen (responsive)
-                    color: const Color(0xffeaf1fc), // Set the background color to grey
+                    height: MediaQuery.of(context).size.height,
+                    color: const Color(0xffeaf1fc),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Delivery information
                             Card(
                               elevation: 0,
-                              color: Colors.white, // Set the card color to white
+                              color: Colors.white,
                               child: Padding(
                                 padding: const EdgeInsets.all(18.0),
                                 child: Row(
@@ -105,17 +90,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            // Display cart items
                             const DisplayCartItems(),
                             const SizedBox(height: 20),
-                            // Bill details
                             const BillDetails(),
                             const SizedBox(height: 20),
-
-                            //Apply coupon
                             const ApplyCouponWidget(),
                             const SizedBox(height: 20),
-
                             Container(
                               decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -125,11 +105,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   children: [
-                                    //Address Selection
                                     const AddressSelection(),
-
                                     const Divider(),
-                                    // payment mode | place order
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,12 +114,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            // payment mode dropdown
                                             Row(
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
-                                                const Icon(
-                                                  Icons.account_balance,
+                                                Icon(
+                                                  _paymentIcon,
                                                   size: 12,
                                                 ),
                                                 const SizedBox(width: 10),
@@ -156,6 +132,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   onChanged: (String? newValue) {
                                                     setState(() {
                                                       _selectedPaymentMethod = newValue!;
+                                                      _paymentIcon = newValue == 'Banks' ? Icons.account_balance : Icons.currency_rupee;
                                                     });
                                                   },
                                                   items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
@@ -167,13 +144,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ),
                                               ],
                                             ),
-                                            // Text(_selectedPaymentMethod)
                                           ],
                                         ),
-                                        //Payment Button
                                         PaymentButton(selectedMethod: _selectedPaymentMethod),
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
