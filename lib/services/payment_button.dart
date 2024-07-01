@@ -64,20 +64,21 @@ class _PaymentButtonState extends State<PaymentButton> {
   Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      'x-client-id': "TEST102073159c36086010050049f41951370201",
-      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
-      // 'x-client-secret':"cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
+      'x-client-id': "6983506cac38e05faf1b6e3085053896",
+      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
-    var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders'));
+    // var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
+    var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     request.body = json.encode({
       "order_amount": totalAmt.toStringAsFixed(2),
       "order_id": myOrderId,
       "order_currency": "INR",
       "customer_details": {
         "customer_id": customerId,
-        "customer_name": "customer_name",
+        "customer_name": "",
         "customer_email": "",
         "customer_phone": customerPhone,
       },
@@ -147,34 +148,35 @@ class _PaymentButtonState extends State<PaymentButton> {
     return null;
   }
 
-  // Future<void> pay(String myOrdId) async {
-  //   try {
-  //     var session = await createSession(myOrdId);
-  //     List<CFPaymentModes> components = <CFPaymentModes>[];
-  //     var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
-  //     var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
-  //     var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session!).setPaymentComponent(paymentComponent).setTheme(theme).build();
-  //     cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
-  //   } on CFException catch (e) {
-  //     debugPrint(e.message);
-  //   }
-  // }
   Future<void> pay(String myOrdId) async {
     try {
       var session = await createSession(myOrdId);
-      if (session == null) {
-        debugPrint("Session creation failed");
-        return;
-      }
       List<CFPaymentModes> components = <CFPaymentModes>[];
       var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
       var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
-      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session).setPaymentComponent(paymentComponent).setTheme(theme).build();
+      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session!).setPaymentComponent(paymentComponent).setTheme(theme).build();
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
-      debugPrint("Payment exception: ${e.message}");
+      debugPrint(e.message);
     }
   }
+
+  // Future<void> pay(String myOrdId) async {
+  //   try {
+  //     var session = await createSession(myOrdId);
+  //     if (session == null) {
+  //       debugPrint("Session creation failed");
+  //       return;
+  //     }
+  //     List<CFPaymentModes> components = <CFPaymentModes>[];
+  //     var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
+  //     var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+  //     var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session).setPaymentComponent(paymentComponent).setTheme(theme).build();
+  //     cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
+  //   } on CFException catch (e) {
+  //     debugPrint("Payment exception: ${e.message}");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +207,7 @@ class _PaymentButtonState extends State<PaymentButton> {
               builder: (context) => const AddressInputForm(),
             ),
           );
-          return; // Exit the function to prevent navigation to payment screen
+          return;
         }
 
         final orderProvider = Provider.of<OrderProvider>(context, listen: false);
@@ -239,7 +241,6 @@ class _PaymentButtonState extends State<PaymentButton> {
                 productImage: item.itemImage,
                 quantity: item.qnt,
                 price: item.itemPrice.toDouble(),
-                // totalPrice: (item.itemPrice * item.qnt).toDouble(),
                 totalPrice: cartProvider.calculateGrandTotal(),
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,

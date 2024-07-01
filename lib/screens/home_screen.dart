@@ -291,7 +291,7 @@ class HomeScreenState extends State<HomeScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height / 3.5, // Adjust height as needed
+                        height: MediaQuery.of(context).size.height / 4, // Adjust height as needed
                         child: const AdvertisementWidget(),
                       ),
                     ),
