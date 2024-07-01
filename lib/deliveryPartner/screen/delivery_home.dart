@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +30,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               indicatorColor: Colors.black,
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
-              labelStyle:
-                  TextStyle(fontSize: 17, fontFamily: 'Gilroy-SemiBold'),
+              labelStyle: TextStyle(fontSize: 17, fontFamily: 'Gilroy-SemiBold'),
               tabs: [
                 Tab(text: "Pending Orders"),
                 Tab(text: "Completed Orders"),
@@ -75,8 +73,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
         final orders = snapshot.data?.docs
             .map((doc) {
               final data = doc.data();
-              final orderDetails =
-                  (data['orders'] as List<dynamic>).map((order) {
+              final orderDetails = (data['orders'] as List<dynamic>).map((order) {
                 return OrderDetail(
                   price: order['price'],
                   productImage: order['productImage'],
@@ -118,6 +115,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                       builder: (context) => DeliveryTrackingScreen(
                         orderId: order.orderId,
                         orderTotalPrice: order.overallTotal,
+                        // orderTotalPrice: orders?.first.,
                         order: order.orders,
                         paymentMode: order.paymentMode,
                         customerAddress: order.address,
@@ -157,9 +155,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   }
 
   Widget completedOrders(BuildContext context, AllOrderProvider orderProvider) {
-    final orders = orderProvider.allOrders
-        .where((order) => order.status == 4)
-        .toList(); // Filter for completed orders
+    final orders = orderProvider.allOrders.where((order) => order.status == 4).toList(); // Filter for completed orders
     return ListView.builder(
       itemCount: orders.length,
       itemBuilder: (context, index) {
