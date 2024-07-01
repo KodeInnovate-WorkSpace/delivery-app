@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/admin/subcategory/update_subcategory.dart';
 import '../admin_model.dart';
@@ -7,8 +8,7 @@ class ManageSubCategoryScreen extends StatefulWidget {
   const ManageSubCategoryScreen({super.key});
 
   @override
-  State<ManageSubCategoryScreen> createState() =>
-      _ManageSubCategoryScreenState();
+  State<ManageSubCategoryScreen> createState() => _ManageSubCategoryScreenState();
 }
 
 class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
@@ -50,10 +50,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                 dataRowHeight: 65,
                 columns: const [
                   DataColumn(label: Text('Id'), tooltip: "Sub-Categoy ID"),
-                  DataColumn(
-                      label: Text('Category'),
-                      tooltip:
-                          "Name of the category this sub-category belongs to"),
+                  DataColumn(label: Text('Category'), tooltip: "Name of the category this sub-category belongs to"),
                   DataColumn(label: Text('Image')),
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Status')),
@@ -73,10 +70,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
               hoverColor: Colors.transparent,
               elevation: 2,
               onPressed: () async {
-                final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const EditSubCategory()));
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
 
                 if (result != null && result as bool) {
                   // Sub-category added successfully, refresh the list
@@ -105,8 +99,7 @@ class TableData extends DataTableSource {
 
   // Storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
-  Map<int, String> categoryData =
-      {}; // Map to store category_id to category_name
+  Map<int, String> categoryData = {}; // Map to store category_id to category_name
 
   TableData(this.context) {
     _loadSubData();
@@ -121,16 +114,12 @@ class TableData extends DataTableSource {
 
   Future<void> _loadCategoryData() async {
     final categories = await category.manageCategories();
-    categoryData = {
-      for (var cat in categories) cat['category_id']: cat['category_name']
-    };
+    categoryData = {for (var cat in categories) cat['category_id']: cat['category_name']};
     notifyListeners();
   }
 
-  Future<void> _updateSubCategory(String field, dynamic newValue,
-      {String? categoryField, dynamic categoryValue}) async {
-    await subcat.updateSubCategory(field, newValue,
-        categoryField: categoryField, categoryValue: categoryValue);
+  Future<void> _updateSubCategory(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
+    await subcat.updateSubCategory(field, newValue, categoryField: categoryField, categoryValue: categoryValue);
     _loadSubData(); // Reload data after update
   }
 
@@ -160,10 +149,18 @@ class TableData extends DataTableSource {
     return DataRow(cells: [
       DataCell(Text(data['sub_category_id'].toString())),
       DataCell(Text(categoryName)),
+      // DataCell(
+      //   SizedBox(
+      //     width: 35,
+      //     child: Image.network(data['sub_category_img'] ?? ''),
+      //   ),
+      // ),
       DataCell(
         SizedBox(
           width: 35,
-          child: Image.network(data['sub_category_img'] ?? ''),
+          child: CachedNetworkImage(
+            imageUrl: data['sub_category_img'] ?? 'No Image',
+          ),
         ),
       ),
       // DataCell(Text(data['sub_category_name'] ?? '')),
@@ -188,12 +185,12 @@ class TableData extends DataTableSource {
         items: statusOptions.map<DropdownMenuItem<int>>((int status) {
           return DropdownMenuItem<int>(
             value: status,
-            child: Text(status == 0
-                ? 'Inactive'
-                : 'Active'), // Display 'Active' or 'Inactive'
+            child: Text(status == 0 ? 'Inactive' : 'Active'), // Display 'Active' or 'Inactive'
           );
         }).toList(),
       )),
+
+      //Delete
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
@@ -202,6 +199,8 @@ class TableData extends DataTableSource {
           },
         ),
       ),
+
+      //Edit
       DataCell(
         IconButton(
           icon: const Icon(Icons.edit),

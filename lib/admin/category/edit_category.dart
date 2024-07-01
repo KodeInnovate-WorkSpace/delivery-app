@@ -33,8 +33,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
 
   Future<void> fetchCategory() async {
     try {
-      final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
+      final snapshot = await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -45,7 +44,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               id: data['category_id'],
               name: data['category_name'],
               status: data['status'],
-              priority: data['priority'],  // Added priority field
+              priority: data['priority'], // Added priority field
             );
 
             if (category.status == 1) {
@@ -87,10 +86,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   Future<void> addOrUpdateCategory(BuildContext context) async {
     try {
       // Check if category already exists
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('category')
-          .where('category_name', isEqualTo: nameController.text)
-          .get();
+      final querySnapshot = await FirebaseFirestore.instance.collection('category').where('category_name', isEqualTo: nameController.text).get();
 
       if (querySnapshot.docs.isNotEmpty && querySnapshot.docs.first.id != selectedCategory.toString()) {
         showMessage("Category already exists");
@@ -103,7 +99,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
       await catDoc.set({
         'category_name': nameController.text,
         'status': dropdownValue,
-        'priority': int.parse(priorityController.text),  // Updated priority field
+        'priority': int.parse(priorityController.text),
       });
 
       showMessage("Category updated successfully");
@@ -122,6 +118,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            //Name
             SizedBox(
               width: 250,
               child: TextFormField(
@@ -129,8 +126,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter Name',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -150,6 +146,8 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               ),
             ),
             const SizedBox(height: 20),
+
+            //Priority
             SizedBox(
               width: 250,
               child: TextFormField(
@@ -158,8 +156,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: 'Enter Priority',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -179,6 +176,8 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               ),
             ),
             const SizedBox(height: 20),
+
+            //Status
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -201,40 +200,39 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
               ],
             ),
             const SizedBox(height: 20),
+
+            //Add Button
             Center(
               child: ElevatedButton(
                 onPressed: isLoading
                     ? null
                     : () async {
-                  if (nameController.text.isEmpty || priorityController.text.isEmpty) {
-                    showMessage("Please fill necessary details");
-                    log("Please fill all the fields");
+                        if (nameController.text.isEmpty || priorityController.text.isEmpty) {
+                          showMessage("Please fill necessary details");
+                          log("Please fill all the fields");
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    return;
-                  }
+                          return;
+                        }
 
-                  setState(() {
-                    isLoading = true;
-                  });
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                  await addOrUpdateCategory(context);
+                        await addOrUpdateCategory(context);
 
-                  setState(() {
-                    isLoading = false;
-                  });
+                        setState(() {
+                          isLoading = false;
+                        });
 
-                  Navigator.pop(context, true);
-                },
+                        Navigator.pop(context, true);
+                      },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isLoading
-                      ? Colors.black.withOpacity(0.3)
-                      : Colors.black, // Set the color directly
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -246,16 +244,16 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : const Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Gilroy-Bold',
-                  ),
-                ),
+                        "Save",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Gilroy-Bold',
+                        ),
+                      ),
               ),
             )
           ],

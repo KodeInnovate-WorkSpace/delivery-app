@@ -266,8 +266,16 @@ class _SearchPageState extends State<SearchPage> {
         Container(
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            color: const Color(0xffeaf1fc),
-            borderRadius: BorderRadius.circular(8.0),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1), // Shadow color
+                spreadRadius: 2, // Spread radius
+                blurRadius: 5, // Blur radius
+                offset: const Offset(0, 2), // Shadow offset (x, y)
+              ),
+            ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -284,16 +292,22 @@ class _SearchPageState extends State<SearchPage> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
-                    Text(
-                      'Price: ₹${product.price.toStringAsFixed(2)}',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    Text(
-                      "₹${product.mrp.toString()}",
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        decoration: TextDecoration.lineThrough,
-                      ),
+                    Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Rs.${product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(color: Color(0xff1c1c1c)),
+                        ),
+                        Text(
+                          "Rs.${product.mrp.toString()}",
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -377,7 +391,12 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Product Search')),
+      appBar: AppBar(
+        title: const Text('Product Search'),
+        backgroundColor: const Color(0xfff7f7f7),
+        elevation: 0,
+      ),
+      backgroundColor: const Color(0xfff7f7f7),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Stack(

@@ -61,8 +61,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 final orders = groupedOrders[orderId]!;
 
                 // Calculate overall total
-                // final overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
-                final overallTotal = cartProvider.calculateGrandTotal();
+                final overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
 
                 return InkWell(
                   onTap: () {

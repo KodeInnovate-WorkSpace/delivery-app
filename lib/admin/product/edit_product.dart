@@ -161,317 +161,315 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Enter name of product
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                controller: nameController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  hintText: 'Enter Name',
-                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Enter name of product
+              SizedBox(
+                width: 250,
+                child: TextFormField(
+                  controller: nameController,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Name',
+                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: const Icon(Icons.drive_file_rename_outline),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.drive_file_rename_outline),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            Row(
-              children: [],
-            ),
-
-            // Enter Price
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                controller: priceController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  hintText: 'Enter product price',
-                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
+              // Enter Price
+              SizedBox(
+                width: 250,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: priceController,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: 'Enter product price',
+                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: const Icon(Icons.currency_rupee),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.currency_rupee),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            // Enter MRP
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                controller: mrpController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  hintText: 'Enter product MRP',
-                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
+              // Enter MRP
+              SizedBox(
+                width: 250,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: mrpController,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: 'Enter product MRP',
+                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: const Icon(Icons.currency_rupee),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.currency_rupee),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            // Enter available stock
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                controller: stockController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  hintText: 'Enter Available Stock',
-                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
+              // Enter available stock
+              SizedBox(
+                width: 250,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: stockController,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Available Stock',
+                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: const Icon(Icons.warehouse),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.warehouse),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            // Enter unit of a product
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                controller: unitController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  hintText: 'Enter Unit Eg: 100g, 5 L',
-                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
+              // Enter unit of a product
+              SizedBox(
+                width: 250,
+                child: TextFormField(
+                  controller: unitController,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Unit Eg: 100g, 5 L',
+                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: const Icon(Icons.production_quantity_limits),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.production_quantity_limits),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            // Select Image
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // select image from camera
-                ElevatedButton(
-                  onPressed: openCamera,
-                  style: ButtonStyle(
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+              // Select Image
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // select image from camera
+                  ElevatedButton(
+                    onPressed: openCamera,
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          return Colors.black;
+                        },
                       ),
                     ),
-                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
-                        return Colors.black;
-                      },
+                    child: const Text(
+                      "Open Camera",
+                      style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
                     ),
                   ),
-                  child: const Text(
-                    "Open Camera",
-                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                // select image from gallery
-                ElevatedButton(
-                  onPressed: pickImage,
-                  style: ButtonStyle(
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                  const SizedBox(width: 10),
+                  // select image from gallery
+                  ElevatedButton(
+                    onPressed: pickImage,
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          return Colors.black;
+                        },
                       ),
                     ),
-                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
-                        return Colors.black;
-                      },
+                    child: const Text(
+                      "Pick Image",
+                      style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
                     ),
                   ),
-                  child: const Text(
-                    "Pick Image",
-                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                ],
+              ),
+
+              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+              const SizedBox(height: 20),
+
+              // Status
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Status: "),
+                  DropdownButton<int>(
+                    value: dropdownValue,
+                    onChanged: (int? value) {
+                      setState(() {
+                        dropdownValue = value;
+                      });
+
+                      log("Status: ${value.toString()}");
+                      value == 1 ? log("Enabled") : log("Disabled");
+                    },
+                    items: const [
+                      DropdownMenuItem(value: 1, child: Text("Enable")),
+                      DropdownMenuItem(value: 0, child: Text("Disable")),
+                    ],
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+              const SizedBox(height: 20),
 
-            _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
-            const SizedBox(height: 20),
+              // Select Sub-Category
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Sub-Category: "),
+                  DropdownButton<String>(
+                    value: selectedSubCategoryName,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedSubCategoryName = newValue!;
+                        selectedSubCategoryId = subCategoryMap[selectedSubCategoryName]!;
+                      });
+                    },
+                    items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
+                      return DropdownMenuItem<String>(
+                        value: subcat,
+                        child: Text(subcat.toString()),
+                      );
+                    }).toList(),
+                    hint: const Text("Select a sub-category"),
+                  )
+                ],
+              ),
 
-            // Status
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Status: "),
-                DropdownButton<int>(
-                  value: dropdownValue,
-                  onChanged: (int? value) {
-                    setState(() {
-                      dropdownValue = value;
-                    });
+              const SizedBox(height: 20),
 
-                    log("Status: ${value.toString()}");
-                    value == 1 ? log("Enabled") : log("Disabled");
-                  },
-                  items: const [
-                    DropdownMenuItem(value: 1, child: Text("Enable")),
-                    DropdownMenuItem(value: 0, child: Text("Disable")),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          if (nameController.text.isEmpty || _image == null || selectedSubCategoryName == null) {
+                            showMessage("Please fill necessary details");
+                            log("Please fill all the fields");
 
-            // Select Sub-Category
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Sub-Category: "),
-                DropdownButton<String>(
-                  value: selectedSubCategoryName,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedSubCategoryName = newValue!;
-                      selectedSubCategoryId = subCategoryMap[selectedSubCategoryName]!;
-                    });
-                  },
-                  items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
-                    return DropdownMenuItem<String>(
-                      value: subcat,
-                      child: Text(subcat.toString()),
-                    );
-                  }).toList(),
-                  hint: const Text("Select a sub-category"),
-                )
-              ],
-            ),
+                            setState(() {
+                              isLoading = false;
+                            });
 
-            const SizedBox(height: 20),
+                            return;
+                          }
 
-            Center(
-              child: ElevatedButton(
-                onPressed: isLoading
-                    ? null
-                    : () async {
-                        if (nameController.text.isEmpty || _image == null || selectedSubCategoryName == null) {
-                          showMessage("Please fill necessary details");
-                          log("Please fill all the fields");
+                          setState(() {
+                            isLoading = true;
+                          });
+
+                          await addNewProduct(context);
 
                           setState(() {
                             isLoading = false;
                           });
 
-                          return;
-                        }
-
-                        setState(() {
-                          isLoading = true;
-                        });
-
-                        await addNewProduct(context);
-
-                        setState(() {
-                          isLoading = false;
-                        });
-
-                        Navigator.pop(context, true);
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                          Navigator.pop(context, true);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
-                    : const Text(
-                        "Add",
-                        style: TextStyle(
+                  child: isLoading
+                      ? const CircularProgressIndicator(
                           color: Colors.white,
-                          fontFamily: 'Gilroy-Bold',
+                          strokeWidth: 2,
+                        )
+                      : const Text(
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Gilroy-Bold',
+                          ),
                         ),
-                      ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
