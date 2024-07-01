@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 
 class ProductIterator {
   final List<String> products;
-  Stream<String>? currentProductStream;
+  late StreamController<String> _controller;
+  late Stream<String> currentProductStream;
+  int currentIndex = 0;
 
   ProductIterator(this.products) {
-    currentProductStream = Stream.periodic(const Duration(seconds: 2)).map((_) => products[(++currentIndex) % products.length]);
-    currentIndex = 0;
+    _controller = StreamController<String>();
+    currentProductStream = _controller.stream;
+    Timer.periodic(const Duration(seconds: 2), (_) {
+      _controller.add(products[(++currentIndex) % products.length]);
+    });
+    // Emit the first product immediately
+    _controller.add(products[currentIndex]);
   }
-
-  int currentIndex = 0;
 }
 
 Widget searchBar(BuildContext context) {
@@ -30,7 +35,7 @@ Widget searchBar(BuildContext context) {
             child: TextField(
               cursorColor: Colors.black,
               decoration: InputDecoration(
-                hintText: 'Search for \'${snapshot.data!}\'',
+                hintText: 'Search for "${snapshot.data!}"',
                 hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white,
