@@ -187,7 +187,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                       size: 18,
                     ),
                   ),
-                  Text(orderDetail.totalPrice.toStringAsFixed(2)),
+                  Text(orderDetail.price.toStringAsFixed(2)),
                 ],
               ),
             );
@@ -203,7 +203,9 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Rs. ${widget.orderTotalPrice}",
+                // "Rs. ${widget.orderTotalPrice}",
+                "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
+
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
