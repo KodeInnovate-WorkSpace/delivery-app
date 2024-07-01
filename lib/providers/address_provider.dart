@@ -54,22 +54,6 @@ class AddressProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // void removeAddress(Address userAdd) async {
-  //   final index =
-  //   _addressList.indexWhere((address) => address.flat == userAdd.flat);
-  //   if (index >= 0) {
-  //     _addressList.removeAt(index);
-  //
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     await prefs.remove('address_${userAdd.flat}');
-  //
-  //     if (_selectedAddress.contains(userAdd.flat)) {
-  //       _selectedAddress = "";
-  //     }
-  //
-  //     notifyListeners();
-  //   }
-  // }
   void removeAddress(Address userAdd) async {
     final index = _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
@@ -89,17 +73,21 @@ class AddressProvider with ChangeNotifier {
         }
       }
 
+      // Save the selected address in SharedPreferences
+      await prefs.setString('selected_address', _selectedAddress);
+
       notifyListeners();
     }
   }
 
-
   Future<Address?> getAddress(String flat) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? addressJson = prefs.getString('address_$flat');
-    Map<String, dynamic> addressMap = json.decode(addressJson!);
-    return Address.fromJson(addressMap);
-      return null;
+    if (addressJson != null) {
+      Map<String, dynamic> addressMap = json.decode(addressJson);
+      return Address.fromJson(addressMap);
+    }
+    return null;
   }
 
   Future<void> loadAddresses() async {
@@ -110,15 +98,26 @@ class AddressProvider with ChangeNotifier {
     for (String key in keys) {
       if (key.startsWith('address_')) {
         String? jsonAddress = prefs.getString(key);
-        Map<String, dynamic> addressMap = json.decode(jsonAddress!);
-        _addressList.add(Address.fromJson(addressMap));
-            }
+        if (jsonAddress != null) {
+          Map<String, dynamic> addressMap = json.decode(jsonAddress);
+          _addressList.add(Address.fromJson(addressMap));
+        }
+      }
     }
+
+    // Load the selected address if it exists
+    String? selectedAddress = prefs.getString('selected_address');
+    if (selectedAddress != null) {
+      _selectedAddress = selectedAddress;
+    }
+
     notifyListeners();
   }
 
-  void setSelectedAddress(String address) {
+  void setSelectedAddress(String address) async {
     _selectedAddress = address;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_address', _selectedAddress);
     notifyListeners();
   }
 }

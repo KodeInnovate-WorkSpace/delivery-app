@@ -21,7 +21,7 @@ class _AddressSelectionState extends State<AddressSelection> {
 
     if (addressProvider.address.isNotEmpty) {
       _defaultAdd =
-          "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
+      "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -42,7 +42,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                   decoration: const BoxDecoration(
                     color: Colors.white70,
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(10.0)),
+                    BorderRadius.vertical(top: Radius.circular(10.0)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -62,7 +62,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(10.0)),
+                            const BorderRadius.all(Radius.circular(10.0)),
                             border: Border.all(color: Colors.grey.shade200),
                           ),
                           child: ListTile(
@@ -81,7 +81,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const AddressInputForm()),
+                                    const AddressInputForm()),
                               ).then((value) {
                                 // Refresh the modal state when returning from address input
                                 setModalState(() {});
@@ -95,7 +95,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                         Text(
                           "Your saved addresses",
                           style:
-                              TextStyle(fontSize: 13, color: Colors.grey[600]),
+                          TextStyle(fontSize: 13, color: Colors.grey[600]),
                         ),
                         if (addressProvider.address.isNotEmpty)
                           SizedBox(
@@ -110,7 +110,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                                     GestureDetector(
                                       onTap: () {
                                         _newAdd =
-                                            "${address.flat}, ${address.building}, ${address.mylandmark}";
+                                        "${address.flat}, ${address.building}, ${address.mylandmark}";
                                         setState(() {
                                           _defaultAdd = _newAdd;
                                         });
@@ -130,7 +130,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                                                 .removeAddress(address);
                                             showMessage("Address Deleted!");
                                             setModalState(
-                                                () {}); // Refresh the modal state
+                                                    () {}); // Refresh the modal state
                                             setState(() {
                                               if (_defaultAdd == _newAdd) {
                                                 _defaultAdd = "";
