@@ -20,7 +20,8 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   void initState() {
     super.initState();
     _pageController = PageController(
-        // viewportFraction: 0.8, // Adjust this value to control the visible portion
+         viewportFraction: 0.8,
+         // viewportFraction: 1,
         );
 
     // Start auto-scrolling every 2 seconds
