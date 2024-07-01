@@ -87,8 +87,8 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Card(
-                      elevation: 0,
-                      color: const Color(0xffeaf1fc),
+                      elevation: 1,
+                      color:  Colors.white,
                       margin: EdgeInsets.zero,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -98,7 +98,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                         //   height: widget.cardHeight,
                         //   fit: BoxFit.fill,
                         // ),
-                        child: CachedNetworkImage(imageUrl: imageUrl),
+                        child: CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.fill,),
                       ),
                     ),
                   ),
