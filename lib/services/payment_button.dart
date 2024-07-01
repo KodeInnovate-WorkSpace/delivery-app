@@ -64,9 +64,11 @@ class _PaymentButtonState extends State<PaymentButton> {
   Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
+      //Test
       // 'x-client-id': "TEST102073159c36086010050049f41951370201",
-      'x-client-id': "6983506cac38e05faf1b6e3085053896",
       // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      //Prod
+      'x-client-id': "6983506cac38e05faf1b6e3085053896",
       'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
@@ -140,7 +142,7 @@ class _PaymentButtonState extends State<PaymentButton> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);

@@ -39,127 +39,127 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         body: cartProvider.cart.isEmpty
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/images/empty.png"),
-                    const Text(
-                      "No item in cart",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
-              )
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/empty.png"),
+              const Text(
+                "No item in cart",
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
+        )
             : Stack(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    color: const Color(0xffeaf1fc),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Card(
-                              elevation: 0,
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Row(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              color: const Color(0xffeaf1fc),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.timer),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.timer),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                    Text(
+                                      'Delivery within $deliveryTime minutes',
+                                      style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                    ),
+                                    const Text(
+                                      'Shipment of 1 item',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const DisplayCartItems(),
+                      const SizedBox(height: 20),
+                      const BillDetails(),
+                      const SizedBox(height: 20),
+                      const ApplyCouponWidget(),
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              const AddressSelection(),
+                              const Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            'Delivery within $deliveryTime minutes',
-                                            style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                          Icon(
+                                            _paymentIcon,
+                                            size: 12,
                                           ),
-                                          const Text(
-                                            'Shipment of 1 item',
-                                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                                          const SizedBox(width: 10),
+                                          DropdownButton<String>(
+                                            value: _selectedPaymentMethod,
+                                            icon: const Icon(Icons.arrow_drop_down),
+                                            iconSize: 24,
+                                            elevation: 16,
+                                            style: const TextStyle(color: Colors.black),
+                                            underline: Container(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                _selectedPaymentMethod = newValue!;
+                                                _paymentIcon = newValue == 'Banks' ? Icons.account_balance : Icons.currency_rupee;
+                                              });
+                                            },
+                                            items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                  PaymentButton(selectedMethod: _selectedPaymentMethod),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            const DisplayCartItems(),
-                            const SizedBox(height: 20),
-                            const BillDetails(),
-                            const SizedBox(height: 20),
-                            const ApplyCouponWidget(),
-                            const SizedBox(height: 20),
-                            Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: Colors.white,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    const AddressSelection(),
-                                    const Divider(),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  _paymentIcon,
-                                                  size: 12,
-                                                ),
-                                                const SizedBox(width: 10),
-                                                DropdownButton<String>(
-                                                  value: _selectedPaymentMethod,
-                                                  icon: const Icon(Icons.arrow_drop_down),
-                                                  iconSize: 24,
-                                                  elevation: 16,
-                                                  style: const TextStyle(color: Colors.black),
-                                                  underline: Container(),
-                                                  onChanged: (String? newValue) {
-                                                    setState(() {
-                                                      _selectedPaymentMethod = newValue!;
-                                                      _paymentIcon = newValue == 'Banks' ? Icons.account_balance : Icons.currency_rupee;
-                                                    });
-                                                  },
-                                                  items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
-                                                    return DropdownMenuItem<String>(
-                                                      value: value,
-                                                      child: Text(value),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        PaymentButton(selectedMethod: _selectedPaymentMethod),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
+            ),
+          ],
+        ),
       ),
     );
   }
