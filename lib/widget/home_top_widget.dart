@@ -44,11 +44,11 @@ class _HomeTopState extends State<HomeTop> {
                                 children: [
                                   const Text(
                                     'Delivery within ',
-                                    style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Colors.black, fontSize: 14),
+                                    style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Color(0xff1c1c1c), fontSize: 14),
                                   ),
                                   Text(
                                     '$deliveryTime minutes',
-                                    style: const TextStyle(fontFamily: 'Gilroy-Black', color: Colors.black, fontSize: 28),
+                                    style: const TextStyle(fontFamily: 'Gilroy-Black', color: Color(0xff1c1c1c), fontSize: 28),
                                   ),
                                   LocationButton(scaffoldKey: widget.scaffoldKey),
                                   const SizedBox(height: 18),
@@ -77,6 +77,7 @@ class _HomeTopState extends State<HomeTop> {
                 ],
               ),
             ),
+            //Search Bar
             Positioned(
               // Position the search bar with some bottom padding
               bottom: 0.0, // Adjust padding as needed
