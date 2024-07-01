@@ -475,7 +475,7 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 void _shareApp() {
-  Share.share('Check out this amazing delivery app: https://play.google.com/store/apps/details?id=com.delivoapp.app');
+  Share.share('Download Delivo App: https://play.google.com/store/apps/details?id=com.delivoapp.app');
 }
 
 void _launchPlayStore() async {

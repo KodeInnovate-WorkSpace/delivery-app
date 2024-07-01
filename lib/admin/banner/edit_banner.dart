@@ -1,6 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../models/category_model.dart';
 import '../../shared/show_msg.dart';
 import '../admin_model.dart';
@@ -13,143 +16,152 @@ class EditBanner extends StatefulWidget {
 }
 
 class _EditBannerState extends State<EditBanner> with ChangeNotifier {
-  int? dropdownValue = 1;
-  final List<int> categories = [];
-  int? selectedCategory;
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController bannerIdController = TextEditingController();
   final TextEditingController priorityController = TextEditingController();
+  final TextEditingController imageController = TextEditingController();
+  File? _image;
 
-  CatModel category = CatModel();
+  int? dropdownValue = 1;
+  final List<String> bannerName = [];
+  final Map<String, int> bannerMap = {};
+  String? selectedBannerName;
+  int? selectedBannerId;
 
-  // list to store fetched categories
-  List<Map<String, dynamic>> catData = [];
   bool isLoading = false;
+
+  BannerModel bannerObj = BannerModel();
+  List<Map<String, dynamic>> bannerData = [];
 
   @override
   void initState() {
     super.initState();
-    fetchCategory();
   }
 
-  Future<void> fetchCategory() async {
+  Future<void> addNewBanner(BuildContext context) async {
     try {
-      final snapshot =
-      await FirebaseFirestore.instance.collection("category").get();
+      // Fetch bannerData from Firestore
+      bannerData = await bannerObj.manageBanner();
+      notifyListeners();
 
-      if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          categories.clear();
-          for (var doc in snapshot.docs) {
-            final data = doc.data();
-            final category = Category(
-              id: data['category_id'],
-              name: data['category_name'],
-              status: data['status'],
-              priority: data['priority'],  // Added priority field
-            );
+      // Check if sub-category already exists
+      final querySnapshot = await FirebaseFirestore.instance.collection('Advertisement').where('id', isEqualTo: bannerIdController.text).get();
 
-            if (category.status == 1) {
-              categories.add(category.id);
-            }
-          }
-
-          if (categories.isNotEmpty) {
-            selectedCategory = categories.first;
-            fetchCategoryDetails(selectedCategory!);
-          }
-        });
-      } else {
-        log("No Category Document Found!");
-      }
-    } catch (e) {
-      log("Error fetching category: $e");
-    }
-  }
-
-  Future<void> fetchCategoryDetails(int categoryId) async {
-    try {
-      final doc = await FirebaseFirestore.instance.collection("category").doc(categoryId.toString()).get();
-      if (doc.exists) {
-        final data = doc.data();
-        setState(() {
-          nameController.text = data!['category_name'];
-          priorityController.text = data['priority'].toString();
-          dropdownValue = data['status'];
-        });
-      } else {
-        log("Category details not found for ID: $categoryId");
-      }
-    } catch (e) {
-      log("Error fetching category details: $e");
-    }
-  }
-
-  Future<void> addOrUpdateCategory(BuildContext context) async {
-    try {
-      // Check if category already exists
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('category')
-          .where('category_name', isEqualTo: nameController.text)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty && querySnapshot.docs.first.id != selectedCategory.toString()) {
-        showMessage("Category already exists");
-        log("Category already exists");
+      if (querySnapshot.docs.isNotEmpty) {
+        showMessage("Banner already exists");
+        log("Banner already exists");
         return;
       }
 
-      // Update existing category in Firestore
-      final catDoc = FirebaseFirestore.instance.collection('category').doc(selectedCategory.toString());
-      await catDoc.set({
-        'category_name': nameController.text,
+      // Upload image and add sub-category to Firestore
+      String imageUrl = await uploadImage(_image!);
+      final subCategoryDoc = FirebaseFirestore.instance.collection('Advertisement').doc();
+
+      await subCategoryDoc.set({
+        'id': bannerData.length + 1,
+        'image': imageUrl,
+        'priority': int.parse(priorityController.text),
         'status': dropdownValue,
-        'priority': int.parse(priorityController.text),  // Updated priority field
       });
 
-      showMessage("Category updated successfully");
-      log("Category updated successfully");
+      showMessage("Banner added to database");
+      log("Banner added successfully");
     } catch (e) {
-      showMessage("Error updating category: $e");
-      log("Error updating category: $e");
+      showMessage("Error adding banner: $e");
+      log("Error adding banner: $e");
+    }
+  }
+
+  Future<String> uploadImage(File image) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref().child('AdvertisementImages/${DateTime.now().millisecondsSinceEpoch}');
+      final uploadTask = storageRef.putFile(image);
+      final snapshot = await uploadTask;
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      showMessage("Image Uploaded");
+      return downloadUrl;
+    } catch (e) {
+      log("Error uploading image: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> openCamera() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add New Banner"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                controller: nameController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  hintText: 'Enter Name',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
+            _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+            const SizedBox(height: 20),
+
+            // Open Camera
+            ElevatedButton(
+              onPressed: openCamera,
+              style: ButtonStyle(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.category),
                 ),
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                  (Set<WidgetState> states) {
+                    return Colors.black;
+                  },
+                ),
+              ),
+              child: const Text(
+                "Open Camera",
+                style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+              ),
+            ),
+            const SizedBox(width: 10),
+
+            // select image from gallery
+            ElevatedButton(
+              onPressed: pickImage,
+              style: ButtonStyle(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                  (Set<WidgetState> states) {
+                    return Colors.black;
+                  },
+                ),
+              ),
+              child: const Text(
+                "Pick Image",
+                style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
               ),
             ),
             const SizedBox(height: 20),
+
+            //Priority
             SizedBox(
               width: 250,
               child: TextFormField(
@@ -158,8 +170,7 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: 'Enter Priority',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -179,6 +190,8 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
               ),
             ),
             const SizedBox(height: 20),
+
+            //Status Dropdown
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -201,40 +214,39 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
               ],
             ),
             const SizedBox(height: 20),
+
+            // Add button
             Center(
               child: ElevatedButton(
                 onPressed: isLoading
                     ? null
                     : () async {
-                  if (nameController.text.isEmpty || priorityController.text.isEmpty) {
-                    showMessage("Please fill necessary details");
-                    log("Please fill all the fields");
+                        if (_image == null) {
+                          showMessage("Please fill necessary details");
+                          log("Please fill all the fields");
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    return;
-                  }
+                          return;
+                        }
 
-                  setState(() {
-                    isLoading = true;
-                  });
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                  await addOrUpdateCategory(context);
+                        await addNewBanner(context);
 
-                  setState(() {
-                    isLoading = false;
-                  });
+                        setState(() {
+                          isLoading = false;
+                        });
 
-                  Navigator.pop(context, true);
-                },
+                        Navigator.pop(context, true);
+                      },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isLoading
-                      ? Colors.black.withOpacity(0.3)
-                      : Colors.black, // Set the color directly
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -246,16 +258,16 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : const Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Gilroy-Bold',
-                  ),
-                ),
+                        "Add",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Gilroy-Bold',
+                        ),
+                      ),
               ),
             )
           ],

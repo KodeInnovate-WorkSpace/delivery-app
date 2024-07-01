@@ -249,28 +249,41 @@ class HomeScreenState extends State<HomeScreen> {
                         );
                       }
 
-                      bool showAlertLabel = snapshot.data!.docs.any((doc) {
-                        return doc['status'] == 1;
-                      });
+                      final alerts = snapshot.data!.docs
+                          .where((doc) => doc['status'] == 1)
+                          .map((doc) => {
+                                'message': doc['message'],
+                                'color': doc['color'],
+                                'textcolor': doc['textcolor'],
+                              })
+                          .toList();
 
-                      return showAlertLabel
-                          ? SliverToBoxAdapter(
-                              child: Container(
-                                color: Colors.red,
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                child: const Center(
-                                  child: Text(
-                                    'Orders might be delayed due to heavy rain',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                      if (alerts.isEmpty) {
+                        return SliverToBoxAdapter(child: Container());
+                      }
+
+                      return SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final alert = alerts[index];
+                            return Container(
+                              color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Center(
+                                child: Text(
+                                  alert['message'],
+                                  style: TextStyle(
+                                    color: Color(int.parse(alert['textcolor'].replaceFirst('#', '0xff'))),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                            )
-                          : SliverToBoxAdapter(child: Container());
+                            );
+                          },
+                          childCount: alerts.length,
+                        ),
+                      );
                     },
                   ),
                   // Advertisement Widget
@@ -278,8 +291,7 @@ class HomeScreenState extends State<HomeScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height / 3.8, // Adjust height as needed
-                        // width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 4, // Adjust height as needed
                         child: const AdvertisementWidget(),
                       ),
                     ),
@@ -307,7 +319,6 @@ class HomeScreenState extends State<HomeScreen> {
                                     final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
 
                                     return Stack(
-                                      // replace column with stack
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Reduced vertical padding

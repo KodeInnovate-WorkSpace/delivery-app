@@ -20,8 +20,9 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: 0.8, // Adjust this value to control the visible portion
-    );
+         viewportFraction: 0.8,
+         // viewportFraction: 1,
+        );
 
     // Start auto-scrolling every 2 seconds
     // _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
@@ -87,8 +88,8 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Card(
-                      elevation: 0,
-                      color: const Color(0xffeaf1fc),
+                      elevation: 1,
+                      color: Colors.white,
                       margin: EdgeInsets.zero,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -98,7 +99,10 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
                         //   height: widget.cardHeight,
                         //   fit: BoxFit.fill,
                         // ),
-                        child: CachedNetworkImage(imageUrl: imageUrl),
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   ),

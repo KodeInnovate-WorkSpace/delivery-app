@@ -187,28 +187,11 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                       size: 18,
                     ),
                   ),
-                  Text(orderDetail.totalPrice.toStringAsFixed(2)),
+                  Text(orderDetail.price.toStringAsFixed(2)),
                 ],
               ),
             );
           },
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Discount",
-                style: TextStyle(fontSize: 16),
-              ),
-              Text(
-                // "Rs. ${widget.order.first.d}",
-                "Rs. ",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -220,7 +203,9 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Rs. ${widget.orderTotalPrice}",
+                // "Rs. ${widget.orderTotalPrice}",
+                "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
+
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
