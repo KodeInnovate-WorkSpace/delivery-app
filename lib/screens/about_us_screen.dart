@@ -8,7 +8,7 @@ class AboutUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void _launchURL(String url) async {
+    void launchURL(String url) async {
       if (await canLaunch(url)) {
         await launch(url);
       } else {

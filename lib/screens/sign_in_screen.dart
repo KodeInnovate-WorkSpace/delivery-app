@@ -58,6 +58,8 @@ class _SigninScreenState extends State<SigninScreen> {
       }
     }
 
+    bool isBtnLoading = false;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: NetworkHandler(
@@ -106,19 +108,16 @@ class _SigninScreenState extends State<SigninScreen> {
                           ],
                           decoration: InputDecoration(
                             hintText: "Enter Mobile Number",
-                            hintStyle: TextStyle(
-                                color: Colors.grey[400], fontFamily: 'Gilroy-SemiBold'),
+                            hintStyle: TextStyle(color: Colors.grey[400], fontFamily: 'Gilroy-SemiBold'),
                             prefixIcon: const Padding(
                               padding: EdgeInsets.all(18.0),
                               child: Text(
                                 "+91",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontFamily: 'Gilroy-SemiBold'),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Gilroy-SemiBold'),
                               ),
                             ),
                             prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                            contentPadding:
-                            const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.0),
                               borderSide: BorderSide(color: Colors.grey.shade50),
@@ -134,27 +133,23 @@ class _SigninScreenState extends State<SigninScreen> {
                           ),
                         ),
                       ),
+
+                      //Continue Button / sign in button
                       ElevatedButton(
                         onPressed: authProvider.isButtonEnabled
                             ? () async {
-                          HapticFeedback.selectionClick();
+                                HapticFeedback.selectionClick();
 
-                          await userProvider.storeDetail(context, 'phone',
-                              authProvider.textController.text);
+                                await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
 
-                          await userProvider.checkUserStatus(
-                              authProvider.textController.text);
+                                await userProvider.checkUserStatus(authProvider.textController.text);
 
-                          if (userProvider.isUserActive) {
-                            await authProvider.verifyPhoneNumber(
-                                context, authProvider.textController.text);
-                          } else {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const AccountDisabled()));
-                          }
-                        }
+                                if (userProvider.isUserActive) {
+                                  await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
+                                } else {
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
+                                }
+                              }
                             : null,
                         style: ButtonStyle(
                           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -163,7 +158,7 @@ class _SigninScreenState extends State<SigninScreen> {
                             ),
                           ),
                           backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
+                            (Set<WidgetState> states) {
                               if (states.contains(WidgetState.disabled)) {
                                 return Colors.black.withOpacity(0.3);
                               }
@@ -173,27 +168,87 @@ class _SigninScreenState extends State<SigninScreen> {
                         ),
                         child: authProvider.isLoading
                             ? const SizedBox(
-                          width: 250,
-                          height: 50.0,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
+                                width: 250,
+                                height: 50.0,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
                             : const SizedBox(
-                          width: 250,
-                          height: 50.0,
-                          child: Center(
-                            child: Text(
-                              "Continue",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
+                                width: 250,
+                                height: 50.0,
+                                child: Center(
+                                  child: Text(
+                                    "Continue",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
+                      ),
+
+                      // Continue Button / sign in button
+                      // ElevatedButton(
+                      //   onPressed: authProvider.isButtonEnabled && !authProvider.isLoading
+                      //       ? () async {
+                      //           HapticFeedback.selectionClick();
+                      //
+                      //           // Set loading state to true
+                      //           authProvider.isLoading = true;
+                      //           // authProvider.notifyListeners();
+                      //
+                      //           await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
+                      //
+                      //           await userProvider.checkUserStatus(authProvider.textController.text);
+                      //
+                      //           if (userProvider.isUserActive) {
+                      //             await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
+                      //           } else {
+                      //             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
+                      //           }
+                      //
+                      //           // Set loading state to false after the operation
+                      //           authProvider.isLoading = false;
+                      //           // authProvider.notifyListeners();
+                      //         }
+                      //       : null,
+                      //   style: ElevatedButton.styleFrom(
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(14.0),
+                      //     ),
+                      //     backgroundColor: authProvider.isButtonEnabled && !authProvider.isLoading ? Colors.black : Colors.black.withOpacity(0.3),
+                      //   ),
+                      //   child: authProvider.isLoading
+                      //       ? const SizedBox(
+                      //           width: 250,
+                      //           height: 50.0,
+                      //           child: Center(
+                      //             child: CircularProgressIndicator(
+                      //               color: Colors.white,
+                      //             ),
+                      //           ),
+                      //         )
+                      //       : const SizedBox(
+                      //           width: 250,
+                      //           height: 50.0,
+                      //           child: Center(
+                      //             child: Text(
+                      //               "Continue",
+                      //               style: TextStyle(
+                      //                 color: Colors.white,
+                      //                 fontSize: 16.0,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      // ),
+
+                      const SizedBox(
+                        height: 5,
                       ),
                       termsPrivacyLine(),
                       Row(
@@ -205,7 +260,7 @@ class _SigninScreenState extends State<SigninScreen> {
                             },
                             child: const Text(
                               "Developed by Kodeinnovate Solutions",
-                              style: TextStyle(fontSize: 10),
+                              style: TextStyle(fontSize: 10, color: Color(0xff666666)),
                             ),
                           )
                         ],
@@ -233,8 +288,7 @@ Widget splashWidget() {
 
 class CustomInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     return newValue.copyWith(text: newValue.text.replaceAll(' ', ''));
   }
 }

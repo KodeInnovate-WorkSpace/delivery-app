@@ -22,7 +22,7 @@ class AllOrderProvider with ChangeNotifier {
             productImage: order['productImage'],
             productName: order['productName'],
             quantity: order['quantity'],
-            totalPrice: order['totalPrice'],
+            // totalPrice: order['totalPrice'],
           );
         }).toList();
 

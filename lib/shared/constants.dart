@@ -39,3 +39,10 @@ Future<void> fetchConstantFromFirebase() async {
     // Handle error as needed
   }
 }
+
+Stream<DocumentSnapshot> get constantDocumentStream {
+  return FirebaseFirestore.instance
+      .collection('constants')
+      .doc('0xK0fWb6SCtRls6k3uwb')
+      .snapshots();
+}

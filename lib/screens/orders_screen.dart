@@ -73,7 +73,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               final orders = groupedOrders[orderId]!;
 
               // Calculate overall total
-              final overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
+              // final overallTotal = orders.fold(0.0, (sum, order) => sum + order.totalPrice) + 30.85;
+              // final  overallTotal = orderProvider.orders.first.ov;
 
               return InkWell(
                 onTap: () {
@@ -123,7 +124,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('To Pay: ₹${orders.first.totalPrice.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16)),
+                        // child: Text('To Pay: ₹${orders.first.price.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16)),
+                        child: Text('To Pay: ₹${orders.first.overallTotal}', style: const TextStyle(fontSize: 16)),
                       ),
                     ],
                   ),

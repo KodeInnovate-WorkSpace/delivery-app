@@ -8,12 +8,12 @@ Widget termsPrivacyLine() {
     children: [
       const Text(
         "By continuing, you agree to our ",
-        style: TextStyle(fontSize: 10),
+        style: TextStyle(fontSize: 10, color: Color(0xff666666)),
       ),
       underlineText("Terms of service"),
       const Text(
         " & ",
-        style: TextStyle(fontSize: 10),
+        style: TextStyle(fontSize: 10 , color: Color(0xff666666)),
       ),
       underlineText("Privacy Policy"),
     ],

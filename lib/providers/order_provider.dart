@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:path/path.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy_delivery/providers/auth_provider.dart';
 
 class Order {
   final String orderId;
@@ -12,7 +9,8 @@ class Order {
   final String productImage;
   final int quantity;
   final double price;
-  final double totalPrice;
+  final double overallTotal;
+  // final double totalPrice;
   final String paymentMode;
   final String address;
   final String phone;
@@ -24,11 +22,12 @@ class Order {
     required this.productImage,
     required this.quantity,
     required this.price,
-    required this.totalPrice,
+    // required this.totalPrice,
     required this.paymentMode,
     required this.address,
     required this.phone,
     this.status = 0,
+    required this.overallTotal,
   });
 
   Order copyWith({
@@ -42,11 +41,12 @@ class Order {
       productImage: productImage,
       quantity: quantity,
       price: price,
-      totalPrice: totalPrice,
+      // totalPrice: totalPrice,
       paymentMode: paymentMode,
       address: address,
       status: status ?? this.status,
       phone: this.phone,
+      overallTotal: overallTotal,
     );
   }
 
@@ -57,7 +57,7 @@ class Order {
       'productImage': productImage,
       'quantity': quantity,
       'price': price,
-      'totalPrice': totalPrice,
+      // 'totalPrice': totalPrice,
       'paymentMode': paymentMode,
       'address': address,
       'status': status,
@@ -72,11 +72,12 @@ class Order {
       productImage: map['productImage'],
       quantity: map['quantity'],
       price: map['price'],
-      totalPrice: map['totalPrice'],
+      // totalPrice: map['totalPrice'],
       paymentMode: map['paymentMode'],
       address: map['address'],
       status: map['status'],
       phone: map['phone'],
+      overallTotal: map['overallTotal'],
     );
   }
 }
@@ -110,7 +111,8 @@ class OrderProvider with ChangeNotifier {
       'address': orders.first.address,
       'paymentMode': orders.first.paymentMode,
       'status': orders.first.status,
-      'overallTotal': overallTotal,
+      'overallTotal': orders.first.overallTotal,
+      // 'overallTotal': orders.first.totalPrice,
       'phone': orders.first.phone,
       'orders': orders.map((order) {
         return {
@@ -118,7 +120,8 @@ class OrderProvider with ChangeNotifier {
           'productImage': order.productImage,
           'quantity': order.quantity,
           'price': order.price,
-          'totalPrice': order.totalPrice,
+          // 'totalPrice': order.totalPrice,
+          // 'totalPrice': overallTotal,
         };
       }).toList(),
     };
@@ -145,7 +148,8 @@ class OrderProvider with ChangeNotifier {
                   productImage: orderData['productImage'],
                   quantity: orderData['quantity'],
                   price: 0.0,
-                  totalPrice: orderData['totalPrice'],
+                  // totalPrice: orderData['totalPrice'],
+                  overallTotal: data["overallTotal"],
                   paymentMode: data['paymentMode'],
                   address: data['address'],
                   phone: data['phone'],
@@ -174,11 +178,12 @@ class OrderProvider with ChangeNotifier {
                   productImage: orderData['productImage'],
                   quantity: orderData['quantity'],
                   price: orderData['price'], // fixed the price field
-                  totalPrice: orderData['totalPrice'],
+                  // totalPrice: orderData['totalPrice'],
                   paymentMode: data['paymentMode'],
                   address: data['address'],
                   phone: data['phone'],
                   status: data['status'] ?? 0,
+                  overallTotal: data['overallTotal'],
                 ))
             .toList();
       }).toList();

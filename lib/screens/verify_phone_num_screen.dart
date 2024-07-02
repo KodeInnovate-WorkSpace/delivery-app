@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
-import 'package:restart_app/restart_app.dart';
+import 'package:speedy_delivery/screens/sign_in_screen.dart';
 
 import '../widget/terms_privacy_line.dart';
 import 'home_screen.dart';
@@ -11,8 +11,7 @@ import 'home_screen.dart';
 class VerifyPhoneNumScreen extends StatefulWidget {
   final String verificationId;
   final String phoneNumber;
-  const VerifyPhoneNumScreen(
-      {super.key, required this.verificationId, required this.phoneNumber});
+  const VerifyPhoneNumScreen({super.key, required this.verificationId, required this.phoneNumber});
 
   @override
   State<VerifyPhoneNumScreen> createState() => _VerifyPhoneNumScreenState();
@@ -39,15 +38,11 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
             children: [
               const Text(
                 "We've sent a verification code to",
-                style: TextStyle(
-                    fontFamily: "Gilroy-Regular",
-                    color: Colors.grey,
-                    fontSize: 16),
+                style: TextStyle(fontFamily: "Gilroy-Regular", color: Colors.grey, fontSize: 16),
               ),
               Text(
                 "+91 ${widget.phoneNumber}",
-                style: const TextStyle(
-                    fontFamily: "Gilroy-SemiBold", fontSize: 17),
+                style: const TextStyle(fontFamily: "Gilroy-SemiBold", fontSize: 17),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -56,12 +51,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
                   keyboardType: TextInputType.number,
                   length: 6,
                   autofocus: true,
-                  defaultPinTheme: PinTheme(
-                      height: 55,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(10))),
+                  defaultPinTheme: PinTheme(height: 55, width: 40, decoration: BoxDecoration(border: Border.all(color: Colors.black), borderRadius: BorderRadius.circular(10))),
                   onCompleted: (pin) async {
                     await _verifyOtp(pin);
                   },
@@ -135,8 +125,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
     });
 
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: widget.verificationId, smsCode: otp);
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: widget.verificationId, smsCode: otp);
 
       await FirebaseAuth.instance.signInWithCredential(credential);
 
@@ -174,7 +163,12 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  Restart.restartApp();
+                  // Restart.restartApp();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SigninScreen()),
+                    (route) => false,
+                  );
                 },
                 child: const Text(
                   "Yes",

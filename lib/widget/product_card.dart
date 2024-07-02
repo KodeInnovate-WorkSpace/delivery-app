@@ -55,8 +55,8 @@ class _ProductCardState extends State<ProductCard> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 5.0,
                   crossAxisSpacing: 5.0,
-                  childAspectRatio: 0.52,
-                  // childAspectRatio: 0.58,
+                  // childAspectRatio: 0.52,
+                  childAspectRatio: 0.48,
                 ),
                 itemBuilder: (context, index) {
                   final product = widget.productList[index];
@@ -89,10 +89,10 @@ class _ProductCardState extends State<ProductCard> {
                             Text(
                               product.name,
                               textAlign: TextAlign.left,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              // maxLines: 1,
+                              // overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 14,
                                 fontFamily: 'Gilroy-Bold',
                               ),
                             ),

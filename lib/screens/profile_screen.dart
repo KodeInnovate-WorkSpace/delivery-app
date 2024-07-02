@@ -11,6 +11,7 @@ import 'package:speedy_delivery/screens/sign_in_screen.dart';
 import 'package:speedy_delivery/screens/contact_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import '../providers/cart_provider.dart';
 import '../shared/constants.dart';
 import 'about_us_screen.dart';
 import 'address_screen.dart';
@@ -38,6 +39,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
+
+    final cartProvider = Provider.of<CartProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -146,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Adderss", style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Address", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -404,8 +407,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                             TextButton(
                                                 onPressed: () async {
                                                   await FirebaseAuth.instance.signOut();
+                                                  //Clear login
                                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                                   await prefs.remove('isLoggedIn');
+
+                                                  //Clear cart
+                                                  cartProvider.clearCart();
+
                                                   Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(builder: (context) => const SigninScreen()),

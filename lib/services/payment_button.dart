@@ -85,7 +85,7 @@ class _PaymentButtonState extends State<PaymentButton> {
         "customer_phone": customerPhone,
       },
       "order_meta": {"notify_url": "https://test.cashfree.com"},
-      "order_note": "some order note here"
+      "order_note": ""
     });
     request.headers.addAll(headers);
 
@@ -224,9 +224,12 @@ class _PaymentButtonState extends State<PaymentButton> {
                 productImage: item.itemImage,
                 quantity: item.qnt,
                 price: item.itemPrice.toDouble(),
-                totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                // totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                // totalPrice: cartProvider.calculateGrandTotal(),
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
+                // overallTotal: cartProvider.calculateGrandTotal(),
+                overallTotal: totalAmt,
               );
             }).toList();
 
@@ -243,9 +246,12 @@ class _PaymentButtonState extends State<PaymentButton> {
                 productImage: item.itemImage,
                 quantity: item.qnt,
                 price: item.itemPrice.toDouble(),
-                totalPrice: cartProvider.calculateGrandTotal(),
+                // totalPrice: cartProvider.calculateGrandTotal(),
+                // totalPrice: (item.itemPrice * item.qnt).toDouble(),
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
+                // overallTotal: cartProvider.calculateGrandTotal(),
+                overallTotal: totalAmt,
               );
             }).toList();
 
