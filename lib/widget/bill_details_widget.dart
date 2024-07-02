@@ -254,8 +254,8 @@ class _BillDetailsState extends State<BillDetails> {
                     children: [
                       const Text('To pay', style: TextStyle(fontSize: 16, fontFamily: 'Gilroy-Black')),
                       Text(
-                        '\u{20B9}${cartProvider.calculateGrandTotal().toStringAsFixed(2)}',
-                        // '\u{20B9}${cartProvider.calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - cartProvider.Discount}',
+                        // '\u{20B9}${cartProvider.calculateGrandTotal().toStringAsFixed(2)}',
+                        '\u{20B9}${cartProvider.calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - cartProvider.Discount}',
 
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
