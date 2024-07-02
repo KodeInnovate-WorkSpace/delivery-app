@@ -40,7 +40,7 @@ class AddressScreen extends StatelessWidget {
                                 'Flat No.${address.flat}, Floor: ${address.floor}, Building: ${address.building}'
                             ),
                             subtitle: Text(
-                                'Landmark: ${address.mylandmark}, Phone: ${address.phoneNumber}'
+                                'Landmark: ${address.mylandmark}, Phone: ${address.phoneNumber}, Pincode: ${address.pincode}'
                             ),
                             trailing: IconButton(
                               onPressed: () {

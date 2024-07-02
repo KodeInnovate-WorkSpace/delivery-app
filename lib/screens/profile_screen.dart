@@ -149,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   size: 15,
                                 ),
                               )),
-                          title: const Text("Adderss", style: TextStyle(color: Color(0xff1c1c1c))),
+                          title: const Text("Address", style: TextStyle(color: Color(0xff1c1c1c))),
                           onTap: () {
                             Navigator.push(
                               context,

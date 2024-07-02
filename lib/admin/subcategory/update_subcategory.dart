@@ -66,7 +66,7 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            InputBox(hintText: "Update Sub-Category name", myIcon: Icons.category, myController: categoryController),
+            InputBox(hintText: "Update Sub-Category name", myIcon: Icons.category, myController: categoryController, keyboardType: TextInputType.text, ),
             const SizedBox(height: 20),
 
             // category dropdown
