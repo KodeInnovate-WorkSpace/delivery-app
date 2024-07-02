@@ -121,9 +121,6 @@ class _HomeTopState extends State<HomeTop> {
         child: Stack(
           fit: StackFit.expand, // Ensures full-width search bar
           children: [
-
-
-
             FlexibleSpaceBar(
               centerTitle: true,
               background: Column(
@@ -232,10 +229,10 @@ class _HomeTopState extends State<HomeTop> {
                 final alerts = snapshot.data!.docs
                     .where((doc) => doc['status'] == 1)
                     .map((doc) => {
-                  'message': doc['message'],
-                  'color': doc['color'],
-                  'textcolor': doc['textcolor'],
-                })
+                          'message': doc['message'],
+                          'color': doc['color'],
+                          'textcolor': doc['textcolor'],
+                        })
                     .toList();
 
                 if (alerts.isEmpty) {

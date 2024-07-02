@@ -154,7 +154,7 @@ class _BillDetailsState extends State<BillDetails> {
         } else {
           var data = snapshot.data!.data() as Map<String, dynamic>;
           double deliveryCharge = (data['deliveryCharge'] ?? 29).toDouble();
-          double handlingCharge = (data['handlingCharge'] ?? 1.85).toDouble();
+          // double handlingCharge = (data['handlingCharge'] ?? 1.85).toDouble();
           return Card(
             elevation: 0,
             color: Colors.white,
@@ -217,13 +217,16 @@ class _BillDetailsState extends State<BillDetails> {
                         children: [
                           Icon(Icons.payment, size: 14),
                           SizedBox(width: 4),
+                          // Text('Handling Charges', style: TextStyle(fontSize: 14)),
+
                           Text('Handling Charges', style: TextStyle(fontSize: 14)),
                         ],
                       ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          '\u{20B9}${handlingCharge.toStringAsFixed(2)}',
+                          // '\u{20B9}${handlingCharge.toStringAsFixed(2)}',
+                          '\u{20B9}${cartProvider.calculateHandlingCharge()}',
                           style: const TextStyle(fontSize: 14),
                         ),
                       ),

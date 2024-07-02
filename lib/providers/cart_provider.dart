@@ -36,6 +36,15 @@ class CartProvider extends ChangeNotifier {
     return calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - _discount;
   }
 
+  calculateHandlingCharge() {
+    final totalPrice = calculateTotalPrice();
+    final deliveryChargeValue = deliveryCharge ?? 0;
+    final discountValue = _discount ?? 0;
+    final handlingCharge = (totalPrice + deliveryChargeValue - discountValue) * 0.018;
+    log("Handling Charge: $handlingCharge");
+    return handlingCharge.floorToDouble();
+  }
+
   String itemCount(Cart item) {
     final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
