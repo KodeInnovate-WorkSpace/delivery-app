@@ -23,13 +23,13 @@ class OrderDetail {
   final String productImage;
   final String productName;
   final int quantity;
-  final double totalPrice;
+  // final double totalPrice;
 
   OrderDetail({
     required this.price,
     required this.productImage,
     required this.productName,
     required this.quantity,
-    required this.totalPrice,
+    // required this.totalPrice,
   });
 }

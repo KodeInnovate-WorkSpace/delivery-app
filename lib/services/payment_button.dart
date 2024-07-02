@@ -225,9 +225,11 @@ class _PaymentButtonState extends State<PaymentButton> {
                 quantity: item.qnt,
                 price: item.itemPrice.toDouble(),
                 // totalPrice: (item.itemPrice * item.qnt).toDouble(),
-                totalPrice: cartProvider.calculateGrandTotal(),
+                // totalPrice: cartProvider.calculateGrandTotal(),
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
+                // overallTotal: cartProvider.calculateGrandTotal(),
+                overallTotal: totalAmt,
               );
             }).toList();
 
@@ -244,10 +246,12 @@ class _PaymentButtonState extends State<PaymentButton> {
                 productImage: item.itemImage,
                 quantity: item.qnt,
                 price: item.itemPrice.toDouble(),
-                totalPrice: cartProvider.calculateGrandTotal(),
+                // totalPrice: cartProvider.calculateGrandTotal(),
                 // totalPrice: (item.itemPrice * item.qnt).toDouble(),
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
+                // overallTotal: cartProvider.calculateGrandTotal(),
+                overallTotal: totalAmt,
               );
             }).toList();
 

@@ -28,7 +28,11 @@ class CartProvider extends ChangeNotifier {
     return total;
   }
 
-  double calculateGrandTotal() {
+  // double calculateGrandTotal() {
+  //   return calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - _discount;
+  // }
+
+  calculateGrandTotal() {
     return calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - _discount;
   }
 
