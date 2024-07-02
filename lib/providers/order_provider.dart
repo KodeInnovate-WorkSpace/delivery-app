@@ -107,7 +107,8 @@ class OrderProvider with ChangeNotifier {
       'address': orders.first.address,
       'paymentMode': orders.first.paymentMode,
       'status': orders.first.status,
-      'overallTotal': overallTotal,
+      // 'overallTotal': overallTotal,
+      'overallTotal': orders.first.totalPrice,
       'phone': orders.first.phone,
       'orders': orders.map((order) {
         return {
@@ -115,7 +116,8 @@ class OrderProvider with ChangeNotifier {
           'productImage': order.productImage,
           'quantity': order.quantity,
           'price': order.price,
-          'totalPrice': order.totalPrice,
+          // 'totalPrice': order.totalPrice,
+          'totalPrice': overallTotal,
         };
       }).toList(),
     };

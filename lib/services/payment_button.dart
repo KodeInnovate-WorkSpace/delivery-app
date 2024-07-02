@@ -142,8 +142,7 @@ class _PaymentButtonState extends State<PaymentButton> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).
-                    setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -225,7 +224,8 @@ class _PaymentButtonState extends State<PaymentButton> {
                 productImage: item.itemImage,
                 quantity: item.qnt,
                 price: item.itemPrice.toDouble(),
-                totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                // totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                totalPrice: cartProvider.calculateGrandTotal(),
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
               );
@@ -245,6 +245,7 @@ class _PaymentButtonState extends State<PaymentButton> {
                 quantity: item.qnt,
                 price: item.itemPrice.toDouble(),
                 totalPrice: cartProvider.calculateGrandTotal(),
+                // totalPrice: (item.itemPrice * item.qnt).toDouble(),
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
               );
