@@ -91,10 +91,8 @@ class TableData extends DataTableSource {
 
   // function to update the values of sub-category name
   // () takes name of field, New value to replace the old one, category field and category value
-  Future<void> _updateUser(String field, dynamic newValue,
-      {String? userField, dynamic userFieldValue}) async {
-    await userModel.updateUser(field, newValue,
-        userField: userField, fieldValue: userFieldValue);
+  Future<void> _updateUser(String field, dynamic newValue, {String? userField, dynamic userFieldValue}) async {
+    await userModel.updateUser(field, newValue, userField: userField, fieldValue: userFieldValue);
     _loadData(); // Reload data after update
   }
 
@@ -138,9 +136,7 @@ class TableData extends DataTableSource {
         items: statusOptions.map<DropdownMenuItem<int>>((int status) {
           return DropdownMenuItem<int>(
             value: status,
-            child: Text(status == 0
-                ? 'Inactive'
-                : 'Active'), // Display 'Active' or 'Inactive'
+            child: Text(status == 0 ? 'Inactive' : 'Active'), // Display 'Active' or 'Inactive'
           );
         }).toList(),
       )),

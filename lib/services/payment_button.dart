@@ -85,7 +85,7 @@ class _PaymentButtonState extends State<PaymentButton> {
         "customer_phone": customerPhone,
       },
       "order_meta": {"notify_url": "https://test.cashfree.com"},
-      "order_note": "some order note here"
+      "order_note": ""
     });
     request.headers.addAll(headers);
 
@@ -142,7 +142,8 @@ class _PaymentButtonState extends State<PaymentButton> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).
+                    setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);
