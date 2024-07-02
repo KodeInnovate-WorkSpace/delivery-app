@@ -239,7 +239,7 @@ class _SearchPageState extends State<SearchPage> {
   void clearSearch() {
     setState(() {
       _controller.clear();
-      _productSearches.clear();
+      // _productSearches.clear();
       _filteredProducts.clear();
       _hasStoredQuery = false;
     });
