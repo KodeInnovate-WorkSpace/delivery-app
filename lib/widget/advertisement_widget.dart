@@ -20,9 +20,9 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   void initState() {
     super.initState();
     _pageController = PageController(
-         viewportFraction: 0.8,
-         // viewportFraction: 1,
-        );
+      viewportFraction: 0.8,
+      // viewportFraction: 1,
+    );
 
     // Start auto-scrolling every 2 seconds
     // _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
@@ -59,7 +59,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
       stream: FirebaseFirestore.instance.collection('Advertisement').where('status', isEqualTo: 1).snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.black,));
         }
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));

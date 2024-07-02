@@ -11,7 +11,8 @@ Widget underlineText(String str) {
           ]),
           decorationStyle: TextDecorationStyle.dashed,
           // You can also specify other styles such as color and font size here
-          color: Colors.black,
+          // color: Colors.black,
+          color: const Color(0xff666666),
           fontSize: 10),
     ),
   );
