@@ -46,12 +46,16 @@ class _UpdateCategoryState extends State<UpdateCategory> {
               hintText: "Update Category name",
               myIcon: Icons.category,
               myController: categoryController,
+              keyboardType: TextInputType.text,
+
             ),
             const SizedBox(height: 20),
             InputBox(
               hintText: "Update Priority",
               myIcon: Icons.sort,
               myController: priorityController,
+              keyboardType: TextInputType.number,
+
             ),
             const SizedBox(height: 20),
             Row(

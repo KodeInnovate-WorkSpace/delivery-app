@@ -365,6 +365,7 @@ class _UpdateBannerState extends State<UpdateBanner> {
                 hintText: "Update Priority",
                 myIcon: Icons.sort,
                 myController: priorityController,
+                keyboardType: TextInputType.text,
               ),
 
               // status dropdown

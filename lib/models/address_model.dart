@@ -4,6 +4,7 @@ class Address {
   final String building;
   final String mylandmark;
   final String phoneNumber;
+  final int pincode;
 
   Address({
     required this.flat,
@@ -11,6 +12,7 @@ class Address {
     required this.building,
     required this.mylandmark,
     required this.phoneNumber,
+    required this.pincode,
   });
 
   factory Address.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Address {
       building: json['building'] ?? 'N/A',
       mylandmark: json['mylandmark'] ?? '',
       phoneNumber: json['phoneNumber'] ?? '',
+      pincode: json['pincode'] ?? 0,
     );
   }
 
@@ -30,6 +33,7 @@ class Address {
       'building': building,
       'mylandmark': mylandmark,
       'phoneNumber': phoneNumber,
+      'pincode': pincode,
     };
   }
 }

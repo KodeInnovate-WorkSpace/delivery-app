@@ -56,7 +56,7 @@ class _ProductCardState extends State<ProductCard> {
                   mainAxisSpacing: 5.0,
                   crossAxisSpacing: 5.0,
                   // childAspectRatio: 0.52,
-                  childAspectRatio: 0.48  ,
+                  childAspectRatio: 0.48,
                 ),
                 itemBuilder: (context, index) {
                   final product = widget.productList[index];

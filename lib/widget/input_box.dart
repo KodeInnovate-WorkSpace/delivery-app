@@ -7,9 +7,9 @@ class InputBox extends StatefulWidget {
 
   const InputBox(
       {super.key,
-      required this.hintText,
-      required this.myIcon,
-      required this.myController});
+        required this.hintText,
+        required this.myIcon,
+        required this.myController, required TextInputType keyboardType});
 
   @override
   State<InputBox> createState() => _InputBoxState();
