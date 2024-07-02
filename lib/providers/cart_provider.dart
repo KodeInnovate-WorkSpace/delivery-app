@@ -33,7 +33,9 @@ class CartProvider extends ChangeNotifier {
   // }
 
   calculateGrandTotal() {
-    return calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - _discount;
+    // final grandTotal = calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - _discount;
+    final grandTotal = calculateTotalPrice() + (deliveryCharge ?? 0) + calculateHandlingCharge() - _discount;
+    return grandTotal.ceilToDouble();
   }
 
   calculateHandlingCharge() {
