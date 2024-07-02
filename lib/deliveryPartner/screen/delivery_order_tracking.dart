@@ -177,7 +177,16 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("${orderDetail.productName} x ${orderDetail.quantity.toString()}"),
+                  Flexible(
+                    child: Text(
+                      orderDetail.productName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    "x ${orderDetail.quantity.toString()}",
+                  ),
                   IconButton(
                     onPressed: () {
                       takePictureAndAddToImages(index).then((value) => {uploadAllImages(orderDetail.productName)});

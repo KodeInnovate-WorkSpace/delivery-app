@@ -79,7 +79,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                   productImage: order['productImage'],
                   productName: order['productName'],
                   quantity: order['quantity'],
-                  totalPrice: order['totalPrice'],
+                  // totalPrice: order['totalPrice'],
                 );
               }).toList();
 
