@@ -126,52 +126,6 @@ class _HomeTopState extends State<HomeTop> {
               background: Column(
                 children: [
                   const SizedBox(height: 15),
-                  // StreamBuilder<QuerySnapshot>(
-                  //   stream: FirebaseFirestore.instance.collection('AlertLabel').snapshots(),
-                  //   builder: (context, snapshot) {
-                  //     if (!snapshot.hasData) {
-                  //       return Container();
-                  //     }
-                  //
-                  //     final alerts = snapshot.data!.docs
-                  //         .where((doc) => doc['status'] == 1)
-                  //         .map((doc) => {
-                  //       'message': doc['message'],
-                  //       'color': doc['color'],
-                  //       'textcolor': doc['textcolor'],
-                  //     })
-                  //         .toList();
-                  //
-                  //     if (alerts.isEmpty) {
-                  //       return Container();
-                  //     }
-                  //
-                  //     return Positioned(
-                  //       bottom: 40, // Adjust this value to position the alert above the search bar
-                  //       left: 0,
-                  //       right: 0,
-                  //       child: Column(
-                  //         children: alerts.map((alert) {
-                  //           return Container(
-                  //             color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
-                  //             padding: const EdgeInsets.symmetric(vertical: 10),
-                  //             child: Center(
-                  //               child: Text(
-                  //                 alert['message'],
-                  //                 style: TextStyle(
-                  //                   color: Color(int.parse(alert['textcolor'].replaceFirst('#', '0xff'))),
-                  //                   fontSize: 14,
-                  //                   fontWeight: FontWeight.bold,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           );
-                  //         }).toList(),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
-
                   // Head Section
                   Stack(
                     children: [
@@ -229,10 +183,10 @@ class _HomeTopState extends State<HomeTop> {
                 final alerts = snapshot.data!.docs
                     .where((doc) => doc['status'] == 1)
                     .map((doc) => {
-                          'message': doc['message'],
-                          'color': doc['color'],
-                          'textcolor': doc['textcolor'],
-                        })
+                  'message': doc['message'],
+                  'color': doc['color'],
+                  'textcolor': doc['textcolor'],
+                })
                     .toList();
 
                 if (alerts.isEmpty) {
@@ -240,7 +194,7 @@ class _HomeTopState extends State<HomeTop> {
                 }
 
                 return Positioned(
-                  bottom: 40, // Adjust this value to position the alert above the search bar
+                  bottom: 70, // Adjust this value to position the alert above the search bar
                   left: 0,
                   right: 0,
                   child: Column(
@@ -264,11 +218,9 @@ class _HomeTopState extends State<HomeTop> {
                 );
               },
             ),
-
             //Search Bar
             Positioned(
-              // Position the search bar with some bottom padding
-              bottom: 0.0, // Adjust padding as needed
+              bottom: 10.0, // Adjust this value to add space between the alert label and the search bar
               left: 0,
               right: 0,
               child: searchBar(context),
