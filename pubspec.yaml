@@ -37,7 +37,6 @@ dependencies:
   flutter_dotenv: ^5.1.0
   flutter_phone_direct_caller: ^2.1.1
   badges: ^3.1.2
-  flutter_native_splash: ^2.4.0
   restart_app: ^1.2.1
   path: any
   accordion: ^2.6.0
@@ -46,14 +45,6 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icons.jpg"
-
-flutter_native_splash:
-  android: true
-  ios: true
-  web: false
-
-  color: "#ffd741"
-  image: "assets/icon.png"
 
 dev_dependencies:
   flutter_test:
