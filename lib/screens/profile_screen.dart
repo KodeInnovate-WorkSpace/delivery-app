@@ -462,7 +462,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Text(
-                          "${appVer!.isEmpty ? "v0.1.0" : appVer}",
+                          "${appVer!.isEmpty ? "v0.1.1" : appVer}",
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

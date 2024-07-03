@@ -317,39 +317,15 @@ Maximum 20 minutes''', policyTitle: "Delivery Policy")));
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Cancellation Policy", content: '''You are entitled to cancel Your Order within 7 days without giving any reason for doing so.
+                    MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Cancellation Policy", content: '''1. No Order Cancellation Policy
+Once an order has been placed on the Delivo App, it cannot be canceled. This policy is in place to ensure a seamless and efficient delivery process for all our users.
 
-The deadline for cancelling an Order is 7 days from the date on which You received the Goods or on which a third party you have appointed, who is not the carrier, takes possession of the product delivered.
+2. Company Information
+Company Name: Kodeinnovate Solutions Pvt Ltd
+Contact Number: +91-9326500602
 
-In order to exercise Your right of cancellation, You must inform Us of your decision by means of a clear statement. You can inform us of your decision by:
-
-By phone number: 9326500602
-We will reimburse You no later than 14 days from the day on which We receive the returned Goods. We will use the same means of payment as You used for the Order, and You will not incur any fees for such reimbursement.
-
-Conditions for Returns
-In order for the Goods to be eligible for a return, please make sure that:
-
-The Goods were purchased in the last 7 days
-The Goods are in the original packaging
-The following Goods cannot be returned:
-
-The supply of Goods made to Your specifications or clearly personalized.
-The supply of Goods which according to their nature are not suitable to be returned, deteriorate rapidly or where the date of expiry is over.
-The supply of Goods which are not suitable for return due to health protection or hygiene reasons and were unsealed after delivery.
-The supply of Goods which are, after delivery, according to their nature, inseparably mixed with other items.
-We reserve the right to refuse returns of any merchandise that does not meet the above return conditions in our sole discretion.
-
-Only regular priced Goods may be refunded. Unfortunately, Goods on sale cannot be refunded. This exclusion may not apply to You if it is not permitted by applicable law.
-
-Returning Goods
-You are responsible for the cost and risk of returning the Goods to Us. You should send the Goods at the following address:
-
-To Delivery person
-
-We cannot be held responsible for Goods damaged or lost in return shipment. Therefore, We recommend an insured and trackable mail service. We are unable to issue a refund without actual receipt of the Goods or proof of received return delivery.
-
-                      By phone number: 9326500602
-                      We will reimburse You no later than 14 days from the day on which We receive the returned Goods. We will use the same means of payment as You used for the Order, and You will not incur any fees for such reimbursement.''')),
+3. Exceptions
+In exceptional cases, if an order must be canceled due to unavoidable circumstances, please contact our customer service team immediately at the provided contact number. Requests will be reviewed on a case-by-case basis.''')),
                   );
                 },
               ),
