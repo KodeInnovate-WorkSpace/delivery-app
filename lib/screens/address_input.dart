@@ -49,7 +49,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
   Future<bool> _isValidPincode(String pincode) async {
     try {
       final int pincodeInt = int.parse(pincode);
-      final int status = 1; // Ensure status is also an integer
+      const int status = 1; // Ensure status is also an integer
       final querySnapshot = await FirebaseFirestore.instance.collection('location').where('postal_code', isEqualTo: pincodeInt).where('status', isEqualTo: status).get();
 
       log("Pincode check: ${querySnapshot.docs.length} documents found for pincode $pincode with status $status");

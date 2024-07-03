@@ -135,71 +135,10 @@ class _SigninScreenState extends State<SigninScreen> {
                       ),
 
                       //Continue Button / sign in button
-                      ElevatedButton(
-                        onPressed: authProvider.isButtonEnabled
-                            ? () async {
-                                HapticFeedback.selectionClick();
-
-                                await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
-
-                                await userProvider.checkUserStatus(authProvider.textController.text);
-
-                                if (userProvider.isUserActive) {
-                                  await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
-                                } else {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
-                                }
-                              }
-                            : null,
-                        style: ButtonStyle(
-                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14.0),
-                            ),
-                          ),
-                          backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                            (Set<WidgetState> states) {
-                              if (states.contains(WidgetState.disabled)) {
-                                return Colors.black.withOpacity(0.3);
-                              }
-                              return Colors.black;
-                            },
-                          ),
-                        ),
-                        child: authProvider.isLoading
-                            ? const SizedBox(
-                                width: 250,
-                                height: 50.0,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(
-                                width: 250,
-                                height: 50.0,
-                                child: Center(
-                                  child: Text(
-                                    "Continue",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                      ),
-
-                      // Continue Button / sign in button
                       // ElevatedButton(
-                      //   onPressed: authProvider.isButtonEnabled && !authProvider.isLoading
+                      //   onPressed: authProvider.isButtonEnabled
                       //       ? () async {
                       //           HapticFeedback.selectionClick();
-                      //
-                      //           // Set loading state to true
-                      //           authProvider.isLoading = true;
-                      //           // authProvider.notifyListeners();
                       //
                       //           await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
                       //
@@ -210,17 +149,22 @@ class _SigninScreenState extends State<SigninScreen> {
                       //           } else {
                       //             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
                       //           }
-                      //
-                      //           // Set loading state to false after the operation
-                      //           authProvider.isLoading = false;
-                      //           // authProvider.notifyListeners();
                       //         }
                       //       : null,
-                      //   style: ElevatedButton.styleFrom(
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(14.0),
+                      //   style: ButtonStyle(
+                      //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      //       RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(14.0),
+                      //       ),
                       //     ),
-                      //     backgroundColor: authProvider.isButtonEnabled && !authProvider.isLoading ? Colors.black : Colors.black.withOpacity(0.3),
+                      //     backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      //       (Set<WidgetState> states) {
+                      //         if (states.contains(WidgetState.disabled)) {
+                      //           return Colors.black.withOpacity(0.3);
+                      //         }
+                      //         return Colors.black;
+                      //       },
+                      //     ),
                       //   ),
                       //   child: authProvider.isLoading
                       //       ? const SizedBox(
@@ -246,6 +190,62 @@ class _SigninScreenState extends State<SigninScreen> {
                       //           ),
                       //         ),
                       // ),
+
+                      // Continue Button / sign in button
+                      ElevatedButton(
+                        onPressed: authProvider.isButtonEnabled && !authProvider.isLoading
+                            ? () async {
+                                HapticFeedback.selectionClick();
+
+                                // Set loading state to true
+                                authProvider.isLoading = true;
+                                // authProvider.notifyListeners();
+
+                                await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
+
+                                await userProvider.checkUserStatus(authProvider.textController.text);
+
+                                if (userProvider.isUserActive) {
+                                  await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
+                                } else {
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
+                                }
+
+                                // Set loading state to false after the operation
+                                authProvider.isLoading = false;
+                                // authProvider.notifyListeners();
+                              }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14.0),
+                          ),
+                          backgroundColor: authProvider.isButtonEnabled && !authProvider.isLoading ? Colors.black : Colors.black.withOpacity(0.3),
+                        ),
+                        child: authProvider.isLoading
+                            ? const SizedBox(
+                                width: 250,
+                                height: 50.0,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(
+                                width: 250,
+                                height: 50.0,
+                                child: Center(
+                                  child: Text(
+                                    "Continue",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
 
                       const SizedBox(
                         height: 5,
