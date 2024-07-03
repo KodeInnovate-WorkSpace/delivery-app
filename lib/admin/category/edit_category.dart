@@ -85,6 +85,10 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
 
   Future<void> addOrUpdateCategory(BuildContext context) async {
     try {
+      // Fetch catData from Firestore
+      catData = await category.manageCategories();
+      notifyListeners();
+
       // Check if category already exists
       final querySnapshot = await FirebaseFirestore.instance.collection('category').where('category_name', isEqualTo: nameController.text).get();
 
@@ -95,8 +99,9 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
       }
 
       // Update existing category in Firestore
-      final catDoc = FirebaseFirestore.instance.collection('category').doc(selectedCategory.toString());
+      final catDoc = FirebaseFirestore.instance.collection('category').doc();
       await catDoc.set({
+        'category_id': catData.length + 1,
         'category_name': nameController.text,
         'status': dropdownValue,
         'priority': int.parse(priorityController.text),

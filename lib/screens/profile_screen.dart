@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/deliveryPartner/screen/delivery_home.dart';
+import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/notification_screen.dart';
@@ -41,6 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
 
     final cartProvider = Provider.of<CartProvider>(context);
+    final addressProvider = Provider.of<AddressProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -413,6 +415,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                                   //Clear cart
                                                   cartProvider.clearCart();
+
+                                                  //clear address
+                                                  addressProvider.clearAddress();
 
                                                   Navigator.pushAndRemoveUntil(
                                                     context,
