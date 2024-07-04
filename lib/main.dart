@@ -19,7 +19,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseAppCheck.instance.activate(
-  // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
     androidProvider: AndroidProvider.playIntegrity,
   );
   await fetchConstantFromFirebase();
@@ -49,8 +49,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Gilroy-Regular",
         scaffoldBackgroundColor: Colors.white,
-        textSelectionTheme: const TextSelectionThemeData(
-            selectionHandleColor: Colors.amberAccent),
+        textSelectionTheme: const TextSelectionThemeData(selectionHandleColor: Colors.amberAccent),
         appBarTheme: const AppBarTheme(
           elevation: 3,
           shadowColor: Colors.black54,
