@@ -51,7 +51,7 @@ Widget sidebar(
                   subCategory.name,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 10,
                     fontFamily: 'Gilroy-Medium',
                     color: Colors.grey[600],
                   ),

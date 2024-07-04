@@ -6,7 +6,7 @@ class AccountDisabled extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Uri dialNumber = Uri(scheme: 'tel', path: '1234567890');
+    Uri dialNumber = Uri(scheme: 'tel', path: '9326500602');
 
     callnumber() async {
       await launchUrl(dialNumber);
@@ -56,10 +56,7 @@ class AccountDisabled extends StatelessWidget {
               child: Center(
                 child: Text(
                   "Contact Us",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontFamily: 'Gilroy-ExtraBold'),
+                  style: TextStyle(color: Colors.white, fontSize: 20.0, fontFamily: 'Gilroy-ExtraBold'),
                 ),
               ),
             ),
