@@ -17,7 +17,7 @@ import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/order_tracking.dart';
-import 'package:speedy_delivery/screens/orders_screen.dart';
+import 'package:speedy_delivery/screens/orders_history_screen.dart';
 import '../providers/address_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
@@ -119,7 +119,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     cartProvider.clearCart();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
+      MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
     );
 
     showMessage("Payment Successful");

@@ -648,13 +648,12 @@ class HomeScreenState extends State<HomeScreen> {
               CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-
                   // Heading
                   HomeTop(scaffoldKey: scaffoldKey),
                   // Advertisement Widget
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
                       child: SizedBox(
                         height: MediaQuery.of(context).size.height / 4, // Adjust height as needed
                         child: const AdvertisementWidget(),

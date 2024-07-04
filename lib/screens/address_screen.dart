@@ -36,17 +36,13 @@ class AddressScreen extends StatelessWidget {
                       return Column(
                         children: [
                           ListTile(
-                            title: Text(
-                                'Flat No.${address.flat}, Floor: ${address.floor}, Building: ${address.building}'
-                            ),
-                            subtitle: Text(
-                                'Landmark: ${address.mylandmark}, Phone: ${address.phoneNumber}, Pincode: ${address.pincode}'
-                            ),
+                            title: Text('Flat No.${address.flat}, Floor: ${address.floor}, Building: ${address.building}'),
+                            subtitle: Text('Landmark: ${address.mylandmark}, Phone: ${address.phoneNumber}, Pincode: ${address.pincode}'),
                             trailing: IconButton(
                               onPressed: () {
                                 addressProvider.removeAddress(address);
                               },
-                              icon: const Icon(Icons.delete),
+                              icon: const Icon(Icons.delete, color: Color(0xff666666)),
                             ),
                           ),
                         ],

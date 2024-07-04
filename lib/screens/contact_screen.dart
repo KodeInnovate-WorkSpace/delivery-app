@@ -20,6 +20,7 @@ class ContactScreen extends StatelessWidget {
         title: const Text("Contact Us", style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold')),
         backgroundColor: const Color(0xfff7f7f7),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xff666666)),
       ),
       backgroundColor: const Color(0xfff7f7f7),
       body: Padding(

@@ -16,7 +16,7 @@ import '../providers/cart_provider.dart';
 import '../shared/constants.dart';
 import 'about_us_screen.dart';
 import 'address_screen.dart';
-import 'orders_screen.dart';
+import 'orders_history_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -46,7 +46,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile', style: TextStyle(color: Color(0xff1c1c1c), fontFamily: 'Gilroy-Bold')),
+        // title: const Text('Profile', style: TextStyle(color: Color(0xff1c1c1c), fontFamily: 'Gilroy-Bold')),
+        title: const Text("Profile", style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold')),
+        iconTheme: const IconThemeData(color: Color(0xff666666)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
