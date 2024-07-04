@@ -114,6 +114,28 @@ class AddressProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clearAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Remove all address entries from SharedPreferences
+    final keys = prefs.getKeys();
+    for (String key in keys) {
+      if (key.startsWith('address_')) {
+        await prefs.remove(key);
+      }
+    }
+
+    // Clear the in-memory address list
+    _addressList.clear();
+
+    // Clear the selected address
+    _selectedAddress = "";
+    await prefs.remove('selected_address');
+
+    notifyListeners();
+  }
+
+
   void setSelectedAddress(String address) async {
     _selectedAddress = address;
     SharedPreferences prefs = await SharedPreferences.getInstance();

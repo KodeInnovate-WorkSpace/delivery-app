@@ -317,7 +317,8 @@ Maximum 20 minutes''', policyTitle: "Delivery Policy")));
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Cancellation Policy", content: '''1. No Order Cancellation Policy
+                    MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Cancellation Policy for Delivo App", content: '''
+1. No Order Cancellation Policy
 Once an order has been placed on the Delivo App, it cannot be canceled. This policy is in place to ensure a seamless and efficient delivery process for all our users.
 
 2. Company Information

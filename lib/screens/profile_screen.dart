@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/admin_screen.dart';
 import 'package:speedy_delivery/deliveryPartner/screen/delivery_home.dart';
+import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/notification_screen.dart';
@@ -15,7 +16,7 @@ import '../providers/cart_provider.dart';
 import '../shared/constants.dart';
 import 'about_us_screen.dart';
 import 'address_screen.dart';
-import 'orders_screen.dart';
+import 'orders_history_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -41,10 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
     final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
 
     final cartProvider = Provider.of<CartProvider>(context);
+    final addressProvider = Provider.of<AddressProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile', style: TextStyle(color: Color(0xff1c1c1c), fontFamily: 'Gilroy-Bold')),
+        // title: const Text('Profile', style: TextStyle(color: Color(0xff1c1c1c), fontFamily: 'Gilroy-Bold')),
+        title: const Text("Profile", style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold')),
+        iconTheme: const IconThemeData(color: Color(0xff666666)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -413,6 +417,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                                   //Clear cart
                                                   cartProvider.clearCart();
+
+                                                  //clear address
+                                                  addressProvider.clearAddress();
 
                                                   Navigator.pushAndRemoveUntil(
                                                     context,
