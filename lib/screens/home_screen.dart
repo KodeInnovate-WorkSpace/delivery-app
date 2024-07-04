@@ -252,10 +252,10 @@
 //                       final alerts = snapshot.data!.docs
 //                           .where((doc) => doc['status'] == 1)
 //                           .map((doc) => {
-//                                 'message': doc['message'],
-//                                 'color': doc['color'],
-//                                 'textcolor': doc['textcolor'],
-//                               })
+//                         'message': doc['message'],
+//                         'color': doc['color'],
+//                         'textcolor': doc['textcolor'],
+//                       })
 //                           .toList();
 //
 //                       if (alerts.isEmpty) {
@@ -264,7 +264,7 @@
 //
 //                       return SliverList(
 //                         delegate: SliverChildBuilderDelegate(
-//                           (context, index) {
+//                               (context, index) {
 //                             final alert = alerts[index];
 //                             return Container(
 //                               color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
@@ -291,7 +291,7 @@
 //                     child: Padding(
 //                       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
 //                       child: SizedBox(
-//                         height: MediaQuery.of(context).size.height / 4, // Adjust height as needed
+//                         height: MediaQuery.of(context).size.height / 3.5, // Adjust height as needed
 //                         child: const AdvertisementWidget(),
 //                       ),
 //                     ),
@@ -299,7 +299,7 @@
 //                   // Displaying categories
 //                   SliverList(
 //                     delegate: SliverChildBuilderDelegate(
-//                       (BuildContext context, int index) {
+//                           (BuildContext context, int index) {
 //                         return Padding(
 //                           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
 //                           child: FutureBuilder<void>(
@@ -407,8 +407,7 @@
 //   }
 // }
 
-// New
-
+//New
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -682,10 +681,11 @@ class HomeScreenState extends State<HomeScreen> {
                                   children: categories.map((category) {
                                     final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
 
-                                    return Stack(
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Reduced vertical padding
+                                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0), // Adjusted padding
                                           child: Text(
                                             category.name,
                                             style: const TextStyle(
@@ -721,7 +721,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                   },
                                                   child: Container(
                                                     width: 100,
-                                                    margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
+                                                    margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4), // Adjusted margin
                                                     decoration: const BoxDecoration(
                                                       color: Color(0xffeaf1fc),
                                                       borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -737,8 +737,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(height: 4), // Reduced height for the SizedBox
-                                                // sub-category name
+                                                const SizedBox(height: 4), // Adjusted height
                                                 Text(
                                                   subCategory.name,
                                                   textAlign: TextAlign.center,
