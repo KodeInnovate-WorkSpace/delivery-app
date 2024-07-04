@@ -159,7 +159,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             ),
                             title: Text("${order.productName} x ${order.quantity}"),
                             // subtitle: Text('Price: ₹${order.price.toStringAsFixed(0)}, Quantity: ${order.quantity}'),
-                            // subtitle: Text('Quantity: ${order.quantity}'),
                           );
                         }).toList(),
                       ),

@@ -141,69 +141,162 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
+  // Widget _buildOrderDetailsTable() {
+  //
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Container(
+  //         color: Colors.grey[200],
+  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //         child: const Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text("Items", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //             Text("Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //             Text("Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //           ],
+  //         ),
+  //       ),
+  //       ListView.builder(
+  //         shrinkWrap: true,
+  //         physics: const NeverScrollableScrollPhysics(),
+  //         itemCount: widget.order.length,
+  //         itemBuilder: (context, index) {
+  //           var orderDetail = widget.order[index];
+  //           return Container(
+  //             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //             decoration: BoxDecoration(
+  //               border: Border(
+  //                 bottom: BorderSide(
+  //                   color: Colors.grey[300]!,
+  //                   width: 1.0,
+  //                 ),
+  //               ),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Flexible(
+  //                   child: Text(
+  //                     orderDetail.productName,
+  //                     maxLines: 1,
+  //                     overflow: TextOverflow.ellipsis,
+  //                   ),
+  //                 ),
+  //                 Text(
+  //                   "x ${orderDetail.quantity.toString()}",
+  //                 ),
+  //                 IconButton(
+  //                   onPressed: () {
+  //                     takePictureAndAddToImages(index).then((value) => {uploadAllImages(orderDetail.productName)});
+  //                   },
+  //                   icon: Icon(
+  //                     imageTaken[index] ? Icons.check : Icons.camera_alt,
+  //                     size: 18,
+  //                   ),
+  //                 ),
+  //                 Text(orderDetail.price.toStringAsFixed(2)),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //       Container(
+  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             const Text(
+  //               "Total Price",
+  //               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  //             ),
+  //             Text(
+  //               // "Rs. ${widget.orderTotalPrice}",
+  //               "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
+  //
+  //               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _buildOrderDetailsTable() {
-    // final cartProvider = Provider.of<CartProvider>(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          color: Colors.grey[200],
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Items", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: widget.order.length,
-          itemBuilder: (context, index) {
-            var orderDetail = widget.order[index];
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        Table(
+          columnWidths: const {
+            0: FlexColumnWidth(),
+            1: FixedColumnWidth(80.0),
+            2: FixedColumnWidth(80.0),
+            3: FixedColumnWidth(80.0),
+          },
+          border: TableBorder.all(color: Colors.grey[300]!),
+          children: [
+            TableRow(
               decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey[300]!,
-                    width: 1.0,
-                  ),
-                ),
+                color: Colors.grey[200],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Items", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Qnt", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Image", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Price", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+            for (int index = 0; index < widget.order.length; index++)
+              TableRow(
                 children: [
-                  Flexible(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text(
-                      orderDetail.productName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      widget.order[index].productName,
+                      // maxLines: 1,
+                      // overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text(
-                    "x ${orderDetail.quantity.toString()}",
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Text("x ${widget.order[index].quantity.toString()}"),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      takePictureAndAddToImages(index).then((value) => {uploadAllImages(orderDetail.productName)});
-                    },
-                    icon: Icon(
-                      imageTaken[index] ? Icons.check : Icons.camera_alt,
-                      size: 18,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: IconButton(
+                      onPressed: () {
+                        takePictureAndAddToImages(index).then((value) {
+                          uploadAllImages(widget.order[index].productName);
+                        });
+                      },
+                      icon: Icon(
+                        imageTaken[index] ? Icons.check : Icons.camera_alt,
+                        size: 18,
+                      ),
                     ),
                   ),
-                  Text(orderDetail.price.toStringAsFixed(2)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Text(widget.order[index].price.toStringAsFixed(2)),
+                  ),
                 ],
               ),
-            );
-          },
+          ],
         ),
-        Container(
+        Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,9 +306,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
-                // "Rs. ${widget.orderTotalPrice}",
                 "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
@@ -225,62 +316,146 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
+  // Widget _buildOrderDetailsTableFailed() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Container(
+  //         color: Colors.grey[200],
+  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //         child: const Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text("Items", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //             Text("Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //             Text("Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //           ],
+  //         ),
+  //       ),
+  //       ListView.builder(
+  //         shrinkWrap: true,
+  //         physics: const NeverScrollableScrollPhysics(),
+  //         itemCount: widget.order.length,
+  //         itemBuilder: (context, index) {
+  //           var orderDetail = widget.order[index];
+  //           return Container(
+  //             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //             decoration: BoxDecoration(
+  //               border: Border(
+  //                 bottom: BorderSide(
+  //                   color: Colors.grey[300]!,
+  //                   width: 1.0,
+  //                 ),
+  //               ),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Flexible(
+  //                   child: Text(
+  //                     orderDetail.productName,
+  //                     maxLines: 1,
+  //                     overflow: TextOverflow.ellipsis,
+  //                   ),
+  //                 ),
+  //                 Text(
+  //                   "x ${orderDetail.quantity.toString()}",
+  //                 ),
+  //                 const Icon(
+  //                   Icons.close,
+  //                   size: 18,
+  //                 ),
+  //                 Text(orderDetail.price.toStringAsFixed(2)),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //       Container(
+  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             const Text(
+  //               "Total Price",
+  //               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  //             ),
+  //             Text(
+  //               // "Rs. ${widget.orderTotalPrice}",
+  //               "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
+  //
+  //               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _buildOrderDetailsTableFailed() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          color: Colors.grey[200],
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Items", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: widget.order.length,
-          itemBuilder: (context, index) {
-            var orderDetail = widget.order[index];
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        Table(
+          columnWidths: const {
+            0: FlexColumnWidth(),
+            1: FixedColumnWidth(80.0),
+            2: FixedColumnWidth(80.0),
+            3: FixedColumnWidth(80.0),
+          },
+          border: TableBorder.all(color: Colors.grey[300]!),
+          children: [
+            TableRow(
               decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey[300]!,
-                    width: 1.0,
-                  ),
-                ),
+                color: Colors.grey[200],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Items", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Qnt", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Image", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text("Price", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+            for (var orderDetail in widget.order)
+              TableRow(
                 children: [
-                  Flexible(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text(
                       orderDetail.productName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      // maxLines: 1,
+                      // overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text(
-                    "x ${orderDetail.quantity.toString()}",
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Text("x ${orderDetail.quantity.toString()}"),
                   ),
-                  const Icon(
-                    Icons.close,
-                    size: 18,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Icon(Icons.close, size: 18),
                   ),
-                  Text(orderDetail.price.toStringAsFixed(2)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Text(orderDetail.price.toStringAsFixed(2)),
+                  ),
                 ],
               ),
-            );
-          },
+          ],
         ),
-        Container(
+        Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -290,9 +465,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
-                // "Rs. ${widget.orderTotalPrice}",
                 "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],

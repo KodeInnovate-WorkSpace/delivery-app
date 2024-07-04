@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
@@ -254,7 +255,22 @@ class _BillDetailsState extends State<BillDetails> {
                         ),
                       ],
                     ),
-                  const Divider(),
+                  // const Divider(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  const DottedLine(
+                    dashLength: 3,
+                    dashGapLength: 2,
+                    lineThickness: 3,
+                    dashColor: Color(0xff666666),
+                    dashRadius: 20,
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
                   // Grand Total Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
