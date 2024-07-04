@@ -67,7 +67,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
       stream: FirebaseFirestore.instance.collection('OrderHistory').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.black));
         }
 
         final orders = snapshot.data?.docs
