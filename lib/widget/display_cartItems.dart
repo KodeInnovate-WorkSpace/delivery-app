@@ -23,18 +23,6 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
               color: Colors.white,
               shadowColor: Colors.grey.withOpacity(0.1),
 
-              // decoration: BoxDecoration(
-              //   color: Colors.white,
-              //   borderRadius: BorderRadius.circular(10),
-              //   boxShadow: [
-              //     BoxShadow(
-              //       color: Colors.grey.withOpacity(0.1), // Shadow color
-              //       spreadRadius: 2, // Spread radius
-              //       blurRadius: 5, // Blur radius
-              //       offset: const Offset(0, 2), // Shadow offset (x, y)
-              //     ),
-              //   ],
-              // ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
