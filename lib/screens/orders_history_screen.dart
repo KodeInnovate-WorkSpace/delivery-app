@@ -148,9 +148,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         'Order ID: $orderId',
                         style: const TextStyle(fontFamily: 'Gilroy-Bold', fontSize: 15, color: Color(0xff1c1c1c)),
                       ),
-                      // const Divider(),
                       const SizedBox(height: 10),
-
                       Column(
                         children: orders.map((order) {
                           return ListTile(
@@ -158,15 +156,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                               backgroundImage: CachedNetworkImageProvider(order.productImage),
                             ),
                             title: Text("${order.productName} x ${order.quantity}"),
-                            // subtitle: Text('Price: ₹${order.price.toStringAsFixed(0)}, Quantity: ${order.quantity}'),
                           );
                         }).toList(),
                       ),
-
                       const SizedBox(
                         height: 20,
                       ),
-
                       const DottedLine(
                         dashLength: 3,
                         dashGapLength: 2,
@@ -174,11 +169,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         dashColor: Color(0xff666666),
                         dashRadius: 20,
                       ),
-
                       const SizedBox(
                         height: 20,
                       ),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -200,6 +193,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                 getOrderStatusIcon(orders.first.status),
                                 color: getOrderStatusColor(orders.first.status),
                                 size: 18,
+                              ),
+                              const Icon(
+                                Icons.arrow_forward_ios, // Use an arrow icon here
+                                color: Color(0xff000000), // Adjust the color as needed
+                                size: 18, // Adjust the size as needed
                               ),
                             ],
                           ),
