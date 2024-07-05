@@ -367,7 +367,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           address: addressProvider.selectedAddress,
                                                           phone: authProvider.phone,
                                                           overallTotal: totalAmt,
-                                                          discount: cartProvider.Discount,
                                                         );
                                                       }).toList();
 
