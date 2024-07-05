@@ -42,7 +42,7 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  String _selectedPaymentMethod = 'Banks';
+  String _selectedPaymentMethod = 'Online';
   IconData _paymentIcon = Icons.account_balance;
 
   @override
@@ -298,10 +298,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             onChanged: (String? newValue) {
                                               setState(() {
                                                 _selectedPaymentMethod = newValue!;
-                                                _paymentIcon = newValue == 'Banks' ? Icons.account_balance : Icons.currency_rupee;
+                                                _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
                                               });
                                             },
-                                            items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
+                                            items: <String>['Online', 'Cash'].map<DropdownMenuItem<String>>((String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value,
                                                 child: Text(value),
@@ -367,6 +367,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           address: addressProvider.selectedAddress,
                                                           phone: authProvider.phone,
                                                           overallTotal: totalAmt,
+                                                          discount: cartProvider.Discount,
                                                         );
                                                       }).toList();
 
@@ -380,7 +381,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             );
                                           },
                                         );
-                                      } else if (_selectedPaymentMethod == 'Banks') {
+                                      } else if (_selectedPaymentMethod == 'Online') {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
