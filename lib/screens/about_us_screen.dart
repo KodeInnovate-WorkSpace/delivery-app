@@ -242,45 +242,37 @@ By phone number: 9326500602''')),
                   ),
                 ),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Terms & Conditions", content: '''Delivo App Terms and Conditions
-1. Acceptance of Terms
-By using Delivo App, you agree to these terms.
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Terms & Conditions", content: '''
+Terms and Conditions
 
-2. Account Registration
-Users must create an account and provide accurate information.
+Thank you for accessing/shopping at https://play.google.com/store/apps/details?id=com.delivoapp.app. This site is owned by Kodeinnovate Solutions Private Limited (hereinafter referred to as “Delivo App”). By accessing or shopping on this site, you indicate your unconditional acceptance of these terms and conditions. We reserve the right, at our sole discretion, to update or revise these terms and conditions. Continued use of the site following the posting of any changes constitutes your acceptance of those changes. At “Delivo App”, we strive to create a space where you can explore and shop for all your favorite things in a safe and secure environment. All products and information displayed on “Delivo App” constitutes an "invitation to offer". “Delivo App” reserves the right to accept or reject your offer. Your order for purchase constitutes your "offer" which shall be subject to the terms and conditions as listed below.
 
-3. Delivery Areas
-Service limited to 400613.
+1. *Eligibility to Use Our Site*
+   Use of the Site is available only to persons who can legally enter into contracts under applicable laws. Persons who are "incompetent to contract", within the meaning of the Indian Contract Act, 1872 including un-discharged insolvents etc., are not eligible to use the Site. “Delivo App” reserves the right to terminate your access to the Site if it discovers that you are under the age of 18 years or suffer from any other disability, as recognized under the Indian Contract Act, 1872.
 
-4. Delivery Hours
-Deliveries between 7 AM and 12 PM.
+2. *Membership*
+   Although it's not essential to have an account to shop with “Delivo App”, you can shop as a guest. As a member, you agree to provide true, accurate, current, and complete information about yourself as prompted by the site's registration form. Registration where prohibited under any law shall be void. “Delivo App” reserves the right to revoke or terminate your registration for any reason at any time, without notice.
 
-5. Delivery Fees
-Fees vary by order. Displayed at checkout.
+3. *Electronic Communications*
+   When you use the site or send emails or other data, information, or communication to us, you agree and understand that you are communicating with us electronically and give your consent to receive communications electronically from us periodically, when required.
 
-6. Delivery Time
-Delivery within 20 minutes, subject to conditions.
+4. *Reviews, Feedback, Submissions*
+   All reviews, comments, feedback, postcards, suggestions, ideas, and other submissions disclosed, submitted, or offered to “Delivo App” directly or otherwise disclosed, submitted, or offered in connection with your use of this Site (collectively referred to "Comments") will remain “Delivo App” property. Such disclosure, submission, or offer of any comments shall constitute an assignment to “Delivo App” of all worldwide rights, titles, and interests in all copyrights and other intellectual properties in the comments. Thus, it exclusively owns all such rights, titles, and interests and shall not be limited in any way in its use, commercial or otherwise. “Delivo App” will be entitled to use, reproduce, disclose, modify, adapt, create derivative works from, publish, display, and distribute any comments you submit for any purpose whatsoever, without restriction and without compensating you in any way. “Delivo App” is and shall be under no obligation (1) to maintain any Comments in confidence; or (2) to pay you any compensation for any Comments; or (3) to respond to any Comments. You agree that any comments submitted by you to the Site will not violate this policy or any right of any third party, including copyright, trademark, privacy, or other personal or proprietary right(s), and will not cause injury to any person or entity. You further agree that no comments submitted by you to the site will be libelous or otherwise unlawful, threatening, abusive, or obscene material, or contain software viruses, political campaigning, commercial solicitation, chain letters, mass mailings or any form of "spam".
+“Delivo App” does not regularly review posted comments, but does reserve the right (but not the obligation) to monitor and edit or remove any comment submitted to the Site. You grant “Delivo App” the right to use the name that you submit in connection with any of the posted comments. You agree not to use a false email address, impersonate any person or entity, or otherwise mislead as to the origin of any Comments you submit. You are and shall remain solely responsible for the content of any comments you make and you agree to indemnify “Delivo App” and its affiliates for all claims resulting from any Comments you submit. We take no responsibility and assume no liability for any comments submitted by you or any third party.
 
-7. Payment
-Payments made via app. Secure and encrypted.
+5. *Accuracy of Content/Information of Products on the Web Site*
+   While “Delivo App” strives to provide accurate product and pricing information, typographical errors may occur. In the event that a product is listed at an incorrect price or with incorrect information due to an error in pricing or product information, “Delivo App” shall have the right, on our sole discretion, to modify the price of the products, or information of the products or to refuse or cancel any orders placed for that product, unless the product has already been dispatched.
 
-8. Cancellations
-Cancellations allowed within 5 minutes post-order.
+6. *Limitation of Liability*
+   Kodeinnovate Solutions Private Limited is not liable for any indirect, incidental, or consequential damages arising from the use of the app.
 
-9. Refunds
-Refunds processed for valid complaints within 24 hours.
+7. *Governing Law*
+   These terms are governed by the laws of India.
 
-10. User Conduct
-No misuse of app. Follow all local laws.
+8. *Changes to Terms*
+   We may update these terms from time to time. Changes will be posted on our website and app.
 
-11. Privacy
-User data is confidential. Refer to Privacy Policy.
-
-12. Limitation of Liability
-Delivo is not liable for delays beyond control.
-
-13. Changes to Terms
-Terms may change. Users will be notified.''')));
+For any queries, please contact us at info@kodeinnovate.in  ''')));//terms and conditions
                 },
               ),
 
@@ -343,32 +335,32 @@ In exceptional cases, if an order must be canceled due to unavoidable circumstan
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Refund Policy", content: '''Thank you for shopping at Delivo App.
+                    MaterialPageRoute(builder: (context) => const PolicyScreen(policyTitle: "Refund Policy", content: '''Refund Policy
 
-If, for any reason, You are not completely satisfied with a purchase We invite You to review our policy on refunds and returns. This Return and Refund Policy has been created with the help of the Return and Refund Policy Generator.
+At Delivo App, we strive to provide excellent service. If you are not satisfied with your purchase, please review our refund policy below.
 
-The following terms are applicable for any products that You purchased with Us.
+1. Refund Eligibility
+   - Refunds are only applicable for incorrect or damaged items.
+   - To be eligible for a refund, you must contact our support team within 3 working days of delivery.
 
-Interpretation and Definitions
-Interpretation
-The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.
+2. Refund Process
+   - Contact our support team at support@kodeinnovate.in with your order details and reason for the refund request.
+   - Our team will review your request and, if approved, process the refund within 3 working days.
+   - Refunds will be credited to the original payment method.
 
-Definitions
-For the purposes of this Return and Refund Policy:
+3. Non-Refundable Items
+   - Perishable goods
+   - Gift cards
+   - Items purchased on sale
 
-Application means the software program provided by the Company downloaded by You on any electronic device, named Delivo App
+4. Support Contact
+   - Email: support@kodeinnovate.in
+   - Phone: 9326500602
 
-Company (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Delivo App.
-
-Goods refer to the items offered for sale on the Service.
-
-Orders mean a request by You to purchase Goods from Us.
-
-Service refers to the Application.
-
-You means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.''')),
+Please note that order cancellations are not allowed once an order is placed.
+''')),
                   );
-                },
+                },//refund policy
               ),
             ],
           ),
