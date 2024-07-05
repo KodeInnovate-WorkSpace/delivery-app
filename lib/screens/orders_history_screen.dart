@@ -196,7 +196,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                               ),
                               const Icon(
                                 Icons.arrow_forward_ios, // Use an arrow icon here
-                                color: Color(0xff000000), // Adjust the color as needed
+                                color: Color(0xff666666), // Adjust the color as needed
                                 size: 18, // Adjust the size as needed
                               ),
                             ],

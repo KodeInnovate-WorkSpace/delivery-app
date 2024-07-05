@@ -71,15 +71,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     var headers = {
       'Content-Type': 'application/json',
       //Test
-      'x-client-id': "TEST102073159c36086010050049f41951370201",
-      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
+      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       //Prod
-      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      // 'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      'x-client-id': "6983506cac38e05faf1b6e3085053896",
+      'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
-    var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
-    // var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
+    // var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
+    var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     request.body = json.encode({
       "order_amount": totalAmt.toStringAsFixed(2),
       "order_id": myOrderId,
@@ -135,21 +135,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Future<void> webCheckout(String myOrdId) async {
-    try {
-      CFSession? session = await createSession(myOrdId);
-      var cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session!).build();
-      cfPaymentGatewayService.doPayment(cfWebCheckout);
-    } on CFException catch (e) {
-      debugPrint(e.message);
-    }
-  }
-
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
-      var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -171,6 +161,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
       debugPrint("Payment exception: ${e.message}");
+    }
+  }
+
+  Future<void> webCheckout(String myOrdId) async {
+    try {
+      CFSession? session = await createSession(myOrdId);
+      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#2b2b2a").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+      var cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session!).setTheme(theme).build();
+      cfPaymentGatewayService.doPayment(cfWebCheckout);
+    } on CFException catch (e) {
+      debugPrint(e.message);
     }
   }
 

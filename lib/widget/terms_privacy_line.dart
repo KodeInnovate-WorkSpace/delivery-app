@@ -14,7 +14,7 @@ Widget termsPrivacyLine() {
         " & ",
         style: TextStyle(fontSize: 10, color: Color(0xff666666)),
       ),
-      underlineText("Privacy Policy", "https://kodeinnovate-workspace.github.io/delivo-policy/delivo_app_terms_and_conditions.html"),
+      underlineText("Privacy Policy", "https://kodeinnovate-workspace.github.io/delivo-policy/delivo_app_privacy_policy.html"),
     ],
   );
 }
