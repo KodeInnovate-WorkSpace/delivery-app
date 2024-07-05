@@ -172,7 +172,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       }
       List<CFPaymentModes> components = <CFPaymentModes>[];
       var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
-      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#000000").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
       var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session).setPaymentComponent(paymentComponent).setTheme(theme).build();
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
@@ -205,224 +205,224 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         body: cartProvider.cart.isEmpty
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/images/empty.png"),
-                    const Text(
-                      "No item in cart",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
-              )
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/empty.png"),
+              const Text(
+                "No item in cart",
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
+        )
             : Stack(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    color: const Color(0xffeaf1fc),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Card(
-                              elevation: 0,
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Row(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              color: const Color(0xffeaf1fc),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.timer),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.timer),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                    Text(
+                                      'Delivery within $deliveryTime minutes',
+                                      style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                    ),
+                                    const Text(
+                                      'Shipment of 1 item',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const DisplayCartItems(),
+                      const SizedBox(height: 20),
+                      const BillDetails(),
+                      const SizedBox(height: 20),
+                      const ApplyCouponWidget(),
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              const AddressSelection(),
+                              const Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            'Delivery within $deliveryTime minutes',
-                                            style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                          Icon(
+                                            _paymentIcon,
+                                            size: 12,
                                           ),
-                                          const Text(
-                                            'Shipment of 1 item',
-                                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                                          const SizedBox(width: 10),
+                                          DropdownButton<String>(
+                                            value: _selectedPaymentMethod,
+                                            icon: const Icon(Icons.arrow_drop_down),
+                                            iconSize: 24,
+                                            elevation: 16,
+                                            style: const TextStyle(color: Colors.black),
+                                            underline: Container(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                _selectedPaymentMethod = newValue!;
+                                                _paymentIcon = newValue == 'Banks' ? Icons.account_balance : Icons.currency_rupee;
+                                              });
+                                            },
+                                            items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            const DisplayCartItems(),
-                            const SizedBox(height: 20),
-                            const BillDetails(),
-                            const SizedBox(height: 20),
-                            const ApplyCouponWidget(),
-                            const SizedBox(height: 20),
-                            Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: Colors.white,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    const AddressSelection(),
-                                    const Divider(),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  _paymentIcon,
-                                                  size: 12,
-                                                ),
-                                                const SizedBox(width: 10),
-                                                DropdownButton<String>(
-                                                  value: _selectedPaymentMethod,
-                                                  icon: const Icon(Icons.arrow_drop_down),
-                                                  iconSize: 24,
-                                                  elevation: 16,
-                                                  style: const TextStyle(color: Colors.black),
-                                                  underline: Container(),
-                                                  onChanged: (String? newValue) {
-                                                    setState(() {
-                                                      _selectedPaymentMethod = newValue!;
-                                                      _paymentIcon = newValue == 'Banks' ? Icons.account_balance : Icons.currency_rupee;
-                                                    });
-                                                  },
-                                                  items: <String>['Banks', 'Cash'].map<DropdownMenuItem<String>>((String value) {
-                                                    return DropdownMenuItem<String>(
-                                                      value: value,
-                                                      child: Text(value),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                    ],
+                                  ),
+                                  // PaymentButton(selectedMethod: _selectedPaymentMethod),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      HapticFeedback.heavyImpact();
+
+                                      //generate order id
+                                      final myOrderId = generateOrderId();
+
+                                      if (cartProvider.cart.isEmpty) {
+                                        showMessage("Cart is empty");
+                                        return;
+                                      }
+
+                                      if (addressProvider.address.isEmpty && addressProvider.selectedAddress.isEmpty) {
+                                        showMessage("Please select an address");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => const AddressInputForm(),
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+
+                                      if (_selectedPaymentMethod == 'Banks') {
+                                        pay(myOrderId).then((value) {
+                                          // webCheckout(myOrderId).then((value) {
+                                          List<Order> orders = cartProvider.cart.map((item) {
+                                            return Order(
+                                              orderId: myOrderId,
+                                              paymentMode: _selectedPaymentMethod,
+                                              productName: item.itemName,
+                                              productImage: item.itemImage,
+                                              quantity: item.qnt,
+                                              price: item.itemPrice.toDouble(),
+                                              // totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                                              // totalPrice: cartProvider.calculateGrandTotal(),
+                                              address: addressProvider.selectedAddress,
+                                              phone: authProvider.phone,
+                                              // overallTotal: cartProvider.calculateGrandTotal(),
+                                              overallTotal: totalAmt,
+                                            );
+                                          }).toList();
+
+                                          orderProvider.addOrders(orders, myOrderId, authProvider.phone);
+                                          cartProvider.clearCart();
+                                        });
+                                      } else if (_selectedPaymentMethod == 'Cash') {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
+                                          List<Order> orders = cartProvider.cart.map((item) {
+                                            return Order(
+                                              orderId: myOrderId,
+                                              paymentMode: _selectedPaymentMethod,
+                                              productName: item.itemName,
+                                              productImage: item.itemImage,
+                                              quantity: item.qnt,
+                                              price: item.itemPrice.toDouble(),
+                                              // totalPrice: cartProvider.calculateGrandTotal(),
+                                              // totalPrice: (item.itemPrice * item.qnt).toDouble(),
+                                              address: addressProvider.selectedAddress,
+                                              phone: authProvider.phone,
+                                              // overallTotal: cartProvider.calculateGrandTotal(),
+                                              overallTotal: totalAmt,
+                                            );
+                                          }).toList();
+
+                                          orderProvider.addOrders(orders, myOrderId, authProvider.phone);
+                                          cartProvider.clearCart();
+                                        });
+                                      }
+                                    },
+                                    style: ButtonStyle(
+                                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(14.0),
                                         ),
-                                        // PaymentButton(selectedMethod: _selectedPaymentMethod),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            HapticFeedback.heavyImpact();
-
-                                            //generate order id
-                                            final myOrderId = generateOrderId();
-
-                                            if (cartProvider.cart.isEmpty) {
-                                              showMessage("Cart is empty");
-                                              return;
-                                            }
-
-                                            if (addressProvider.address.isEmpty && addressProvider.selectedAddress.isEmpty) {
-                                              showMessage("Please select an address");
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) => const AddressInputForm(),
-                                                ),
-                                              );
-                                              return;
-                                            }
-
-                                            final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-
-                                            if (_selectedPaymentMethod == 'Banks') {
-                                              pay(myOrderId).then((value) {
-                                                // webCheckout(myOrderId).then((value) {
-                                                List<Order> orders = cartProvider.cart.map((item) {
-                                                  return Order(
-                                                    orderId: myOrderId,
-                                                    paymentMode: _selectedPaymentMethod,
-                                                    productName: item.itemName,
-                                                    productImage: item.itemImage,
-                                                    quantity: item.qnt,
-                                                    price: item.itemPrice.toDouble(),
-                                                    // totalPrice: (item.itemPrice * item.qnt).toDouble(),
-                                                    // totalPrice: cartProvider.calculateGrandTotal(),
-                                                    address: addressProvider.selectedAddress,
-                                                    phone: authProvider.phone,
-                                                    // overallTotal: cartProvider.calculateGrandTotal(),
-                                                    overallTotal: totalAmt,
-                                                  );
-                                                }).toList();
-
-                                                orderProvider.addOrders(orders, myOrderId, authProvider.phone);
-                                                cartProvider.clearCart();
-                                              });
-                                            } else if (_selectedPaymentMethod == 'Cash') {
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
-                                                List<Order> orders = cartProvider.cart.map((item) {
-                                                  return Order(
-                                                    orderId: myOrderId,
-                                                    paymentMode: _selectedPaymentMethod,
-                                                    productName: item.itemName,
-                                                    productImage: item.itemImage,
-                                                    quantity: item.qnt,
-                                                    price: item.itemPrice.toDouble(),
-                                                    // totalPrice: cartProvider.calculateGrandTotal(),
-                                                    // totalPrice: (item.itemPrice * item.qnt).toDouble(),
-                                                    address: addressProvider.selectedAddress,
-                                                    phone: authProvider.phone,
-                                                    // overallTotal: cartProvider.calculateGrandTotal(),
-                                                    overallTotal: totalAmt,
-                                                  );
-                                                }).toList();
-
-                                                orderProvider.addOrders(orders, myOrderId, authProvider.phone);
-                                                cartProvider.clearCart();
-                                              });
-                                            }
-                                          },
-                                          style: ButtonStyle(
-                                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(14.0),
-                                              ),
-                                            ),
-                                            backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                              (Set<WidgetState> states) {
-                                                return Colors.black;
-                                              },
-                                            ),
-                                          ),
-                                          child: const SizedBox(
-                                            width: 120,
-                                            height: 50.0,
-                                            child: Center(
-                                              child: Text(
-                                                "Continue",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16.0,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
+                                      ),
+                                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                                            (Set<WidgetState> states) {
+                                          return Colors.black;
+                                        },
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                    child: const SizedBox(
+                                      width: 120,
+                                      height: 50.0,
+                                      child: Center(
+                                        child: Text(
+                                          "Continue",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
+            ),
+          ],
+        ),
       ),
     );
   }

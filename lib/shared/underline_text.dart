@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 Widget underlineText(String str) {
   return GestureDetector(
-    onTap: () {},
+    onTap: () {
+    },
     child: Text(
       str,
       style: TextStyle(

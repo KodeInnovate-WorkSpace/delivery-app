@@ -20,8 +20,9 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
         return Column(
           children: cartProvider.cart.map((item) {
             return Card(
-              elevation: 0,
               color: Colors.white,
+              shadowColor: Colors.grey.withOpacity(0.1),
+
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

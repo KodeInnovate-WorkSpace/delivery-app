@@ -32,7 +32,7 @@ class ContactScreen extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.all(2.0),
               child: Text(
-                ''' You can get in touch with us through below platforms. Our Team will react out to you as soon as it would be possible
+                ''' If You have any question or need assistance ,please contact us at : Kodeinnovate Solutions Private Limited Kausa Mumbra 400612
          ''',
                 // textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 10, color: Color(0xff666666)),
@@ -86,6 +86,26 @@ class ContactScreen extends StatelessWidget {
                     },
                   ),
 
+                  ListTile(
+                    leading: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xffc9cace),
+                          borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Icon(
+                            Icons.email,
+                            color: Colors.white,
+                            size: 15,
+                          ),
+                        )),
+                    title: const Text("support@kodeinnovate.in", style: TextStyle(color: Color(0xff666666))),
+                    onTap: () async {
+                      Uri email = Uri(scheme: 'mailto', path: "info@kodeinnovate.in");
+                      await launchUrl(email);
+                    },
+                  ),
                   // Phone
                   ListTile(
                     leading: Container(
