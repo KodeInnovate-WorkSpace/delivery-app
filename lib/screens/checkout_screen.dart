@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/widget/address_selection.dart';
 import 'package:speedy_delivery/widget/apply_coupon_widget.dart';
 import 'package:speedy_delivery/widget/bill_details_widget.dart';
-import 'package:speedy_delivery/widget/checkout_top.dart';
 import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/order_provider.dart';
 import '../widget/network_handler.dart';
@@ -167,8 +167,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<void> webCheckout(String myOrdId) async {
     try {
       CFSession? session = await createSession(myOrdId);
-      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#2b2b2a").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
-      var cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session!).setTheme(theme).build();
+      var cfWebCheckout = CFWebCheckoutPaymentBuilder().setSession(session!).build();
       cfPaymentGatewayService.doPayment(cfWebCheckout);
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -196,18 +195,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: const Text("Checkout", style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold')),
-          iconTheme: const IconThemeData(color: Color(0xff666666)),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          backgroundColor: const Color(0xfff7f7f7),
-          elevation: 0,
+          title: const Text('Checkout'),
         ),
-        backgroundColor: const Color(0xfff7f7f7),
         body: cartProvider.cart.isEmpty
             ? Center(
                 child: Column(
@@ -223,15 +212,43 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               )
             : Stack(
                 children: [
-                  SizedBox(
+                  Container(
                     height: MediaQuery.of(context).size.height,
+                    color: const Color(0xffeaf1fc),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const CheckoutTop(),
+                            Card(
+                              elevation: 0,
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.all(18.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.timer),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Delivery within $deliveryTime minutes',
+                                            style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                          ),
+                                          const Text(
+                                            'Shipment of 1 item',
+                                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                             const SizedBox(height: 20),
                             const DisplayCartItems(),
                             const SizedBox(height: 20),
@@ -240,17 +257,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             const ApplyCouponWidget(),
                             const SizedBox(height: 20),
                             Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1), // Shadow color
-                                    spreadRadius: 2, // Spread radius
-                                    blurRadius: 5, // Blur radius
-                                    offset: const Offset(0, 2), // Shadow offset (x, y)
-                                  ),
-                                ],
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -333,11 +342,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     productImage: item.itemImage,
                                                     quantity: item.qnt,
                                                     price: item.itemPrice.toDouble(),
-                                                    // totalPrice: (item.itemPrice * item.qnt).toDouble(),
-                                                    // totalPrice: cartProvider.calculateGrandTotal(),
                                                     address: addressProvider.selectedAddress,
                                                     phone: authProvider.phone,
-                                                    // overallTotal: cartProvider.calculateGrandTotal(),
                                                     overallTotal: totalAmt,
                                                   );
                                                 }).toList();
@@ -355,11 +361,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     productImage: item.itemImage,
                                                     quantity: item.qnt,
                                                     price: item.itemPrice.toDouble(),
-                                                    // totalPrice: cartProvider.calculateGrandTotal(),
-                                                    // totalPrice: (item.itemPrice * item.qnt).toDouble(),
                                                     address: addressProvider.selectedAddress,
                                                     phone: authProvider.phone,
-                                                    // overallTotal: cartProvider.calculateGrandTotal(),
                                                     overallTotal: totalAmt,
                                                   );
                                                 }).toList();
