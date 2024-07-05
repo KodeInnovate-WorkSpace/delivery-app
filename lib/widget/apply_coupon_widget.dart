@@ -14,14 +14,6 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
   String? selectedOffer;
   double? selectedDiscount;
 
-  // void _removeCoupon() {
-  //   setState(() {
-  //     selectedOffer = null;
-  //     selectedDiscount = null;
-  //     Provider.of<CartProvider>(context, listen: false).clearCoupon();
-  //   });
-  // }
-
   void _removeCoupon() {
     setState(() {
       selectedOffer = null;
@@ -44,17 +36,22 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    // final width = MediaQuery.of(context).size.width;
-    // final height = MediaQuery.of(context).size.height / 12;
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1), // Shadow color
+            spreadRadius: 2, // Spread radius
+            blurRadius: 5, // Blur radius
+            offset: const Offset(0, 2), // Shadow offset (x, y)
+          ),
+        ],
       ),
       child: ListTile(
         minLeadingWidth: 0,

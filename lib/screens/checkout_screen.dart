@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/widget/address_selection.dart';
 import 'package:speedy_delivery/widget/apply_coupon_widget.dart';
 import 'package:speedy_delivery/widget/bill_details_widget.dart';
+import 'package:speedy_delivery/widget/checkout_top.dart';
 import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/order_provider.dart';
 import '../widget/network_handler.dart';
 import 'dart:math';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
-import 'package:provider/provider.dart';
-import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/order_tracking.dart';
-import 'package:speedy_delivery/screens/orders_history_screen.dart';
 import '../providers/address_provider.dart';
 import '../providers/auth_provider.dart';
-import '../providers/order_provider.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import 'dart:convert';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
@@ -30,7 +25,6 @@ import 'package:flutter_cashfree_pg_sdk/api/cftheme/cftheme.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:http/http.dart' as http;
-
 import '../screens/address_input.dart';
 import '../screens/order_confirmation_screen.dart';
 
@@ -77,15 +71,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     var headers = {
       'Content-Type': 'application/json',
       //Test
-      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
-      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      'x-client-id': "TEST102073159c36086010050049f41951370201",
+      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       //Prod
-      'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
+      // 'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
-    // var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
-    var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
+    var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
+    // var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     request.body = json.encode({
       "order_amount": totalAmt.toStringAsFixed(2),
       "order_id": myOrderId,
@@ -154,8 +148,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
-      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -201,8 +195,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: const Text('Checkout'),
+          title: const Text("Checkout", style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold')),
+          iconTheme: const IconThemeData(color: Color(0xff666666)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          backgroundColor: const Color(0xfff7f7f7),
+          elevation: 0,
         ),
+        backgroundColor: const Color(0xfff7f7f7),
         body: cartProvider.cart.isEmpty
             ? Center(
                 child: Column(
@@ -218,43 +222,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               )
             : Stack(
                 children: [
-                  Container(
+                  SizedBox(
                     height: MediaQuery.of(context).size.height,
-                    color: const Color(0xffeaf1fc),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Card(
-                              elevation: 0,
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.timer),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Delivery within $deliveryTime minutes',
-                                            style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
-                                          ),
-                                          const Text(
-                                            'Shipment of 1 item',
-                                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            const CheckoutTop(),
                             const SizedBox(height: 20),
                             const DisplayCartItems(),
                             const SizedBox(height: 20),
@@ -263,9 +239,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             const ApplyCouponWidget(),
                             const SizedBox(height: 20),
                             Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              decoration: BoxDecoration(
                                 color: Colors.white,
+                                borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1), // Shadow color
+                                    spreadRadius: 2, // Spread radius
+                                    blurRadius: 5, // Blur radius
+                                    offset: const Offset(0, 2), // Shadow offset (x, y)
+                                  ),
+                                ],
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -338,8 +322,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
                                             if (_selectedPaymentMethod == 'Banks') {
-                                              pay(myOrderId).then((value) {
-                                                // webCheckout(myOrderId).then((value) {
+                                              // pay(myOrderId).then((value) {
+                                              webCheckout(myOrderId).then((value) {
                                                 List<Order> orders = cartProvider.cart.map((item) {
                                                   return Order(
                                                     orderId: myOrderId,
