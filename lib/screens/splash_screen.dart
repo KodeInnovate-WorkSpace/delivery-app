@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
+
+import '../providers/check_user_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,8 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateBasedOnAuth() async {
-    await Future.delayed(
-        const Duration(seconds: 2)); // Add a delay to show the splash screen
+    await Future.delayed(const Duration(seconds: 2)); // Add a delay to show the splash screen
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (mounted) {
         if (user != null) {

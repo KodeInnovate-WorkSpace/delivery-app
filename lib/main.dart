@@ -18,6 +18,7 @@ import 'deliveryPartner/provider/delivery_order_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   final fcmToken = await FirebaseMessaging.instance.getToken();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
