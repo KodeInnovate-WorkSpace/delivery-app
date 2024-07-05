@@ -317,7 +317,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     onPressed: () {
                                       HapticFeedback.heavyImpact();
 
-                                      //generate order id
+                                      // Generate order id
                                       final myOrderId = generateOrderId();
 
                                       if (cartProvider.cart.isEmpty) {
@@ -337,51 +337,92 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                                       final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
-                                      if (_selectedPaymentMethod == 'Banks') {
-                                        pay(myOrderId).then((value) {
-                                          // webCheckout(myOrderId).then((value) {
-                                          List<Order> orders = cartProvider.cart.map((item) {
-                                            return Order(
-                                              orderId: myOrderId,
-                                              paymentMode: _selectedPaymentMethod,
-                                              productName: item.itemName,
-                                              productImage: item.itemImage,
-                                              quantity: item.qnt,
-                                              price: item.itemPrice.toDouble(),
-                                              // totalPrice: (item.itemPrice * item.qnt).toDouble(),
-                                              // totalPrice: cartProvider.calculateGrandTotal(),
-                                              address: addressProvider.selectedAddress,
-                                              phone: authProvider.phone,
-                                              // overallTotal: cartProvider.calculateGrandTotal(),
-                                              overallTotal: totalAmt,
-                                            );
-                                          }).toList();
+                                      if (_selectedPaymentMethod == 'Cash') {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              backgroundColor: const Color(0xfff7f7f7),
+                                              title: const Text('Confirmation', style: TextStyle(color: Color(0xff666666)),),
+                                              content: const Text('Are you sure you want to make this order as Cash? You can save more if you select payment method type as Online.', style: TextStyle(color: Color(0xff666666))),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                  },
+                                                  child: const Text('Change Payment Method', style: TextStyle(color: Colors.black)),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
+                                                      List<Order> orders = cartProvider.cart.map((item) {
+                                                        return Order(
+                                                          orderId: myOrderId,
+                                                          paymentMode: _selectedPaymentMethod,
+                                                          productName: item.itemName,
+                                                          productImage: item.itemImage,
+                                                          quantity: item.qnt,
+                                                          price: item.itemPrice.toDouble(),
+                                                          address: addressProvider.selectedAddress,
+                                                          phone: authProvider.phone,
+                                                          overallTotal: totalAmt,
+                                                        );
+                                                      }).toList();
 
-                                          orderProvider.addOrders(orders, myOrderId, authProvider.phone);
-                                          cartProvider.clearCart();
-                                        });
-                                      } else if (_selectedPaymentMethod == 'Cash') {
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
-                                          List<Order> orders = cartProvider.cart.map((item) {
-                                            return Order(
-                                              orderId: myOrderId,
-                                              paymentMode: _selectedPaymentMethod,
-                                              productName: item.itemName,
-                                              productImage: item.itemImage,
-                                              quantity: item.qnt,
-                                              price: item.itemPrice.toDouble(),
-                                              // totalPrice: cartProvider.calculateGrandTotal(),
-                                              // totalPrice: (item.itemPrice * item.qnt).toDouble(),
-                                              address: addressProvider.selectedAddress,
-                                              phone: authProvider.phone,
-                                              // overallTotal: cartProvider.calculateGrandTotal(),
-                                              overallTotal: totalAmt,
+                                                      orderProvider.addOrders(orders, myOrderId, authProvider.phone);
+                                                      cartProvider.clearCart();
+                                                    });
+                                                  },
+                                                  child: const Text('Proceed with Cash', style: TextStyle(color: Colors.black)),
+                                                ),
+                                              ],
                                             );
-                                          }).toList();
+                                          },
+                                        );
+                                      } else if (_selectedPaymentMethod == 'Banks') {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              backgroundColor: const Color(0xfff7f7f7),
+                                              title: const Text('Confirmation', style: TextStyle(color: Color(0xff666666)),),
+                                              content: const Text('Are you sure you want to continue with online payment method?', style: TextStyle(color: Color(0xff666666)),),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                  },
+                                                  child: const Text('Cancel', style: TextStyle(color: Colors.black),),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                    pay(myOrderId).then((value) {
+                                                      List<Order> orders = cartProvider.cart.map((item) {
+                                                        return Order(
+                                                          orderId: myOrderId,
+                                                          paymentMode: _selectedPaymentMethod,
+                                                          productName: item.itemName,
+                                                          productImage: item.itemImage,
+                                                          quantity: item.qnt,
+                                                          price: item.itemPrice.toDouble(),
+                                                          address: addressProvider.selectedAddress,
+                                                          phone: authProvider.phone,
+                                                          overallTotal: totalAmt,
+                                                        );
+                                                      }).toList();
 
-                                          orderProvider.addOrders(orders, myOrderId, authProvider.phone);
-                                          cartProvider.clearCart();
-                                        });
+                                                      orderProvider.addOrders(orders, myOrderId, authProvider.phone);
+                                                      cartProvider.clearCart();
+                                                    });
+                                                  },
+                                                  child: const Text('Yes', style: TextStyle(color: Colors.black),),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       }
                                     },
                                     style: ButtonStyle(
@@ -410,6 +451,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       ),
                                     ),
                                   )
+
                                 ],
                               ),
                             ],
