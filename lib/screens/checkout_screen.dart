@@ -156,7 +156,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       }
       List<CFPaymentModes> components = <CFPaymentModes>[];
       var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
-      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#000000").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
       var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session).setPaymentComponent(paymentComponent).setTheme(theme).build();
       cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
     } on CFException catch (e) {
@@ -332,8 +332,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
                                             if (_selectedPaymentMethod == 'Banks') {
-                                              // pay(myOrderId).then((value) {
-                                              webCheckout(myOrderId).then((value) {
+                                              pay(myOrderId).then((value) {
                                                 List<Order> orders = cartProvider.cart.map((item) {
                                                   return Order(
                                                     orderId: myOrderId,
