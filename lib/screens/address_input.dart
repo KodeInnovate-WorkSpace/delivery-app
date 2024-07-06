@@ -28,7 +28,9 @@ class _AddressInputFormState extends State<AddressInputForm> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _pincodeController = TextEditingController();
-  final _areaController = TextEditingController(); // New area controller
+  final _areaController = TextEditingController();
+  bool _isFetchingLocation = false;
+  bool _shouldShowAreaField = false;
 
   @override
   void initState() {
@@ -37,7 +39,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
     if (authProvider.textController.text.isNotEmpty) {
       _phoneController.text = authProvider.textController.text;
     }
-    _getCurrentLocation(); // Fetch the current location on init
+    _getCurrentLocation();
   }
 
   @override
@@ -48,11 +50,15 @@ class _AddressInputFormState extends State<AddressInputForm> {
     _landmarkController.dispose();
     _phoneController.dispose();
     _pincodeController.dispose();
-    _areaController.dispose(); // Dispose the new controller
+    _areaController.dispose();
     super.dispose();
   }
 
   Future<void> _getCurrentLocation() async {
+    setState(() {
+      _isFetchingLocation = true;
+    });
+
     try {
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
@@ -65,13 +71,24 @@ class _AddressInputFormState extends State<AddressInputForm> {
 
       if (placeMarks.isNotEmpty) {
         Placemark pMark = placeMarks[0];
-        setState(() {
-          _areaController.text = '${pMark.street}, ${pMark.subLocality}, ${pMark.locality}';
-        });
+        String postalCode = pMark.postalCode ?? '';
+
+        final querySnapshot = await FirebaseFirestore.instance.collection('location').where('postal_code', isEqualTo: int.parse(postalCode)).where('status', isEqualTo: 1).get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          setState(() {
+            _shouldShowAreaField = true;
+            _areaController.text = '${pMark.street}, ${pMark.subLocality}, ${pMark.locality}';
+          });
+        }
       }
     } catch (e) {
       log("Error fetching location: $e");
       showMessage("Unable to fetch current location.");
+    } finally {
+      setState(() {
+        _isFetchingLocation = false;
+      });
     }
   }
 
@@ -141,10 +158,15 @@ class _AddressInputFormState extends State<AddressInputForm> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                if (_isFetchingLocation)
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Fetching your location, please wait..."),
+                  ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: InputBox(
-                    hintText: "Flat No",
+                    hintText: "Flat/Room No",
                     myIcon: Icons.home,
                     myController: _flatController,
                     keyboardType: TextInputType.text,
@@ -164,7 +186,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: InputBox(
-                    hintText: "Building Name",
+                    hintText: "Building/Chawl Name",
                     myIcon: Icons.apartment,
                     myController: _buildingController,
                     keyboardType: TextInputType.text,
@@ -181,38 +203,46 @@ class _AddressInputFormState extends State<AddressInputForm> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: TextFormField(
-                    controller: _areaController,
-                    keyboardType: TextInputType.text,
-                    cursorColor: Colors.black,
-                    readOnly: true, // Make the field uneditable
-                    decoration: InputDecoration(
-                      hintText: "Area",
-                      hintStyle: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.normal,
+                if (_shouldShowAreaField) ...[
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: TextFormField(
+                      controller: _areaController,
+                      keyboardType: TextInputType.text,
+                      cursorColor: Colors.black,
+                      readOnly: true, // Make the field uneditable
+                      decoration: InputDecoration(
+                        hintText: "Area",
+                        hintStyle: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: const Icon(Icons.location_on),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14.0),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14.0),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14.0),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(Icons.location_on),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Area is required";
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                ],
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: TextFormField(
@@ -304,12 +334,14 @@ class _AddressInputFormState extends State<AddressInputForm> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _saveAddress();
-                      userProvider.storeDetail(context, 'name', _nameController.text);
-                    }
-                  },
+                  onPressed: _isFetchingLocation
+                      ? null
+                      : () {
+                          if (_formKey.currentState!.validate()) {
+                            _saveAddress();
+                            userProvider.storeDetail(context, 'name', _nameController.text);
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size(250, 50),
                     shape: RoundedRectangleBorder(

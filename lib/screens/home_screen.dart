@@ -338,7 +338,8 @@ class HomeScreenState extends State<HomeScreen> {
                                           itemCount: 8,
                                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
-                                            childAspectRatio: 0.65,
+                                            // childAspectRatio: 0.65,
+                                            childAspectRatio: 0.68,
                                           ),
                                           itemBuilder: (context, subIndex) {
                                             final subCategory = filteredSubCategories[subIndex];

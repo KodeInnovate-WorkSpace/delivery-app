@@ -48,7 +48,7 @@ class AddressProvider with ChangeNotifier {
       await prefs.setString('address_${userAdd.flat}', jsonAddress);
 
       setSelectedAddress(
-          "${userAdd.flat}, ${userAdd.building}, ${userAdd.mylandmark}");
+          "${userAdd.flat}, ${userAdd.building}, ${userAdd.mylandmark},{${userAdd.area}}");
 
       showMessage("Address Saved!");
       log("Address: ${_addressList.map((add) => {
@@ -73,7 +73,7 @@ class AddressProvider with ChangeNotifier {
         // Automatically select another address if available
         if (_addressList.isNotEmpty) {
           final newAddress = _addressList.first;
-          _selectedAddress = "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark}";
+          _selectedAddress = "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark},{${userAdd.area}}";
         }
       }
 

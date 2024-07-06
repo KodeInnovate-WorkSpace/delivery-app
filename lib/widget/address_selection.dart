@@ -20,7 +20,7 @@ class _AddressSelectionState extends State<AddressSelection> {
     final addressProvider = Provider.of<AddressProvider>(context);
 
     if (addressProvider.address.isNotEmpty) {
-      _defaultAdd = "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark},${addressProvider.address[0].area}";
+      _defaultAdd = "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark},{${addressProvider.address[0].area}}";
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -98,7 +98,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _newAdd = "${address.flat}, ${address.building}, ${address.mylandmark},${address.area}";
+                                        _newAdd = "${address.flat}, ${address.building}, ${address.mylandmark},{${address.area}}";
                                         setState(() {
                                           _defaultAdd = _newAdd;
                                         });
@@ -107,7 +107,7 @@ class _AddressSelectionState extends State<AddressSelection> {
                                         showMessage("Address Changed!");
                                       },
                                       child: ListTile(
-                                        title: Text('${address.flat}, ${address.floor}, ${address.building},${address.area}'),
+                                        title: Text('${address.flat}, ${address.floor}, ${address.building},{${address.area}}'),
                                         subtitle: Text(address.mylandmark),
                                         trailing: IconButton(
                                           onPressed: () {
@@ -138,7 +138,7 @@ class _AddressSelectionState extends State<AddressSelection> {
             );
           },
         ).then((value) {
-          setState(() {}); // Refresh the main state after the modal is closed
+          setState(() {});
         });
       },
       child: Container(
