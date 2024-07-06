@@ -26,8 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateBasedOnAuth() async {
-    await Future.delayed(
-        const Duration(seconds: 2)); // Add a delay to show the splash screen
+    await Future.delayed(const Duration(seconds: 2)); // Add a delay to show the splash screen
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (mounted) {
         if (user != null) {
@@ -63,4 +62,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-//updated the splash screen

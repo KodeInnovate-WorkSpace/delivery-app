@@ -39,7 +39,7 @@ class CartProvider extends ChangeNotifier {
     final deliveryChargeValue = deliveryCharge ?? 0;
     final discountValue = _discount ?? 0;
     final handlingCharge = (totalPrice + deliveryChargeValue - discountValue) * 0.018;
-    log("Handling Charge: $handlingCharge");
+    // log("Handling Charge: $handlingCharge");
     return handlingCharge.floorToDouble();
   }
 

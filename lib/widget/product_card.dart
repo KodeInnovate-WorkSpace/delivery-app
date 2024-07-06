@@ -29,7 +29,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        color: Colors.grey[100],
+        color: const Color(0xfff7f7f7),
         child: widget.productList.isEmpty
             ? Center(
                 child: Padding(
@@ -127,13 +127,6 @@ class _ProductCardState extends State<ProductCard> {
                                       decoration: TextDecoration.lineThrough,
                                     ),
                                   ),
-                                  // AddToCartButton(
-                                  //   productName: product.name,
-                                  //   productPrice: product.price,
-                                  //   productImage: product.image,
-                                  //   productUnit: product.unit,
-                                  //   // refreshCart: refreshCart,
-                                  // ),
                                 ],
                               ),
                             ),

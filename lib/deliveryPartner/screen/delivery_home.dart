@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/deliveryPartner/model/model.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../screens/sign_in_screen.dart';
 import '../provider/delivery_order_provider.dart';
 import 'delivery_order_tracking.dart';
 
@@ -15,17 +18,74 @@ class DeliveryHomeScreen extends StatefulWidget {
 
 class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   @override
-  Widget build(BuildContext context) {
-    final orderProvider = Provider.of<AllOrderProvider>(context);
-
-    // Fetch orders when the screen loads
+  void initState() {
+    super.initState();
+    final orderProvider = Provider.of<AllOrderProvider>(context, listen: false);
+    // Fetch orders once when the screen loads
     orderProvider.fetchAllOrders();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: DefaultTabController(
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: IconButton(
+                  onPressed: () async {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: Colors.white,
+                          title: const Text(
+                            "Logout",
+                            style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
+                          ),
+                          content: const Text("Are you sure you want to logout?"),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text(
+                                      "No",
+                                      style: TextStyle(
+                                        color: Color(0xffEF4B4B),
+                                      ),
+                                    )),
+                                TextButton(
+                                    onPressed: () async {
+                                      await FirebaseAuth.instance.signOut();
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      await prefs.remove('isLoggedIn');
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const SigninScreen()),
+                                            (route) => false,
+                                      );
+                                    },
+                                    child: const Text(
+                                      "Yes",
+                                      style: TextStyle(color: Colors.black),
+                                    )),
+                              ],
+                            )
+                          ],
+                        ));
+                  },
+                  icon: const Icon(
+                    Icons.logout,
+                    color: Color(0xffEF4B4B),
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
             bottom: const TabBar(
               indicatorColor: Colors.black,
               labelColor: Colors.black,
@@ -46,13 +106,13 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               if (allOrderProvider.allOrders.isEmpty) {
                 return const Center(
                     child: CircularProgressIndicator(
-                  color: Colors.black,
-                ));
+                      color: Colors.black,
+                    ));
               }
               return TabBarView(
                 children: [
-                  pendingOrders(context, orderProvider),
-                  completedOrders(context, orderProvider),
+                  pendingOrders(context),
+                  completedOrders(context, allOrderProvider),
                 ],
               );
             },
@@ -62,9 +122,9 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
     );
   }
 
-  Widget pendingOrders(BuildContext context, AllOrderProvider orderProvider) {
+  Widget pendingOrders(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('OrderHistory').snapshots(),
+      stream: FirebaseFirestore.instance.collection('OrderHistory').limit(50).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator(color: Colors.black));
@@ -72,27 +132,27 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
 
         final orders = snapshot.data?.docs
             .map((doc) {
-              final data = doc.data();
-              final orderDetails = (data['orders'] as List<dynamic>).map((order) {
-                return OrderDetail(
-                  price: order['price'],
-                  productImage: order['productImage'],
-                  productName: order['productName'],
-                  quantity: order['quantity'],
-                  // totalPrice: order['totalPrice'],
-                );
-              }).toList();
+          final data = doc.data();
+          final orderDetails = (data['orders'] as List<dynamic>).map((order) {
+            return OrderDetail(
+              price: order['price'],
+              productImage: order['productImage'],
+              productName: order['productName'],
+              quantity: order['quantity'],
+              // totalPrice: order['totalPrice'],
+            );
+          }).toList();
 
-              return AllOrder(
-                orderId: data['orderId'],
-                address: data['address'],
-                orders: orderDetails,
-                overallTotal: data['overallTotal'],
-                paymentMode: data['paymentMode'],
-                status: data['status'],
-                phone: data['phone'],
-              );
-            })
+          return AllOrder(
+            orderId: data['orderId'],
+            address: data['address'],
+            orders: orderDetails,
+            overallTotal: data['overallTotal'],
+            paymentMode: data['paymentMode'],
+            status: data['status'],
+            phone: data['phone'],
+          );
+        })
             .where((order) => order.status != 4)
             .toList();
 
@@ -101,6 +161,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
           itemBuilder: (context, index) {
             final order = orders?[index];
             return Container(
+              key: ValueKey(order?.orderId),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
@@ -113,23 +174,24 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DeliveryTrackingScreen(
-                        orderId: order.orderId,
-                        orderTotalPrice: order.overallTotal,
-                        // orderTotalPrice: orders?.first.,
-                        order: order.orders,
-                        paymentMode: order.paymentMode,
-                        customerAddress: order.address,
-                        customerPhone: order.phone,
+                        orderId: order?.orderId ?? '',
+                        orderTotalPrice: order?.overallTotal ?? 0,
+                        order: order?.orders ?? [],
+                        paymentMode: order?.paymentMode ?? '',
+                        customerAddress: order?.address ?? '',
+                        customerPhone: order?.phone ?? '',
                       ),
                     ),
                   );
                 },
                 child: ListTile(
-                  title: Text(order!.orderId),
+                  title: Text(order?.orderId ?? ''),
                   trailing: GestureDetector(
                     onTap: () async {
-                      Uri dialNumber = Uri(scheme: 'tel', path: order.phone);
-                      await launchUrl(dialNumber);
+                      if (order?.phone != null) {
+                        Uri dialNumber = Uri(scheme: 'tel', path: order?.phone);
+                        await launchUrl(dialNumber);
+                      }
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +201,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                           size: 12,
                         ),
                         Text(
-                          order.phone,
+                          order?.phone ?? '',
                           style: const TextStyle(fontFamily: 'Gilroy-Bold'),
                         ),
                       ],
@@ -161,6 +223,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
       itemBuilder: (context, index) {
         final order = orders[index];
         return ListTile(
+          key: ValueKey(order.orderId),
           title: Text(order.orderId),
           trailing: const Text(
             'Done',

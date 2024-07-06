@@ -11,7 +11,7 @@ class NotificationSettingsPage extends StatefulWidget {
 
 class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   bool isWhatsAppEnabled = false;
-  bool isPushNotificationEnabled = false;
+  bool isPushNotificationEnabled = true;
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       isWhatsAppEnabled = prefs.getBool('whatsapp') ?? false;
-      isPushNotificationEnabled = prefs.getBool('push_notification') ?? false;
+      isPushNotificationEnabled = prefs.getBool('push_notification') ?? true;
     });
   }
 

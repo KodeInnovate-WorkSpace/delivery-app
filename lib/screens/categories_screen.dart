@@ -83,6 +83,8 @@ class CategoryScreenState extends State<CategoryScreen> {
           title: Text(
             widget.categoryTitle,
           ),
+          backgroundColor: const Color(0xfff7f7f7),
+          // elevation: 0,
         ),
         body: Stack(
           children: [
