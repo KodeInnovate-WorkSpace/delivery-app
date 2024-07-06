@@ -126,16 +126,16 @@ class _MyAppState extends State<MyApp> {
         builder: (context, snapshot) {
           // Show a loading indicator while checking auth status
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // return const Scaffold(
-            //   backgroundColor: Colors.amberAccent,
-            //   body: Center(
-            //     child: CircularProgressIndicator(
-            //       color: Colors.green,
-            //     ),
-            //   ),
-            // );
+            return const Scaffold(
+              backgroundColor: Colors.amberAccent,
+              body: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.green,
+                ),
+              ),
+            );
 
-            return const SkeletonScreen();
+            // return const SkeletonScreen();
             // return Container(
             //   width: double.infinity,
             //   height: double.infinity,
