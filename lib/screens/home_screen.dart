@@ -406,9 +406,13 @@ class HomeScreenState extends State<HomeScreen> {
                                                   ),
                                                 );
                                               },
+                                              style: ButtonStyle(
+                                                overlayColor: WidgetStateProperty.all(Colors.transparent), // Removes the hover effect
+                                                backgroundColor: WidgetStateProperty.all(Colors.transparent), // Ensures no background color
+                                              ),
                                               child: const Text(
                                                 "See All",
-                                                style: TextStyle(fontSize: 10, fontFamily: "Gilroy-ExtraBold", color: Color(0xff848884)),
+                                                style: TextStyle(fontSize: 10, fontFamily: "Gilroy-ExtraBold", color: Colors.green),
                                               ),
                                             )),
                                       ],

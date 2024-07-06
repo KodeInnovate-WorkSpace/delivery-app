@@ -78,7 +78,7 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -144,7 +144,7 @@ class _MyAppState extends State<MyApp> {
             // );
           }
 
-          // Navigate to HomeScreen or SigninScreen based on auth status
+          // Navigate to HomeScreen or Sign in Screen based on auth status
           if (snapshot.hasData && snapshot.data != null) {
             return const HomeScreen();
           } else {
