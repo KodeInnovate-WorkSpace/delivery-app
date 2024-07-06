@@ -15,10 +15,8 @@ import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/order_provider.dart';
 import 'package:speedy_delivery/providers/valet_provider.dart';
-import 'package:speedy_delivery/screens/skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
-
 import 'deliveryPartner/provider/delivery_order_provider.dart';
 
 void main() async {

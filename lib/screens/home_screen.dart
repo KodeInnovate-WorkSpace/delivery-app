@@ -381,6 +381,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                 Text(
                                                   subCategory.name,
                                                   textAlign: TextAlign.center,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
                                                   style: const TextStyle(fontSize: 12),
                                                 ),
                                               ],
@@ -401,7 +403,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                     builder: (context) => CategoryScreen(
                                                       categoryTitle: category.name,
                                                       subCategories: filteredSubCategories,
-                                                      selectedSubCategoryId: 0,
+                                                      selectedSubCategoryId: filteredSubCategories[0].id,
                                                     ),
                                                   ),
                                                 );
