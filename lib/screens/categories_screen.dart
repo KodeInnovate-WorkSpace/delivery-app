@@ -6,7 +6,7 @@ import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../widget/sidebar.dart';
-import '../widget/network_handler.dart';
+import '../widget/network_handler.dart'; // Import NetworkHandler
 
 class CategoryScreen extends StatefulWidget {
   final double imageWidth;
@@ -83,6 +83,8 @@ class CategoryScreenState extends State<CategoryScreen> {
           title: Text(
             widget.categoryTitle,
           ),
+          backgroundColor: const Color(0xfff7f7f7),
+          // elevation: 0,
         ),
         body: Stack(
           children: [

@@ -3,18 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/category_model.dart';
 
-Widget sidebar(
-    BuildContext context,
-    List<SubCategory> subCategories,
-    Function(int) fetchProducts,
-    int? selectedSubCategoryId,
-    Function(int) onSubCategorySelected) {
-
-
+Widget sidebar(BuildContext context, List<SubCategory> subCategories, Function(int) fetchProducts, int? selectedSubCategoryId, Function(int) onSubCategorySelected) {
   return Padding(
+    // padding: const EdgeInsets.all(8.0),
     padding: const EdgeInsets.all(8.0),
     child: Container(
       width: MediaQuery.of(context).size.width / 6.2,
+      height: MediaQuery.of(context).size.height,
       color: Colors.white,
       child: ListView.builder(
         itemCount: subCategories.length,
@@ -38,12 +33,10 @@ Widget sidebar(
                     child: CachedNetworkImage(
                       fit: BoxFit.contain,
                       imageUrl: subCategory.img,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(
+                      placeholder: (context, url) => const CircularProgressIndicator(
                         color: Colors.amberAccent,
                       ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                     ),
                   ),
                 ),

@@ -29,7 +29,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        color: Colors.grey[100],
+        color: const Color(0xfff7f7f7),
         child: widget.productList.isEmpty
             ? Center(
                 child: Padding(

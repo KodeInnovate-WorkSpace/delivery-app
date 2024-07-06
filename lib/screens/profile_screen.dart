@@ -56,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         backgroundColor: const Color(0xfff7f7f7),
         elevation: 0,
+
       ),
       backgroundColor: const Color(0xfff7f7f7),
       body: FutureBuilder<void>(
