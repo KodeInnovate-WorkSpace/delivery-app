@@ -127,13 +127,6 @@ class _ProductCardState extends State<ProductCard> {
                                       decoration: TextDecoration.lineThrough,
                                     ),
                                   ),
-                                  // AddToCartButton(
-                                  //   productName: product.name,
-                                  //   productPrice: product.price,
-                                  //   productImage: product.image,
-                                  //   productUnit: product.unit,
-                                  //   // refreshCart: refreshCart,
-                                  // ),
                                 ],
                               ),
                             ),

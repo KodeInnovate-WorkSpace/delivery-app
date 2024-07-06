@@ -93,10 +93,6 @@ class AdminScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // const Text(
-            //   "Hello, Admin",
-            //   style: TextStyle(fontSize: 30, fontFamily: 'Gilroy-ExtraBold'),
-            // ),
             // Manage User
             ElevatedButton(
               style: ButtonStyle(
@@ -243,19 +239,30 @@ class AdminScreen extends StatelessWidget {
             ),
 
             //Manage Notification
-            // ElevatedButton(
-            //   style: ButtonStyle(
-            //       backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-            //       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            //           RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(10),
-            //       ))),
-            //   onPressed: null,
-            //   child: const Text(
-            //     "Manage Notification",
-            //     style: TextStyle(color: Colors.white, fontSize: 20),
-            //   ),
-            // ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: WidgetStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
+              ),
+              onPressed: () {
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => const ManageBannerScreen(),
+                //     ));
+              },
+              child: const Text(
+                "Manage Notification",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
           ],
         ),
       ),

@@ -24,7 +24,8 @@ class AddressProvider with ChangeNotifier {
         address.building == userAdd.building &&
         address.mylandmark == userAdd.mylandmark &&
         address.phoneNumber == userAdd.phoneNumber &&
-        address.pincode == userAdd.pincode);
+        address.pincode == userAdd.pincode &&
+        address.area == userAdd.area); // Check for existing address
 
     if (addressExists) {
       final index = _addressList.indexWhere((address) =>
@@ -33,7 +34,8 @@ class AddressProvider with ChangeNotifier {
           address.building == userAdd.building &&
           address.mylandmark == userAdd.mylandmark &&
           address.phoneNumber == userAdd.phoneNumber &&
-          address.pincode == userAdd.pincode);
+          address.pincode == userAdd.pincode &&
+          address.area == userAdd.area);
 
       _addressList[index] = userAdd;
       showMessage("Address Updated!");
@@ -50,11 +52,12 @@ class AddressProvider with ChangeNotifier {
 
       showMessage("Address Saved!");
       log("Address: ${_addressList.map((add) => {
-        "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark} | Phone: ${add.phoneNumber} | Pincode: ${add.pincode}"
+        "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark} | Phone: ${add.phoneNumber} | Pincode: ${add.pincode} | Area: ${add.area}"
       })}");
     }
     notifyListeners();
   }
+
   void removeAddress(Address userAdd) async {
     final index = _addressList.indexWhere((address) => address.flat == userAdd.flat);
     if (index >= 0) {
@@ -134,7 +137,6 @@ class AddressProvider with ChangeNotifier {
 
     notifyListeners();
   }
-
 
   void setSelectedAddress(String address) async {
     _selectedAddress = address;

@@ -1,52 +1,63 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
-import 'package:speedy_delivery/providers/cart_provider.dart';
-import 'package:speedy_delivery/providers/check_user_provider.dart';
-import 'package:speedy_delivery/providers/order_provider.dart';
-import 'package:speedy_delivery/providers/valet_provider.dart';
+import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
 import 'package:speedy_delivery/screens/search_functionality.dart';
+import 'package:speedy_delivery/screens/sign_in_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:developer';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:speedy_delivery/providers/cart_provider.dart';
+import 'package:speedy_delivery/providers/check_user_provider.dart';
+import 'package:speedy_delivery/providers/address_provider.dart';
+import 'package:speedy_delivery/providers/order_provider.dart';
+import 'package:speedy_delivery/providers/valet_provider.dart';
+import 'package:speedy_delivery/screens/skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
-import 'package:speedy_delivery/screens/splash_screen.dart';
+
 import 'deliveryPartner/provider/delivery_order_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp();
-  final fcmToken = await FirebaseMessaging.instance.getToken();
+
+  // Push notification setup
+  final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "dEfbk9IZT3qlnpTwEaV-Uz:APA91bHLHxsF7f77TrQHCGTylgbWGp6P4GOdRKQYxFXICoBn16phq_mBuluj9IW8z1v-GW9NWBZUlwr-wxA-cmbmKmoPfOsLbYe5toOOscBXlHIw8nYWM1r86-SZzNmdxRjUjW7VvAwf");
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
+
+  await messaging.requestPermission(
     alert: true,
     announcement: false,
     badge: true,
     carPlay: false,
     criticalAlert: false,
-    provisional: false,
+    provisional: true,
     sound: true,
   );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
+    log('Got a message whilst in the foreground!');
+    log('Message data: ${message.data}');
 
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification}');
+      log('Message also contained a notification: ${message.notification}');
     }
   });
 
-  print("FCM: $fcmToken");
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+  log("FCM: $fcmToken");
+
+  // App Check setup
   await FirebaseAppCheck.instance.activate(
-    // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
     androidProvider: AndroidProvider.playIntegrity,
   );
+
   await fetchConstantFromFirebase();
+
   runApp(
     MultiProvider(
       providers: [
@@ -63,8 +74,32 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<User?> _authCheckFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _authCheckFuture = _checkAuthStatus();
+    _initAuthProvider();
+  }
+
+  Future<User?> _checkAuthStatus() async {
+    await Future.delayed(const Duration(seconds: 2)); // Add a delay to show the splash screen
+    return FirebaseAuth.instance.currentUser;
+  }
+
+  void _initAuthProvider() {
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    authProvider.setPhone();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +121,30 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const NetworkHandler(
-        child: SplashScreen(),
+      home: FutureBuilder<User?>(
+        future: _authCheckFuture,
+        builder: (context, snapshot) {
+          // Show a loading indicator while checking auth status
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // return const Scaffold(
+            //   backgroundColor: Colors.amberAccent,
+            //   body: Center(
+            //     child: CircularProgressIndicator(
+            //       color: Colors.green,
+            //     ),
+            //   ),
+            // );
+
+            return const SkeletonScreen();
+          }
+
+          // Navigate to HomeScreen or SigninScreen based on auth status
+          if (snapshot.hasData && snapshot.data != null) {
+            return const HomeScreen();
+          } else {
+            return const SigninScreen();
+          }
+        },
       ),
       routes: {
         '/profile': (context) => const NetworkHandler(

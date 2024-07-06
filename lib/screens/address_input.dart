@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
@@ -8,6 +9,8 @@ import '../models/address_model.dart';
 import '../providers/address_provider.dart';
 import '../providers/auth_provider.dart';
 import '../shared/show_msg.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressInputForm extends StatefulWidget {
   const AddressInputForm({super.key});
@@ -25,6 +28,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _pincodeController = TextEditingController();
+  final _areaController = TextEditingController(); // New area controller
 
   @override
   void initState() {
@@ -33,6 +37,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
     if (authProvider.textController.text.isNotEmpty) {
       _phoneController.text = authProvider.textController.text;
     }
+    _getCurrentLocation(); // Fetch the current location on init
   }
 
   @override
@@ -43,13 +48,37 @@ class _AddressInputFormState extends State<AddressInputForm> {
     _landmarkController.dispose();
     _phoneController.dispose();
     _pincodeController.dispose();
+    _areaController.dispose(); // Dispose the new controller
     super.dispose();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      List<Placemark> placeMarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placeMarks.isNotEmpty) {
+        Placemark pMark = placeMarks[0];
+        setState(() {
+          _areaController.text = '${pMark.street}, ${pMark.subLocality}, ${pMark.locality}';
+        });
+      }
+    } catch (e) {
+      log("Error fetching location: $e");
+      showMessage("Unable to fetch current location.");
+    }
   }
 
   Future<bool> _isValidPincode(String pincode) async {
     try {
       final int pincodeInt = int.parse(pincode);
-      const int status = 1; // Ensure status is also an integer
+      const int status = 1;
       final querySnapshot = await FirebaseFirestore.instance.collection('location').where('postal_code', isEqualTo: pincodeInt).where('status', isEqualTo: status).get();
 
       log("Pincode check: ${querySnapshot.docs.length} documents found for pincode $pincode with status $status");
@@ -83,6 +112,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
           mylandmark: _landmarkController.text,
           phoneNumber: _phoneController.text,
           pincode: int.parse(pincode),
+          area: _areaController.text,
         );
 
         Provider.of<AddressProvider>(context, listen: false).addAddress(address);
@@ -148,6 +178,38 @@ class _AddressInputFormState extends State<AddressInputForm> {
                     myIcon: Icons.landscape,
                     myController: _landmarkController,
                     keyboardType: TextInputType.text,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: TextFormField(
+                    controller: _areaController,
+                    keyboardType: TextInputType.text,
+                    cursorColor: Colors.black,
+                    readOnly: true, // Make the field uneditable
+                    decoration: InputDecoration(
+                      hintText: "Area",
+                      hintStyle: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: const Icon(Icons.location_on),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -246,7 +308,6 @@ class _AddressInputFormState extends State<AddressInputForm> {
                     if (_formKey.currentState!.validate()) {
                       _saveAddress();
                       userProvider.storeDetail(context, 'name', _nameController.text);
-                      // Navigator.pop(context, true);
                     }
                   },
                   style: ElevatedButton.styleFrom(

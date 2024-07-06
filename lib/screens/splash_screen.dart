@@ -1,13 +1,9 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
-
-import '../providers/check_user_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -66,4 +62,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-//updated the splash screen
