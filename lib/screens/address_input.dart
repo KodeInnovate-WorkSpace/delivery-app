@@ -270,7 +270,7 @@ class _AddressInputFormState extends State<AddressInputForm> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      prefixIcon: const Icon(Icons.location_on),
+                      prefixIcon: const Icon(Icons.signpost),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
