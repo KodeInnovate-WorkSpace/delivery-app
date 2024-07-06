@@ -6,7 +6,7 @@ import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../widget/sidebar.dart';
-import '../widget/network_handler.dart'; // Import NetworkHandler
+import '../widget/network_handler.dart';
 
 class CategoryScreen extends StatefulWidget {
   final double imageWidth;

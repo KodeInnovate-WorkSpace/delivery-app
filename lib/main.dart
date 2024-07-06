@@ -135,7 +135,13 @@ class _MyAppState extends State<MyApp> {
             //   ),
             // );
 
-            return const SkeletonScreen();
+            // return const SkeletonScreen();
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.amberAccent,
+              child: splashHome(),
+            );
           }
 
           // Navigate to HomeScreen or SigninScreen based on auth status
@@ -154,6 +160,12 @@ class _MyAppState extends State<MyApp> {
               child: SearchPage(),
             ),
       },
+    );
+  }
+
+  Widget splashHome() {
+    return Center(
+      child: Image.asset("assets/icon.png"),
     );
   }
 }

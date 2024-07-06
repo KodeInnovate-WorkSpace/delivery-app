@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AdvertisementWidget extends StatefulWidget {
   const AdvertisementWidget({
@@ -59,7 +60,10 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
       stream: FirebaseFirestore.instance.collection('Advertisement').where('status', isEqualTo: 1).snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: Colors.black,));
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.black,
+          ));
         }
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));

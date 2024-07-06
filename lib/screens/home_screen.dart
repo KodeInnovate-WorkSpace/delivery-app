@@ -328,29 +328,6 @@ class HomeScreenState extends State<HomeScreen> {
                                                 category.name,
                                                 style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
                                               ),
-
-                                              //see all button
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => CategoryScreen(
-                                                        categoryTitle: category.name,
-                                                        subCategories: filteredSubCategories,
-                                                        selectedSubCategoryId: 0,
-                                                      ),
-                                                    ),
-                                                  );
-
-                                                  log("Category: ${category.name}");
-                                                  log("Selected Sub-Cat: ${filteredSubCategories[0].id}");
-                                                },
-                                                child: const Text(
-                                                  "See All",
-                                                  style: TextStyle(fontSize: 10, fontFamily: "Gilroy-ExtraBold", color: Color(0xff848884)),
-                                                ),
-                                              )
                                             ],
                                           ),
                                         ),
@@ -405,30 +382,34 @@ class HomeScreenState extends State<HomeScreen> {
                                                   textAlign: TextAlign.center,
                                                   style: const TextStyle(fontSize: 12),
                                                 ),
-
-                                                // see all
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => CategoryScreen(
-                                                          categoryTitle: category.name,
-                                                          subCategories: filteredSubCategories,
-                                                          selectedSubCategoryId: 0,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: const Text(
-                                                    "See All",
-                                                    style: TextStyle(fontSize: 10, fontFamily: "Gilroy-ExtraBold", color: Color(0xff848884)),
-                                                  ),
-                                                ),
                                               ],
                                             );
                                           },
                                         ),
+
+                                        //See all button
+                                        Positioned(
+                                            left: 0,
+                                            right: -265,
+                                            top: -10,
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => CategoryScreen(
+                                                      categoryTitle: category.name,
+                                                      subCategories: filteredSubCategories,
+                                                      selectedSubCategoryId: 0,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text(
+                                                "See All",
+                                                style: TextStyle(fontSize: 10, fontFamily: "Gilroy-ExtraBold", color: Color(0xff848884)),
+                                              ),
+                                            )),
                                       ],
                                     );
                                   }).toList(),
