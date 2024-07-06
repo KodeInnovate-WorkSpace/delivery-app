@@ -142,9 +142,10 @@ class _MyAppState extends State<MyApp> {
             //   color: Colors.amberAccent,
             //   child: splashHome(),
             // );
+
           }
 
-          // Navigate to HomeScreen or SigninScreen based on auth status
+          // Navigate to HomeScreen or Sign in Screen based on auth status
           if (snapshot.hasData && snapshot.data != null) {
             return const HomeScreen();
           } else {
