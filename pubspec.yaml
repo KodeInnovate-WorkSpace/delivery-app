@@ -45,6 +45,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
   firebase_messaging: ^15.0.2
   firebase_analytics: ^11.1.0
+  shimmer: ^3.0.0
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
