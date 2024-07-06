@@ -1,7 +1,7 @@
 name: speedy_delivery
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.3+3
+version: 0.1.4+4
 
 
 environment:
