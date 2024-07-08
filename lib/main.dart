@@ -61,30 +61,6 @@ void main() async {
     _messageStreamController.sink.add(message);
   });
 
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   RemoteNotification? notification = message.notification;
-  //   AndroidNotification? android = message.notification?.android;
-  //
-  //   // If `onMessage` is triggered with a notification, construct our own
-  //   // local notification to show to users using the created channel.
-  //   if (notification != null && android != null) {
-  //     FlutterLocalNotificationsPlugin.show(
-  //       notification.hashCode,
-  //       notification.title,
-  //       notification.body,
-  //       NotificationDetails(
-  //         android: AndroidNotificationDetails(
-  //           id,
-  //           channel.name,
-  //           channel.description,
-  //           icon: android.smallIcon,
-  //           // other properties...
-  //         ),
-  //       ),
-  //     );
-  //   }
-  // });
-
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   log("FCM: $fcmToken");
 
