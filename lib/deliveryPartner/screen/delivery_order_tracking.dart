@@ -4,6 +4,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/auth_provider.dart';
+import 'package:speedy_delivery/providers/check_user_provider.dart';
+import 'package:speedy_delivery/services/push_notification.dart';
+import 'package:speedy_delivery/shared/show_msg.dart';
+import '../model/model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:path/path.dart' as path;
+
+import 'dart:developer';
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../model/model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,6 +50,10 @@ class DeliveryTrackingScreen extends StatefulWidget {
 
 class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   late Stream<DocumentSnapshot> _orderStatusStream;
+  List<File> itemImages = [];
+  List<bool> imageTaken = [];
+  final TextEditingController _shopNameController = TextEditingController();
+  bool _isCardLoading = false;
 
   @override
   void initState() {
@@ -41,9 +61,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     _orderStatusStream = FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).snapshots();
     imageTaken = List<bool>.filled(widget.order.length, false);
   }
-
-  List<File> itemImages = [];
-  List<bool> imageTaken = [];
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +136,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // const Text("Order Tracking",
-                      //     style: TextStyle(
-                      //         fontSize: 24, fontWeight: FontWeight.bold)),
-                      // const SizedBox(height: 20),
                       _buildCustomerDetailsTable(),
                       const SizedBox(height: 20),
                       _buildOrderDetailsTable(),
@@ -141,88 +154,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
-  // Widget _buildOrderDetailsTable() {
-  //
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Container(
-  //         color: Colors.grey[200],
-  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-  //         child: const Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text("Items", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //             Text("Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //             Text("Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //           ],
-  //         ),
-  //       ),
-  //       ListView.builder(
-  //         shrinkWrap: true,
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         itemCount: widget.order.length,
-  //         itemBuilder: (context, index) {
-  //           var orderDetail = widget.order[index];
-  //           return Container(
-  //             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-  //             decoration: BoxDecoration(
-  //               border: Border(
-  //                 bottom: BorderSide(
-  //                   color: Colors.grey[300]!,
-  //                   width: 1.0,
-  //                 ),
-  //               ),
-  //             ),
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 Flexible(
-  //                   child: Text(
-  //                     orderDetail.productName,
-  //                     maxLines: 1,
-  //                     overflow: TextOverflow.ellipsis,
-  //                   ),
-  //                 ),
-  //                 Text(
-  //                   "x ${orderDetail.quantity.toString()}",
-  //                 ),
-  //                 IconButton(
-  //                   onPressed: () {
-  //                     takePictureAndAddToImages(index).then((value) => {uploadAllImages(orderDetail.productName)});
-  //                   },
-  //                   icon: Icon(
-  //                     imageTaken[index] ? Icons.check : Icons.camera_alt,
-  //                     size: 18,
-  //                   ),
-  //                 ),
-  //                 Text(orderDetail.price.toStringAsFixed(2)),
-  //               ],
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //       Container(
-  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             const Text(
-  //               "Total Price",
-  //               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //             ),
-  //             Text(
-  //               // "Rs. ${widget.orderTotalPrice}",
-  //               "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-  //
-  //               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
   Widget _buildOrderDetailsTable() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,8 +197,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text(
                       widget.order[index].productName,
-                      // maxLines: 1,
-                      // overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Padding(
@@ -316,82 +245,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
-  // Widget _buildOrderDetailsTableFailed() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Container(
-  //         color: Colors.grey[200],
-  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-  //         child: const Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text("Items", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //             Text("Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //             Text("Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //           ],
-  //         ),
-  //       ),
-  //       ListView.builder(
-  //         shrinkWrap: true,
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         itemCount: widget.order.length,
-  //         itemBuilder: (context, index) {
-  //           var orderDetail = widget.order[index];
-  //           return Container(
-  //             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-  //             decoration: BoxDecoration(
-  //               border: Border(
-  //                 bottom: BorderSide(
-  //                   color: Colors.grey[300]!,
-  //                   width: 1.0,
-  //                 ),
-  //               ),
-  //             ),
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 Flexible(
-  //                   child: Text(
-  //                     orderDetail.productName,
-  //                     maxLines: 1,
-  //                     overflow: TextOverflow.ellipsis,
-  //                   ),
-  //                 ),
-  //                 Text(
-  //                   "x ${orderDetail.quantity.toString()}",
-  //                 ),
-  //                 const Icon(
-  //                   Icons.close,
-  //                   size: 18,
-  //                 ),
-  //                 Text(orderDetail.price.toStringAsFixed(2)),
-  //               ],
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //       Container(
-  //         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             const Text(
-  //               "Total Price",
-  //               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //             ),
-  //             Text(
-  //               // "Rs. ${widget.orderTotalPrice}",
-  //               "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-  //
-  //               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
   Widget _buildOrderDetailsTableFailed() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,28 +281,36 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 ),
               ],
             ),
-            for (var orderDetail in widget.order)
+            for (int index = 0; index < widget.order.length; index++)
               TableRow(
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text(
-                      orderDetail.productName,
-                      // maxLines: 1,
-                      // overflow: TextOverflow.ellipsis,
+                      widget.order[index].productName,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Text("x ${orderDetail.quantity.toString()}"),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Icon(Icons.close, size: 18),
+                    child: Text("x ${widget.order[index].quantity.toString()}"),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Text(orderDetail.price.toStringAsFixed(2)),
+                    child: IconButton(
+                      onPressed: () {
+                        takePictureAndAddToImages(index).then((value) {
+                          uploadAllImages(widget.order[index].productName);
+                        });
+                      },
+                      icon: Icon(
+                        imageTaken[index] ? Icons.check : Icons.camera_alt,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Text(widget.order[index].price.toStringAsFixed(2)),
                   ),
                 ],
               ),
@@ -544,9 +405,70 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
-  bool _isCardLoading = false;
+  Future<void> _showShopNameDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button to close dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter Shop Name'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: _shopNameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Shop Name',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                if (_shopNameController.text.isNotEmpty) {
+                  Navigator.of(context).pop();
+                } else {
+                  showMessage("Shop name cannot be empty.");
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _savePickupDetails() async {
+    String formattedDate = DateFormat('ddMMyyyy_HHmm').format(DateTime.now());
+    List<String> imageUrls = [];
+
+    for (var image in itemImages) {
+      String fileName = path.basename(image.path);
+      try {
+        firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref('order_images/${formattedDate}_$fileName');
+        await ref.putFile(image);
+        String downloadUrl = await ref.getDownloadURL();
+        imageUrls.add(downloadUrl);
+      } catch (e) {
+        log('Error uploading image: $e');
+      }
+    }
+
+    await FirebaseFirestore.instance.collection('DeliveredShopName').doc(widget.orderId).set({
+      'orderId': widget.orderId,
+      'phoneNumber': widget.customerPhone,
+      'timeOfPickup': DateTime.now(),
+      'images': imageUrls,
+      'shopName': _shopNameController.text,
+    });
+  }
 
   Widget _buildOrderStatusCard(String title, String description, bool done, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
+    final userProvider = Provider.of<CheckUserProvider>(context);
+    final authProvider = Provider.of<MyAuthProvider>(context);
     return GestureDetector(
       onTap: () async {
         int? newStatus;
@@ -554,6 +476,9 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         setState(() {
           _isCardLoading = true;
         });
+
+        //fetch fcm token
+        userProvider.getUserFCM(authProvider.phone);
 
         // Fetch the current status from Firebase
         DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).get();
@@ -569,30 +494,51 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           return;
         }
 
-        if (title == 'Order Pickup' && itemImages.length < widget.order.length) {
-          showMessage("Please upload images for all items before picking up the order.");
-          setState(() {
-            _isCardLoading = false;
-          });
-          return;
+        if (title == 'Order Pickup') {
+          if (itemImages.length < widget.order.length) {
+            showMessage("Please upload images for all items before picking up the order.");
+            setState(() {
+              _isCardLoading = false;
+            });
+            return;
+          }
+
+          await _showShopNameDialog();
+
+          if (_shopNameController.text.isNotEmpty) {
+            await _savePickupDetails();
+          } else {
+            setState(() {
+              _isCardLoading = false;
+            });
+            return;
+          }
         }
 
         if (!done) {
           switch (title) {
             case 'Order Received':
               newStatus = 0;
+              sendPushNotification(userProvider.userFCM.toString(), "Your order received", "Order Received");
               break;
             case 'Order Confirmed':
               newStatus = 1;
+              sendPushNotification(userProvider.userFCM.toString(), "Your order confirmed", "Order Confirmed");
               break;
             case 'Order In Process':
               newStatus = 2;
+              sendPushNotification(userProvider.userFCM.toString(), "Your order is in process", "Order Process");
+
               break;
             case 'Order Pickup':
               newStatus = 3;
+              sendPushNotification(userProvider.userFCM.toString(), "Your order is picked up!", "Order Picked Up!");
+
               break;
             case 'Order Delivered':
               newStatus = 4;
+              sendPushNotification(userProvider.userFCM.toString(), "Your order is delivered!", "Order Delivered");
+
               break;
             default:
               setState(() {

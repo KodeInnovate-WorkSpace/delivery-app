@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
@@ -18,12 +19,25 @@ import 'package:speedy_delivery/providers/valet_provider.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'deliveryPartner/provider/delivery_order_provider.dart';
+import 'package:rxdart/rxdart.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+  print('Message data: ${message.data}');
+  print('Message notification: ${message.notification?.title}');
+  print('Message notification: ${message.notification?.body}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   // Push notification setup
+
+  final _messageStreamController = BehaviorSubject<RemoteMessage>();
+
   final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "dEfbk9IZT3qlnpTwEaV-Uz:APA91bHLHxsF7f77TrQHCGTylgbWGp6P4GOdRKQYxFXICoBn16phq_mBuluj9IW8z1v-GW9NWBZUlwr-wxA-cmbmKmoPfOsLbYe5toOOscBXlHIw8nYWM1r86-SZzNmdxRjUjW7VvAwf");
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -44,10 +58,53 @@ void main() async {
     if (message.notification != null) {
       log('Message also contained a notification: ${message.notification}');
     }
+    _messageStreamController.sink.add(message);
   });
+
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   RemoteNotification? notification = message.notification;
+  //   AndroidNotification? android = message.notification?.android;
+  //
+  //   // If `onMessage` is triggered with a notification, construct our own
+  //   // local notification to show to users using the created channel.
+  //   if (notification != null && android != null) {
+  //     FlutterLocalNotificationsPlugin.show(
+  //       notification.hashCode,
+  //       notification.title,
+  //       notification.body,
+  //       NotificationDetails(
+  //         android: AndroidNotificationDetails(
+  //           id,
+  //           channel.name,
+  //           channel.description,
+  //           icon: android.smallIcon,
+  //           // other properties...
+  //         ),
+  //       ),
+  //     );
+  //   }
+  // });
 
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   log("FCM: $fcmToken");
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    log('A new onMessageOpenedApp event was published!');
+    log('Message data: ${message.data}');
+  });
+
+  // TODO: Set up background message handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    importance: Importance.max,
+  );
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
 
   // App Check setup
   await FirebaseAppCheck.instance.activate(

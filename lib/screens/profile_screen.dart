@@ -397,54 +397,54 @@ class _ProfilePageState extends State<ProfilePage> {
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                      backgroundColor: Colors.white,
-                                      title: const Text(
-                                        "Logout",
-                                        style: TextStyle(fontFamily: 'Gilroy-Bold', color: Color(0xff1c1c1c)),
-                                      ),
-                                      content: const Text("Are you sure you want to logout?"),
-                                      actions: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            //Yes
-                                            TextButton(
-                                                onPressed: () async {
-                                                  await FirebaseAuth.instance.signOut();
-                                                  //Clear login
-                                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                  await prefs.remove('isLoggedIn');
+                                  backgroundColor: Colors.white,
+                                  title: const Text(
+                                    "Logout",
+                                    style: TextStyle(fontFamily: 'Gilroy-Bold', color: Color(0xff1c1c1c)),
+                                  ),
+                                  content: const Text("Are you sure you want to logout?"),
+                                  actions: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        //Yes
+                                        TextButton(
+                                            onPressed: () async {
+                                              await FirebaseAuth.instance.signOut();
+                                              //Clear login
+                                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                                              await prefs.remove('isLoggedIn');
 
-                                                  //Clear cart
-                                                  cartProvider.clearCart();
+                                              //Clear cart
+                                              cartProvider.clearCart();
 
-                                                  //clear address
-                                                  addressProvider.clearAddress();
+                                              //clear address
+                                              // addressProvider.clearAddress();
 
-                                                  Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => const SigninScreen()),
+                                              Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const SigninScreen()),
                                                     (route) => false,
-                                                  );
-                                                },
-                                                child: const Text(
-                                                  "Yes",
-                                                  style: TextStyle(color: Colors.black),
-                                                )),
+                                              );
+                                            },
+                                            child: const Text(
+                                              "Yes",
+                                              style: TextStyle(color: Colors.black),
+                                            )),
 
-                                            //No
-                                            TextButton(
-                                                onPressed: () => Navigator.of(context).pop(),
-                                                child: const Text(
-                                                  "No",
-                                                  style: TextStyle(
-                                                    color: Color(0xffEF4B4B),
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
+                                        //No
+                                        TextButton(
+                                            onPressed: () => Navigator.of(context).pop(),
+                                            child: const Text(
+                                              "No",
+                                              style: TextStyle(
+                                                color: Color(0xffEF4B4B),
+                                              ),
+                                            )),
                                       ],
-                                    ));
+                                    ),
+                                  ],
+                                ));
                           },
                         ),
                       ],

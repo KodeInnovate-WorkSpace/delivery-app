@@ -10,7 +10,6 @@ class Order {
   final int quantity;
   final double price;
   final double overallTotal;
-  // final double totalPrice;
   final String paymentMode;
   final String address;
   final String phone;
@@ -22,7 +21,6 @@ class Order {
     required this.productImage,
     required this.quantity,
     required this.price,
-    // required this.totalPrice,
     required this.paymentMode,
     required this.address,
     required this.phone,
@@ -41,7 +39,6 @@ class Order {
       productImage: productImage,
       quantity: quantity,
       price: price,
-      // totalPrice: totalPrice,
       paymentMode: paymentMode,
       address: address,
       status: status ?? this.status,
@@ -57,7 +54,6 @@ class Order {
       'productImage': productImage,
       'quantity': quantity,
       'price': price,
-      // 'totalPrice': totalPrice,
       'paymentMode': paymentMode,
       'address': address,
       'status': status,
@@ -72,7 +68,6 @@ class Order {
       productImage: map['productImage'],
       quantity: map['quantity'],
       price: map['price'],
-      // totalPrice: map['totalPrice'],
       paymentMode: map['paymentMode'],
       address: map['address'],
       status: map['status'],
@@ -112,7 +107,6 @@ class OrderProvider with ChangeNotifier {
       'paymentMode': orders.first.paymentMode,
       'status': orders.first.status,
       'overallTotal': orders.first.overallTotal,
-      // 'overallTotal': orders.first.totalPrice,
       'phone': orders.first.phone,
       'orders': orders.map((order) {
         return {
@@ -120,8 +114,6 @@ class OrderProvider with ChangeNotifier {
           'productImage': order.productImage,
           'quantity': order.quantity,
           'price': order.price,
-          // 'totalPrice': order.totalPrice,
-          // 'totalPrice': overallTotal,
         };
       }).toList(),
     };
@@ -148,7 +140,6 @@ class OrderProvider with ChangeNotifier {
                   productImage: orderData['productImage'],
                   quantity: orderData['quantity'],
                   price: 0.0,
-                  // totalPrice: orderData['totalPrice'],
                   overallTotal: data["overallTotal"],
                   paymentMode: data['paymentMode'],
                   address: data['address'],

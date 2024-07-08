@@ -1,11 +1,10 @@
-//Working
 import 'package:flutter/material.dart';
 import '../shared/constants.dart';
 import '../shared/search_bar.dart';
 import 'location_button_widget.dart';
 
 class HomeTop extends StatefulWidget {
-  final scaffoldKey;
+  final GlobalKey<ScaffoldState> scaffoldKey;
   const HomeTop({super.key, required this.scaffoldKey});
 
   @override
@@ -22,12 +21,12 @@ class _HomeTopState extends State<HomeTop> {
       collapsedHeight: 80,
       elevation: 2,
       backgroundColor: Colors.amberAccent,
-      // shape: const ContinuousRectangleBorder(
-      //   borderRadius: BorderRadius.only(
-      //     bottomLeft: Radius.circular(40),
-      //     bottomRight: Radius.circular(40),
-      //   ),
-      // ),
+      shape: const ContinuousRectangleBorder(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(40),
+          bottomRight: Radius.circular(40),
+        ),
+      ),
       flexibleSpace: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: Stack(
@@ -53,12 +52,10 @@ class _HomeTopState extends State<HomeTop> {
                                   const Text(
                                     'Delivery within ',
                                     style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Color(0xff1c1c1c), fontSize: 14),
-                                    // style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Colors.white, fontSize: 14),
                                   ),
                                   Text(
                                     '$deliveryTime minutes',
                                     style: const TextStyle(fontFamily: 'Gilroy-Black', color: Color(0xff1c1c1c), fontSize: 28),
-                                    // style: const TextStyle(fontFamily: 'Gilroy-Black', color: Colors.white, fontSize: 28),
                                   ),
                                   LocationButton(scaffoldKey: widget.scaffoldKey),
                                   const SizedBox(height: 18),
@@ -66,7 +63,6 @@ class _HomeTopState extends State<HomeTop> {
                               ),
                             ],
                           ),
-                          //const SizedBox(width: 90),
                         ],
                       ),
                       Positioned(
@@ -76,20 +72,20 @@ class _HomeTopState extends State<HomeTop> {
                           onTap: () {
                             Navigator.pushNamed(context, '/profile');
                           },
-                          child: Image.asset(
-                            "assets/images/profile_photo.png",
-                            width: 40,
+                          child: const CircleAvatar(
+                            radius: 20, // Adjust the radius as needed
+                            backgroundImage: AssetImage("assets/images/profile_photo.png"),
+                            backgroundColor: Colors.white, // Make sure there's no background color
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
-            //Search Bar
+            // Search Bar
             Positioned(
-              // Position the search bar with some bottom padding
               bottom: 0.0, // Adjust padding as needed
               left: 0,
               right: 0,
