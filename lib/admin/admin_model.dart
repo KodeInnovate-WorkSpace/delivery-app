@@ -213,13 +213,13 @@ class ProductModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
+  Future<void> updateProduct(String field, dynamic newValue, {String? productField, dynamic productValue}) async {
     try {
       Query query = FirebaseFirestore.instance.collection('products');
 
       // Add conditions to your query if any
-      if (categoryField != null && categoryValue != null) {
-        query = query.where(categoryField, isEqualTo: categoryValue);
+      if (productField != null && productValue != null) {
+        query = query.where(productField, isEqualTo: productValue);
       }
 
       // Get the documents matching the query
@@ -256,73 +256,6 @@ class ProductModel extends ChangeNotifier {
   }
 }
 
-// class BannerModel extends ChangeNotifier {
-//   Future<List<Map<String, dynamic>>> manageBanner() async {
-//     try {
-//       final querySnapshot = await FirebaseFirestore.instance.collection('Advertisement').get();
-//       return querySnapshot.docs.map((doc) => doc.data()).toList();
-//     } catch (e) {
-//       log("Error: $e");
-//       return [];
-//     }
-//   }
-//
-//   Future<void> updateBanner(String field, dynamic newValue, {String? bannerField, dynamic bannerValue}) async {
-//     try {
-//       Query query = FirebaseFirestore.instance.collection('Advertisement');
-//
-//       // Add conditions to your query if any
-//       if (bannerField != null && bannerValue != null) {
-//         query = query.where(bannerField, isEqualTo: bannerValue);
-//       }
-//
-//       // Get the documents matching the query
-//       QuerySnapshot querySnapshot = await query.get();
-//       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-//         await doc.reference.update({field: newValue});
-//       }
-//     } catch (e) {
-//       log("Error updating banner: $e");
-//     }
-//   }
-//
-//   Future<void> newupdateBanner(String field, dynamic newValue, {required String bannerId}) async {
-//     try {
-//       // Query the collection for the specific banner ID
-//       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Advertisement').where('id', isEqualTo: int.parse(bannerId)).get();
-//
-//       // Update the document(s) that match the query
-//       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-//         await doc.reference.update({field: newValue});
-//       }
-//     } catch (e) {
-//       log("Error updating banner: $e");
-//     }
-//   }
-//
-//   Future<void> deleteBanner(dynamic bannerValue) async {
-//     try {
-//       Query query = FirebaseFirestore.instance.collection('Advertisement');
-//
-//       // Add conditions to your query if any
-//       if (bannerValue != null) {
-//         query = query.where(FieldPath(const ['id']), isEqualTo: bannerValue); // Assuming 'catId' is the field name
-//       }
-//
-//       // Get the documents matching the query
-//       QuerySnapshot querySnapshot = await query.get();
-//       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-//         await doc.reference.delete();
-//       }
-//       log("Category Deleted!");
-//       showMessage("Category Deleted!");
-//     } catch (e) {
-//       showMessage("Error deleting category");
-//
-//       log("Error deleting category: $e");
-//     }
-//   }
-// }
 class BannerModel extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> manageBanner() async {
     try {

@@ -316,7 +316,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 return Column(
                                   children: categories.map((category) {
                                     final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
-
+                                    final itemCount = filteredSubCategories.length < 8 ? filteredSubCategories.length : 8;
                                     return Stack(
                                       children: [
                                         Padding(
@@ -334,59 +334,66 @@ class HomeScreenState extends State<HomeScreen> {
                                         GridView.builder(
                                           shrinkWrap: true,
                                           physics: const NeverScrollableScrollPhysics(),
-                                          // itemCount: filteredSubCategories.length,
-                                          itemCount: 8,
+                                          itemCount: itemCount,
                                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
-                                            // childAspectRatio: 0.65,
-                                            childAspectRatio: 0.68,
+                                            childAspectRatio: 0.62,
                                           ),
                                           itemBuilder: (context, subIndex) {
-                                            final subCategory = filteredSubCategories[subIndex];
-                                            return Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => CategoryScreen(
-                                                          categoryTitle: category.name,
-                                                          subCategories: filteredSubCategories,
-                                                          selectedSubCategoryId: subCategory.id, // Pass the selected sub-category ID
+                                            if (subIndex < filteredSubCategories.length) {
+                                              final subCategory = filteredSubCategories[subIndex];
+                                              return Column(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => CategoryScreen(
+                                                            categoryTitle: category.name,
+                                                            subCategories: filteredSubCategories,
+                                                            selectedSubCategoryId: subCategory.id, // Pass the selected sub-category ID
+                                                          ),
                                                         ),
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      width: 100,
+                                                      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
+                                                      decoration: const BoxDecoration(
+                                                        color: Color(0xffeaf1fc),
+                                                        borderRadius: BorderRadius.all(Radius.circular(10)),
                                                       ),
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: 100,
-                                                    margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
-                                                    decoration: const BoxDecoration(
-                                                      color: Color(0xffeaf1fc),
-                                                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: CachedNetworkImage(
-                                                        height: 60,
-                                                        imageUrl: subCategory.img,
-                                                        placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
-                                                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: CachedNetworkImage(
+                                                          height: 60,
+                                                          imageUrl: subCategory.img,
+                                                          placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
+                                                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
+                                                  const SizedBox(height: 4),
+                                                  // sub-category name
+                                                  Text(
+                                                    subCategory.name,
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(fontSize: 12),
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              // Empty space
+                                              return Container(
+                                                width: 100,
+                                                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.transparent,
                                                 ),
-                                                const SizedBox(height: 4),
-                                                // sub-category name
-                                                Text(
-                                                  subCategory.name,
-                                                  textAlign: TextAlign.center,
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(fontSize: 12),
-                                                ),
-                                              ],
-                                            );
+                                              );
+                                            }
                                           },
                                         ),
 
