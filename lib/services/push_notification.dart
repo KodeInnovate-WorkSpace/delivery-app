@@ -147,17 +147,9 @@ void sendPushNotification(String token, String body, String title) async {
   final String serverAccessTokenKey = await getAccessToken();
   String endpoint = "https://fcm.googleapis.com/v1/projects/speedy-57c76/messages:send";
 
-  // await admin.messaging().sendMulticast({
-  //   'token': token,
-  //   'notification': {
-  //     'title': title,
-  //     'body': body,
-  //   },
-  // });
-
   final Map<String, dynamic> message = {
     'message': {
-      'token': "dQH-bSbiT3OKZ9spLUJZh6:APA91bHyNZOmTyJgdiOpfiIZuRG_tMrkZEGV1CZmHHDJSPt6CkHlR4XYT6_JwlvCAU0Ln3Y4g2ueoL25D1RvQ6rP5OvlYqDu_GHgi7r7qQIadOQ-I74l_w7n5FqCz2wlQbCp-0IwWxko",
+      'token': token,
       'data': {
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
         'status': 'done',
