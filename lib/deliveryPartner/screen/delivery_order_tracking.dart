@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
-import 'package:speedy_delivery/services/push_notification.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../model/model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -519,25 +518,25 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           switch (title) {
             case 'Order Received':
               newStatus = 0;
-              sendPushNotification(userProvider.userFCM.toString(), "Your order received", "Order Received");
+              // sendPushNotification(userProvider.userFCM.toString(), "Your order received", "Order Received");
               break;
             case 'Order Confirmed':
               newStatus = 1;
-              sendPushNotification(userProvider.userFCM.toString(), "Your order confirmed", "Order Confirmed");
+              // sendPushNotification(userProvider.userFCM.toString(), "Your order confirmed", "Order Confirmed");
               break;
             case 'Order In Process':
               newStatus = 2;
-              sendPushNotification(userProvider.userFCM.toString(), "Your order is in process", "Order Process");
+              // sendPushNotification(userProvider.userFCM.toString(), "Your order is in process", "Order Process");
 
               break;
             case 'Order Pickup':
               newStatus = 3;
-              sendPushNotification(userProvider.userFCM.toString(), "Your order is picked up!", "Order Picked Up!");
+              // sendPushNotification(userProvider.userFCM.toString(), "Your order is picked up!", "Order Picked Up!");
 
               break;
             case 'Order Delivered':
               newStatus = 4;
-              sendPushNotification(userProvider.userFCM.toString(), "Your order is delivered!", "Order Delivered");
+              // sendPushNotification(userProvider.userFCM.toString(), "Your order is delivered!", "Order Delivered");
 
               break;
             default:
