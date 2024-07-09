@@ -5,6 +5,7 @@ import 'package:speedy_delivery/admin/banner/manage_banner_screen.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
+import 'package:speedy_delivery/admin/valet/manage_valet_screen.dart';
 import '../screens/sign_in_screen.dart';
 import 'category/manage_category_screen.dart';
 
@@ -235,11 +236,40 @@ class AdminScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
+            // const SizedBox(
+            //   height: 18,
+            // ),
+            //
+            //Manage Notification
+            // ElevatedButton(
+            //   style: ButtonStyle(
+            //     backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+            //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //       RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(16),
+            //       ),
+            //     ),
+            //     fixedSize: WidgetStateProperty.all<Size>(
+            //       const Size(260, 50), // Set your desired width and height here
+            //     ),
+            //   ),
+            //   onPressed: () {
+            //     // Navigator.push(
+            //     //     context,
+            //     //     MaterialPageRoute(
+            //     //       builder: (context) => const ManageBannerScreen(),
+            //     //     ));
+            //   },
+            //   child: const Text(
+            //     "Manage Notification",
+            //     style: TextStyle(color: Colors.white, fontSize: 20),
+            //   ),
+            // ),
             const SizedBox(
               height: 18,
             ),
 
-            //Manage Notification
+            //Assign Valet
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
@@ -253,14 +283,14 @@ class AdminScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => const ManageBannerScreen(),
-                //     ));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageValetScreen(),
+                    ));
               },
               child: const Text(
-                "Manage Notification",
+                "Assign Valet",
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),

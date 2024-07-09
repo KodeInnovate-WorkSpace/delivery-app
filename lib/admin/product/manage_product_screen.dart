@@ -40,6 +40,36 @@ class _ManageProductState extends State<ManageProduct> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Manage Products'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                // fixedSize: WidgetStateProperty.all<Size>(
+                //   const Size(60, 50),
+                // ),
+              ),
+              onPressed: () async {
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
+
+                if (result != null && result as bool) {
+                  // Sub-category added successfully, refresh the list
+                  src._refreshProductList();
+                }
+              },
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
       ),
       body: Stack(
         children: [
@@ -67,27 +97,27 @@ class _ManageProductState extends State<ManageProduct> {
               ),
             ]),
           ),
-          Positioned(
-            bottom: 25,
-            right: 20,
-            child: FloatingActionButton(
-              hoverColor: Colors.transparent,
-              elevation: 2,
-              onPressed: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
-
-                if (result != null && result as bool) {
-                  // Sub-category added successfully, refresh the list
-                  src._refreshProductList();
-                }
-              },
-              backgroundColor: Colors.black,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 10,
+          //   right: 20,
+          //   child: FloatingActionButton(
+          //     hoverColor: Colors.transparent,
+          //     elevation: 2,
+          //     onPressed: () async {
+          //       final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
+          //
+          //       if (result != null && result as bool) {
+          //         // Sub-category added successfully, refresh the list
+          //         src._refreshProductList();
+          //       }
+          //     },
+          //     backgroundColor: Colors.black,
+          //     child: const Icon(
+          //       Icons.add,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -118,7 +148,6 @@ class TableData extends DataTableSource {
     debugPrint('Product Data: $productData');
 
     productData.sort((a, b) => a['id'].compareTo(b['id']));
-
 
     notifyListeners(); // Notify the listeners that data has changed
   }

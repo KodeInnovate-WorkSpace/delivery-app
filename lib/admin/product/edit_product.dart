@@ -389,27 +389,22 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               const SizedBox(height: 20),
 
               // Select Sub-Category
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Sub-Category: "),
-                  DropdownButton<String>(
-                    value: selectedSubCategoryName,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedSubCategoryName = newValue!;
-                        selectedSubCategoryId = subCategoryMap[selectedSubCategoryName]!;
-                      });
-                    },
-                    items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
-                      return DropdownMenuItem<String>(
-                        value: subcat,
-                        child: Text(subcat.toString()),
-                      );
-                    }).toList(),
-                    hint: const Text("Select a sub-category"),
-                  )
-                ],
+              const Text("Sub-Category: "),
+              DropdownButton<String>(
+                value: selectedSubCategoryName,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedSubCategoryName = newValue!;
+                    selectedSubCategoryId = subCategoryMap[selectedSubCategoryName]!;
+                  });
+                },
+                items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
+                  return DropdownMenuItem<String>(
+                    value: subcat,
+                    child: Text(subcat.toString()),
+                  );
+                }).toList(),
+                hint: const Text("Select a sub-category"),
               ),
 
               const SizedBox(height: 20),

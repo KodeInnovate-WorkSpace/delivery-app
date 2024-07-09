@@ -40,6 +40,36 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Manage Sub-Categories'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                // fixedSize: WidgetStateProperty.all<Size>(
+                //   const Size(60, 50),
+                // ),
+              ),
+              onPressed: () async {
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
+
+                if (result != null && result as bool) {
+                  // Sub-category added successfully, refresh the list
+                  src._refreshSubCategoryList();
+                }
+              },
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
       ),
       body: Stack(
         children: [
@@ -63,27 +93,27 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
               ),
             ]),
           ),
-          Positioned(
-            bottom: 25,
-            right: 20,
-            child: FloatingActionButton(
-              hoverColor: Colors.transparent,
-              elevation: 2,
-              onPressed: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
-
-                if (result != null && result as bool) {
-                  // Sub-category added successfully, refresh the list
-                  src._refreshSubCategoryList();
-                }
-              },
-              backgroundColor: Colors.black,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 25,
+          //   right: 20,
+          //   child: FloatingActionButton(
+          //     hoverColor: Colors.transparent,
+          //     elevation: 2,
+          //     onPressed: () async {
+          //       final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
+          //
+          //       if (result != null && result as bool) {
+          //         // Sub-category added successfully, refresh the list
+          //         src._refreshSubCategoryList();
+          //       }
+          //     },
+          //     backgroundColor: Colors.black,
+          //     child: const Icon(
+          //       Icons.add,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
