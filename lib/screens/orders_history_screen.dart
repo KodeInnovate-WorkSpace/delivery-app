@@ -5,6 +5,7 @@ import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
 import 'order_tracking.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   const OrderHistoryScreen({super.key});
@@ -76,6 +77,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             itemBuilder: (context, index) {
               final orderId = reversedKeys[index];
               final orders = groupedOrders[orderId]!;
+              final orderTimestamp = orders.first.timestamp;
 
               IconData getOrderStatusIcon(int status) {
                 switch (status) {
@@ -116,6 +118,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 }
               }
 
+              String formatTimestamp(DateTime timestamp) {
+                return DateFormat('dd MMM yyyy, hh:mm a').format(timestamp);
+              }
+
               return InkWell(
                 onTap: () {
                   Navigator.push(
@@ -148,14 +154,20 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         style: const TextStyle(fontFamily: 'Gilroy-Bold', fontSize: 15, color: Color(0xff1c1c1c)),
                       ),
                       const SizedBox(height: 10),
+                      Text(
+                        'Order Date: ${formatTimestamp(orderTimestamp)}',
+                        style: const TextStyle(fontSize: 14, color: Color(0xff666666)),
+                      ),
+                      const SizedBox(height: 15),
                       Column(
                         children: orders.map((order) {
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: CachedNetworkImageProvider(order.productImage),
-                            ),
-                            title: Text("${order.productName} x ${order.quantity}"),
-                          );
+                          // return ListTile(
+                          //   // leading: CircleAvatar(
+                          //   //   backgroundImage: CachedNetworkImageProvider(order.productImage),
+                          //   // ),
+                          //   content: Text("${order.productName} x ${order.quantity}"),
+                          // );
+                          return Text("${order.productName} x ${order.quantity}");
                         }).toList(),
                       ),
                       const SizedBox(
@@ -212,4 +224,4 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       ),
     );
   }
-}
+} //updated

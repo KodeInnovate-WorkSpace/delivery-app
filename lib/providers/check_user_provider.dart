@@ -142,15 +142,16 @@ class CheckUserProvider with ChangeNotifier {
   int? _userType;
   int? get userType => _userType;
 
+  //user token
+  String? _userToken;
+  String? get userToken => _userToken;
+
   // Check if User Exists
   Future<void> doesUserExists(String phone) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     try {
-      QuerySnapshot querySnapshot = await firestore
-          .collection('users')
-          .where('phone', isEqualTo: phone)
-          .get();
+      QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: phone).get();
 
       _isUserExist = querySnapshot.docs.isNotEmpty;
       notifyListeners();
@@ -162,11 +163,9 @@ class CheckUserProvider with ChangeNotifier {
   }
 
   // Store or Update User Details
-  Future<void> storeDetail(
-      BuildContext context, String field, String value) async {
+  Future<void> storeDetail(BuildContext context, String field, String value) async {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-    final checkUserProvider =
-        Provider.of<CheckUserProvider>(context, listen: false);
+    final checkUserProvider = Provider.of<CheckUserProvider>(context, listen: false);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     try {
@@ -192,10 +191,7 @@ class CheckUserProvider with ChangeNotifier {
         log("User already exists, updating user data");
 
         // Query the user document based on phone number
-        QuerySnapshot querySnapshot = await firestore
-            .collection('users')
-            .where('phone', isEqualTo: authProvider.phone)
-            .get();
+        QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: authProvider.phone).get();
 
         if (querySnapshot.docs.isNotEmpty) {
           // Get the document ID of the user
@@ -220,10 +216,7 @@ class CheckUserProvider with ChangeNotifier {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     try {
-      QuerySnapshot querySnapshot = await firestore
-          .collection('users')
-          .where('phone', isEqualTo: phone)
-          .get();
+      QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: phone).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         final userDoc = querySnapshot.docs.first;
@@ -244,10 +237,7 @@ class CheckUserProvider with ChangeNotifier {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     try {
-      QuerySnapshot querySnapshot = await firestore
-          .collection('users')
-          .where('phone', isEqualTo: phone)
-          .get();
+      QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: phone).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         final userDoc = querySnapshot.docs.first;
@@ -257,6 +247,25 @@ class CheckUserProvider with ChangeNotifier {
       }
     } catch (e) {
       log("Error checking user type: $e");
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> getUserToken(String phone) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: phone).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first;
+        final userToken = userDoc.get('fcmToken');
+        _userToken = userToken;
+        log("User token = $_userToken");
+      }
+    } catch (e) {
+      log("Error getting user token: $e");
     }
 
     notifyListeners();

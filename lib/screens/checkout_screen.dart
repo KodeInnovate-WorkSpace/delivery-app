@@ -366,7 +366,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           price: item.itemPrice.toDouble(),
                                                           address: addressProvider.selectedAddress,
                                                           phone: authProvider.phone,
-                                                          overallTotal: totalAmt,
+                                                          overallTotal: totalAmt, timestamp: DateTime.timestamp(),
                                                         );
                                                       }).toList();
 
@@ -409,7 +409,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           price: item.itemPrice.toDouble(),
                                                           address: addressProvider.selectedAddress,
                                                           phone: authProvider.phone,
-                                                          overallTotal: totalAmt,
+                                                          overallTotal: totalAmt, timestamp: DateTime.timestamp(),
                                                         );
                                                       }).toList();
 

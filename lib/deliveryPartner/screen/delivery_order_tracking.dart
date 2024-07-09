@@ -17,6 +17,7 @@ class DeliveryTrackingScreen extends StatefulWidget {
   final String paymentMode;
   final String customerAddress;
   final String customerPhone;
+  final String orderTime;
 
   const DeliveryTrackingScreen({
     super.key,
@@ -26,6 +27,7 @@ class DeliveryTrackingScreen extends StatefulWidget {
     required this.paymentMode,
     required this.customerAddress,
     required this.customerPhone,
+    required this.orderTime,
   });
 
   @override
@@ -38,12 +40,20 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   List<bool> imageTaken = [];
   final TextEditingController _shopNameController = TextEditingController();
   bool _isCardLoading = false;
+  int orderStatus = 0;
 
   @override
   void initState() {
     super.initState();
     _orderStatusStream = FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).snapshots();
     imageTaken = List<bool>.filled(widget.order.length, false);
+    _orderStatusStream.listen((snapshot) {
+      if (snapshot.exists) {
+        setState(() {
+          orderStatus = snapshot['status'];
+        });
+      }
+    });
   }
 
   @override
@@ -60,9 +70,10 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.black,
-                ));
+              child: CircularProgressIndicator(
+                color: Colors.black,
+              ),
+            );
           }
 
           if (snapshot.hasError) {
@@ -190,13 +201,15 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: IconButton(
-                      onPressed: () {
-                        takePictureAndAddToImages(index).then((value) {
-                          uploadAllImages(widget.order[index].productName);
-                        });
-                      },
+                      onPressed: orderStatus == 4 || orderStatus == 5 || orderStatus == 6
+                          ? null
+                          : () {
+                              takePictureAndAddToImages(index).then((value) {
+                                uploadAllImages(widget.order[index].productName);
+                              });
+                            },
                       icon: Icon(
-                        imageTaken[index] ? Icons.check : Icons.camera_alt,
+                        orderStatus == 4 || orderStatus == 5 || orderStatus == 6 ? Icons.close : (imageTaken[index] ? Icons.check : Icons.camera_alt),
                         size: 18,
                       ),
                     ),
@@ -281,13 +294,9 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: IconButton(
-                      onPressed: () {
-                        takePictureAndAddToImages(index).then((value) {
-                          uploadAllImages(widget.order[index].productName);
-                        });
-                      },
+                      onPressed: null,
                       icon: Icon(
-                        imageTaken[index] ? Icons.check : Icons.camera_alt,
+                        Icons.close,
                         size: 18,
                       ),
                     ),
@@ -384,6 +393,11 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               style: const TextStyle(
                 fontSize: 16,
               )),
+
+          Text("Time: ${widget.orderTime}",
+              style: const TextStyle(
+                fontSize: 16,
+              )),
         ],
       ),
     );
@@ -399,10 +413,13 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                TextField(
-                  controller: _shopNameController,
-                  decoration: const InputDecoration(
-                    hintText: 'Shop Name',
+                Expanded(
+                  child: TextField(
+                    controller: _shopNameController,
+                    maxLines: null, // Allow the text to wrap and grow vertically
+                    decoration: const InputDecoration(
+                      hintText: 'Notes',
+                    ),
                   ),
                 ),
               ],
@@ -541,16 +558,17 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           leading: Icon(icon, color: done ? Colors.white : Colors.grey),
           title: _isCardLoading
               ? const CupertinoActivityIndicator(
-            radius: 10,
-            animating: true,
-            color: Colors.white,
-          )
+                  radius: 10,
+                  animating: true,
+                  color: Colors.white,
+                )
               : Text(title, style: TextStyle(color: done ? Colors.white : Colors.grey)),
           subtitle: Text(description, style: TextStyle(color: done ? Colors.white : Colors.grey)),
         ),
       ),
     );
   }
+
   Widget _buildOrderFailedCard(String title, String description, bool done, [Color color = Colors.red, IconData icon = Icons.error]) {
     return Card(
       color: done ? color : Colors.grey[300],

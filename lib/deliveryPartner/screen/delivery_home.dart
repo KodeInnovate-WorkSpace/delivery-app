@@ -29,7 +29,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: DefaultTabController(
-        length: 2,
+        length: 3, // Updated to 3 for the new "Taken Orders" tab
         child: Scaffold(
           appBar: AppBar(
             actions: [
@@ -40,43 +40,43 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                     showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          backgroundColor: Colors.white,
-                          title: const Text(
-                            "Logout",
-                            style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
-                          ),
-                          content: const Text("Are you sure you want to logout?"),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
-                                    child: const Text(
-                                      "No",
-                                      style: TextStyle(
-                                        color: Color(0xffEF4B4B),
-                                      ),
-                                    )),
-                                TextButton(
-                                    onPressed: () async {
-                                      await FirebaseAuth.instance.signOut();
-                                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                                      await prefs.remove('isLoggedIn');
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const SigninScreen()),
+                              backgroundColor: Colors.white,
+                              title: const Text(
+                                "Logout",
+                                style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
+                              ),
+                              content: const Text("Are you sure you want to logout?"),
+                              actions: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () => Navigator.of(context).pop(),
+                                        child: const Text(
+                                          "No",
+                                          style: TextStyle(
+                                            color: Color(0xffEF4B4B),
+                                          ),
+                                        )),
+                                    TextButton(
+                                        onPressed: () async {
+                                          await FirebaseAuth.instance.signOut();
+                                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                                          await prefs.remove('isLoggedIn');
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => const SigninScreen()),
                                             (route) => false,
-                                      );
-                                    },
-                                    child: const Text(
-                                      "Yes",
-                                      style: TextStyle(color: Colors.black),
-                                    )),
+                                          );
+                                        },
+                                        child: const Text(
+                                          "Yes",
+                                          style: TextStyle(color: Colors.black),
+                                        )),
+                                  ],
+                                )
                               ],
-                            )
-                          ],
-                        ));
+                            ));
                   },
                   icon: const Icon(
                     Icons.logout,
@@ -92,8 +92,9 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               unselectedLabelColor: Colors.grey,
               labelStyle: TextStyle(fontSize: 17, fontFamily: 'Gilroy-SemiBold'),
               tabs: [
-                Tab(text: "Pending Orders"),
-                Tab(text: "Completed Orders"),
+                Tab(text: "Pending"),
+                // Tab(text: "Taken Orders"),
+                Tab(text: "Completed"),
               ],
             ),
             title: const Text(
@@ -106,13 +107,14 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               if (allOrderProvider.allOrders.isEmpty) {
                 return const Center(
                     child: CircularProgressIndicator(
-                      color: Colors.black,
-                    ));
+                  color: Colors.black,
+                ));
               }
               return TabBarView(
                 children: [
                   pendingOrders(context),
-                  completedOrders(context, allOrderProvider),
+                  // takenOrders(context),
+                  completedOrders(context), // Modified "Completed Orders"
                 ],
               );
             },
@@ -132,28 +134,30 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
 
         final orders = snapshot.data?.docs
             .map((doc) {
-          final data = doc.data();
-          final orderDetails = (data['orders'] as List<dynamic>).map((order) {
-            return OrderDetail(
-              price: order['price'],
-              productImage: order['productImage'],
-              productName: order['productName'],
-              quantity: order['quantity'],
-              // totalPrice: order['totalPrice'],
-            );
-          }).toList();
+              final data = doc.data();
+              final orderDetails = (data['orders'] as List<dynamic>).map((order) {
+                return OrderDetail(
+                  price: order['price'],
+                  productImage: order['productImage'],
+                  productName: order['productName'],
+                  quantity: order['quantity'],
+                );
+              }).toList();
 
-          return AllOrder(
-            orderId: data['orderId'],
-            address: data['address'],
-            orders: orderDetails,
-            overallTotal: data['overallTotal'],
-            paymentMode: data['paymentMode'],
-            status: data['status'],
-            phone: data['phone'],
-          );
-        })
-            .where((order) => order.status != 4)
+              return AllOrder(
+                orderId: data['orderId'],
+                address: data['address'],
+                orders: orderDetails,
+                overallTotal: data['overallTotal'],
+                paymentMode: data['paymentMode'],
+                status: data['status'],
+                phone: data['phone'],
+                time: data['timestamp'],
+              );
+            })
+            .where((order) => order.status != 4 && order.status != 1)
+            .toList()
+            .reversed // Reversing the list to display latest orders first
             .toList();
 
         return ListView.builder(
@@ -180,6 +184,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                         paymentMode: order?.paymentMode ?? '',
                         customerAddress: order?.address ?? '',
                         customerPhone: order?.phone ?? '',
+                        orderTime: order?.time ?? "",
                       ),
                     ),
                   );
@@ -216,19 +221,193 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
     );
   }
 
-  Widget completedOrders(BuildContext context, AllOrderProvider orderProvider) {
-    final orders = orderProvider.allOrders.where((order) => order.status == 4).toList(); // Filter for completed orders
-    return ListView.builder(
-      itemCount: orders.length,
-      itemBuilder: (context, index) {
-        final order = orders[index];
-        return ListTile(
-          key: ValueKey(order.orderId),
-          title: Text(order.orderId),
-          trailing: const Text(
-            'Done',
-            style: TextStyle(fontSize: 12, fontFamily: 'Gilroy-ExtraBold'),
-          ),
+  // Widget takenOrders(BuildContext context) {
+  //   return StreamBuilder(
+  //     stream: FirebaseFirestore.instance.collection('OrderHistory').limit(50).snapshots(),
+  //     builder: (context, snapshot) {
+  //       if (!snapshot.hasData) {
+  //         return const Center(child: CircularProgressIndicator(color: Colors.black));
+  //       }
+  //
+  //       final orders = snapshot.data?.docs
+  //           .map((doc) {
+  //         final data = doc.data();
+  //         final orderDetails = (data['orders'] as List<dynamic>).map((order) {
+  //           return OrderDetail(
+  //             price: order['price'],
+  //             productImage: order['productImage'],
+  //             productName: order['productName'],
+  //             quantity: order['quantity'],
+  //           );
+  //         }).toList();
+  //
+  //         return AllOrder(
+  //           orderId: data['orderId'],
+  //           address: data['address'],
+  //           orders: orderDetails,
+  //           overallTotal: data['overallTotal'],
+  //           paymentMode: data['paymentMode'],
+  //           status: data['status'],
+  //           phone: data['phone'],
+  //         );
+  //       })
+  //           .where((order) => order.status == 1)
+  //           .toList()
+  //           .reversed // Reversing the list to display latest orders first
+  //           .toList();
+  //
+  //       return ListView.builder(
+  //         itemCount: orders?.length,
+  //         itemBuilder: (context, index) {
+  //           final order = orders?[index];
+  //           return Container(
+  //             key: ValueKey(order?.orderId),
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               border: Border(
+  //                 bottom: BorderSide(width: 1.5, color: Colors.grey.shade300),
+  //               ),
+  //             ),
+  //             child: GestureDetector(
+  //               onTap: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder: (context) => DeliveryTrackingScreen(
+  //                       orderId: order?.orderId ?? '',
+  //                       orderTotalPrice: order?.overallTotal ?? 0,
+  //                       order: order?.orders ?? [],
+  //                       paymentMode: order?.paymentMode ?? '',
+  //                       customerAddress: order?.address ?? '',
+  //                       customerPhone: order?.phone ?? '',
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //               child: ListTile(
+  //                 title: Text(order?.orderId ?? ''),
+  //                 trailing: GestureDetector(
+  //                   onTap: () async {
+  //                     if (order?.phone != null) {
+  //                       Uri dialNumber = Uri(scheme: 'tel', path: order?.phone);
+  //                       await launchUrl(dialNumber);
+  //                     }
+  //                   },
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       const Icon(
+  //                         Icons.phone,
+  //                         size: 12,
+  //                       ),
+  //                       Text(
+  //                         order?.phone ?? '',
+  //                         style: const TextStyle(fontFamily: 'Gilroy-Bold'),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
+
+  Widget completedOrders(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('OrderHistory').limit(50).snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator(color: Colors.black));
+        }
+
+        final orders = snapshot.data?.docs
+            .map((doc) {
+              final data = doc.data();
+              final orderDetails = (data['orders'] as List<dynamic>).map((order) {
+                return OrderDetail(
+                  price: order['price'],
+                  productImage: order['productImage'],
+                  productName: order['productName'],
+                  quantity: order['quantity'],
+                );
+              }).toList();
+
+              return AllOrder(
+                orderId: data['orderId'],
+                address: data['address'],
+                orders: orderDetails,
+                overallTotal: data['overallTotal'],
+                paymentMode: data['paymentMode'],
+                status: data['status'],
+                phone: data['phone'],
+                time: data['timestamp'],
+              );
+            })
+            .where((order) => order.status == 4)
+            .toList()
+            .reversed // Reversing the list to display latest orders first
+            .toList();
+
+        return ListView.builder(
+          itemCount: orders?.length,
+          itemBuilder: (context, index) {
+            final order = orders?[index];
+            return Container(
+              key: ValueKey(order?.orderId),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom: BorderSide(width: 1.5, color: Colors.grey.shade300),
+                ),
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DeliveryTrackingScreen(
+                        orderId: order?.orderId ?? '',
+                        orderTotalPrice: order?.overallTotal ?? 0,
+                        order: order?.orders ?? [],
+                        paymentMode: order?.paymentMode ?? '',
+                        customerAddress: order?.address ?? '',
+                        customerPhone: order?.phone ?? '',
+                        orderTime: order?.time ?? '',
+                      ),
+                    ),
+                  );
+                },
+                child: ListTile(
+                  title: Text(order?.orderId ?? ''),
+                  trailing: GestureDetector(
+                    onTap: () async {
+                      if (order?.phone != null) {
+                        Uri dialNumber = Uri(scheme: 'tel', path: order?.phone);
+                        await launchUrl(dialNumber);
+                      }
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.phone,
+                          size: 12,
+                        ),
+                        Text(
+                          order?.phone ?? '',
+                          style: const TextStyle(fontFamily: 'Gilroy-Bold'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );
