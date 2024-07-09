@@ -1,4 +1,3 @@
-//Working
 import 'package:flutter/material.dart';
 import '../shared/constants.dart';
 import '../shared/search_bar.dart';
@@ -21,10 +20,18 @@ class _HomeTopState extends State<HomeTop> {
       expandedHeight: 190.0,
       collapsedHeight: 80,
       elevation: 2,
+      backgroundColor: Colors.amberAccent,
+      shape: const ContinuousRectangleBorder(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(40),
+          bottomRight: Radius.circular(40),
+        ),
+      ),
       flexibleSpace: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        // padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 20),
         child: Stack(
-          fit: StackFit.expand, // Ensures full-width search bar
+          fit: StackFit.expand,
           children: [
             FlexibleSpaceBar(
               centerTitle: true,
@@ -39,7 +46,7 @@ class _HomeTopState extends State<HomeTop> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 20), // Add SizedBox for spacing
+                              const SizedBox(height: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -80,7 +87,6 @@ class _HomeTopState extends State<HomeTop> {
             ),
             //Search Bar
             Positioned(
-              // Position the search bar with some bottom padding
               bottom: 0.0, // Adjust padding as needed
               left: 0,
               right: 0,
@@ -92,122 +98,3 @@ class _HomeTopState extends State<HomeTop> {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import '../shared/constants.dart';
-// import '../shared/search_bar.dart';
-// import 'location_button_widget.dart';
-//
-// class HomeTop extends StatefulWidget {
-//   final GlobalKey<ScaffoldState> scaffoldKey;
-//   const HomeTop({Key? key, required this.scaffoldKey}) : super(key: key);
-//
-//   @override
-//   State<HomeTop> createState() => _HomeTopState();
-// }
-//
-// class _HomeTopState extends State<HomeTop> {
-//   String? alertMessage;
-//   Color? alertColor;
-//   Color? alertTextColor;
-//   bool showAlert = false;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _fetchAlertData();
-//   }
-//
-//   Future<void> _fetchAlertData() async {
-//     final alertCollection = FirebaseFirestore.instance.collection('AlertLabel');
-//     final alertDoc = await alertCollection.limit(1).get();
-//     if (alertDoc.docs.isNotEmpty) {
-//       final data = alertDoc.docs.first.data();
-//       if (data['status'] == 1) {
-//         setState(() {
-//           alertMessage = data['message'];
-//           alertColor = _hexToColor(data['color']);
-//           alertTextColor = _hexToColor(data['textcolor']);
-//           showAlert = true;
-//         });
-//       }
-//     }
-//   }
-//
-//   Color _hexToColor(String hex) {
-//     hex = hex.replaceAll("#", "");
-//     if (hex.length == 6) {
-//       hex = "FF" + hex; // add opacity if not provided
-//     }
-//     return Color(int.parse(hex, radix: 16));
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliverAppBar(
-//       pinned: true,
-//       floating: true,
-//       expandedHeight: 220.0,
-//       collapsedHeight: 110,
-//       elevation: 2,
-//       flexibleSpace: FlexibleSpaceBar(
-//         centerTitle: true,
-//         background: Padding(
-//           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             children: [
-//               if (showAlert)
-//                 Container(
-//                   width: double.infinity,
-//                   padding: const EdgeInsets.all(8.0),
-//                   color: alertColor,
-//                   child: Text(
-//                     alertMessage ?? '',
-//                     style: TextStyle(color: alertTextColor, fontSize: 16, fontFamily: 'Gilroy-ExtraBold'),
-//                   ),
-//                 ),
-//               const SizedBox(height: 10),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       const Text(
-//                         'Delivery within ',
-//                         style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Colors.black, fontSize: 14),
-//                       ),
-//                       Text(
-//                         '$deliveryTime minutes',
-//                         style: const TextStyle(fontFamily: 'Gilroy-Black', color: Colors.black, fontSize: 28),
-//                       ),
-//                     ],
-//                   ),
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.pushNamed(context, '/profile');
-//                     },
-//                     child: Image.asset(
-//                       "assets/images/profile_photo.png",
-//                       width: 40,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 10),
-//               Align(
-//                 alignment: Alignment.centerLeft,
-//                 child: LocationButton(scaffoldKey: widget.scaffoldKey),
-//               ),
-//               const SizedBox(height: 10),
-//               searchBar(context),// Add your SearchBar widget here
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

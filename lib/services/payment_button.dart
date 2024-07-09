@@ -231,7 +231,7 @@ class _PaymentButtonState extends State<PaymentButton> {
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
                 // overallTotal: cartProvider.calculateGrandTotal(),
-                overallTotal: totalAmt,
+                overallTotal: totalAmt, timestamp: DateTime.timestamp(),
               );
             }).toList();
 
@@ -253,7 +253,7 @@ class _PaymentButtonState extends State<PaymentButton> {
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
                 // overallTotal: cartProvider.calculateGrandTotal(),
-                overallTotal: totalAmt,
+                overallTotal: totalAmt, timestamp: DateTime.timestamp(),
               );
             }).toList();
 
@@ -269,7 +269,7 @@ class _PaymentButtonState extends State<PaymentButton> {
           ),
         ),
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
+              (Set<WidgetState> states) {
             return Colors.black;
           },
         ),

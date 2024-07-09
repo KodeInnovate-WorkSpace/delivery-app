@@ -42,7 +42,8 @@ class HomeScreenState extends State<HomeScreen> {
       checkLocationService();
     }
     // initialize cart provider for loading cart items
-    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
+    final initiateCartProvider =
+    Provider.of<CartProvider>(context, listen: false);
     // calling method to load the cart items
     initiateCartProvider.loadCart();
 
@@ -90,7 +91,8 @@ class HomeScreenState extends State<HomeScreen> {
     log("Current Position: ${position.latitude}, ${position.longitude}");
 
     // Get the placemarks from the coordinates
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks =
+    await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String postalCode = place.postalCode ?? '';
 
@@ -103,7 +105,8 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> checkAccess(String postalCode) async {
     try {
       // Fetch all documents from the "location" collection
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('location').get();
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('location').get();
 
       // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
@@ -156,12 +159,14 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    ).then((_) => checkLocationService()); // Check location service again after dialog is closed
+    ).then((_) =>
+        checkLocationService()); // Check location service again after dialog is closed
   }
 
   Future<void> fetchCategory() async {
     try {
-      final snapshot = await FirebaseFirestore.instance.collection("category").get();
+      final snapshot =
+      await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -192,7 +197,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchSubCategory() async {
     try {
-      final subSnapshot = await FirebaseFirestore.instance.collection("sub_category").get();
+      final subSnapshot =
+      await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
         setState(() {
@@ -223,216 +229,330 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<bool> showExitDialog() async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Exit'),
+        content: const Text('Do you want to exit the app?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return NetworkHandler(
-      child: Scaffold(
-        key: scaffoldKey,
-        body: RefreshIndicator(
-          color: Colors.black,
-          backgroundColor: Colors.white,
-          onRefresh: _handleRefresh,
-          child: Stack(
-            children: [
-              CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  // Heading
-                  HomeTop(scaffoldKey: scaffoldKey),
-                  // Alerts
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection('AlertLabel').snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return SliverToBoxAdapter(
-                          child: Container(),
-                        );
-                      }
+    return WillPopScope(
+      onWillPop: () async {
+        return await showExitDialog();
+      },
+      child: NetworkHandler(
+        child: Scaffold(
+          key: scaffoldKey,
+          body: RefreshIndicator(
+            color: Colors.black,
+            backgroundColor: Colors.white,
+            onRefresh: _handleRefresh,
+            child: Stack(
+              children: [
+                CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    // Heading
+                    HomeTop(scaffoldKey: scaffoldKey),
+                    // Alerts
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('AlertLabel')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return SliverToBoxAdapter(
+                            child: Container(),
+                          );
+                        }
 
-                      final alerts = snapshot.data!.docs
-                          .where((doc) => doc['status'] == 1)
-                          .map((doc) => {
-                                'message': doc['message'],
-                                'color': doc['color'],
-                                'textcolor': doc['textcolor'],
-                              })
-                          .toList();
+                        final alerts = snapshot.data!.docs
+                            .where((doc) => doc['status'] == 1)
+                            .map((doc) => {
+                          'message': doc['message'],
+                          'color': doc['color'],
+                          'textcolor': doc['textcolor'],
+                        })
+                            .toList();
 
-                      if (alerts.isEmpty) {
-                        return SliverToBoxAdapter(child: Container());
-                      }
-                      return SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final alert = alerts[index];
-                            return Container(
-                              color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Center(
-                                child: Text(
-                                  alert['message'],
-                                  style: TextStyle(
-                                    color: Color(int.parse(alert['textcolor'].replaceFirst('#', '0xff'))),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                        if (alerts.isEmpty) {
+                          return SliverToBoxAdapter(child: Container());
+                        }
+                        return SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                              final alert = alerts[index];
+                              return Container(
+                                color: Color(int.parse(
+                                    alert['color'].replaceFirst('#', '0xff'))),
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                                child: Center(
+                                  child: Text(
+                                    alert['message'],
+                                    style: TextStyle(
+                                      color: Color(int.parse(alert['textcolor']
+                                          .replaceFirst('#', '0xff'))),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          childCount: alerts.length,
-                        ),
-                      );
-                    },
-                  ),
-                  // Advertisement Widget
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height / 4, // Adjust height as needed
-                        child: const AdvertisementWidget(),
-                      ),
-                    ),
-                  ),
-                  // Displaying categories
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-                          child: FutureBuilder<void>(
-                            future: fetchDataFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return const Center(child: Text("Error"));
-                              } else {
-                                return Column(
-                                  children: categories.map((category) {
-                                    final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
-
-                                    return Stack(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Reduced vertical padding
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                category.name,
-                                                style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        GridView.builder(
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          // itemCount: filteredSubCategories.length,
-                                          itemCount: 8,
-                                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            // childAspectRatio: 0.65,
-                                            childAspectRatio: 0.68,
-                                          ),
-                                          itemBuilder: (context, subIndex) {
-                                            final subCategory = filteredSubCategories[subIndex];
-                                            return Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => CategoryScreen(
-                                                          categoryTitle: category.name,
-                                                          subCategories: filteredSubCategories,
-                                                          selectedSubCategoryId: subCategory.id, // Pass the selected sub-category ID
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: 100,
-                                                    margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
-                                                    decoration: const BoxDecoration(
-                                                      color: Color(0xffeaf1fc),
-                                                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: CachedNetworkImage(
-                                                        height: 60,
-                                                        imageUrl: subCategory.img,
-                                                        placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
-                                                        errorWidget: (context, url, error) => const Icon(Icons.error),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                // sub-category name
-                                                Text(
-                                                  subCategory.name,
-                                                  textAlign: TextAlign.center,
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(fontSize: 12),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ),
-
-                                        //See all button
-                                        Positioned(
-                                            left: 0,
-                                            right: -265,
-                                            top: -10,
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => CategoryScreen(
-                                                      categoryTitle: category.name,
-                                                      subCategories: filteredSubCategories,
-                                                      selectedSubCategoryId: filteredSubCategories[0].id,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              style: ButtonStyle(
-                                                overlayColor: WidgetStateProperty.all(Colors.transparent), // Removes the hover effect
-                                                backgroundColor: WidgetStateProperty.all(Colors.transparent), // Ensures no background color
-                                              ),
-                                              child: const Text(
-                                                "See All",
-                                                style: TextStyle(fontSize: 10, fontFamily: "Gilroy-ExtraBold", color: Colors.green),
-                                              ),
-                                            )),
-                                      ],
-                                    );
-                                  }).toList(),
-                                );
-                              }
+                              );
                             },
+                            childCount: alerts.length,
                           ),
                         );
                       },
-                      childCount: 1, // Adjust as per your needs
                     ),
-                  ),
-                ],
-              ),
-              const CartButton(),
-            ],
+                    // Advertisement Widget
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 10.0),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height /
+                              4, // Adjust height as needed
+                          child: const AdvertisementWidget(),
+                        ),
+                      ),
+                    ),
+                    // Displaying categories
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 0),
+                            child: FutureBuilder<void>(
+                              future: fetchDataFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return const Center(child: Text("Error"));
+                                } else {
+                                  return Column(
+                                    children: categories.map((category) {
+                                      final filteredSubCategories =
+                                      subCategories
+                                          .where((subCategory) =>
+                                      subCategory.catId ==
+                                          category.id)
+                                          .toList();
+                                      final itemCount =
+                                      filteredSubCategories.length < 8
+                                          ? filteredSubCategories.length
+                                          : 8;
+                                      return Stack(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0,
+                                                vertical:
+                                                0.0), // Reduced vertical padding
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  category.name,
+                                                  style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontFamily:
+                                                      "Gilroy-Bold"),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          GridView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                            const NeverScrollableScrollPhysics(),
+                                            itemCount: itemCount,
+                                            gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 4,
+                                              childAspectRatio: 0.62,
+                                            ),
+                                            itemBuilder: (context, subIndex) {
+                                              if (subIndex <
+                                                  filteredSubCategories
+                                                      .length) {
+                                                final subCategory =
+                                                filteredSubCategories[
+                                                subIndex];
+                                                return Column(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CategoryScreen(
+                                                                  categoryTitle:
+                                                                  category.name,
+                                                                  subCategories:
+                                                                  filteredSubCategories,
+                                                                  selectedSubCategoryId:
+                                                                  subCategory
+                                                                      .id, // Pass the selected sub-category ID
+                                                                ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        width: 100,
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 4,
+                                                            vertical:
+                                                            0), // Reduced vertical margin
+                                                        decoration:
+                                                        const BoxDecoration(
+                                                          color:
+                                                          Color(0xffeaf1fc),
+                                                          borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius
+                                                                  .circular(
+                                                                  10)),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .all(8.0),
+                                                          child:
+                                                          CachedNetworkImage(
+                                                            height: 60,
+                                                            imageUrl:
+                                                            subCategory.img,
+                                                            placeholder: (context,
+                                                                url) =>
+                                                            const CircularProgressIndicator(
+                                                                color: Colors
+                                                                    .amberAccent),
+                                                            errorWidget: (context,
+                                                                url,
+                                                                error) =>
+                                                            const Icon(Icons
+                                                                .error),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    // sub-category name
+                                                    Text(
+                                                      subCategory.name,
+                                                      textAlign:
+                                                      TextAlign.center,
+                                                      style: const TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                // Empty space
+                                                return Container(
+                                                  width: 100,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 4,
+                                                      vertical:
+                                                      0), // Reduced vertical margin
+                                                  decoration:
+                                                  const BoxDecoration(
+                                                    color: Colors.transparent,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+
+                                          //See all button
+                                          Positioned(
+                                              left: 0,
+                                              right: -265,
+                                              top: -10,
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CategoryScreen(
+                                                            categoryTitle:
+                                                            category.name,
+                                                            subCategories:
+                                                            filteredSubCategories,
+                                                            selectedSubCategoryId:
+                                                            filteredSubCategories[
+                                                            0]
+                                                                .id,
+                                                          ),
+                                                    ),
+                                                  );
+                                                },
+                                                style: ButtonStyle(
+                                                  overlayColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors
+                                                          .transparent), // Removes the hover effect
+                                                  backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors
+                                                          .transparent), // Ensures no background color
+                                                ),
+                                                child: const Text(
+                                                  "See All",
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontFamily:
+                                                      "Gilroy-ExtraBold",
+                                                      color: Colors.green),
+                                                ),
+                                              )),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  );
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        childCount: 1, // Adjust as per your needs
+                      ),
+                    ),
+                  ],
+                ),
+                const CartButton(),
+              ],
+            ),
           ),
         ),
       ),

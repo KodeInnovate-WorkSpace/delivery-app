@@ -49,8 +49,7 @@ class _LocationButtonState extends State<LocationButton> {
 
     // Request location permission
     permission = await Geolocator.requestPermission();
-    if (permission != LocationPermission.always &&
-        permission != LocationPermission.whileInUse) {
+    if (permission != LocationPermission.always && permission != LocationPermission.whileInUse) {
       _showLocationPermissionRequiredDialog(context);
       return;
     }
@@ -74,8 +73,7 @@ class _LocationButtonState extends State<LocationButton> {
         Placemark pMark = placeMarks[0];
 
         setState(() {
-          completeAddress =
-              '${pMark.street}, ${pMark.subLocality}, ${pMark.locality} - ${pMark.postalCode} ';
+          completeAddress = '${pMark.street}, ${pMark.subLocality}, ${pMark.locality} - ${pMark.postalCode} ';
         });
 
         // Save the address to SharedPreferences
@@ -103,8 +101,7 @@ class _LocationButtonState extends State<LocationButton> {
 
     // Request location permission
     permission = await Geolocator.requestPermission();
-    if (permission != LocationPermission.always &&
-        permission != LocationPermission.whileInUse) {
+    if (permission != LocationPermission.always && permission != LocationPermission.whileInUse) {
       _showLocationPermissionRequiredDialog(context);
       return;
     }
@@ -192,6 +189,7 @@ class _LocationButtonState extends State<LocationButton> {
                     title: const Text(
                       'Recently Searched Locations',
                       style: TextStyle(color: Colors.black),
+                      // style: TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -200,6 +198,7 @@ class _LocationButtonState extends State<LocationButton> {
                     title: Text(
                       completeAddress ?? 'Fetching location...',
                       style: const TextStyle(color: Colors.black),
+                      // style: const TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -214,8 +213,12 @@ class _LocationButtonState extends State<LocationButton> {
           Text(
             completeAddress ?? 'Fetching location...',
             style: const TextStyle(color: Colors.black),
+            // style: const TextStyle(color: Colors.white, fontFamily: "Gilroy-ExtraBold"),
           ),
-          const Icon(Icons.arrow_drop_down_sharp),
+          const Icon(
+            Icons.arrow_drop_down_sharp,
+            // color: Colors.white,
+          ),
         ],
       ),
     );
