@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Order {
@@ -95,6 +96,7 @@ class OrderProvider with ChangeNotifier {
 
   void addOrders(List<Order> orders, String ordId, String phone) {
     DateTime now = DateTime.now();
+
     List<Order> newOrders = orders.map((order) => order.copyWith(orderId: ordId, phone: phone, timestamp: now)).toList();
     _orders.addAll(newOrders);
 
@@ -142,18 +144,18 @@ class OrderProvider with ChangeNotifier {
         List<dynamic> ordersData = data['orders'];
         return ordersData
             .map((orderData) => Order(
-          orderId: data['orderId'],
-          productName: orderData['productName'],
-          productImage: orderData['productImage'],
-          quantity: orderData['quantity'],
-          price: orderData['price'],
-          paymentMode: data['paymentMode'],
-          address: data['address'],
-          phone: data['phone'],
-          status: data['status'] ?? 0,
-          overallTotal: data['overallTotal'],
-          timestamp: DateTime.parse(data['timestamp']),
-        ))
+                  orderId: data['orderId'],
+                  productName: orderData['productName'],
+                  productImage: orderData['productImage'],
+                  quantity: orderData['quantity'],
+                  price: orderData['price'],
+                  paymentMode: data['paymentMode'],
+                  address: data['address'],
+                  phone: data['phone'],
+                  status: data['status'] ?? 0,
+                  overallTotal: data['overallTotal'],
+                  timestamp: DateTime.parse(data['timestamp']),
+                ))
             .toList();
       }).toList();
     }
@@ -170,18 +172,18 @@ class OrderProvider with ChangeNotifier {
         List<dynamic> ordersData = data['orders'];
         return ordersData
             .map((orderData) => Order(
-          orderId: data['orderId'],
-          productName: orderData['productName'],
-          productImage: orderData['productImage'],
-          quantity: orderData['quantity'],
-          price: orderData['price'],
-          paymentMode: data['paymentMode'],
-          address: data['address'],
-          phone: data['phone'],
-          status: data['status'] ?? 0,
-          overallTotal: data['overallTotal'],
-          timestamp: DateTime.parse(data['timestamp']),
-        ))
+                  orderId: data['orderId'],
+                  productName: orderData['productName'],
+                  productImage: orderData['productImage'],
+                  quantity: orderData['quantity'],
+                  price: orderData['price'],
+                  paymentMode: data['paymentMode'],
+                  address: data['address'],
+                  phone: data['phone'],
+                  status: data['status'] ?? 0,
+                  overallTotal: data['overallTotal'],
+                  timestamp: DateTime.parse(data['timestamp']),
+                ))
             .toList();
       }).toList();
     });
