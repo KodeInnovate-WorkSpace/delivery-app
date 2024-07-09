@@ -116,15 +116,11 @@ class TableData extends DataTableSource {
           overflow: TextOverflow.visible,
         ),
       )),
-
-      // status column
-      // const DataCell(Text("Delivery Boy")),
-
       DataCell(DropdownButton<String>(
         value: data['user'],
         onChanged: (String? newValue) {
           // setState(() {
-            data['user'] = newValue;
+          data['user'] = newValue;
           // });
         },
         items: valetData.map<DropdownMenuItem<String>>((valet) {

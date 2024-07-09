@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/order_tracking.dart';
@@ -191,6 +192,11 @@ class _PaymentButtonState extends State<PaymentButton> {
       totalAmt = cartProvider.calculateGrandTotal();
       customerPhone = authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
+
+    DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy:hh:mm a');
+    final String formattedDate = formatter.format(now).toString();
+    final DateTime parsedDate = formatter.parse(formattedDate);
     return ElevatedButton(
       onPressed: () {
         HapticFeedback.heavyImpact();
@@ -231,7 +237,9 @@ class _PaymentButtonState extends State<PaymentButton> {
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
                 // overallTotal: cartProvider.calculateGrandTotal(),
-                overallTotal: totalAmt, timestamp: DateTime.timestamp(),
+                // overallTotal: totalAmt,
+                overallTotal: totalAmt,
+                timestamp: DateTime.timestamp(),
               );
             }).toList();
 
@@ -253,7 +261,8 @@ class _PaymentButtonState extends State<PaymentButton> {
                 address: addressProvider.selectedAddress,
                 phone: authProvider.phone,
                 // overallTotal: cartProvider.calculateGrandTotal(),
-                overallTotal: totalAmt, timestamp: DateTime.timestamp(),
+                overallTotal: totalAmt,
+                timestamp: DateTime.timestamp(),
               );
             }).toList();
 
@@ -269,7 +278,7 @@ class _PaymentButtonState extends State<PaymentButton> {
           ),
         ),
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
-              (Set<WidgetState> states) {
+          (Set<WidgetState> states) {
             return Colors.black;
           },
         ),
