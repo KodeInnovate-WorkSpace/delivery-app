@@ -1,6 +1,4 @@
-import 'dart:developer';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -144,17 +142,7 @@ class _SigninScreenState extends State<SigninScreen> {
                             ? () async {
                                 HapticFeedback.selectionClick();
 
-                                //store user
                                 await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
-
-                                // store fcm token
-
-                                FirebaseMessaging.instance.getToken().then((String? token) async {
-                                  assert(token != null);
-                                  log("FCM Token: $token");
-                                  // Save this token to Firestore under the user's document
-                                  await userProvider.storeDetail(context, 'fcmToken', token!);
-                                });
 
                                 await userProvider.checkUserStatus(authProvider.textController.text);
                                 await userProvider.checkUserType(authProvider.phone);

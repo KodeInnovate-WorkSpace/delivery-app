@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
@@ -300,7 +301,8 @@ class HomeScreenState extends State<HomeScreen> {
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+                          // padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
                           child: FutureBuilder<void>(
                             future: fetchDataFuture,
                             builder: (context, snapshot) {
@@ -326,7 +328,8 @@ class HomeScreenState extends State<HomeScreen> {
                                             children: [
                                               Text(
                                                 category.name,
-                                                style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
+                                                // style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
+                                                style: const TextStyle(fontSize: 16, fontFamily: "Gilroy-Black"),
                                               ),
                                             ],
                                           ),
@@ -366,8 +369,14 @@ class HomeScreenState extends State<HomeScreen> {
                                                       ),
                                                       child: Padding(
                                                         padding: const EdgeInsets.all(8.0),
+                                                        // child: CachedNetworkImage(
+                                                        //   height: 60,
+                                                        //   imageUrl: subCategory.img,
+                                                        //   placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
+                                                        //   errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                        // ),
                                                         child: CachedNetworkImage(
-                                                          height: 60,
+                                                          height: 75,
                                                           imageUrl: subCategory.img,
                                                           placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
                                                           errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -401,7 +410,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         Positioned(
                                             left: 0,
                                             right: -265,
-                                            top: -10,
+                                            top: -13,
                                             child: TextButton(
                                               onPressed: () {
                                                 Navigator.push(

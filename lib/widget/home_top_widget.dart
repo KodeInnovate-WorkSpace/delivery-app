@@ -4,7 +4,7 @@ import '../shared/search_bar.dart';
 import 'location_button_widget.dart';
 
 class HomeTop extends StatefulWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final scaffoldKey;
   const HomeTop({super.key, required this.scaffoldKey});
 
   @override
@@ -28,9 +28,10 @@ class _HomeTopState extends State<HomeTop> {
         ),
       ),
       flexibleSpace: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        // padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 20),
         child: Stack(
-          fit: StackFit.expand, // Ensures full-width search bar
+          fit: StackFit.expand,
           children: [
             FlexibleSpaceBar(
               centerTitle: true,
@@ -45,7 +46,7 @@ class _HomeTopState extends State<HomeTop> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 20), // Add SizedBox for spacing
+                              const SizedBox(height: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -63,6 +64,7 @@ class _HomeTopState extends State<HomeTop> {
                               ),
                             ],
                           ),
+                          //const SizedBox(width: 90),
                         ],
                       ),
                       Positioned(
@@ -72,19 +74,18 @@ class _HomeTopState extends State<HomeTop> {
                           onTap: () {
                             Navigator.pushNamed(context, '/profile');
                           },
-                          child: const CircleAvatar(
-                            radius: 20, // Adjust the radius as needed
-                            backgroundImage: AssetImage("assets/images/profile_photo.png"),
-                            backgroundColor: Colors.white, // Make sure there's no background color
+                          child: Image.asset(
+                            "assets/images/profile_photo.png",
+                            width: 40,
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ],
               ),
             ),
-            // Search Bar
+            //Search Bar
             Positioned(
               bottom: 0.0, // Adjust padding as needed
               left: 0,

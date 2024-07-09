@@ -226,9 +226,9 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
                         String? imageUrl;
                         if (_image != null) {
                           imageUrl = await uploadImage(_image!);
+                          // Update Image
+                          await subcatObj.updateSubCategory('sub_category_img', imageUrl, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
                         }
-                        // Update Image
-                        await subcatObj.updateSubCategory('sub_category_img', imageUrl, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
 
                         // Update name
                         await subcatObj.updateSubCategory('sub_category_name', categoryController.text, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);

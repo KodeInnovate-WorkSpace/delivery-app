@@ -4,9 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:speedy_delivery/providers/auth_provider.dart';
-import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../model/model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -64,8 +61,8 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
                 child: CircularProgressIndicator(
-              color: Colors.black,
-            ));
+                  color: Colors.black,
+                ));
           }
 
           if (snapshot.hasError) {
@@ -454,8 +451,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   }
 
   Widget _buildOrderStatusCard(String title, String description, bool done, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
-    final userProvider = Provider.of<CheckUserProvider>(context);
-    final authProvider = Provider.of<MyAuthProvider>(context);
     return GestureDetector(
       onTap: () async {
         int? newStatus;
@@ -463,9 +458,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         setState(() {
           _isCardLoading = true;
         });
-
-        //fetch fcm token
-        userProvider.getUserFCM(authProvider.phone);
 
         // Fetch the current status from Firebase
         DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).get();
@@ -506,26 +498,18 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           switch (title) {
             case 'Order Received':
               newStatus = 0;
-              // sendPushNotification(userProvider.userFCM.toString(), "Your order received", "Order Received");
               break;
             case 'Order Confirmed':
               newStatus = 1;
-              // sendPushNotification(userProvider.userFCM.toString(), "Your order confirmed", "Order Confirmed");
               break;
             case 'Order In Process':
               newStatus = 2;
-              // sendPushNotification(userProvider.userFCM.toString(), "Your order is in process", "Order Process");
-
               break;
             case 'Order Pickup':
               newStatus = 3;
-              // sendPushNotification(userProvider.userFCM.toString(), "Your order is picked up!", "Order Picked Up!");
-
               break;
             case 'Order Delivered':
               newStatus = 4;
-              // sendPushNotification(userProvider.userFCM.toString(), "Your order is delivered!", "Order Delivered");
-
               break;
             default:
               setState(() {
@@ -557,17 +541,16 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           leading: Icon(icon, color: done ? Colors.white : Colors.grey),
           title: _isCardLoading
               ? const CupertinoActivityIndicator(
-                  radius: 10,
-                  animating: true,
-                  color: Colors.white,
-                )
+            radius: 10,
+            animating: true,
+            color: Colors.white,
+          )
               : Text(title, style: TextStyle(color: done ? Colors.white : Colors.grey)),
           subtitle: Text(description, style: TextStyle(color: done ? Colors.white : Colors.grey)),
         ),
       ),
     );
   }
-
   Widget _buildOrderFailedCard(String title, String description, bool done, [Color color = Colors.red, IconData icon = Icons.error]) {
     return Card(
       color: done ? color : Colors.grey[300],

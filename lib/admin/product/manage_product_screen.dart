@@ -116,6 +116,10 @@ class TableData extends DataTableSource {
     await _loadSubCategoryData();
     productData = await productObj.manageProducts();
     debugPrint('Product Data: $productData');
+
+    productData.sort((a, b) => a['id'].compareTo(b['id']));
+
+
     notifyListeners(); // Notify the listeners that data has changed
   }
 

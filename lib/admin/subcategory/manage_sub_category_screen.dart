@@ -106,10 +106,13 @@ class TableData extends DataTableSource {
   }
 
   Future<void> _loadSubData() async {
-    // Getting data from manageSubCategories() which is in subcat class
     await _loadCategoryData();
     subData = await subcat.manageSubCategories();
-    notifyListeners(); // Notify the listeners that data has changed
+
+    // Sort subData by sub_category_id
+    subData.sort((a, b) => a['sub_category_id'].compareTo(b['sub_category_id']));
+
+    notifyListeners();
   }
 
   Future<void> _loadCategoryData() async {
@@ -140,21 +143,15 @@ class TableData extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
-    if (index >= subData.length) return null; // Check index bounds
+    if (index >= subData.length) return null;
 
-    // Storing each index of subData list in data variable to iterate over each list
     final data = subData[index];
     final categoryName = categoryData[data['category_id']] ?? 'Deleted';
 
     return DataRow(cells: [
       DataCell(Text(data['sub_category_id'].toString())),
       DataCell(Text(categoryName)),
-      // DataCell(
-      //   SizedBox(
-      //     width: 35,
-      //     child: Image.network(data['sub_category_img'] ?? ''),
-      //   ),
-      // ),
+
       DataCell(
         SizedBox(
           width: 35,
@@ -163,7 +160,6 @@ class TableData extends DataTableSource {
           ),
         ),
       ),
-      // DataCell(Text(data['sub_category_name'] ?? '')),
       DataCell(SizedBox(
         width: 100,
         child: Text(
@@ -173,7 +169,7 @@ class TableData extends DataTableSource {
         ),
       )),
       DataCell(DropdownButton<int>(
-        value: data['status'], // Use the status value from data
+        value: data['status'],
         onChanged: (int? newValue) {
           _updateSubCategory(
             'status',
