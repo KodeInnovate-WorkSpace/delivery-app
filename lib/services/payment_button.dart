@@ -152,19 +152,6 @@ class _PaymentButtonState extends State<PaymentButton> {
     return null;
   }
 
-  // Future<void> pay(String myOrdId) async {
-  //   try {
-  //     var session = await createSession(myOrdId);
-  //     List<CFPaymentModes> components = <CFPaymentModes>[];
-  //     var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
-  //     var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#f7ce34").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
-  //     var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session!).setPaymentComponent(paymentComponent).setTheme(theme).build();
-  //     cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
-  //   } on CFException catch (e) {
-  //     debugPrint(e.message);
-  //   }
-  // }
-
   Future<void> pay(String myOrdId) async {
     try {
       var session = await createSession(myOrdId);
