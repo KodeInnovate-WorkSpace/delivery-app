@@ -47,8 +47,8 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                 dataRowHeight: 100,
                 showEmptyRows: false,
                 columns: const [
-                  DataColumn(label: Text('ID')),
-                  DataColumn(label: Text('Phone')),
+                  DataColumn(label: Text('Order ID')),
+                  DataColumn(label: Text('Cust Phone')),
                   DataColumn(label: Text('Date')),
                   DataColumn(label: Text('Address')),
                   DataColumn(label: Text('Assign')),
