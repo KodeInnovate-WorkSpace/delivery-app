@@ -8,76 +8,77 @@ class ValetProvider extends ChangeNotifier {
   String? valetName;
   String? valetPhone;
 
-  ValetProvider() {
-    fetchValetDetails();
+  Stream<QuerySnapshot> fetchValetDetails(String orderId) {
+    return FirebaseFirestore.instance.collection('OrderHistory').where('orderId', isEqualTo: orderId).snapshots();
   }
 
-  Future<void> fetchValetDetails() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('OrderHistory').get();
+  Widget buildValetDetailsTable(String orderId) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: fetchValetDetails(orderId),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Text('No valet details available');
+        } else {
+          DocumentSnapshot doc = snapshot.data!.docs.first;
+          valetPhone = doc['valet'] == "" ? 'Unavailable' : doc['valet'];
 
-      if (querySnapshot.docs.isNotEmpty) {
-        DocumentSnapshot doc = querySnapshot.docs.first;
-        // valetName = doc['valet'] ?? 'No name available';
-        valetPhone = doc['valet'] ?? 'No phone number available';
-        notifyListeners();
-      }
-    } catch (e) {
-      log('Error fetching valet details: $e');
-    }
-  }
-
-  Widget buildValetDetailsTable() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Valet Details",
-            style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold'),
-          ),
-          const SizedBox(height: 8.0),
-          // Name
-          const Row(
-            children: [
-              Text(
-                "Name: ",
-                style: TextStyle(
-                  fontSize: 16,
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Valet Details",
+                  style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold'),
                 ),
-              ),
-              // Text("${valetName!.isEmpty ? "Name Unavailable" : valetName}", style: const TextStyle(fontSize: 16)),
-              Text("Unavailable", style: TextStyle(fontSize: 16)),
-            ],
-          ),
-          // Phone
-          Row(
-            children: [
-              const Text(
-                "Phone: ",
-                style: TextStyle(
-                  fontSize: 16,
+                const SizedBox(height: 8.0),
+                // Name
+                const Row(
+                  children: [
+                    Text(
+                      "Name: ",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    // Text("${valetName!.isEmpty ? "Name Unavailable" : valetName}", style: const TextStyle(fontSize: 16)),
+                    Text("Unavailable", style: TextStyle(fontSize: 16)),
+                  ],
                 ),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  Uri dialNumber = Uri(scheme: 'tel', path: valetPhone!);
-                  await launchUrl(dialNumber);
-                },
-                child: Text(
-                  valetPhone!,
-                  // style:const TextStyle(fontFamily: 'Gilroy-Bold'),
+                // Phone
+                Row(
+                  children: [
+                    const Text(
+                      "Phone: ",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        Uri dialNumber = Uri(scheme: 'tel', path: valetPhone!);
+                        await launchUrl(dialNumber);
+                      },
+                      child: Text(
+                        valetPhone!,
+                        // style:const TextStyle(fontFamily: 'Gilroy-Bold'),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }

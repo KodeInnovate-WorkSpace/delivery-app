@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/admin/valet/tracking.dart';
 import '../admin_model.dart';
 
 class ManageValetScreen extends StatefulWidget {
@@ -118,15 +119,14 @@ class TableData extends DataTableSource {
       )),
       DataCell(DropdownButton<String>(
         value: data['user'],
-        onChanged: (String? newValue) {
-          // setState(() {
-          data['user'] = newValue;
-          // });
+        onChanged: (String? newValue) async {
+          await valetObj.assignValet(data['orderId'].toString(), newValue!);
+          await _loadData(); // Reload data after updating
         },
         items: valetData.map<DropdownMenuItem<String>>((valet) {
           return DropdownMenuItem<String>(
-            value: valet['id'],
-            child: Text(valet['phone'].toString()), // Display valet name
+            value: valet['phone'],
+            child: Text(valet['phone'].toString()), // Display valet phone
           );
         }).toList(),
       )),

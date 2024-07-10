@@ -69,14 +69,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     children: [
                       const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-                      _buildOrderCancelledCard(
-                          'Order Cancelled',
-                          paymentMode == 'Online'
-                              ? 'Currently we can\'t find available stock for ordered products. (You will get a refund up to 3 working days for more details contact us)'
-                              : 'Currently we can\'t find available stock for ordered products. Unfortunately, your order has been cancelled.',
-                          true,
-                          Colors.red,
-                          Icons.cancel),
+                      _buildOrderCancelledCard('Order Cancelled', paymentMode == 'Online' ? 'Currently we can\'t find available stock for ordered products. (You will get a refund up to 3 working days for more details contact us)' : 'Currently we can\'t find available stock for ordered products. Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
                     ],
                   ),
                 );
@@ -96,7 +89,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     children: [
                       const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-                      valetProvider.buildValetDetailsTable(),
+                      valetProvider.buildValetDetailsTable(widget.orderId),
                       Column(children: statusCards),
                     ],
                   ),

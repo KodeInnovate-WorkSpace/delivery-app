@@ -357,4 +357,18 @@ class ValetModel extends ChangeNotifier {
       return [];
     }
   }
+
+  Future<void> assignValet(String id, String phone) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('OrderHistory').where("orderId", isEqualTo: id);
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({'valet': phone});
+      }
+    } catch (e) {
+      log("Error updating valet phone number: $e");
+    }
+  }
 }
