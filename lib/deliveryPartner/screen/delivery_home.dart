@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/deliveryPartner/model/model.dart';
+import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../screens/sign_in_screen.dart';
 import '../provider/delivery_order_provider.dart';
@@ -124,8 +125,9 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   }
 
   Widget pendingOrders(BuildContext context) {
+    final authProvider = Provider.of<MyAuthProvider>(context);
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('OrderHistory').limit(50).snapshots(),
+      stream: FirebaseFirestore.instance.collection('OrderHistory').where('valet', isEqualTo: authProvider.phone).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator(color: Colors.black));

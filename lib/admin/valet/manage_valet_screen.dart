@@ -87,8 +87,6 @@ class TableData extends DataTableSource {
   @override
   DataRow? getRow(int index) {
     if (index >= orderData.length) return null; // Check index bounds
-
-    // storing each index of orderData list in data variable to iterate over each list
     final data = orderData[index];
 
     return DataRow(cells: [
