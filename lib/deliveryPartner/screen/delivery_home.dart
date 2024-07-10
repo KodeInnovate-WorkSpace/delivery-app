@@ -22,6 +22,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   void initState() {
     super.initState();
     final orderProvider = Provider.of<AllOrderProvider>(context, listen: false);
+    // Fetch orders once when the screen loads
     orderProvider.fetchAllOrders();
   }
 
@@ -29,7 +30,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: DefaultTabController(
-        length: 3, // Updated to 3 for the new "Taken Orders" tab
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             actions: [
@@ -92,9 +93,8 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               unselectedLabelColor: Colors.grey,
               labelStyle: TextStyle(fontSize: 17, fontFamily: 'Gilroy-SemiBold'),
               tabs: [
-                Tab(text: "Pending"),
-                // Tab(text: "Taken Orders"),
-                Tab(text: "Completed"),
+                Tab(text: "Pending Orders"),
+                Tab(text: "Completed Orders"),
               ],
             ),
             title: const Text(
@@ -113,8 +113,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               return TabBarView(
                 children: [
                   pendingOrders(context),
-                  // takenOrders(context),
-                  completedOrders(context), // Modified "Completed Orders"
+                  completedOrders(context),
                 ],
               );
             },
@@ -127,7 +126,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   Widget pendingOrders(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context);
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('OrderHistory').where('valetName', isEqualTo: authProvider.phone).snapshots(),
+      stream: FirebaseFirestore.instance.collection('OrderHistory').where('valetPhone', isEqualTo: authProvider.phone).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator(color: Colors.black));
@@ -142,6 +141,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                   productImage: order['productImage'],
                   productName: order['productName'],
                   quantity: order['quantity'],
+                  // totalPrice: order['totalPrice'],
                 );
               }).toList();
 
@@ -156,9 +156,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                 time: data['timestamp'],
               );
             })
-            .where((order) => order.status != 4 && order.status != 1)
-            .toList()
-            .reversed
+            .where((order) => order.status != 4)
             .toList();
 
         return ListView.builder(
@@ -185,7 +183,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                         paymentMode: order?.paymentMode ?? '',
                         customerAddress: order?.address ?? '',
                         customerPhone: order?.phone ?? '',
-                        orderTime: order?.time ?? "",
+                        orderTime: order!.time,
                       ),
                     ),
                   );
