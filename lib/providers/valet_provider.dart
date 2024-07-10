@@ -14,12 +14,12 @@ class ValetProvider extends ChangeNotifier {
 
   Future<void> fetchValetDetails() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('users').where('type', isEqualTo: 2).get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('OrderHistory').get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentSnapshot doc = querySnapshot.docs.first;
-        valetName = doc['name'] ?? 'No name available';
-        valetPhone = doc['phone'] ?? 'No phone number available';
+        // valetName = doc['valet'] ?? 'No name available';
+        valetPhone = doc['valet'] ?? 'No phone number available';
         notifyListeners();
       }
     } catch (e) {
@@ -43,15 +43,16 @@ class ValetProvider extends ChangeNotifier {
           ),
           const SizedBox(height: 8.0),
           // Name
-          Row(
+          const Row(
             children: [
-              const Text(
+              Text(
                 "Name: ",
                 style: TextStyle(
                   fontSize: 16,
                 ),
               ),
-              Text("${valetName!.isEmpty ? "Name Unavailable" : valetName}", style: const TextStyle(fontSize: 16)),
+              // Text("${valetName!.isEmpty ? "Name Unavailable" : valetName}", style: const TextStyle(fontSize: 16)),
+              Text("Unavailable", style: TextStyle(fontSize: 16)),
             ],
           ),
           // Phone
