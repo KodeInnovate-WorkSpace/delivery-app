@@ -160,6 +160,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       ),
                       const SizedBox(height: 15),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: orders.map((order) {
                           // return ListTile(
                           //   // leading: CircleAvatar(
@@ -174,11 +175,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         height: 20,
                       ),
                       const DottedLine(
-                        dashLength: 3,
-                        dashGapLength: 2,
-                        lineThickness: 3,
+                        dashLength: 10,
+                        dashGapLength: 4,
+                        lineThickness: 2,
                         dashColor: Color(0xff666666),
-                        dashRadius: 20,
+                        dashRadius: 0,
                       ),
                       const SizedBox(
                         height: 20,

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Order {
@@ -16,6 +15,8 @@ class Order {
   final String phone;
   int status;
   final DateTime timestamp;
+  final String valetName;
+  final String valetPhone;
 
   Order({
     required this.orderId,
@@ -29,6 +30,8 @@ class Order {
     this.status = 0,
     required this.overallTotal,
     required this.timestamp,
+    required this.valetName,
+    required this.valetPhone,
   });
 
   Order copyWith({
@@ -49,6 +52,8 @@ class Order {
       phone: phone ?? this.phone,
       overallTotal: overallTotal,
       timestamp: timestamp ?? this.timestamp,
+      valetName: valetName,
+      valetPhone: valetPhone,
     );
   }
 
@@ -65,6 +70,8 @@ class Order {
       'phone': phone,
       'timestamp': timestamp.toIso8601String(),
       'overallTotal': overallTotal,
+      'valetName': valetName,
+      'valetPhone': valetPhone,
     };
   }
 
@@ -81,6 +88,8 @@ class Order {
       phone: map['phone'],
       overallTotal: map['overallTotal'],
       timestamp: DateTime.parse(map['timestamp']),
+      valetName: map['valetName'],
+      valetPhone: map['valetPhone'],
     );
   }
 }
@@ -117,6 +126,8 @@ class OrderProvider with ChangeNotifier {
       'overallTotal': orders.first.overallTotal,
       'phone': orders.first.phone,
       'timestamp': orders.first.timestamp.toIso8601String(),
+      'valetName': orders.first.valetName,
+      'valetPhone': orders.first.valetPhone,
       'orders': orders.map((order) {
         return {
           'productName': order.productName,
@@ -155,6 +166,8 @@ class OrderProvider with ChangeNotifier {
                   status: data['status'] ?? 0,
                   overallTotal: data['overallTotal'],
                   timestamp: DateTime.parse(data['timestamp']),
+                  valetName: data['valetName'],
+                  valetPhone: data['valetPhone'],
                 ))
             .toList();
       }).toList();
@@ -183,6 +196,8 @@ class OrderProvider with ChangeNotifier {
                   status: data['status'] ?? 0,
                   overallTotal: data['overallTotal'],
                   timestamp: DateTime.parse(data['timestamp']),
+                  valetName: data['valetName'],
+                  valetPhone: data['valetPhone'],
                 ))
             .toList();
       }).toList();

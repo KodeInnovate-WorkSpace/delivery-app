@@ -76,15 +76,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      //Test
-      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
-      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       //Prod
       'x-client-id': "6983506cac38e05faf1b6e3085053896",
       'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
-    // var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
     var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     request.body = json.encode({
       "order_amount": totalAmt.toStringAsFixed(2),
@@ -155,7 +151,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
       var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
-      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);
@@ -301,7 +296,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
                                                     });
                                                   },
-                                                  items: <String>['Online', 'Cash'].map<DropdownMenuItem<String>>((String value) {
+                                                  items: <String>['Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
                                                     return DropdownMenuItem<String>(
                                                       value: value,
                                                       child: Text(value),
@@ -337,7 +332,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                                             final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
-                                            if (_selectedPaymentMethod == 'Cash') {
+                                            if (_selectedPaymentMethod == 'Cash on delivery') {
                                               showDialog(
                                                 context: context,
                                                 builder: (BuildContext context) {
@@ -371,6 +366,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 phone: authProvider.phone,
                                                                 overallTotal: totalAmt,
                                                                 timestamp: DateTime.timestamp(),
+                                                                valetName: "",
+                                                                valetPhone: "",
                                                               );
                                                             }).toList();
 
@@ -424,6 +421,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 phone: authProvider.phone,
                                                                 overallTotal: totalAmt,
                                                                 timestamp: DateTime.timestamp(),
+                                                                valetName: "",
+                                                                valetPhone: "",
                                                               );
                                                             }).toList();
 

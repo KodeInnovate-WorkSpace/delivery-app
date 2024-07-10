@@ -47,6 +47,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
             if (snapshot.hasData) {
               var orderData = snapshot.data!;
               var status = orderData['status'];
+              var paymentMode = orderData['paymentMode'];
 
               if (status == 5) {
                 return Padding(
@@ -55,10 +56,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                      // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-                      //                     valetProvider.buildValetDetailsTable(),
-
                       _buildOrderFailedCard('Order Failed', 'Your order has failed due to a transaction issue.', true, Colors.red, Icons.error),
                     ],
                   ),
@@ -70,10 +68,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                      // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-
-                      _buildOrderStatusCard('Order Cancelled', 'Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
+                      _buildOrderCancelledCard('Order Cancelled', paymentMode == 'Online' ? 'Currently we can\'t find available stock for ordered products. (You will get a refund up to 3 working days for more details contact us)' : 'Currently we can\'t find available stock for ordered products. Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
                     ],
                   ),
                 );
@@ -83,7 +79,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                   _buildOrderStatusCard('Order Confirmed', 'Your order has been confirmed.', status >= 1),
                   _buildOrderStatusCard('Order In Process', 'Your order is in process.', status >= 2),
                   _buildOrderStatusCard('Order Pickup', 'Your order is ready for pickup.', status >= 3),
-                  _buildOrderStatusCard('Order Delivered', 'You order has been delivered', status >= 4),
+                  _buildOrderStatusCard('Order Delivered', 'Your order has been delivered', status >= 4),
                 ];
 
                 return Padding(
@@ -92,10 +88,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Order Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                      // Text(widget.orderId, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-                      valetProvider.buildValetDetailsTable(),
-
+                      valetProvider.buildValetDetailsTable(widget.orderId),
                       Column(children: statusCards),
                     ],
                   ),
@@ -110,40 +104,32 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     );
   }
 
-  // Widget _buildValetDetailsTable() {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey[200],
-  //       borderRadius: BorderRadius.circular(5.0),
-  //     ),
-  //     child: const Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text("Valet Details",
-  //             style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
-  //         SizedBox(height: 8.0),
-  //
-  //         //Phone
-  //         Row(
-  //           children: [
-  //             Text("Phone: ",
-  //                 style: TextStyle(
-  //                   fontSize: 16,
-  //                 )),
-  //             Icon(
-  //               Icons.phone,
-  //               size: 15,
-  //             ),
-  //             Text("+91 8989898989", style: TextStyle(fontSize: 16)),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildOrderStatusCard(String title, String description, bool isActive, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: isActive ? color.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(isActive ? icon : Icons.radio_button_unchecked, color: isActive ? color : Colors.grey),
+              const SizedBox(width: 16.0),
+              Text(title, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: isActive ? color : Colors.black)),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Text(description, style: const TextStyle(fontSize: 16.0, color: Colors.black54)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrderCancelledCard(String title, String description, bool isActive, [Color color = Colors.red, IconData icon = Icons.cancel]) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       padding: const EdgeInsets.all(16.0),
