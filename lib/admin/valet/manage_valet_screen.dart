@@ -71,6 +71,16 @@ class TableData extends DataTableSource {
 
   List<int> statusOptions = [0, 1, 2, 3, 4, 5, 6];
 
+  Map<int, String> statusMessages = {
+    0: 'Received',
+    1: 'Confirmed',
+    2: 'In Process',
+    3: 'Picked Up',
+    4: 'Delivered',
+    5: 'Failed',
+    6: 'Cancelled',
+  };
+
   List<Map<String, dynamic>> orderData = [];
   List<Map<String, dynamic>> valetData = [];
 
@@ -118,7 +128,7 @@ class TableData extends DataTableSource {
 
       //Phone Number
       DataCell(DropdownButton<String>(
-        value: data['user'],
+        value: data['valet'],
         onChanged: (String? newValue) async {
           await valetObj.assignValet(data['orderId'].toString(), newValue!);
           await _loadData();
@@ -141,7 +151,7 @@ class TableData extends DataTableSource {
         items: statusOptions.map<DropdownMenuItem<int>>((status) {
           return DropdownMenuItem<int>(
             value: status,
-            child: Text(status.toString()), // Display status
+            child: Text(statusMessages[status] ?? 'Unknown'),
           );
         }).toList(),
       )),
