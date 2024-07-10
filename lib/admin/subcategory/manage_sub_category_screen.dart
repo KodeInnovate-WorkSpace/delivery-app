@@ -51,9 +51,6 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                // fixedSize: WidgetStateProperty.all<Size>(
-                //   const Size(60, 50),
-                // ),
               ),
               onPressed: () async {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
@@ -93,27 +90,6 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
               ),
             ]),
           ),
-          // Positioned(
-          //   bottom: 25,
-          //   right: 20,
-          //   child: FloatingActionButton(
-          //     hoverColor: Colors.transparent,
-          //     elevation: 2,
-          //     onPressed: () async {
-          //       final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditSubCategory()));
-          //
-          //       if (result != null && result as bool) {
-          //         // Sub-category added successfully, refresh the list
-          //         src._refreshSubCategoryList();
-          //       }
-          //     },
-          //     backgroundColor: Colors.black,
-          //     child: const Icon(
-          //       Icons.add,
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -141,7 +117,6 @@ class TableData extends DataTableSource {
 
     // Sort subData by sub_category_id
     subData.sort((a, b) => a['sub_category_id'].compareTo(b['sub_category_id']));
-
     notifyListeners();
   }
 

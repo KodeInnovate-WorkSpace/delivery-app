@@ -349,12 +349,63 @@ class ValetModel extends ChangeNotifier {
       return querySnapshot.docs
           .map((doc) => {
                 ...doc.data(),
-                // 'sub_category_id': doc.id, // Include the document ID
               })
           .toList();
     } catch (e) {
       log("Error: $e");
       return [];
+    }
+  }
+
+  Future<void> assignValet(String id, String phone) async {
+    try {
+      // Fetch the user's name based on the phone number
+      String valetName = await getValetName(phone);
+
+      // Get the order document(s) matching the given order ID
+      Query query = FirebaseFirestore.instance.collection('OrderHistory').where("orderId", isEqualTo: id);
+      QuerySnapshot querySnapshot = await query.get();
+
+      // Update the 'valet' field in the matching order document(s)
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({'valetName': valetName, 'valetPhone': phone});
+      }
+    } catch (e) {
+      log("Error updating valet: $e");
+    }
+  }
+
+  Future<String> getValetName(String phone) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('users').where("phone", isEqualTo: phone);
+      QuerySnapshot querySnapshot = await query.get();
+
+      // Assuming there is only one user document for the given phone number
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot userDoc = querySnapshot.docs.first;
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        return userData['name'] as String; // Assuming 'name' field exists
+      } else {
+        log("No user found with phone number: $phone");
+        return '';
+      }
+    } catch (e) {
+      log("Error fetching valet name: $e");
+      return '';
+    }
+  }
+
+  Future<void> updateStatus(String id, int status) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('OrderHistory').where("orderId", isEqualTo: id);
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({'status': status});
+      }
+    } catch (e) {
+      log("Error updating status: $e");
     }
   }
 }

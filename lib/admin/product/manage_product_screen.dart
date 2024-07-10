@@ -97,27 +97,6 @@ class _ManageProductState extends State<ManageProduct> {
               ),
             ]),
           ),
-          // Positioned(
-          //   bottom: 10,
-          //   right: 20,
-          //   child: FloatingActionButton(
-          //     hoverColor: Colors.transparent,
-          //     elevation: 2,
-          //     onPressed: () async {
-          //       final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
-          //
-          //       if (result != null && result as bool) {
-          //         // Sub-category added successfully, refresh the list
-          //         src._refreshProductList();
-          //       }
-          //     },
-          //     backgroundColor: Colors.black,
-          //     child: const Icon(
-          //       Icons.add,
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -128,15 +107,12 @@ class TableData extends DataTableSource {
   final BuildContext context;
 
   final ProductModel productObj = ProductModel();
-
-  // SubCatModel subcat = SubCatModel();
-  List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
-
+  List<int> statusOptions = [0, 1];
   // Storing sub-category data in a list
   List<Map<String, dynamic>> productData = [];
 
   SubCatModel subCatObj = SubCatModel();
-  Map<int, String> subCatData = {}; // Map to store category_id to category_name
+  Map<int, String> subCatData = {};
 
   TableData(this.context) {
     _loadproductData();
@@ -284,6 +260,7 @@ class TableData extends DataTableSource {
           );
         }).toList(),
       )),
+
       //Delete
       DataCell(
         IconButton(

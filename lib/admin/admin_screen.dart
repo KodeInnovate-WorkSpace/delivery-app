@@ -290,7 +290,7 @@ class AdminScreen extends StatelessWidget {
                     ));
               },
               child: const Text(
-                "Assign Valet",
+                "Manage Orders",
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),

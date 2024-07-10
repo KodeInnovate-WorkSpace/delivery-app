@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../model/model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,10 +44,12 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   int orderStatus = 0;
 
   @override
+  @override
   void initState() {
     super.initState();
     _orderStatusStream = FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).snapshots();
     imageTaken = List<bool>.filled(widget.order.length, false);
+    _loadImagePaths();
     _orderStatusStream.listen((snapshot) {
       if (snapshot.exists) {
         setState(() {
@@ -55,6 +58,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -204,10 +208,10 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                       onPressed: orderStatus == 4 || orderStatus == 5 || orderStatus == 6
                           ? null
                           : () {
-                              takePictureAndAddToImages(index).then((value) {
-                                uploadAllImages(widget.order[index].productName);
-                              });
-                            },
+                        takePictureAndAddToImages(index).then((value) {
+                          uploadAllImages(widget.order[index].productName);
+                        });
+                      },
                       icon: Icon(
                         orderStatus == 4 || orderStatus == 5 || orderStatus == 6 ? Icons.close : (imageTaken[index] ? Icons.check : Icons.camera_alt),
                         size: 18,
@@ -345,6 +349,26 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     }
   }
 
+  Future<void> _loadImagePaths() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? paths = prefs.getStringList('imagePaths_${widget.orderId}');
+    if (paths != null) {
+      setState(() {
+        itemImages = paths.map((path) => File(path)).toList();
+        for (int i = 0; i < paths.length; i++) {
+          imageTaken[i] = true;
+        }
+      });
+    }
+  }
+
+  Future<void> _saveImagePaths() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> paths = itemImages.map((image) => image.path).toList();
+    await prefs.setStringList('imagePaths_${widget.orderId}', paths);
+  }
+
+
   Future<void> takePictureAndAddToImages(int index) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -354,8 +378,10 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         itemImages.add(File(pickedFile.path));
         imageTaken[index] = true;
       });
+      _saveImagePaths();
     }
   }
+
 
   Widget _buildCustomerDetailsTable() {
     return Container(
@@ -406,20 +432,18 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   Future<void> _showShopNameDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button to close dialog
+      barrierDismissible: true, // user can tap outside to close the dialog
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Enter Shop Name'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _shopNameController,
-                    maxLines: null, // Allow the text to wrap and grow vertically
-                    decoration: const InputDecoration(
-                      hintText: 'Notes',
-                    ),
+                TextField(
+                  controller: _shopNameController,
+                  maxLines: null, // Allow the text to wrap and grow vertically
+                  decoration: const InputDecoration(
+                    hintText: 'Notes',
                   ),
                 ),
               ],
@@ -427,10 +451,16 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           ),
           actions: <Widget>[
             TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
               child: const Text('OK'),
               onPressed: () {
                 if (_shopNameController.text.isNotEmpty) {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(); // Close the dialog
                 } else {
                   showMessage("Shop name cannot be empty.");
                 }
@@ -465,7 +495,12 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       'images': imageUrls,
       'shopName': _shopNameController.text,
     });
+
+    // Clear saved image paths
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('imagePaths_${widget.orderId}');
   }
+
 
   Widget _buildOrderStatusCard(String title, String description, bool done, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
     return GestureDetector(
@@ -558,10 +593,10 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           leading: Icon(icon, color: done ? Colors.white : Colors.grey),
           title: _isCardLoading
               ? const CupertinoActivityIndicator(
-                  radius: 10,
-                  animating: true,
-                  color: Colors.white,
-                )
+            radius: 10,
+            animating: true,
+            color: Colors.white,
+          )
               : Text(title, style: TextStyle(color: done ? Colors.white : Colors.grey)),
           subtitle: Text(description, style: TextStyle(color: done ? Colors.white : Colors.grey)),
         ),

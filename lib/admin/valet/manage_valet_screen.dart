@@ -36,7 +36,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Assign Valet'),
+        title: const Text('Manage Orders'),
       ),
       body: Stack(
         children: [
@@ -52,6 +52,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                   DataColumn(label: Text('Date')),
                   DataColumn(label: Text('Address')),
                   DataColumn(label: Text('Assign')),
+                  DataColumn(label: Text('Status')), // New Status column
                 ],
                 source: src,
                 columnSpacing: 15,
@@ -68,7 +69,17 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
 class TableData extends DataTableSource {
   ValetModel valetObj = ValetModel();
 
-  List<int> statusOptions = [0, 1];
+  List<int> statusOptions = [0, 1, 2, 3, 4, 5, 6];
+
+  Map<int, String> statusMessages = {
+    0: 'Received',
+    1: 'Confirmed',
+    2: 'In Process',
+    3: 'Picked Up',
+    4: 'Delivered',
+    5: 'Failed',
+    6: 'Cancelled',
+  };
 
   List<Map<String, dynamic>> orderData = [];
   List<Map<String, dynamic>> valetData = [];
@@ -86,11 +97,25 @@ class TableData extends DataTableSource {
   @override
   DataRow? getRow(int index) {
     if (index >= orderData.length) return null; // Check index bounds
-
-    // storing each index of orderData list in data variable to iterate over each list
     final data = orderData[index];
 
     return DataRow(cells: [
+
+      //Phone Number
+      DataCell(DropdownButton<String>(
+        value: data['valetPhone'], // Assuming 'valetPhone' field exists in the data
+        onChanged: (String? newValue) async {
+          await valetObj.assignValet(data['orderId'].toString(), newValue!);
+          await _loadData();
+        },
+        items: valetData.map<DropdownMenuItem<String>>((valet) {
+          return DropdownMenuItem<String>(
+            value: valet['phone'],
+            child: Text(valet['name']),
+          );
+        }).toList(),
+      )),
+
       DataCell(SizedBox(
         width: 100,
         child: Text(
@@ -116,17 +141,17 @@ class TableData extends DataTableSource {
           overflow: TextOverflow.visible,
         ),
       )),
-      DataCell(DropdownButton<String>(
-        value: data['user'],
-        onChanged: (String? newValue) {
-          // setState(() {
-          data['user'] = newValue;
-          // });
+      //Status
+      DataCell(DropdownButton<int>(
+        value: data['status'],
+        onChanged: (int? newValue) async {
+          await valetObj.updateStatus(data['orderId'].toString(), newValue!);
+          await _loadData(); // Reload data after updating
         },
-        items: valetData.map<DropdownMenuItem<String>>((valet) {
-          return DropdownMenuItem<String>(
-            value: valet['id'],
-            child: Text(valet['phone'].toString()), // Display valet name
+        items: statusOptions.map<DropdownMenuItem<int>>((status) {
+          return DropdownMenuItem<int>(
+            value: status,
+            child: Text(statusMessages[status] ?? 'Unknown'),
           );
         }).toList(),
       )),
