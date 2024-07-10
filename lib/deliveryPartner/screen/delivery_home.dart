@@ -21,7 +21,6 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   void initState() {
     super.initState();
     final orderProvider = Provider.of<AllOrderProvider>(context, listen: false);
-    // Fetch orders once when the screen loads
     orderProvider.fetchAllOrders();
   }
 
@@ -221,104 +220,9 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
     );
   }
 
-  // Widget takenOrders(BuildContext context) {
-  //   return StreamBuilder(
-  //     stream: FirebaseFirestore.instance.collection('OrderHistory').limit(50).snapshots(),
-  //     builder: (context, snapshot) {
-  //       if (!snapshot.hasData) {
-  //         return const Center(child: CircularProgressIndicator(color: Colors.black));
-  //       }
-  //
-  //       final orders = snapshot.data?.docs
-  //           .map((doc) {
-  //         final data = doc.data();
-  //         final orderDetails = (data['orders'] as List<dynamic>).map((order) {
-  //           return OrderDetail(
-  //             price: order['price'],
-  //             productImage: order['productImage'],
-  //             productName: order['productName'],
-  //             quantity: order['quantity'],
-  //           );
-  //         }).toList();
-  //
-  //         return AllOrder(
-  //           orderId: data['orderId'],
-  //           address: data['address'],
-  //           orders: orderDetails,
-  //           overallTotal: data['overallTotal'],
-  //           paymentMode: data['paymentMode'],
-  //           status: data['status'],
-  //           phone: data['phone'],
-  //         );
-  //       })
-  //           .where((order) => order.status == 1)
-  //           .toList()
-  //           .reversed // Reversing the list to display latest orders first
-  //           .toList();
-  //
-  //       return ListView.builder(
-  //         itemCount: orders?.length,
-  //         itemBuilder: (context, index) {
-  //           final order = orders?[index];
-  //           return Container(
-  //             key: ValueKey(order?.orderId),
-  //             decoration: BoxDecoration(
-  //               color: Colors.white,
-  //               border: Border(
-  //                 bottom: BorderSide(width: 1.5, color: Colors.grey.shade300),
-  //               ),
-  //             ),
-  //             child: GestureDetector(
-  //               onTap: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => DeliveryTrackingScreen(
-  //                       orderId: order?.orderId ?? '',
-  //                       orderTotalPrice: order?.overallTotal ?? 0,
-  //                       order: order?.orders ?? [],
-  //                       paymentMode: order?.paymentMode ?? '',
-  //                       customerAddress: order?.address ?? '',
-  //                       customerPhone: order?.phone ?? '',
-  //                     ),
-  //                   ),
-  //                 );
-  //               },
-  //               child: ListTile(
-  //                 title: Text(order?.orderId ?? ''),
-  //                 trailing: GestureDetector(
-  //                   onTap: () async {
-  //                     if (order?.phone != null) {
-  //                       Uri dialNumber = Uri(scheme: 'tel', path: order?.phone);
-  //                       await launchUrl(dialNumber);
-  //                     }
-  //                   },
-  //                   child: Column(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       const Icon(
-  //                         Icons.phone,
-  //                         size: 12,
-  //                       ),
-  //                       Text(
-  //                         order?.phone ?? '',
-  //                         style: const TextStyle(fontFamily: 'Gilroy-Bold'),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   Widget completedOrders(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('OrderHistory').limit(50).snapshots(),
+      stream: FirebaseFirestore.instance.collection('OrderHistory').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator(color: Colors.black));

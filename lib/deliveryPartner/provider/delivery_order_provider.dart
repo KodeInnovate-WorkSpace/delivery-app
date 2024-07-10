@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:speedy_delivery/deliveryPartner/model/model.dart';
+import 'package:speedy_delivery/providers/auth_provider.dart';
 
 class AllOrderProvider with ChangeNotifier {
   late List<AllOrder> _allOrders = [];
@@ -20,7 +22,6 @@ class AllOrderProvider with ChangeNotifier {
                 productImage: order['productImage'],
                 productName: order['productName'],
                 quantity: order['quantity'],
-                // totalPrice: order['totalPrice'],
               );
             }).toList();
 
