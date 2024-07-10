@@ -1,22 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/admin/product/update_product.dart';
 import '../admin_model.dart';
 import 'edit_product.dart';
 
-class ManageProductScreen extends StatefulWidget {
-  const ManageProductScreen({super.key});
+class ManageProduct extends StatefulWidget {
+  const ManageProduct({super.key});
 
   @override
-  State<ManageProductScreen> createState() => _ManageProductScreenState();
+  State<ManageProduct> createState() => _ManageProductState();
 }
 
-class _ManageProductScreenState extends State<ManageProductScreen> {
+class _ManageProductState extends State<ManageProduct> {
   late TableData src;
 
   @override
   void initState() {
     super.initState();
-    src = TableData();
+    src = TableData(context);
     src.addListener(() {
       setState(() {});
     });
@@ -29,18 +30,8 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
     super.dispose();
   }
 
-  void _refreshProductList() async {
-    // Clear existing data
-    src.productData.clear();
-    // Reload data from the server (or local storage)
-    await src.loadProductData();
-
-    // Notify listeners about the change (important!)
-    setState(() {});
-  }
-
   Future<void> _refreshPage() async {
-    await src.loadProductData();
+    await src._loadproductData();
   }
 
   @override
@@ -49,6 +40,36 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Manage Products'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                // fixedSize: WidgetStateProperty.all<Size>(
+                //   const Size(60, 50),
+                // ),
+              ),
+              onPressed: () async {
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
+
+                if (result != null && result as bool) {
+                  // Sub-category added successfully, refresh the list
+                  src._refreshProductList();
+                }
+              },
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
       ),
       body: Stack(
         children: [
@@ -56,49 +77,47 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
             onRefresh: _refreshPage,
             child: ListView(children: [
               PaginatedDataTable(
+                dataRowHeight: 65,
                 columns: const [
                   DataColumn(label: Text('ID')),
                   DataColumn(label: Text('Image')),
                   DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Unit')),
+                  DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Price')),
                   DataColumn(label: Text('MRP')),
                   DataColumn(label: Text('Stock')),
-                  DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('Unit')),
                   DataColumn(label: Text('Sub-Category')),
+                  DataColumn(label: Text('')),
                   DataColumn(label: Text('')),
                 ],
                 source: src,
-                columnSpacing: 15,
-                rowsPerPage: 10,
+                columnSpacing: 10,
+                rowsPerPage: 8,
               ),
             ]),
           ),
-          Positioned(
-            bottom: 25,
-            right: 20,
-            child: FloatingActionButton(
-              hoverColor: Colors.transparent,
-              elevation: 2,
-              onPressed: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
-
-                if (result != null && result as bool) {
-                  // Sub-category added successfully, refresh the list
-                  _refreshProductList();
-                }
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const EditProduct()),
-                // );
-              },
-              backgroundColor: Colors.black,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 10,
+          //   right: 20,
+          //   child: FloatingActionButton(
+          //     hoverColor: Colors.transparent,
+          //     elevation: 2,
+          //     onPressed: () async {
+          //       final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
+          //
+          //       if (result != null && result as bool) {
+          //         // Sub-category added successfully, refresh the list
+          //         src._refreshProductList();
+          //       }
+          //     },
+          //     backgroundColor: Colors.black,
+          //     child: const Icon(
+          //       Icons.add,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -106,23 +125,30 @@ class _ManageProductScreenState extends State<ManageProductScreen> {
 }
 
 class TableData extends DataTableSource {
-  final ProductModel productObj = ProductModel();
-  final List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
+  final BuildContext context;
 
+  final ProductModel productObj = ProductModel();
+
+  // SubCatModel subcat = SubCatModel();
+  List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
+
+  // Storing sub-category data in a list
   List<Map<String, dynamic>> productData = [];
 
-  // get sub-category in dropdown
   SubCatModel subCatObj = SubCatModel();
   Map<int, String> subCatData = {}; // Map to store category_id to category_name
 
-  TableData() {
-    loadProductData();
+  TableData(this.context) {
+    _loadproductData();
   }
 
-  Future<void> loadProductData() async {
+  Future<void> _loadproductData() async {
     await _loadSubCategoryData();
     productData = await productObj.manageProducts();
     debugPrint('Product Data: $productData');
+
+    productData.sort((a, b) => a['id'].compareTo(b['id']));
+
     notifyListeners(); // Notify the listeners that data has changed
   }
 
@@ -133,27 +159,35 @@ class TableData extends DataTableSource {
   }
 
   Future<void> _updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
-    await productObj.updateProduct(field, newValue, categoryField: categoryField, categoryValue: categoryValue);
-    loadProductData(); // Reload data after update
+    await productObj.updateProduct(field, newValue, productField: categoryField, productValue: categoryValue);
+    _loadproductData(); // Reload data after update
   }
 
   Future<void> _deleteProduct(dynamic categoryValue) async {
     await productObj.deleteProduct(categoryValue);
-    await loadProductData(); // Refresh data after deletion
+    await _loadproductData(); // Refresh data after deletion
+  }
+
+  void _refreshProductList() async {
+    // Clear existing data
+    productData.clear();
+    // Reload data from the server (or local storage)
+    await _loadproductData();
   }
 
   @override
   DataRow? getRow(int index) {
     if (index >= productData.length) return null; // Check index bounds
 
+    // Storing each index of productData list in data variable to iterate over each list
     final data = productData[index];
     final subCatName = subCatData[data['sub_category_id']] ?? 'Unknown';
 
     return DataRow(cells: [
-      // id column
+      //id
       DataCell(Text(data['id']?.toString() ?? 'N/A')),
-      // image column
 
+      //image
       DataCell(
         SizedBox(
           width: 35,
@@ -162,84 +196,19 @@ class TableData extends DataTableSource {
           ),
         ),
       ),
-
-      //Name Column
-      DataCell(
-        TextFormField(
-          initialValue: data['name'] ?? '',
-          onFieldSubmitted: (newValue) {
-            _updateProduct(
-              'name',
-              newValue,
-              categoryField: 'id',
-              categoryValue: data['id'],
-            );
-          },
+      //name
+      DataCell(SizedBox(
+        width: 100,
+        child: Text(
+          data['name'],
+          softWrap: true,
+          overflow: TextOverflow.visible,
         ),
-      ),
-      // unit column
-      DataCell(
-        TextFormField(
-          initialValue: data['unit'] ?? '',
-          onFieldSubmitted: (newValue) {
-            _updateProduct(
-              'unit',
-              newValue,
-              categoryField: 'id',
-              categoryValue: data['id'],
-            );
-          },
-        ),
-      ),
+      )),
 
-      // price column
-      DataCell(
-        TextFormField(
-          initialValue: data['price'].toString(),
-          onFieldSubmitted: (newValue) {
-            _updateProduct(
-              'price',
-              int.parse(newValue),
-              categoryField: 'id',
-              categoryValue: data['id'],
-            );
-          },
-        ),
-      ),
-
-      // mrp column
-      DataCell(
-        TextFormField(
-          initialValue: data['mrp'].toString(),
-          onFieldSubmitted: (newValue) {
-            _updateProduct(
-              'mrp',
-              int.parse(newValue),
-              categoryField: 'id',
-              categoryValue: data['id'],
-            );
-          },
-        ),
-      ),
-
-      // stock column
-      DataCell(
-        TextFormField(
-          initialValue: data['stock'].toString(),
-          onFieldSubmitted: (newValue) {
-            _updateProduct(
-              'stock',
-              int.parse(newValue),
-              categoryField: 'id',
-              categoryValue: data['id'],
-            );
-          },
-        ),
-      ),
-
-      // status column
+      //status
       DataCell(DropdownButton<int>(
-        value: data['status'] ?? 0,
+        value: data['status'], // Use the status value from data
         onChanged: (int? newValue) {
           _updateProduct(
             'status',
@@ -251,9 +220,49 @@ class TableData extends DataTableSource {
         items: statusOptions.map<DropdownMenuItem<int>>((int status) {
           return DropdownMenuItem<int>(
             value: status,
-            child: Text(status == 0 ? 'Inactive' : 'Active'),
+            child: Text(status == 0 ? 'Inactive' : 'Active'), // Display 'Active' or 'Inactive'
           );
         }).toList(),
+      )),
+
+      //price
+      DataCell(SizedBox(
+        width: 100,
+        child: Text(
+          data['price'].toString(),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      )),
+
+      //mrp
+      DataCell(SizedBox(
+        width: 100,
+        child: Text(
+          data['mrp'].toString(),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      )),
+
+      //stock
+      DataCell(SizedBox(
+        width: 100,
+        child: Text(
+          data['stock'].toString(),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      )),
+
+      //Unit
+      DataCell(SizedBox(
+        width: 100,
+        child: Text(
+          data['unit'],
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
       )),
 
       // sub-category name column
@@ -275,13 +284,32 @@ class TableData extends DataTableSource {
           );
         }).toList(),
       )),
-
-      // Delete column
+      //Delete
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
             _deleteProduct(data['id']);
+          },
+        ),
+      ),
+      //Edit
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                // builder: (context) => UpdateProduct(data: data),
+                builder: (context) => UpdateProduct(data: data),
+              ),
+            );
+
+            // Check if result is true (indicating update)
+            if (result != null && result as bool) {
+              _refreshProductList(); // Call refresh function here
+            }
           },
         ),
       ),

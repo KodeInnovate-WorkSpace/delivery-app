@@ -255,27 +255,22 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
             // Select Category Dropdown
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Category: "),
-                DropdownButton<String>(
-                  value: selectedCategoryName,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedCategoryName = newValue!;
-                      selectedCategoryId = categoryMap[selectedCategoryName]!;
-                    });
-                  },
-                  items: categoryNames.map<DropdownMenuItem<String>>((String category) {
-                    return DropdownMenuItem<String>(
-                      value: category,
-                      child: Text(category.toString()),
-                    );
-                  }).toList(),
-                  hint: const Text("Select a category"),
-                )
-              ],
+            const Text("Category: "),
+            DropdownButton<String>(
+              value: selectedCategoryName,
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedCategoryName = newValue!;
+                  selectedCategoryId = categoryMap[selectedCategoryName]!;
+                });
+              },
+              items: categoryNames.map<DropdownMenuItem<String>>((String category) {
+                return DropdownMenuItem<String>(
+                  value: category,
+                  child: Text(category.toString()),
+                );
+              }).toList(),
+              hint: const Text("Select a category"),
             ),
             const SizedBox(height: 20),
 

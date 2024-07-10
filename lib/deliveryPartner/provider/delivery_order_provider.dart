@@ -10,32 +10,34 @@ class AllOrderProvider with ChangeNotifier {
     fetchAllOrders();
   }
   void fetchAllOrders() {
-    FirebaseFirestore.instance
-        .collection('OrderHistory')
-        .snapshots()
-        .listen((snapshot) {
-      _allOrders = snapshot.docs.map((doc) {
-        final data = doc.data();
-        final orderDetails = (data['orders'] as List<dynamic>).map((order) {
-          return OrderDetail(
-            price: order['price'],
-            productImage: order['productImage'],
-            productName: order['productName'],
-            quantity: order['quantity'],
-            // totalPrice: order['totalPrice'],
-          );
-        }).toList();
+    FirebaseFirestore.instance.collection('OrderHistory').snapshots().listen((snapshot) {
+      _allOrders = snapshot.docs
+          .map((doc) {
+            final data = doc.data();
+            final orderDetails = (data['orders'] as List<dynamic>).map((order) {
+              return OrderDetail(
+                price: order['price'],
+                productImage: order['productImage'],
+                productName: order['productName'],
+                quantity: order['quantity'],
+                // totalPrice: order['totalPrice'],
+              );
+            }).toList();
 
-        return AllOrder(
-          orderId: data['orderId'],
-          address: data['address'],
-          orders: orderDetails,
-          overallTotal: data['overallTotal'],
-          paymentMode: data['paymentMode'],
-          status: data['status'],
-          phone: data['phone'],
-        );
-      }).toList();
+            return AllOrder(
+              orderId: data['orderId'],
+              address: data['address'],
+              orders: orderDetails,
+              overallTotal: data['overallTotal'],
+              paymentMode: data['paymentMode'],
+              status: data['status'],
+              phone: data['phone'],
+              time: data['timestamp'],
+            );
+          })
+          .toList()
+          .reversed
+          .toList(); // Reverse the order of the list
 
       notifyListeners();
     });

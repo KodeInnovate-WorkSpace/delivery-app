@@ -1,8 +1,7 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/admin/admin_model.dart';
-import 'package:speedy_delivery/widget/input_box.dart';
+import '../../widget/input_box.dart';
+import '../admin_model.dart';
 
 class UpdateProduct extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -17,6 +16,7 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
   // text controllers
   TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  final TextEditingController mrpController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
@@ -45,10 +45,9 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
       notifyListeners();
     });
     nameController.text = widget.data['name'];
-
+    mrpController.text = widget.data['mrp'].toString();
     priceController.text = widget.data['price'].toString();
     stockController.text = widget.data['stock'].toString();
-    // imageController.text = widget.data[''];
     unitController.text = widget.data['unit'];
   }
 
@@ -87,12 +86,20 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // name
-
             InputBox(
               hintText: "Update product name",
               myIcon: Icons.shopping_bag,
               myController: nameController,
               keyboardType: TextInputType.text,
+            ),
+            const SizedBox(height: 20),
+
+            // mrp
+            InputBox(
+              hintText: "Update product mrp",
+              myIcon: Icons.currency_rupee,
+              myController: mrpController,
+              keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
 
@@ -122,35 +129,37 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
             const SizedBox(height: 20),
 
             // sub-category dropdown
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Change Sub-Category: "),
-                DropdownButton<String>(
-                  value: selectedSubCategoryName ?? subcategoryMap.keys.first,
-                  onChanged: (String? newValue) {
-                    try {
-                      setState(() {
-                        selectedSubCategoryName = newValue!;
-                        selectedSubCategoryId = subcategoryMap[selectedSubCategoryName]!;
-                      });
-                    } catch (e) {
-                      log("Error getting sub-categories: $e");
-                    }
-                  },
-                  items: subcategoryMap.keys.map<DropdownMenuItem<String>>((String sub) {
-                    return DropdownMenuItem<String>(
-                      value: sub,
-                      child: Text(sub),
-                    );
-                  }).toList(),
-                  hint: const Text("Select a sub-category"),
-                )
-              ],
-            ),
-            const SizedBox(height: 20),
+            // Column(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     const Text("Change Sub-Category: "),
+            //     DropdownButton<String>(
+            //       // value: selectedSubCategoryName ?? subcategoryMap.keys.first,
+            //       value: selectedSubCategoryName,
+            //       onChanged: (String? newValue) {
+            //         try {
+            //           setState(() {
+            //             selectedSubCategoryName = newValue!;
+            //             selectedSubCategoryId = subcategoryMap[selectedSubCategoryName]!;
+            //           });
+            //         } catch (e) {
+            //           log("Error getting sub-categories: $e");
+            //         }
+            //       },
+            //       items: subcategoryMap.keys.map<DropdownMenuItem<String>>((String sub) {
+            //         return DropdownMenuItem<String>(
+            //           value: sub,
+            //           child: Text(sub),
+            //         );
+            //       }).toList(),
+            //       hint: const Text("Select a sub-category"),
+            //     )
+            //   ],
+            // ),
+            // const SizedBox(height: 20),
 
             // status dropdown
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -163,11 +172,11 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
                     });
                     productObj
                         .updateProduct(
-                          'status',
-                          newValue,
-                          categoryField: 'sub_category_id',
-                          categoryValue: widget.data['sub_category_id'],
-                        )
+                      'status',
+                      newValue,
+                      productField: 'sub_category_id',
+                      productValue: widget.data['sub_category_id'],
+                    )
                         .then((_) => productObj.manageProducts());
                   },
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
@@ -191,30 +200,38 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
               ),
               child: TextButton(
                 onPressed: () async {
-                  // Update name
                   try {
-                    await productObj.updateProduct('name', nameController.text, categoryField: 'id', categoryValue: widget.data['id']);
+                    // Update name
+                    await productObj.updateProduct('name', nameController.text, productField: 'id', productValue: widget.data['id']);
                     log("Name = ${nameController.text}");
-// Update price
-                    await productObj.updateProduct('price', int.parse(priceController.text), categoryField: 'id', categoryValue: widget.data['id']);
+
+                    // Update mrp
+                    await productObj.updateProduct('mrp', int.parse(mrpController.text), productField: 'id', productValue: widget.data['id']);
+                    log("Mrp = ${mrpController.text}");
+
+                    // Update price
+                    await productObj.updateProduct('price', int.parse(priceController.text), productField: 'id', productValue: widget.data['id']);
                     log("Price = ${priceController.text}");
 
-// Update stock
-                    await productObj.updateProduct('stock', int.parse(stockController.text), categoryField: 'id', categoryValue: widget.data['id']);
+                    // Update stock
+                    await productObj.updateProduct('stock', int.parse(stockController.text), productField: 'id', productValue: widget.data['id']);
                     log("Stock = ${stockController.text}");
 
-// Update unit
-                    await productObj.updateProduct('unit', unitController.text, categoryField: 'id', categoryValue: widget.data['id']);
+                    // Update unit
+                    await productObj.updateProduct('unit', unitController.text, productField: 'id', productValue: widget.data['id']);
+                    log("Unit = ${unitController.text}");
 
-// Update sub-category (if selected)
+                    // Update sub-category (if selected)
                     if (selectedSubCategoryId != -1) {
-                      await productObj.updateProduct('name', selectedSubCategoryId, categoryField: 'id', categoryValue: widget.data['id']);
+                      await productObj.updateProduct('sub_category_id', selectedSubCategoryId, productField: 'id', productValue: widget.data['id']);
+                      log("Sub-category ID = $selectedSubCategoryId");
                     }
 
-// Update status
-                    await productObj.updateProduct('status', dropdownValue, categoryField: 'id', categoryValue: widget.data['id']);
+                    // Update status
+                    await productObj.updateProduct('status', dropdownValue, productField: 'id', productValue: widget.data['id']);
+                    log("Status = $dropdownValue");
 
-// After successful updates
+                    // After successful updates
                     Navigator.pop(context, true);
                   } catch (e) {
                     log("Error: $e");

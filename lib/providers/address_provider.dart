@@ -48,7 +48,7 @@ class AddressProvider with ChangeNotifier {
       await prefs.setString('address_${userAdd.flat}', jsonAddress);
 
       setSelectedAddress(
-          "${userAdd.flat}, ${userAdd.building}, ${userAdd.mylandmark},{${userAdd.area}}");
+          "${userAdd.flat}, ${userAdd.building}, ${userAdd.mylandmark},${userAdd.area}");
 
       showMessage("Address Saved!");
       log("Address: ${_addressList.map((add) => {
@@ -73,7 +73,7 @@ class AddressProvider with ChangeNotifier {
         // Automatically select another address if available
         if (_addressList.isNotEmpty) {
           final newAddress = _addressList.first;
-          _selectedAddress = "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark},{${userAdd.area}}";
+          _selectedAddress = "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark},${userAdd.area}";
         }
       }
 
@@ -117,31 +117,21 @@ class AddressProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearAddress() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // Remove all address entries from SharedPreferences
-    final keys = prefs.getKeys();
-    for (String key in keys) {
-      if (key.startsWith('address_')) {
-        await prefs.remove(key);
-      }
-    }
-
-    // Clear the in-memory address list
-    _addressList.clear();
-
-    // Clear the selected address
-    _selectedAddress = "";
-    await prefs.remove('selected_address');
-
-    notifyListeners();
-  }
-
   void setSelectedAddress(String address) async {
     _selectedAddress = address;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('selected_address', _selectedAddress);
+    notifyListeners();
+  }
+
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Clear session-related data but keep address data
+    await prefs.remove('selected_address');
+    _selectedAddress = "";
+
+    // Notify listeners to update UI if needed
     notifyListeners();
   }
 }

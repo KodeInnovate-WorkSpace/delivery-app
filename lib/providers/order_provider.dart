@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Order {
@@ -10,11 +11,11 @@ class Order {
   final int quantity;
   final double price;
   final double overallTotal;
-  // final double totalPrice;
   final String paymentMode;
   final String address;
   final String phone;
   int status;
+  final DateTime timestamp;
 
   Order({
     required this.orderId,
@@ -22,18 +23,19 @@ class Order {
     required this.productImage,
     required this.quantity,
     required this.price,
-    // required this.totalPrice,
     required this.paymentMode,
     required this.address,
     required this.phone,
     this.status = 0,
     required this.overallTotal,
+    required this.timestamp,
   });
 
   Order copyWith({
     String? orderId,
     int? status,
-    required String phone,
+    String? phone,
+    DateTime? timestamp,
   }) {
     return Order(
       orderId: orderId ?? this.orderId,
@@ -41,12 +43,12 @@ class Order {
       productImage: productImage,
       quantity: quantity,
       price: price,
-      // totalPrice: totalPrice,
       paymentMode: paymentMode,
       address: address,
       status: status ?? this.status,
-      phone: this.phone,
+      phone: phone ?? this.phone,
       overallTotal: overallTotal,
+      timestamp: timestamp ?? this.timestamp,
     );
   }
 
@@ -57,11 +59,12 @@ class Order {
       'productImage': productImage,
       'quantity': quantity,
       'price': price,
-      // 'totalPrice': totalPrice,
       'paymentMode': paymentMode,
       'address': address,
       'status': status,
       'phone': phone,
+      'timestamp': timestamp.toIso8601String(),
+      'overallTotal': overallTotal,
     };
   }
 
@@ -72,12 +75,12 @@ class Order {
       productImage: map['productImage'],
       quantity: map['quantity'],
       price: map['price'],
-      // totalPrice: map['totalPrice'],
       paymentMode: map['paymentMode'],
       address: map['address'],
       status: map['status'],
       phone: map['phone'],
       overallTotal: map['overallTotal'],
+      timestamp: DateTime.parse(map['timestamp']),
     );
   }
 }
@@ -92,7 +95,9 @@ class OrderProvider with ChangeNotifier {
   }
 
   void addOrders(List<Order> orders, String ordId, String phone) {
-    List<Order> newOrders = orders.map((order) => order.copyWith(orderId: ordId, phone: phone)).toList();
+    DateTime now = DateTime.now();
+
+    List<Order> newOrders = orders.map((order) => order.copyWith(orderId: ordId, phone: phone, timestamp: now)).toList();
     _orders.addAll(newOrders);
 
     _saveOrdersToFirebase(newOrders);
@@ -104,24 +109,20 @@ class OrderProvider with ChangeNotifier {
   void _saveOrdersToFirebase(List<Order> orders) {
     if (orders.isEmpty) return;
 
-    double overallTotal = orders.fold(0.0, (sum, order) => sum + order.price);
-
     Map<String, dynamic> combinedOrderData = {
       'orderId': orders.first.orderId,
       'address': orders.first.address,
       'paymentMode': orders.first.paymentMode,
       'status': orders.first.status,
       'overallTotal': orders.first.overallTotal,
-      // 'overallTotal': orders.first.totalPrice,
       'phone': orders.first.phone,
+      'timestamp': orders.first.timestamp.toIso8601String(),
       'orders': orders.map((order) {
         return {
           'productName': order.productName,
           'productImage': order.productImage,
           'quantity': order.quantity,
           'price': order.price,
-          // 'totalPrice': order.totalPrice,
-          // 'totalPrice': overallTotal,
         };
       }).toList(),
     };
@@ -147,20 +148,18 @@ class OrderProvider with ChangeNotifier {
                   productName: orderData['productName'],
                   productImage: orderData['productImage'],
                   quantity: orderData['quantity'],
-                  price: 0.0,
-                  // totalPrice: orderData['totalPrice'],
-                  overallTotal: data["overallTotal"],
+                  price: orderData['price'],
                   paymentMode: data['paymentMode'],
                   address: data['address'],
                   phone: data['phone'],
                   status: data['status'] ?? 0,
+                  overallTotal: data['overallTotal'],
+                  timestamp: DateTime.parse(data['timestamp']),
                 ))
             .toList();
       }).toList();
     }
 
-    // Sort orders by some criteria if needed (e.g., timestamp)
-    // For simplicity, assuming that orders have an orderId that can be sorted
     _orders.sort((a, b) => b.orderId.compareTo(a.orderId)); // descending order
 
     notifyListeners();
@@ -177,13 +176,13 @@ class OrderProvider with ChangeNotifier {
                   productName: orderData['productName'],
                   productImage: orderData['productImage'],
                   quantity: orderData['quantity'],
-                  price: orderData['price'], // fixed the price field
-                  // totalPrice: orderData['totalPrice'],
+                  price: orderData['price'],
                   paymentMode: data['paymentMode'],
                   address: data['address'],
                   phone: data['phone'],
                   status: data['status'] ?? 0,
                   overallTotal: data['overallTotal'],
+                  timestamp: DateTime.parse(data['timestamp']),
                 ))
             .toList();
       }).toList();
