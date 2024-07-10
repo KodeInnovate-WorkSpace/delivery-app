@@ -53,6 +53,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                   DataColumn(label: Text('Date')),
                   DataColumn(label: Text('Address')),
                   DataColumn(label: Text('Assign')),
+                  DataColumn(label: Text('Status')), // New Status column
                 ],
                 source: src,
                 columnSpacing: 15,
@@ -69,7 +70,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
 class TableData extends DataTableSource {
   ValetModel valetObj = ValetModel();
 
-  List<int> statusOptions = [0, 1];
+  List<int> statusOptions = [0,1,2,3,4,5,6];
 
   List<Map<String, dynamic>> orderData = [];
   List<Map<String, dynamic>> valetData = [];
@@ -127,6 +128,19 @@ class TableData extends DataTableSource {
           return DropdownMenuItem<String>(
             value: valet['phone'],
             child: Text(valet['phone'].toString()), // Display valet phone
+          );
+        }).toList(),
+      )),
+      DataCell(DropdownButton<int>(
+        value: data['status'],
+        onChanged: (int? newValue) async {
+          await valetObj.updateStatus(data['orderId'].toString(), newValue!);
+          await _loadData(); // Reload data after updating
+        },
+        items: statusOptions.map<DropdownMenuItem<int>>((status) {
+          return DropdownMenuItem<int>(
+            value: status,
+            child: Text(status.toString()), // Display status
           );
         }).toList(),
       )),

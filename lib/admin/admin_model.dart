@@ -371,4 +371,18 @@ class ValetModel extends ChangeNotifier {
       log("Error updating valet phone number: $e");
     }
   }
+
+  Future<void> updateStatus(String id, int status) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection('OrderHistory').where("orderId", isEqualTo: id);
+
+      // Get the documents matching the query
+      QuerySnapshot querySnapshot = await query.get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.update({'status': status});
+      }
+    } catch (e) {
+      log("Error updating status: $e");
+    }
+  }
 }
