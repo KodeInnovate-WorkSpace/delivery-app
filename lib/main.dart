@@ -134,12 +134,6 @@ class _MyAppState extends State<MyApp> {
             );
 
             // return const SkeletonScreen();
-            // return Container(
-            //   width: double.infinity,
-            //   height: double.infinity,
-            //   color: Colors.amberAccent,
-            //   child: splashHome(),
-            // );
           }
 
           // Navigate to HomeScreen or Sign in Screen based on auth status
