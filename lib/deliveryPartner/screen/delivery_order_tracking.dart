@@ -406,20 +406,18 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   Future<void> _showShopNameDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button to close dialog
+      barrierDismissible: true, // user can tap outside to close the dialog
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Enter Shop Name'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _shopNameController,
-                    maxLines: null, // Allow the text to wrap and grow vertically
-                    decoration: const InputDecoration(
-                      hintText: 'Notes',
-                    ),
+                TextField(
+                  controller: _shopNameController,
+                  maxLines: null, // Allow the text to wrap and grow vertically
+                  decoration: const InputDecoration(
+                    hintText: 'Notes',
                   ),
                 ),
               ],
@@ -427,10 +425,16 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           ),
           actions: <Widget>[
             TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
               child: const Text('OK'),
               onPressed: () {
                 if (_shopNameController.text.isNotEmpty) {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(); // Close the dialog
                 } else {
                   showMessage("Shop name cannot be empty.");
                 }
