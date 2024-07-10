@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
+import 'package:speedy_delivery/screens/skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
@@ -30,7 +31,7 @@ class HomeScreenState extends State<HomeScreen> {
   final List<Category> categories = [];
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
-
+  bool _isLoading = true;
   // products
   List<Product> products = [];
 
@@ -182,6 +183,7 @@ class HomeScreenState extends State<HomeScreen> {
           // Sort categories by priority
           categories.sort((a, b) => a.priority.compareTo(b.priority));
         });
+
       } else {
         log("No Category Document Found!");
       }
@@ -221,6 +223,12 @@ class HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       log("Error fetching sub-category: $e");
     }
+    finally{
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
   }
 
   Future<bool> showExitDialog() async {
@@ -231,21 +239,24 @@ class HomeScreenState extends State<HomeScreen> {
             content: const Text('Do you want to exit the app?'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No'),
-              ),
-              TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 child: const Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false) ,
+                child: const Text('No'),
               ),
             ],
           ),
         ) ??
         false;
   }
-
   @override
   Widget build(BuildContext context) {
+    return _isLoading ? SkeletonScreen() : buildActualContent();
+  }
+
+  Widget buildActualContent() {
     return WillPopScope(
       onWillPop: () async {
         return await showExitDialog();

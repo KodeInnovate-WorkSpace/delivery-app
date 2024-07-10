@@ -2,109 +2,101 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonScreen extends StatelessWidget {
-  const SkeletonScreen({super.key});
+  const SkeletonScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 30),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 30),
 
-            //top
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // delivery within
-                _buildShimmerContainer(width: 100, height: 10),
+              // Top section
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildShimmerContainer(width: 100, height: 10),
+                  const SizedBox(height: 10),
 
-                // delivery time
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildShimmerContainer(width: 160, height: 25),
-                    _buildShimmerContainer(width: 50, height: 50, borderRadius: 50),
-                  ],
-                ),
+                  // Delivery time and location
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildShimmerContainer(width: 160, height: 25),
+                      _buildShimmerContainer(width: 50, height: 50, borderRadius: 25),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
 
-                // location
-                const SizedBox(height: 10),
-                _buildShimmerContainer(width: 260, height: 20),
+                  // Search bar
+                  _buildShimmerContainer(width: double.infinity, height: 50),
+                  const SizedBox(height: 20),
 
-                // search
-                const SizedBox(height: 20),
-                _buildShimmerContainer(width: double.infinity, height: 50),
+                  // Ad card
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      _buildShimmerContainer(width: 272, height: 172, borderRadius: 12),
+                      const SizedBox(width: 15),
+                      _buildShimmerContainer(width: 20, height: 172, borderRadius: 6),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
 
-                // ad card
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    _buildShimmerContainer(width: 272, height: 172, borderRadius: 12),
-                    const SizedBox(width: 15),
-                    _buildShimmerContainer(width: 20, height: 172, borderRadius: 6),
-                  ],
-                ),
+                  // Category name
+                  _buildShimmerContainer(width: 160, height: 25),
+                  const SizedBox(height: 20),
 
-                // category name
-                const SizedBox(height: 20),
-                _buildShimmerContainer(width: 160, height: 25),
+                  // Sub-category rows
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      4,
+                          (index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
 
-                // sub-category row
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                  ],
-                ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      4,
+                          (index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
+                      ),
+                    ),
+                  ),
 
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                  ],
-                ),
+                  // Second category name
+                  const SizedBox(height: 20),
+                  _buildShimmerContainer(width: 160, height: 25),
 
-                // category-2 name
-                const SizedBox(height: 20),
-                _buildShimmerContainer(width: 160, height: 25),
-
-                // sub-category row
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildShimmerContainer(width: 72, height: 65, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 65, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 65, borderRadius: 14),
-                    const SizedBox(width: 10),
-                    _buildShimmerContainer(width: 72, height: 65, borderRadius: 14),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                  // Second sub-category rows
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      4,
+                          (index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: _buildShimmerContainer(width: 72, height: 65, borderRadius: 14),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

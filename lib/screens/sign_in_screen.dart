@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +39,8 @@ class _SigninScreenState extends State<SigninScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Ensure keyboard remains open when this screen is active
+    Provider.of<MyAuthProvider>(context, listen: false).isKeyboardOpen = true;
   }
 
   void resetAuthProviderState() {
@@ -74,8 +75,6 @@ class _SigninScreenState extends State<SigninScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 splashWidget(),
-                const SizedBox(height: 50),
-                const SizedBox(height: 50),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 3.5,
@@ -136,30 +135,37 @@ class _SigninScreenState extends State<SigninScreen> {
                         ),
                       ),
 
-                      //Continue Button / sign in button
+                      // Continue Button / sign in button
                       ElevatedButton(
                         onPressed: authProvider.isButtonEnabled
                             ? () async {
-                                HapticFeedback.selectionClick();
+                          setState(() {
+                            authProvider.isLoading = true;
+                          });
+                          HapticFeedback.selectionClick();
 
-                                await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
+                          await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
 
-                                await userProvider.checkUserStatus(authProvider.textController.text);
-                                await userProvider.checkUserType(authProvider.phone);
+                          await userProvider.checkUserStatus(authProvider.textController.text);
+                          await userProvider.checkUserType(authProvider.phone);
 
-                                if (userProvider.isUserActive) {
-                                  if (userProvider.userType == 2) {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const DeliveryHomeScreen()),
-                                    );
-                                  }
+                          if (userProvider.isUserActive) {
+                            if (userProvider.userType == 2) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const DeliveryHomeScreen()),
+                              );
+                              // Set keyboard state to false when navigating away
+                              Provider.of<MyAuthProvider>(context, listen: false).isKeyboardOpen = false;
+                            }
 
-                                  await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
-                                } else {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
-                                }
-                              }
+                            await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
+                          } else {
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
+                            // Set keyboard state to false when navigating away
+                            Provider.of<MyAuthProvider>(context, listen: false).isKeyboardOpen = false;
+                          }
+                        }
                             : null,
                         style: ButtonStyle(
                           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -168,7 +174,7 @@ class _SigninScreenState extends State<SigninScreen> {
                             ),
                           ),
                           backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                            (Set<WidgetState> states) {
+                                (Set<WidgetState> states) {
                               if (states.contains(WidgetState.disabled)) {
                                 return Colors.black.withOpacity(0.3);
                               }
@@ -178,84 +184,28 @@ class _SigninScreenState extends State<SigninScreen> {
                         ),
                         child: authProvider.isLoading
                             ? const SizedBox(
-                                width: 250,
-                                height: 50.0,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
+                          width: 250,
+                          height: 50.0,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
                             : const SizedBox(
-                                width: 250,
-                                height: 50.0,
-                                child: Center(
-                                  child: Text(
-                                    "Continue",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
+                          width: 250,
+                          height: 50.0,
+                          child: Center(
+                            child: Text(
+                              "Continue",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.0,
                               ),
+                            ),
+                          ),
+                        ),
                       ),
-
-                      // Continue Button / sign in button
-                      // ElevatedButton(
-                      //   onPressed: authProvider.isButtonEnabled && !authProvider.isLoading
-                      //       ? () async {
-                      //           HapticFeedback.selectionClick();
-                      //
-                      //           // Set loading state to true
-                      //           authProvider.isLoading = true;
-                      //           // authProvider.notifyListeners();
-                      //
-                      //           await userProvider.storeDetail(context, 'phone', authProvider.textController.text);
-                      //
-                      //           await userProvider.checkUserStatus(authProvider.textController.text);
-                      //
-                      //           if (userProvider.isUserActive) {
-                      //             await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
-                      //           } else {
-                      //             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
-                      //           }
-                      //
-                      //           // Set loading state to false after the operation
-                      //           authProvider.isLoading = false;
-                      //           // authProvider.notifyListeners();
-                      //         }
-                      //       : null,
-                      //   style: ElevatedButton.styleFrom(
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(14.0),
-                      //     ),
-                      //     backgroundColor: authProvider.isButtonEnabled && !authProvider.isLoading ? Colors.black : Colors.black.withOpacity(0.3),
-                      //   ),
-                      //   child: authProvider.isLoading
-                      //       ? const SizedBox(
-                      //           width: 250,
-                      //           height: 50.0,
-                      //           child: Center(
-                      //             child: CircularProgressIndicator(
-                      //               color: Colors.white,
-                      //             ),
-                      //           ),
-                      //         )
-                      //       : const SizedBox(
-                      //           width: 250,
-                      //           height: 50.0,
-                      //           child: Center(
-                      //             child: Text(
-                      //               "Continue",
-                      //               style: TextStyle(
-                      //                 color: Colors.white,
-                      //                 fontSize: 16.0,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      // ),
 
                       const SizedBox(
                         height: 5,
@@ -291,7 +241,7 @@ Widget splashWidget() {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Image.asset("assets/icon.png"),
+      Image.asset("assets/icon.png")
     ],
   );
 }
