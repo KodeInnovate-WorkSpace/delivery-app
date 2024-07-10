@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,8 +22,8 @@ class ValetProvider extends ChangeNotifier {
           return const Text('No valet details available');
         } else {
           DocumentSnapshot doc = snapshot.data!.docs.first;
-          valetPhone = doc['valet'] == "" ? 'Unavailable' : doc['valet'];
-
+          valetName = doc['valetName'] == "" ? 'Unavailable' : doc['valetName'];
+          valetPhone = doc['valetPhone'] == "" ? 'Unavailable' : doc['valetPhone'];
           return Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             decoration: BoxDecoration(
@@ -41,16 +39,15 @@ class ValetProvider extends ChangeNotifier {
                 ),
                 const SizedBox(height: 8.0),
                 // Name
-                const Row(
+                Row(
                   children: [
-                    Text(
+                    const Text(
                       "Name: ",
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
-                    // Text("${valetName!.isEmpty ? "Name Unavailable" : valetName}", style: const TextStyle(fontSize: 16)),
-                    Text("Unavailable", style: TextStyle(fontSize: 16)),
+                    Text(valetName!, style: const TextStyle(fontSize: 16)),
                   ],
                 ),
                 // Phone

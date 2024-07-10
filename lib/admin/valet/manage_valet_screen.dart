@@ -128,7 +128,8 @@ class TableData extends DataTableSource {
 
       //Phone Number
       DataCell(DropdownButton<String>(
-        value: data['valet'],
+        value: data['valetPhone'],
+        // value: data['valetName'],
         onChanged: (String? newValue) async {
           await valetObj.assignValet(data['orderId'].toString(), newValue!);
           await _loadData();

@@ -366,7 +366,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 phone: authProvider.phone,
                                                                 overallTotal: totalAmt,
                                                                 timestamp: DateTime.timestamp(),
-                                                                valet: "",
+                                                                valetName: "",
+                                                                valetPhone: "",
                                                               );
                                                             }).toList();
 
@@ -420,7 +421,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 phone: authProvider.phone,
                                                                 overallTotal: totalAmt,
                                                                 timestamp: DateTime.timestamp(),
-                                                                valet: "",
+                                                                valetName: "",
+                                                                valetPhone: "",
                                                               );
                                                             }).toList();
 

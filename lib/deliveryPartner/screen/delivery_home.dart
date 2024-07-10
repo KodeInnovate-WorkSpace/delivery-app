@@ -127,7 +127,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   Widget pendingOrders(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context);
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('OrderHistory').where('valet', isEqualTo: authProvider.phone).snapshots(),
+      stream: FirebaseFirestore.instance.collection('OrderHistory').where('valetPhone', isEqualTo: authProvider.phone).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator(color: Colors.black));
