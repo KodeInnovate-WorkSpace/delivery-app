@@ -5,8 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ValetProvider extends ChangeNotifier {
-  String? valetName ;
-  String? valetPhone ;
+  String? valetName;
+  String? valetPhone;
 
   ValetProvider() {
     fetchValetDetails();
@@ -14,10 +14,7 @@ class ValetProvider extends ChangeNotifier {
 
   Future<void> fetchValetDetails() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('type', isEqualTo: 2)
-          .get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('users').where('type', isEqualTo: 2).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentSnapshot doc = querySnapshot.docs.first;
@@ -54,7 +51,7 @@ class ValetProvider extends ChangeNotifier {
                   fontSize: 16,
                 ),
               ),
-              Text("${valetName!.isEmpty ? "Name Unavailable" : valetName}" , style: const TextStyle(fontSize: 16)),
+              Text("${valetName!.isEmpty ? "Name Unavailable" : valetName}", style: const TextStyle(fontSize: 16)),
             ],
           ),
           // Phone
@@ -66,7 +63,6 @@ class ValetProvider extends ChangeNotifier {
                   fontSize: 16,
                 ),
               ),
-
               GestureDetector(
                 onTap: () async {
                   Uri dialNumber = Uri(scheme: 'tel', path: valetPhone!);

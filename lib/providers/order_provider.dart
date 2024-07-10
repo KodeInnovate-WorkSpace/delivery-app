@@ -16,6 +16,7 @@ class Order {
   final String phone;
   int status;
   final DateTime timestamp;
+  final String valet;
 
   Order({
     required this.orderId,
@@ -29,6 +30,7 @@ class Order {
     this.status = 0,
     required this.overallTotal,
     required this.timestamp,
+    required this.valet,
   });
 
   Order copyWith({
@@ -49,6 +51,7 @@ class Order {
       phone: phone ?? this.phone,
       overallTotal: overallTotal,
       timestamp: timestamp ?? this.timestamp,
+      valet: valet,
     );
   }
 
@@ -65,6 +68,7 @@ class Order {
       'phone': phone,
       'timestamp': timestamp.toIso8601String(),
       'overallTotal': overallTotal,
+      'valet': valet,
     };
   }
 
@@ -81,6 +85,7 @@ class Order {
       phone: map['phone'],
       overallTotal: map['overallTotal'],
       timestamp: DateTime.parse(map['timestamp']),
+      valet: map['valet'],
     );
   }
 }
@@ -117,6 +122,7 @@ class OrderProvider with ChangeNotifier {
       'overallTotal': orders.first.overallTotal,
       'phone': orders.first.phone,
       'timestamp': orders.first.timestamp.toIso8601String(),
+      'valet': orders.first.valet,
       'orders': orders.map((order) {
         return {
           'productName': order.productName,
@@ -155,6 +161,7 @@ class OrderProvider with ChangeNotifier {
                   status: data['status'] ?? 0,
                   overallTotal: data['overallTotal'],
                   timestamp: DateTime.parse(data['timestamp']),
+                  valet: data['valet'],
                 ))
             .toList();
       }).toList();
@@ -183,6 +190,7 @@ class OrderProvider with ChangeNotifier {
                   status: data['status'] ?? 0,
                   overallTotal: data['overallTotal'],
                   timestamp: DateTime.parse(data['timestamp']),
+                  valet: data['valet'],
                 ))
             .toList();
       }).toList();

@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<User?> _checkAuthStatus() async {
-    await Future.delayed(const Duration(seconds: 2)); // Add a delay to show the splash screen
+
     return FirebaseAuth.instance.currentUser;
   }
 
