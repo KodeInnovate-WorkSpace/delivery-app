@@ -127,7 +127,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   Widget pendingOrders(BuildContext context) {
     final authProvider = Provider.of<MyAuthProvider>(context);
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('OrderHistory').where('valetPhone', isEqualTo: authProvider.phone).snapshots(),
+      stream: FirebaseFirestore.instance.collection('OrderHistory').where('valetName', isEqualTo: authProvider.phone).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator(color: Colors.black));
@@ -158,7 +158,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
             })
             .where((order) => order.status != 4 && order.status != 1)
             .toList()
-            .reversed // Reversing the list to display latest orders first
+            .reversed
             .toList();
 
         return ListView.builder(

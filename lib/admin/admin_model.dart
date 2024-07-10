@@ -349,7 +349,6 @@ class ValetModel extends ChangeNotifier {
       return querySnapshot.docs
           .map((doc) => {
                 ...doc.data(),
-                // 'sub_category_id': doc.id, // Include the document ID
               })
           .toList();
     } catch (e) {

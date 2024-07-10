@@ -36,7 +36,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Assign Valet'),
+        title: const Text('Manage Orders'),
       ),
       body: Stack(
         children: [
@@ -100,6 +100,22 @@ class TableData extends DataTableSource {
     final data = orderData[index];
 
     return DataRow(cells: [
+
+      //Phone Number
+      DataCell(DropdownButton<String>(
+        value: data['valetPhone'], // Assuming 'valetPhone' field exists in the data
+        onChanged: (String? newValue) async {
+          await valetObj.assignValet(data['orderId'].toString(), newValue!);
+          await _loadData();
+        },
+        items: valetData.map<DropdownMenuItem<String>>((valet) {
+          return DropdownMenuItem<String>(
+            value: valet['phone'],
+            child: Text(valet['name']),
+          );
+        }).toList(),
+      )),
+
       DataCell(SizedBox(
         width: 100,
         child: Text(
@@ -125,23 +141,6 @@ class TableData extends DataTableSource {
           overflow: TextOverflow.visible,
         ),
       )),
-
-      //Phone Number
-      DataCell(DropdownButton<String>(
-        value: data['valetPhone'],
-        // value: data['valetName'],
-        onChanged: (String? newValue) async {
-          await valetObj.assignValet(data['orderId'].toString(), newValue!);
-          await _loadData();
-        },
-        items: valetData.map<DropdownMenuItem<String>>((valet) {
-          return DropdownMenuItem<String>(
-            value: valet['phone'],
-            child: Text(valet['phone'].toString()),
-          );
-        }).toList(),
-      )),
-
       //Status
       DataCell(DropdownButton<int>(
         value: data['status'],

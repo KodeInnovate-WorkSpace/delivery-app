@@ -367,7 +367,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 overallTotal: totalAmt,
                                                                 timestamp: DateTime.timestamp(),
                                                                 valetName: "",
-                                                                valetPhone: "",
                                                               );
                                                             }).toList();
 
@@ -422,7 +421,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 overallTotal: totalAmt,
                                                                 timestamp: DateTime.timestamp(),
                                                                 valetName: "",
-                                                                valetPhone: "",
                                                               );
                                                             }).toList();
 

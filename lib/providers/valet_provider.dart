@@ -66,6 +66,7 @@ class ValetProvider extends ChangeNotifier {
                       },
                       child: Text(
                         valetPhone!,
+                        // "Phone",
                         // style:const TextStyle(fontFamily: 'Gilroy-Bold'),
                       ),
                     ),
