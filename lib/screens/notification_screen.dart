@@ -1,3 +1,4 @@
+//updated code of notification
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -11,7 +12,7 @@ class NotificationSettingsPage extends StatefulWidget {
 
 class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   bool isWhatsAppEnabled = false;
-  bool isPushNotificationEnabled = true;
+  bool isPushNotificationEnabled = false;
 
   @override
   void initState() {
@@ -21,9 +22,21 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
 
   _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool pushEnabled = prefs.getBool('push_notification') ?? false;
+
+    // Check the actual notification permission status
+    var status = await Permission.notification.status;
+    if (status.isGranted) {
+      pushEnabled = true;
+      _savePreference('push_notification', true);
+    } else {
+      pushEnabled = false;
+      _savePreference('push_notification', false);
+    }
+
     setState(() {
       isWhatsAppEnabled = prefs.getBool('whatsapp') ?? false;
-      isPushNotificationEnabled = prefs.getBool('push_notification') ?? true;
+      isPushNotificationEnabled = pushEnabled;
     });
   }
 
@@ -33,8 +46,88 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   }
 
   Future<bool> _requestNotificationPermission() async {
-    var status = await Permission.notification.request();
-    return status.isGranted;
+    var status = await Permission.notification.status;
+    if (status.isGranted) {
+      return true;
+    } else if (status.isDenied || status.isRestricted || status.isLimited) {
+      var result = await Permission.notification.request();
+      return result.isGranted;
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+      return false;
+    }
+    return false;
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Permission Denied'),
+        content: const Text(
+          'Notification permission is required. Please enable it in the app settings.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              openAppSettings();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showGoToSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Disable Notifications'),
+        content: const Text(
+          'To disable notifications, please go to the app settings and turn off notifications manually.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              openAppSettings();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _togglePushNotifications(bool value) async {
+    if (value) {
+      bool granted = await _requestNotificationPermission();
+      if (granted) {
+        setState(() {
+          isPushNotificationEnabled = true;
+          _savePreference('push_notification', true);
+          // Enable push notifications
+        });
+      } else {
+        _showPermissionDeniedDialog();
+      }
+    } else {
+      _showGoToSettingsDialog();
+    }
   }
 
   @override
@@ -110,26 +203,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     activeColor: Colors.green,
                     inactiveThumbColor: Colors.grey,
                     inactiveTrackColor: Colors.grey.shade300,
-                    onChanged: (value) async {
-                      if (value) {
-                        bool granted = await _requestNotificationPermission();
-                        if (granted) {
-                          setState(() {
-                            isPushNotificationEnabled = value;
-                            _savePreference('push_notification', value);
-                          });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text('Notification permission is required.'),
-                          ));
-                        }
-                      } else {
-                        setState(() {
-                          isPushNotificationEnabled = value;
-                          _savePreference('push_notification', value);
-                        });
-                      }
-                    },
+                    onChanged: _togglePushNotifications,
                   )
                 ],
               ),
