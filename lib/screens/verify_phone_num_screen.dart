@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:speedy_delivery/screens/sign_in_screen.dart';
 
 import '../widget/terms_privacy_line.dart';
@@ -163,12 +164,12 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  // Restart.restartApp();
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SigninScreen()),
-                    (route) => false,
-                  );
+                   Restart.restartApp();
+                  // Navigator.pushAndRemoveUntil(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const SigninScreen()),
+                  //   (route) => false,
+                  // );
                 },
                 child: const Text(
                   "Yes",

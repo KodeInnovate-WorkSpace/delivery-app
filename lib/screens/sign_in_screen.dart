@@ -17,30 +17,25 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
-  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        SystemChannels.textInput.invokeMethod('TextInput.setKeyboard', 'number');
-      }
-    });
     resetAuthProviderState();
+
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    authProvider.textController.addListener(() {
+      setState(() {
+        authProvider.isButtonEnabled = authProvider.textController.text.length == 10;
+      });
+    });
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
+    authProvider.textController.removeListener(() {});
     super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Ensure keyboard remains open when this screen is active
-    Provider.of<MyAuthProvider>(context, listen: false).isKeyboardOpen = true;
   }
 
   void resetAuthProviderState() {
@@ -97,7 +92,6 @@ class _SigninScreenState extends State<SigninScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: TextField(
-                          focusNode: _focusNode,
                           controller: authProvider.textController,
                           maxLength: 10,
                           autofocus: true,
@@ -168,14 +162,14 @@ class _SigninScreenState extends State<SigninScreen> {
                         }
                             : null,
                         style: ButtonStyle(
-                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.0),
                             ),
                           ),
-                          backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
-                              if (states.contains(WidgetState.disabled)) {
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.disabled)) {
                                 return Colors.black.withOpacity(0.3);
                               }
                               return Colors.black;

@@ -55,6 +55,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CheckUserProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => AllOrderProvider()),
         ChangeNotifierProvider(create: (_) => ValetProvider()),
       ],
       child: const MyApp(),
