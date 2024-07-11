@@ -81,13 +81,51 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
     }
   }
 
+  // Future<void> addNewProduct(BuildContext context) async {
+  //   try {
+  //     // Fetch productData from Firestore
+  //     productData = await product.manageProducts();
+  //     notifyListeners();
+  //
+  //     // Check if sub-category already exists
+  //     final querySnapshot = await FirebaseFirestore.instance.collection('products').where('name', isEqualTo: nameController.text).get();
+  //
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       showMessage("Product already exists");
+  //       log("Product already exists");
+  //       return;
+  //     }
+  //
+  //     // Upload image and add sub-category to Firestore
+  //     String imageUrl = await uploadImage(_image!);
+  //     final productDoc = FirebaseFirestore.instance.collection('products').doc();
+  //
+  //     await productDoc.set({
+  //       'id': productData.length + 1,
+  //       'image': imageUrl,
+  //       'name': nameController.text,
+  //       'price': int.parse(priceController.text),
+  //       'mrp': int.parse(mrpController.text),
+  //       'status': dropdownValue,
+  //       'stock': int.parse(stockController.text),
+  //       'sub_category_id': selectedSubCategoryId,
+  //       'unit': unitController.text,
+  //     });
+  //
+  //     showMessage("Product added to database");
+  //     log("Product added successfully");
+  //   } catch (e) {
+  //     showMessage("Error adding Product: $e");
+  //     log("Error adding Product: $e");
+  //   }
+  // }
   Future<void> addNewProduct(BuildContext context) async {
     try {
       // Fetch productData from Firestore
       productData = await product.manageProducts();
       notifyListeners();
 
-      // Check if sub-category already exists
+      // Check if product already exists
       final querySnapshot = await FirebaseFirestore.instance.collection('products').where('name', isEqualTo: nameController.text).get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -96,12 +134,27 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         return;
       }
 
-      // Upload image and add sub-category to Firestore
+      // Calculate the new product ID
+      int newProductId = productData.length + 1;
+
+      // Check if the ID is already used
+      bool isIdUsed = true;
+      while (isIdUsed) {
+        final idCheckSnapshot = await FirebaseFirestore.instance.collection('products').where('id', isEqualTo: newProductId).get();
+
+        if (idCheckSnapshot.docs.isEmpty) {
+          isIdUsed = false;
+        } else {
+          newProductId += 1;
+        }
+      }
+
+      // Upload image and add product to Firestore
       String imageUrl = await uploadImage(_image!);
       final productDoc = FirebaseFirestore.instance.collection('products').doc();
 
       await productDoc.set({
-        'id': productData.length + 1,
+        'id': newProductId,
         'image': imageUrl,
         'name': nameController.text,
         'price': int.parse(priceController.text),

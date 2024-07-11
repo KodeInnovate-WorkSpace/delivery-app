@@ -73,6 +73,41 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     }
   }
 
+  // Future<void> addNewSubCategory(BuildContext context) async {
+  //   try {
+  //     // Fetch subData from Firestore
+  //     subData = await subcat.manageSubCategories();
+  //     notifyListeners();
+  //
+  //     // Check if sub-category already exists
+  //     final querySnapshot = await FirebaseFirestore.instance.collection('sub_category').where('sub_category_name', isEqualTo: nameController.text).get();
+  //
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       showMessage("Sub-Category already exists");
+  //       log("Sub-category already exists");
+  //       return;
+  //     }
+  //
+  //     // Upload image and add sub-category to Firestore
+  //     String imageUrl = await uploadImage(_image!);
+  //     final subCategoryDoc = FirebaseFirestore.instance.collection('sub_category').doc();
+  //
+  //     await subCategoryDoc.set({
+  //       'sub_category_id': subData.length + 1,
+  //       'sub_category_name': nameController.text,
+  //       'sub_category_img': imageUrl,
+  //       'category_id': selectedCategoryId,
+  //       'status': dropdownValue,
+  //     });
+  //
+  //     showMessage("Sub-Category added to database");
+  //     log("Sub-category added successfully");
+  //   } catch (e) {
+  //     showMessage("Error adding sub-category: $e");
+  //     log("Error adding sub-category: $e");
+  //   }
+  // }
+
   Future<void> addNewSubCategory(BuildContext context) async {
     try {
       // Fetch subData from Firestore
@@ -88,12 +123,27 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
         return;
       }
 
+      // Calculate the new sub-category ID
+      int newSubCategoryId = subData.length + 1;
+
+      // Check if the ID is already used
+      bool isIdUsed = true;
+      while (isIdUsed) {
+        final idCheckSnapshot = await FirebaseFirestore.instance.collection('sub_category').where('sub_category_id', isEqualTo: newSubCategoryId).get();
+
+        if (idCheckSnapshot.docs.isEmpty) {
+          isIdUsed = false;
+        } else {
+          newSubCategoryId += 1;
+        }
+      }
+
       // Upload image and add sub-category to Firestore
       String imageUrl = await uploadImage(_image!);
       final subCategoryDoc = FirebaseFirestore.instance.collection('sub_category').doc();
 
       await subCategoryDoc.set({
-        'sub_category_id': subData.length + 1,
+        'sub_category_id': newSubCategoryId,
         'sub_category_name': nameController.text,
         'sub_category_img': imageUrl,
         'category_id': selectedCategoryId,
