@@ -9,18 +9,13 @@ import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/order_provider.dart';
 import '../widget/network_handler.dart';
 import 'dart:math';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
-import 'package:provider/provider.dart';
-import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/screens/order_tracking.dart';
-import 'package:speedy_delivery/screens/orders_history_screen.dart';
 import '../providers/address_provider.dart';
 import '../providers/auth_provider.dart';
-import '../providers/order_provider.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import 'dart:convert';
 import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
@@ -76,11 +71,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
+      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
+      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       //Prod
       'x-client-id': "6983506cac38e05faf1b6e3085053896",
       'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
+    // var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
     var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     request.body = json.encode({
       "order_amount": totalAmt.toStringAsFixed(2),
@@ -108,33 +106,122 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
-  void verifyPayment(String oId) {
+  Future<Map<String, dynamic>> verifyPaymentStatus(String orderId) async {
+    var headers = {
+      'Content-Type': 'application/json',
+      //Test
+      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
+      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      //Prod
+      'x-client-id': "6983506cac38e05faf1b6e3085053896",
+      'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      'x-api-version': '2023-08-01',
+    };
+
+    // var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
+    var request = http.Request('GET', Uri.parse('https://api.cashfree.com/pg/orders/$orderId')); // prod
+    // var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      return jsonDecode(await response.stream.bytesToString());
+    } else {
+      debugPrint(await response.stream.bytesToString());
+      debugPrint("${response.reasonPhrase}");
+      throw Exception("Failed to verify payment status");
+    }
+  }
+
+  // void verifyPayment(String oId) {
+  //   debugPrint("Verify Payment");
+  //   debugPrint("Order ID = $oId");
+  //   final cartProvider = Provider.of<CartProvider>(context, listen: false);
+  //   cartProvider.clearCart();
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
+  //   );
+  //
+  //   showMessage("Payment Successful");
+  // }
+
+  void verifyPayment(String oId) async {
     debugPrint("Verify Payment");
     debugPrint("Order ID = $oId");
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    cartProvider.clearCart();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
-    );
 
-    showMessage("Payment Successful");
+    try {
+      final paymentStatus = await verifyPaymentStatus(oId);
+      if (paymentStatus['order_status'] == 'PAID') {
+        final cartProvider = Provider.of<CartProvider>(context, listen: false);
+        cartProvider.clearCart();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
+        );
+        showMessage("Payment Successful");
+      } else {
+        showMessage("Payment not successful. Please try again.");
+        // Handle payment failure scenario
+      }
+    } catch (e) {
+      debugPrint("Error verifying payment: $e");
+      showMessage("Error verifying payment. Please try again.");
+    }
   }
+
+  // void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
+  //   debugPrint(errorResponse.getMessage().toString());
+  //   debugPrint("Error while making payment");
+  //   debugPrint("Order ID is $orderId");
+  //
+  //   await orderProvider.cancelOrder(orderId);
+  //
+  //   // Navigate to OrderTrackingScreen
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => OrderTrackingScreen(orderId: orderId),
+  //     ),
+  //   );
+  // }
 
   void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
     debugPrint(errorResponse.getMessage().toString());
     debugPrint("Error while making payment");
     debugPrint("Order ID is $orderId");
 
-    await orderProvider.cancelOrder(orderId);
-
-    // Navigate to OrderTrackingScreen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OrderTrackingScreen(orderId: orderId),
-      ),
-    );
+    try {
+      final paymentStatus = await verifyPaymentStatus(orderId);
+      if (paymentStatus['order_status'] == 'PAID') {
+        final cartProvider = Provider.of<CartProvider>(context, listen: false);
+        cartProvider.clearCart();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
+        );
+        showMessage("Payment Successful");
+      } else {
+        await orderProvider.cancelOrder(orderId);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderTrackingScreen(orderId: orderId),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint("Error verifying payment: $e");
+      await orderProvider.cancelOrder(orderId);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrderTrackingScreen(orderId: orderId),
+        ),
+      );
+    }
   }
 
   Future<void> webCheckout(String myOrdId) async {
@@ -151,6 +238,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
       var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+
       return session;
     } on CFException catch (e) {
       debugPrint(e.message);

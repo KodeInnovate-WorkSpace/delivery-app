@@ -1,5 +1,7 @@
+//updated home checked for auto update method
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
@@ -24,17 +26,8 @@ void main() async {
   await Firebase.initializeApp();
 
   // Push notification setup
-  final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "dEfbk9IZT3qlnpTwEaV-Uz:APA91bHLHxsF7f77TrQHCGTylgbWGp6P4GOdRKQYxFXICoBn16phq_mBuluj9IW8z1v-GW9NWBZUlwr-wxA-cmbmKmoPfOsLbYe5toOOscBXlHIw8nYWM1r86-SZzNmdxRjUjW7VvAwf");
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: true,
-    sound: true,
+  final fcmToken = await FirebaseMessaging.instance.getToken(
+    vapidKey: "dEfbk9IZT3qlnpTwEaV-Uz:APA91bHLHxsF7f77TrQHCGTylgbWGp6P4GOdRKQYxFXICoBn16phq_mBuluj9IW8z1v-GW9NWBZUlwr-wxA-cmbmKmoPfOsLbYe5toOOscBXlHIw8nYWM1r86-SZzNmdxRjUjW7VvAwf",
   );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -72,18 +65,56 @@ void main() async {
   );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: "Gilroy-Regular",
+        scaffoldBackgroundColor: Colors.white,
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionHandleColor: Colors.amberAccent,
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 3,
+          shadowColor: Colors.black54,
+          backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'Gilroy-SemiBold',
+            color: Colors.black,
+          ),
+        ),
+      ),
+      home: const MyAppState(),
+      routes: {
+        '/profile': (context) => const NetworkHandler(
+              child: ProfilePage(),
+            ),
+        '/search': (context) => const NetworkHandler(
+              child: SearchPage(),
+            ),
+      },
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends StatefulWidget {
+  const MyAppState({super.key});
+
+  @override
+  State<MyAppState> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyAppState> {
   late Future<User?> _authCheckFuture;
 
   @override
   void initState() {
+    checkForUpdate();
     super.initState();
     _authCheckFuture = _checkAuthStatus();
     _initAuthProvider();
@@ -95,68 +126,53 @@ class _MyAppState extends State<MyApp> {
 
   void _initAuthProvider() {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-    authProvider.setPhone();
+    authProvider.setPhone(); // Initialize any necessary data for auth provider
+  }
+
+  Future<void> checkForUpdate() async {
+    log('checking for Update');
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+          log('update available');
+          update();
+        }
+      });
+    }).catchError((e) {
+      log(e.toString());
+    });
+  }
+
+  void update() async {
+    log('Updating');
+    await InAppUpdate.startFlexibleUpdate();
+    InAppUpdate.completeFlexibleUpdate().then((_) {}).catchError((e) {
+      log(e.toString());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: "Gilroy-Regular",
-        scaffoldBackgroundColor: Colors.white,
-        textSelectionTheme: const TextSelectionThemeData(selectionHandleColor: Colors.amberAccent),
-        appBarTheme: const AppBarTheme(
-          elevation: 3,
-          shadowColor: Colors.black54,
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
-          titleTextStyle: TextStyle(
-            fontSize: 16,
-            fontFamily: 'Gilroy-SemiBold',
-            color: Colors.black,
-          ),
-        ),
-      ),
-      home: FutureBuilder<User?>(
-        future: _authCheckFuture,
-        builder: (context, snapshot) {
-          // Show a loading indicator while checking auth status
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              backgroundColor: Colors.amberAccent,
-              body: Center(
-                child: CircularProgressIndicator(
-                  color: Colors.green,
-                ),
+    return FutureBuilder<User?>(
+      future: _authCheckFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            backgroundColor: Colors.amberAccent,
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Colors.green,
               ),
-            );
-
-            // return const SkeletonScreen();
-          }
-
-          // Navigate to HomeScreen or Sign in Screen based on auth status
+            ),
+          );
+        } else {
           if (snapshot.hasData && snapshot.data != null) {
             return const HomeScreen();
           } else {
             return const SigninScreen();
           }
-        },
-      ),
-      routes: {
-        '/profile': (context) => const NetworkHandler(
-              child: ProfilePage(),
-            ),
-        '/search': (context) => const NetworkHandler(
-              child: SearchPage(),
-            ),
+        }
       },
-    );
-  }
-
-  Widget splashHome() {
-    return Center(
-      child: Image.asset("assets/icon.png"),
     );
   }
 }

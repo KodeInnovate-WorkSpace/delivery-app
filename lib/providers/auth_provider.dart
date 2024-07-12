@@ -14,6 +14,8 @@ class MyAuthProvider with ChangeNotifier {
 
   String get phone => textController.text;
 
+  set isKeyboardOpen(bool isKeyboardOpen) {}
+
   //disable/enable button
   void setButtonEnabled(bool value) {
     isButtonEnabled = value;

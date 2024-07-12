@@ -10,7 +10,6 @@ import '../providers/address_provider.dart';
 import '../providers/auth_provider.dart';
 import '../shared/show_msg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressInputForm extends StatefulWidget {
   const AddressInputForm({super.key});

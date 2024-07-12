@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../shared/constants.dart';
@@ -29,6 +30,21 @@ class _HomeTopState extends State<HomeTop> {
         ),
       ),
       flexibleSpace: Container(
+        // decoration: const BoxDecoration(
+        //   gradient: LinearGradient(
+        //     begin: Alignment.topRight,
+        //     end: Alignment.bottomLeft,
+        //     colors: [
+        //       Colors.amber,
+        //       Colors.amberAccent,
+        //       Colors.yellow,
+        //     ],
+        //   ),
+        //   borderRadius: BorderRadius.only(
+        //     bottomLeft: Radius.circular(15),
+        //     bottomRight: Radius.circular(15),
+        //   ),
+        // ),
         child: Padding(
           // padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 20),
@@ -57,7 +73,7 @@ class _HomeTopState extends State<HomeTop> {
                                       style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Color(0xff1c1c1c), fontSize: 14),
                                     ),
                                     Text(
-                                      '${deliveryTime ?? 20} minutes',
+                                      '$deliveryTime minutes',
                                       style: const TextStyle(fontFamily: 'Gilroy-Black', color: Color(0xff1c1c1c), fontSize: 28),
                                     ),
                                     LocationButton(scaffoldKey: widget.scaffoldKey),
