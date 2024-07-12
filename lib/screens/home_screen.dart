@@ -13,6 +13,7 @@ import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
 import '../providers/cart_provider.dart';
+import '../providers/order_provider.dart';
 import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';

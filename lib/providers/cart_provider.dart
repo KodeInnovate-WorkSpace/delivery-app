@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/providers/order_provider.dart';
 import '../models/cart_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
@@ -21,6 +23,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   double calculateTotalPrice() {
+    // final orderProvider = Provider.of<OrderProvider>(context);
     double total = 0.0;
     for (var item in _cartItems) {
       total += item.itemPrice * item.qnt;
@@ -29,7 +32,6 @@ class CartProvider extends ChangeNotifier {
   }
 
   calculateGrandTotal() {
-    // final grandTotal = calculateTotalPrice() + (deliveryCharge ?? 0) + (handlingCharge ?? 0) - _discount;
     final grandTotal = calculateTotalPrice() + (deliveryCharge ?? 0) + calculateHandlingCharge() - _discount;
     return grandTotal.ceilToDouble();
   }

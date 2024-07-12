@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/order_provider.dart';
 import '../providers/cart_provider.dart';
 import '../shared/constants.dart';
 
@@ -30,8 +31,9 @@ class _BillDetailsState extends State<BillDetails> {
           return const Text('No data available');
         } else {
           var data = snapshot.data!.data() as Map<String, dynamic>;
+
           double deliveryCharge = (data['deliveryCharge'] ?? 29).toDouble();
-          // double handlingCharge = (data['handlingCharge'] ?? 1.85).toDouble();
+
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
