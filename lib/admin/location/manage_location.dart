@@ -6,6 +6,8 @@ import 'edit_location.dart';
 class LocationListScreen extends StatelessWidget {
   final CollectionReference collection = FirebaseFirestore.instance.collection('location');
 
+   LocationListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

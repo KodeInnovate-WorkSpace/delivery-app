@@ -295,8 +295,8 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text("x ${widget.order[index].quantity.toString()}"),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: IconButton(
                       onPressed: null,
                       icon: Icon(

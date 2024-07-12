@@ -5,7 +5,7 @@ class EditAppMaintenanceScreen extends StatefulWidget {
   final String docId;
   final int currentStatus;
 
-  EditAppMaintenanceScreen({required this.docId, required this.currentStatus});
+  const EditAppMaintenanceScreen({super.key, required this.docId, required this.currentStatus});
 
   @override
   _EditAppMaintenanceScreenState createState() => _EditAppMaintenanceScreenState();

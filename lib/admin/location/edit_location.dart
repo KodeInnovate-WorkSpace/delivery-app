@@ -6,7 +6,7 @@ class EditLocationScreen extends StatefulWidget {
   final int currentStatus;
   final int currentPostalCode;
 
-  EditLocationScreen({
+  const EditLocationScreen({super.key, 
     required this.docId,
     required this.currentStatus,
     required this.currentPostalCode,

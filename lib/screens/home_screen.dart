@@ -307,7 +307,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? SkeletonScreen() : buildActualContent();
+    return _isLoading ? const SkeletonScreen() : buildActualContent();
   }
 
   Widget buildActualContent() {
