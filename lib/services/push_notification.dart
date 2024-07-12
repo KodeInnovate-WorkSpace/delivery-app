@@ -14,7 +14,7 @@ class LocalNotificationService {
     try {
       print("In Notification method");
       // int id = DateTime.now().microsecondsSinceEpoch ~/1000000;
-      Random random = new Random();
+      Random random = Random();
       int id = random.nextInt(1000);
       const NotificationDetails notificationDetails = NotificationDetails(
           android: AndroidNotificationDetails(

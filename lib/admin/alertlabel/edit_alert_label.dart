@@ -8,7 +8,7 @@ class EditAlertLabelScreen extends StatefulWidget {
   final int currentStatus;
   final String currentTextColor;
 
-  EditAlertLabelScreen({
+  const EditAlertLabelScreen({super.key, 
     required this.docId,
     required this.currentColor,
     required this.currentMessage,

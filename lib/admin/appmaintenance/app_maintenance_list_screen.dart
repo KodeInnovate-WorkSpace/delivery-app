@@ -6,6 +6,8 @@ import 'edit_appmaintenance.dart';
 class AppMaintenanceListScreen extends StatelessWidget {
   final CollectionReference collection = FirebaseFirestore.instance.collection('AppMaintenance');
 
+  AppMaintenanceListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

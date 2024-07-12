@@ -17,7 +17,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   late PageController _pageController;
 
   // late Timer _timer;
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   @override
   void initState() {

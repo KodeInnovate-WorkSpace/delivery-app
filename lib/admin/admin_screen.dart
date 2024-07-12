@@ -305,15 +305,17 @@ class AdminScreen extends StatelessWidget {
             const SizedBox(
               height: 18,
             ),
+
+            //Manage App enabled
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                fixedSize: MaterialStateProperty.all<Size>(
+                fixedSize: WidgetStateProperty.all<Size>(
                   const Size(260, 50), // Set your desired width and height here
                 ),
               ),
@@ -321,45 +323,14 @@ class AdminScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AppMaintenanceListScreen(),
+                    builder: (context) =>  AppMaintenanceListScreen(),
                   ),
                 );
               },
               child: const Align(
                 alignment: Alignment.center, // Adjust alignment as needed
                 child: Text(
-                  "Manage AppEnabled",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: MaterialStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LocationListScreen(),
-                  ),
-                );
-              },
-              child: const Align(
-                alignment: Alignment.center, // Adjust alignment as needed
-                child: Text(
-                  "Manage Location",
+                  "Manage App Enabled",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
@@ -368,37 +339,71 @@ class AdminScreen extends StatelessWidget {
               height: 18,
             ),
 
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: MaterialStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AlertLabelListScreen(),
-                  ),
-                );
-              },
-              child: const Align(
-                alignment: Alignment.center, // Adjust alignment as needed
-                child: Text(
-                  "Manage AlertLabel",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
+            //Manage Location
+            // ElevatedButton(
+            //   style: ButtonStyle(
+            //     backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+            //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //       RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(16),
+            //       ),
+            //     ),
+            //     fixedSize: WidgetStateProperty.all<Size>(
+            //       const Size(260, 50), // Set your desired width and height here
+            //     ),
+            //   ),
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) =>  LocationListScreen(),
+            //       ),
+            //     );
+            //   },
+            //   child: const Align(
+            //     alignment: Alignment.center, // Adjust alignment as needed
+            //     child: Text(
+            //       "Manage Location",
+            //       style: TextStyle(color: Colors.white, fontSize: 20),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(
+            //   height: 18,
+            // ),
+
+            //Manage Alert
+            // ElevatedButton(
+            //   style: ButtonStyle(
+            //     backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+            //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //       RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(16),
+            //       ),
+            //     ),
+            //     fixedSize: WidgetStateProperty.all<Size>(
+            //       const Size(260, 50), // Set your desired width and height here
+            //     ),
+            //   ),
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) =>  AlertLabelListScreen(),
+            //       ),
+            //     );
+            //   },
+            //   child: const Align(
+            //     alignment: Alignment.center, // Adjust alignment as needed
+            //     child: Text(
+            //       "Manage Alert Label",
+            //       style: TextStyle(color: Colors.white, fontSize: 20),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(
+            //   height: 18,
+            // ),
           ],
         ),
       ),

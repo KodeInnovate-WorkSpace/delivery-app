@@ -6,6 +6,8 @@ import 'edit_alert_label.dart';
 class AlertLabelListScreen extends StatelessWidget {
   final CollectionReference collection = FirebaseFirestore.instance.collection('AlertLabel');
 
+   AlertLabelListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
