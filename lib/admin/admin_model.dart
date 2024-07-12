@@ -202,6 +202,28 @@ class CatModel extends ChangeNotifier {
   }
 }
 
+class AppMaintenance {
+  String id;
+  int isAppEnabled;
+
+  AppMaintenance({required this.id, required this.isAppEnabled});
+
+  factory AppMaintenance.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map;
+    return AppMaintenance(
+      id: doc.id,
+      isAppEnabled: data['isAppEnabled'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'isAppEnabled': isAppEnabled,
+    };
+  }
+}
+
+
 class ProductModel extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> manageProducts() async {
     try {
@@ -408,4 +430,6 @@ class ValetModel extends ChangeNotifier {
       log("Error updating status: $e");
     }
   }
+
+
 }

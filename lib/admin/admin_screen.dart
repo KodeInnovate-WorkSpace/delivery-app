@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/admin/alertlabel/manage_alert_label.dart';
+import 'package:speedy_delivery/admin/appmaintenance/app_maintenance_list_screen.dart';
 import 'package:speedy_delivery/admin/banner/manage_banner_screen.dart';
+import 'package:speedy_delivery/admin/location/manage_location.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
@@ -30,13 +33,15 @@ class AdminScreen extends StatelessWidget {
                             "Logout",
                             style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
                           ),
-                          content: const Text("Are you sure you want to logout?"),
+                          content:
+                              const Text("Are you sure you want to logout?"),
                           actions: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
                                     child: const Text(
                                       "No",
                                       style: TextStyle(
@@ -46,11 +51,14 @@ class AdminScreen extends StatelessWidget {
                                 TextButton(
                                     onPressed: () async {
                                       await FirebaseAuth.instance.signOut();
-                                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
                                       await prefs.remove('isLoggedIn');
                                       Navigator.pushAndRemoveUntil(
                                         context,
-                                        MaterialPageRoute(builder: (context) => const SigninScreen()),
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SigninScreen()),
                                         (route) => false,
                                       );
                                     },
@@ -293,6 +301,103 @@ class AdminScreen extends StatelessWidget {
                 "Manage Orders",
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
+            ),
+            const SizedBox(
+              height: 18,
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: MaterialStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AppMaintenanceListScreen(),
+                  ),
+                );
+              },
+              child: const Align(
+                alignment: Alignment.center, // Adjust alignment as needed
+                child: Text(
+                  "Manage AppEnabled",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 18,
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: MaterialStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LocationListScreen(),
+                  ),
+                );
+              },
+              child: const Align(
+                alignment: Alignment.center, // Adjust alignment as needed
+                child: Text(
+                  "Manage Location",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 18,
+            ),
+
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                fixedSize: MaterialStateProperty.all<Size>(
+                  const Size(260, 50), // Set your desired width and height here
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AlertLabelListScreen(),
+                  ),
+                );
+              },
+              child: const Align(
+                alignment: Alignment.center, // Adjust alignment as needed
+                child: Text(
+                  "Manage AlertLabel",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 18,
             ),
           ],
         ),

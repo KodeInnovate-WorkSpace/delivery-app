@@ -118,9 +118,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'x-api-version': '2023-08-01',
     };
 
-    // var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
     var request = http.Request('GET', Uri.parse('https://api.cashfree.com/pg/orders/$orderId')); // prod
     // var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
+    // var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
 
     request.headers.addAll(headers);
 
