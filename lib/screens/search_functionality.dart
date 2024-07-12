@@ -32,7 +32,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> fetchProductsFromFirestore() async {
     try {
-      final productsCollection = FirebaseFirestore.instance.collection('products');
+      final productsCollection = FirebaseFirestore.instance.collection('products').where('status', isNotEqualTo: 0);
       final snapshot = await productsCollection.get();
       final products = snapshot.docs.map((doc) {
         return Product(
