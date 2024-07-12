@@ -85,6 +85,7 @@ class CategoryScreenState extends State<CategoryScreen> {
           ),
           backgroundColor: const Color(0xfff7f7f7),
           // elevation: 0,
+          surfaceTintColor: Colors.transparent,
         ),
         body: Stack(
           children: [
