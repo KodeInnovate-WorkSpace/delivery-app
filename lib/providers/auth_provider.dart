@@ -16,6 +16,7 @@ class MyAuthProvider with ChangeNotifier {
   int? get specificNumber => int.tryParse(phone);
   set isKeyboardOpen(bool isKeyboardOpen) {}
 
+
   //disable/enable button
   void setButtonEnabled(bool value) {
     isButtonEnabled = value;
