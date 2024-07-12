@@ -11,6 +11,7 @@ import 'package:speedy_delivery/screens/skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
+import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
@@ -40,7 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    checkAppMaintenanceStatus();
+    checkAppMaintenanceStatus(context);
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
@@ -66,13 +67,15 @@ class HomeScreenState extends State<HomeScreen> {
     fetchConstantFromFirebase();
   }
 
-  Future<void> checkAppMaintenanceStatus() async {
+  Future<void> checkAppMaintenanceStatus(BuildContext context) async {
     try {
+      // Get the specific number from MyAuthProvider
+      final specificNumber = Provider.of<MyAuthProvider>(context, listen: false).specificNumber;
+
       final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('AppMaintenance').get();
       for (var document in snapshot.docs) {
         var data = document.data() as Map<String, dynamic>;
-        if (data['isAppEnabled'] == 0
-        ) {
+        if (data['isAppEnabled'] == 0 && specificNumber != 9876543210) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const ClosedScreen(),
