@@ -6,7 +6,8 @@ int? deliveryTime;
 String? appVer;
 
 double? deliveryCharge;
-double? handlingCharge;
+// double? handlingCharge;
+bool? isDeliveryFree;
 
 Future<void> fetchConstantFromFirebase() async {
   try {
@@ -14,23 +15,22 @@ Future<void> fetchConstantFromFirebase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Access 'Constant' collection and retrieve document
-    DocumentSnapshot constantDoc = await firestore
-        .collection('constants')
-        .doc("0xK0fWb6SCtRls6k3uwb")
-        .get();
+    DocumentSnapshot constantDoc = await firestore.collection('constants').doc("0xK0fWb6SCtRls6k3uwb").get();
 
     // Check if the document exists and fetch values
     if (constantDoc.exists) {
       // Assuming 'deliveryCharge' and 'handlingCharge' are fields in your document
       deliveryCharge = (constantDoc.get('deliveryCharge') ?? 29).toDouble();
-      handlingCharge = (constantDoc.get('handlingCharge') ?? 1.85).toDouble();
-      deliveryTime = constantDoc.get('deliveryTime');
+      // handlingCharge = (constantDoc.get('handlingCharge') ?? 1.85).toDouble();
+      deliveryTime = (constantDoc.get('deliveryTime') ?? 20);
       appVer = constantDoc.get('app_version');
+      isDeliveryFree = constantDoc.get('isDeliveryFree');
       // Now you can use these values as needed in your app
       log('Delivery Charge: $deliveryCharge');
-      log('Handling Charge: $handlingCharge');
+      // log('Handling Charge: $handlingCharge');
       log('Delivery Time: $deliveryTime');
       log('Version: $appVer');
+      log('isDeliveryFree: $isDeliveryFree');
     } else {
       log('Document does not exist');
     }
@@ -41,8 +41,5 @@ Future<void> fetchConstantFromFirebase() async {
 }
 
 Stream<DocumentSnapshot> get constantDocumentStream {
-  return FirebaseFirestore.instance
-      .collection('constants')
-      .doc('0xK0fWb6SCtRls6k3uwb')
-      .snapshots();
+  return FirebaseFirestore.instance.collection('constants').doc('0xK0fWb6SCtRls6k3uwb').snapshots();
 }

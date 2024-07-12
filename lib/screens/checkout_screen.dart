@@ -37,7 +37,6 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  String _selectedPaymentMethod = 'Online';
   IconData _paymentIcon = Icons.account_balance;
 
   @override
@@ -119,7 +118,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     };
 
     var request = http.Request('GET', Uri.parse('https://api.cashfree.com/pg/orders/$orderId')); // prod
-    // var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     // var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
 
     request.headers.addAll(headers);
@@ -163,8 +161,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         );
         showMessage("Payment Successful");
       } else {
+        final orderProvider = Provider.of<OrderProvider>(context);
+
         showMessage("Payment not successful. Please try again.");
-        // Handle payment failure scenario
+        await orderProvider.cancelOrder(oId);
+        return;
       }
     } catch (e) {
       debugPrint("Error verifying payment: $e");
@@ -269,6 +270,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final orderProvider = Provider.of<OrderProvider>(context);
 
     //Payment Gateway Code
     final authProvider = Provider.of<MyAuthProvider>(context);
@@ -373,7 +375,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ),
                                                 const SizedBox(width: 10),
                                                 DropdownButton<String>(
-                                                  value: _selectedPaymentMethod,
+                                                  value: orderProvider.selectedPaymentMethod,
                                                   icon: const Icon(Icons.arrow_drop_down),
                                                   iconSize: 24,
                                                   elevation: 16,
@@ -381,7 +383,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   underline: Container(),
                                                   onChanged: (String? newValue) {
                                                     setState(() {
-                                                      _selectedPaymentMethod = newValue!;
+                                                      orderProvider.setSelectedPaymentMethod = newValue!;
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
                                                     });
                                                   },
@@ -421,7 +423,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                                             final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
-                                            if (_selectedPaymentMethod == 'Cash on delivery') {
+                                            if (orderProvider.selectedPaymentMethod == 'Cash on delivery') {
                                               showDialog(
                                                 context: context,
                                                 builder: (BuildContext context) {
@@ -446,7 +448,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             List<Order> orders = cartProvider.cart.map((item) {
                                                               return Order(
                                                                 orderId: myOrderId,
-                                                                paymentMode: _selectedPaymentMethod,
+                                                                paymentMode: orderProvider.selectedPaymentMethod,
                                                                 productName: item.itemName,
                                                                 productImage: item.itemImage,
                                                                 quantity: item.qnt,
@@ -470,7 +472,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   );
                                                 },
                                               );
-                                            } else if (_selectedPaymentMethod == 'Online') {
+                                            } else if (orderProvider.selectedPaymentMethod == 'Online') {
                                               showDialog(
                                                 context: context,
                                                 builder: (BuildContext context) {
@@ -501,7 +503,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             List<Order> orders = cartProvider.cart.map((item) {
                                                               return Order(
                                                                 orderId: myOrderId,
-                                                                paymentMode: _selectedPaymentMethod,
+                                                                paymentMode: orderProvider.selectedPaymentMethod,
                                                                 productName: item.itemName,
                                                                 productImage: item.itemImage,
                                                                 quantity: item.qnt,
