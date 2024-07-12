@@ -387,13 +387,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
                                                       if (orderProvider.selectedPaymentMethod == "Online") {
                                                         deliveryCharge = 0;
-                                                      }
-                                                      else{
+                                                      } else {
                                                         deliveryCharge = 29;
                                                       }
                                                     });
-
-
                                                   },
                                                   items: <String>['Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
                                                     return DropdownMenuItem<String>(
@@ -406,7 +403,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             ),
                                           ],
                                         ),
-                                        // PaymentButton(selectedMethod: _selectedPaymentMethod),
                                         ElevatedButton(
                                           onPressed: () {
                                             HapticFeedback.heavyImpact();
