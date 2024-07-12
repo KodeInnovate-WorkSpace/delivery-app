@@ -90,7 +90,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<User?> _checkAuthStatus() async {
-
     return FirebaseAuth.instance.currentUser;
   }
 
