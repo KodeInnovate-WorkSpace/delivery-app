@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
@@ -41,7 +42,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    checkAppMaintenanceStatus();
+    checkAppMaintenanceStatus(context);
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
@@ -67,13 +68,15 @@ class HomeScreenState extends State<HomeScreen> {
     fetchConstantFromFirebase();
   }
 
-  Future<void> checkAppMaintenanceStatus() async {
+  Future<void> checkAppMaintenanceStatus(BuildContext context) async {
     try {
+      // Get the specific number from MyAuthProvider
+      final specificNumber = Provider.of<MyAuthProvider>(context, listen: false).specificNumber;
+
       final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('AppMaintenance').get();
       for (var document in snapshot.docs) {
         var data = document.data() as Map<String, dynamic>;
-        if (data['isAppEnabled'] == 0
-        ) {
+        if (data['isAppEnabled'] == 0 && specificNumber != 9876543210) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const ClosedScreen(),
@@ -86,6 +89,7 @@ class HomeScreenState extends State<HomeScreen> {
       log('Error checking app maintenance status: $e');
     }
   }
+
   Future<void> checkLocationService() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -191,7 +195,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   void showLocationDialog() {
     showDialog(
       context: context,
@@ -212,6 +215,7 @@ class HomeScreenState extends State<HomeScreen> {
       },
     ).then((_) => checkLocationService()); // Check location service again after dialog is closed
   }
+
   Future<void> fetchCategory() async {
     try {
       final snapshot = await FirebaseFirestore.instance.collection("category").get();
@@ -235,7 +239,6 @@ class HomeScreenState extends State<HomeScreen> {
           // Sort categories by priority
           categories.sort((a, b) => a.priority.compareTo(b.priority));
         });
-
       } else {
         log("No Category Document Found!");
       }
@@ -274,35 +277,34 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       log("Error fetching sub-category: $e");
-    }
-    finally{
+    } finally {
       setState(() {
         _isLoading = false;
       });
     }
-
   }
 
   Future<bool> showExitDialog() async {
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Exit'),
-        content: const Text('Do you want to exit the app?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Yes'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Exit'),
+            content: const Text('Do you want to exit the app?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('No'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false) ,
-            child: const Text('No'),
-          ),
-        ],
-      ),
-    ) ??
+        ) ??
         false;
   }
+
   @override
   Widget build(BuildContext context) {
     return _isLoading ? SkeletonScreen() : buildActualContent();
@@ -340,10 +342,10 @@ class HomeScreenState extends State<HomeScreen> {
                         final alerts = snapshot.data!.docs
                             .where((doc) => doc['status'] == 1)
                             .map((doc) => {
-                          'message': doc['message'],
-                          'color': doc['color'],
-                          'textcolor': doc['textcolor'],
-                        })
+                                  'message': doc['message'],
+                                  'color': doc['color'],
+                                  'textcolor': doc['textcolor'],
+                                })
                             .toList();
 
                         if (alerts.isEmpty) {
@@ -351,7 +353,7 @@ class HomeScreenState extends State<HomeScreen> {
                         }
                         return SliverList(
                           delegate: SliverChildBuilderDelegate(
-                                (context, index) {
+                            (context, index) {
                               final alert = alerts[index];
                               return Container(
                                 color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
@@ -386,7 +388,7 @@ class HomeScreenState extends State<HomeScreen> {
                     // Displaying categories
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
+                        (BuildContext context, int index) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
                             child: FutureBuilder<void>(

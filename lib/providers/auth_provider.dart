@@ -13,7 +13,7 @@ class MyAuthProvider with ChangeNotifier {
   String? _verificationId;
 
   String get phone => textController.text;
-
+  int? get specificNumber => int.tryParse(phone);
   set isKeyboardOpen(bool isKeyboardOpen) {}
 
   //disable/enable button
