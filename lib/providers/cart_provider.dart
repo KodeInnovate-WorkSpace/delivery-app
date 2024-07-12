@@ -23,7 +23,6 @@ class CartProvider extends ChangeNotifier {
   }
 
   double calculateTotalPrice() {
-    // final orderProvider = Provider.of<OrderProvider>(context);
     double total = 0.0;
     for (var item in _cartItems) {
       total += item.itemPrice * item.qnt;
@@ -31,8 +30,8 @@ class CartProvider extends ChangeNotifier {
     return total;
   }
 
-  calculateGrandTotal() {
-    final grandTotal = calculateTotalPrice() + (deliveryCharge ?? 0) + calculateHandlingCharge() - _discount;
+  calculateGrandTotal(double delCharge) {
+    final grandTotal = calculateTotalPrice() + (delCharge ?? 0) + calculateHandlingCharge() - _discount;
     return grandTotal.ceilToDouble();
   }
 

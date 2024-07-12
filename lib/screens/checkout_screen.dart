@@ -277,7 +277,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final addressProvider = Provider.of<AddressProvider>(context);
 
     setState(() {
-      totalAmt = cartProvider.calculateGrandTotal();
+      totalAmt = cartProvider.calculateGrandTotal(deliveryCharge!);
       customerPhone = authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
 
@@ -385,7 +385,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     setState(() {
                                                       orderProvider.setSelectedPaymentMethod = newValue!;
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
+                                                      if (orderProvider.selectedPaymentMethod == "Online") {
+                                                        deliveryCharge = 0;
+                                                      }
+                                                      else{
+                                                        deliveryCharge = 29;
+                                                      }
                                                     });
+
+
                                                   },
                                                   items: <String>['Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
                                                     return DropdownMenuItem<String>(

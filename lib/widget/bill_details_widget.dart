@@ -17,6 +17,7 @@ class _BillDetailsState extends State<BillDetails> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final orderProvider = Provider.of<OrderProvider>(context);
 
     return StreamBuilder<DocumentSnapshot>(
       stream: constantDocumentStream,
@@ -32,7 +33,13 @@ class _BillDetailsState extends State<BillDetails> {
         } else {
           var data = snapshot.data!.data() as Map<String, dynamic>;
 
-          double deliveryCharge = (data['deliveryCharge'] ?? 29).toDouble();
+          double deliveryCharge = 29;
+
+          if (orderProvider.selectedPaymentMethod == "Online") {
+             deliveryCharge = 0;
+          } else {
+            deliveryCharge = (data['deliveryCharge'] ?? 29).toDouble();
+          }
 
           return Container(
             decoration: BoxDecoration(
@@ -168,7 +175,7 @@ class _BillDetailsState extends State<BillDetails> {
                       const Text('To pay', style: TextStyle(fontSize: 16, fontFamily: 'Gilroy-Black')),
                       Text(
                         // '\u{20B9}${cartProvider.calculateGrandTotal().toStringAsFixed(2)}',
-                        '\u{20B9}${cartProvider.calculateGrandTotal()}',
+                        '\u{20B9}${cartProvider.calculateGrandTotal(deliveryCharge)}',
 
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                       ),

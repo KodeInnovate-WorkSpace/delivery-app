@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/skeleton.dart';
@@ -13,7 +14,6 @@ import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
 import '../providers/cart_provider.dart';
-import '../providers/order_provider.dart';
 import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
@@ -400,6 +400,16 @@ class HomeScreenState extends State<HomeScreen> {
                                       color: Colors.black,
                                     ),
                                   );
+                                  // return Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   children: List.generate(
+                                  //     4,
+                                  //     (index) => Padding(
+                                  //       padding: const EdgeInsets.symmetric(horizontal: 5),
+                                  //       child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
+                                  //     ),
+                                  //   ),
+                                  // );
                                 } else if (snapshot.hasError) {
                                   return const Center(child: Text("Error"));
                                 } else {
@@ -536,4 +546,19 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  // Widget _buildShimmerContainer({required double width, required double height, double borderRadius = 5}) {
+  //   return Shimmer.fromColors(
+  //     baseColor: Colors.grey[300]!,
+  //     highlightColor: Colors.grey[100]!,
+  //     child: Container(
+  //       width: width,
+  //       height: height,
+  //       decoration: BoxDecoration(
+  //         color: Colors.grey[300],
+  //         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
