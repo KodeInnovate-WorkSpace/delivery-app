@@ -46,10 +46,7 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('Advertisement')
-          .where('status', isEqualTo: 1)
-          .snapshots(),
+      stream: FirebaseFirestore.instance.collection('Advertisement').where('status', isEqualTo: 1).snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
