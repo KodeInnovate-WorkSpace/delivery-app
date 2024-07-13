@@ -7,7 +7,7 @@ class AddAlertLabelScreen extends StatefulWidget {
   const AddAlertLabelScreen({super.key});
 
   @override
-  _AddAlertLabelScreenState createState() => _AddAlertLabelScreenState();
+  State<AddAlertLabelScreen> createState() => _AddAlertLabelScreenState();
 }
 
 class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
@@ -129,4 +129,3 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
     );
   }
 }
-

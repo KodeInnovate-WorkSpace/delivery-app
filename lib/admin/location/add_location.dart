@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../shared/show_msg.dart';
 
 class AddLocationScreen extends StatefulWidget {
+  const AddLocationScreen({super.key});
+
   @override
-  _AddLocationScreenState createState() => _AddLocationScreenState();
+  State<AddLocationScreen> createState() => _AddLocationScreenState();
 }
 
 class _AddLocationScreenState extends State<AddLocationScreen> {

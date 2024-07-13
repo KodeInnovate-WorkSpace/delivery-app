@@ -3,12 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../../shared/show_msg.dart';
 
 class AddOfferScreen extends StatefulWidget {
+  const AddOfferScreen({super.key});
+
   @override
-  _AddOfferScreenState createState() => _AddOfferScreenState();
+  State<AddOfferScreen> createState() => _AddOfferScreenState();
 }
 
 class _AddOfferScreenState extends State<AddOfferScreen> {
@@ -16,10 +17,10 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController _offerNameController = TextEditingController();
-  TextEditingController _offerIdController = TextEditingController();
-  TextEditingController _discountController = TextEditingController();
-  TextEditingController _statusController = TextEditingController();
+  final TextEditingController _offerNameController = TextEditingController();
+  final TextEditingController _offerIdController = TextEditingController();
+  final TextEditingController _discountController = TextEditingController();
+  final TextEditingController _statusController = TextEditingController();
 
   XFile? _image;
 
@@ -60,7 +61,7 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Offer'),
+        title: const Text('Add Offer'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,35 +70,35 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
             children: [
               TextField(
                 controller: _offerIdController,
-                decoration: InputDecoration(labelText: 'Offer ID'),
+                decoration: const InputDecoration(labelText: 'Offer ID'),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: _offerNameController,
-                decoration: InputDecoration(labelText: 'Offer Name'),
+                decoration: const InputDecoration(labelText: 'Offer Name'),
               ),
               TextField(
                 controller: _discountController,
-                decoration: InputDecoration(labelText: 'Discount'),
+                decoration: const InputDecoration(labelText: 'Discount'),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: _statusController,
-                decoration: InputDecoration(labelText: 'Status'),
+                decoration: const InputDecoration(labelText: 'Status'),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               _image != null
                   ? Image.file(File(_image!.path), height: 150)
                   : Container(),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: Text('Pick Image'),
+                child: const Text('Pick Image'),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _createOffer,
-                child: Text('Create Offer'),
+                child: const Text('Create Offer'),
               ),
             ],
           ),

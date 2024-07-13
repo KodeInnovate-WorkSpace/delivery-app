@@ -20,10 +20,10 @@ class _UpdateOfferScreenState extends State<UpdateOfferScreen> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController _offerNameController = TextEditingController();
-  TextEditingController _offerIdController = TextEditingController();
-  TextEditingController _discountController = TextEditingController();
-  TextEditingController _statusController = TextEditingController();
+  final TextEditingController _offerNameController = TextEditingController();
+  final TextEditingController _offerIdController = TextEditingController();
+  final TextEditingController _discountController = TextEditingController();
+  final TextEditingController _statusController = TextEditingController();
 
   XFile? _image;
 
@@ -98,7 +98,7 @@ class _UpdateOfferScreenState extends State<UpdateOfferScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Offer'),
+        title: const Text('Update Offer'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -107,33 +107,33 @@ class _UpdateOfferScreenState extends State<UpdateOfferScreen> {
             children: [
               TextField(
                 controller: _offerIdController,
-                decoration: InputDecoration(labelText: 'Offer ID'),
+                decoration: const InputDecoration(labelText: 'Offer ID'),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: _offerNameController,
-                decoration: InputDecoration(labelText: 'Offer Name'),
+                decoration: const InputDecoration(labelText: 'Offer Name'),
               ),
               TextField(
                 controller: _discountController,
-                decoration: InputDecoration(labelText: 'Discount'),
+                decoration: const InputDecoration(labelText: 'Discount'),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: _statusController,
-                decoration: InputDecoration(labelText: 'Status'),
+                decoration: const InputDecoration(labelText: 'Status'),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 16.0),
+             const SizedBox(height: 16.0),
               _image != null ? Image.file(File(_image!.path), height: 150) : Container(),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: Text('Pick Image'),
+                child: const Text('Pick Image'),
               ),
-              SizedBox(height: 16.0),
+             const  SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _updateOffer,
-                child: Text('Update Offer'),
+                child: const Text('Update Offer'),
               ),
             ],
           ),

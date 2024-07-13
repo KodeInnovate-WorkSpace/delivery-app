@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/skeleton.dart';

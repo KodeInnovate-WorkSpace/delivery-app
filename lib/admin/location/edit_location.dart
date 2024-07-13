@@ -16,7 +16,7 @@ class EditLocationScreen extends StatefulWidget {
   });
 
   @override
-  _EditLocationScreenState createState() => _EditLocationScreenState();
+  State<EditLocationScreen> createState() => _EditLocationScreenState();
 }
 
 class _EditLocationScreenState extends State<EditLocationScreen> {

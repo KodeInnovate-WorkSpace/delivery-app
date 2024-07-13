@@ -7,6 +7,8 @@ import 'edit_coupon.dart';
 class MainDisplayScreen extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+   MainDisplayScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +76,7 @@ class MainDisplayScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddOfferScreen()),
+            MaterialPageRoute(builder: (context) => const AddOfferScreen()),
           );
         },
         child: const Icon(Icons.add),

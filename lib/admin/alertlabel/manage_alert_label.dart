@@ -27,7 +27,7 @@ class AlertLabelListScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddAlertLabelScreen()),
+                MaterialPageRoute(builder: (context) => const AddAlertLabelScreen()),
               );
             },
           ),

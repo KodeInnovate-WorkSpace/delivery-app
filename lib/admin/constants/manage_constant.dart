@@ -109,7 +109,7 @@ class EditConstantScreen extends StatefulWidget {
   final num currentDeliveryTime;
   final bool currentIsDeliveryFree;
 
-  EditConstantScreen({
+  const EditConstantScreen({super.key,
     required this.docId,
     required this.currentAppVersion,
     required this.currentDeliveryCharge,
@@ -118,7 +118,7 @@ class EditConstantScreen extends StatefulWidget {
   });
 
   @override
-  _EditConstantScreenState createState() => _EditConstantScreenState();
+  State<EditConstantScreen> createState() => _EditConstantScreenState();
 }
 
 class _EditConstantScreenState extends State<EditConstantScreen> {
@@ -204,7 +204,7 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
 class AddConstantScreen extends StatelessWidget {
   final CollectionReference collection;
 
-  AddConstantScreen({required this.collection});
+  const AddConstantScreen({super.key, required this.collection});
 
   @override
   Widget build(BuildContext context) {

@@ -19,7 +19,7 @@ class EditAlertLabelScreen extends StatefulWidget {
   });
 
   @override
-  _EditAlertLabelScreenState createState() => _EditAlertLabelScreenState();
+  State<EditAlertLabelScreen> createState() => _EditAlertLabelScreenState();
 }
 
 class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
