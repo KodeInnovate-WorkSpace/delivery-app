@@ -98,13 +98,27 @@ class OrderProvider with ChangeNotifier {
   List<Order> _orders = [];
   String _selectedPaymentMethod = 'Online';
 
+  double delvChrg = 0;
+  // bool isDelfree;
+
   List<Order> get orders => _orders;
   String get selectedPaymentMethod => _selectedPaymentMethod;
-  // Setter for selectedPaymentMethod
+
   set setSelectedPaymentMethod(String value) {
-    // Add any validation logic here if needed
     _selectedPaymentMethod = value;
+    // var isDelivFree = getIsDelFree();
+    if (value == "Online") {
+      delvChrg = 0;
+    } else {
+      delvChrg = 29;
+    }
+    notifyListeners();
   }
+
+  // getIsDelFree() async {
+  //   isDelfree = await fetchIsDeliveryFree();
+  //   return isDelfree;
+  // }
 
   OrderProvider() {
     fetchOrders();

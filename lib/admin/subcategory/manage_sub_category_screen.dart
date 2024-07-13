@@ -74,7 +74,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
             onRefresh: _refreshPage,
             child: ListView(children: [
               PaginatedDataTable(
-                dataRowHeight: 65,
+                dataRowHeight: 80,
                 columns: const [
                   DataColumn(label: Text('Id'), tooltip: "Sub-Categoy ID"),
                   DataColumn(label: Text('Category'), tooltip: "Name of the category this sub-category belongs to"),
@@ -166,7 +166,7 @@ class TableData extends DataTableSource {
         ),
       ),
       DataCell(SizedBox(
-        width: 100,
+        width: 150,
         child: Text(
           data['sub_category_name'],
           softWrap: true,

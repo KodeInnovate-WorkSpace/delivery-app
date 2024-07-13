@@ -89,8 +89,8 @@ class _ProductCardState extends State<ProductCard> {
                             Text(
                               product.name,
                               textAlign: TextAlign.left,
-                              // maxLines: 1,
-                              // overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontFamily: 'Gilroy-Bold',

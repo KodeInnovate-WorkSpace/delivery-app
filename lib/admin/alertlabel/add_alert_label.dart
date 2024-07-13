@@ -3,73 +3,57 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../shared/show_msg.dart';
 
-class EditAlertLabelScreen extends StatefulWidget {
-  final String docId;
-  final String currentColor;
-  final String currentMessage;
-  final int currentStatus;
-  final String currentTextColor;
-
-  const EditAlertLabelScreen({super.key,
-    required this.docId,
-    required this.currentColor,
-    required this.currentMessage,
-    required this.currentStatus,
-    required this.currentTextColor,
-  });
+class AddAlertLabelScreen extends StatefulWidget {
+  const AddAlertLabelScreen({super.key});
 
   @override
-  State<EditAlertLabelScreen> createState() => _EditAlertLabelScreenState();
+  State<AddAlertLabelScreen> createState() => _AddAlertLabelScreenState();
 }
 
-class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
+class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
   final CollectionReference collection = FirebaseFirestore.instance.collection('AlertLabel');
-  late String _color;
-  late String _message;
-  late int _status;
-  late String _textColor;
   final List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
+  final TextEditingController idController = TextEditingController(); // Controller for ID
   final TextEditingController colorController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
   final TextEditingController textColorController = TextEditingController();
+  int _status = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _color = widget.currentColor;
-    _message = widget.currentMessage;
-    _status = widget.currentStatus;
-    _textColor = widget.currentTextColor;
-    colorController.text = _color;
-    messageController.text = _message;
-    textColorController.text = _textColor;
-  }
-
-  void _updateAlertLabel() async {
+  void _addAlertLabel() async {
     try {
-      await collection.doc(widget.docId).update({
+      int id = int.parse(idController.text); // Parsing ID as an integer
+      await collection.add({
+        'id': id, // Adding ID to Firestore document
         'color': colorController.text,
         'message': messageController.text,
         'status': _status,
         'textcolor': textColorController.text,
       });
-      showMessage('Update successful');
+      showMessage('Alert label added successfully');
       Navigator.pop(context, true);
     } catch (e) {
-      showMessage('Failed to update: $e');
+      showMessage('Failed to add alert label: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Alert Label')),
+      appBar: AppBar(title: const Text('Add Alert Label')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('ID: ${widget.docId}'),
             const SizedBox(height: 16.0),
+            TextField(
+              controller: idController,
+              decoration: const InputDecoration(
+                labelText: 'ID',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 20.0),
             TextField(
               controller: colorController,
               decoration: const InputDecoration(
@@ -117,7 +101,7 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
             const SizedBox(height: 20.0),
             Center(
               child: ElevatedButton(
-                onPressed: _updateAlertLabel,
+                onPressed: _addAlertLabel,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -131,7 +115,7 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
                   ),
                 ),
                 child: const Text(
-                  "Update",
+                  "Add",
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Gilroy-Bold',

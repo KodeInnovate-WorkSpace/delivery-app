@@ -57,7 +57,7 @@ class SkeletonScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       4,
-                          (index) => Padding(
+                      (index) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
                       ),
@@ -69,7 +69,7 @@ class SkeletonScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       4,
-                          (index) => Padding(
+                      (index) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
                       ),
@@ -86,7 +86,7 @@ class SkeletonScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       4,
-                          (index) => Padding(
+                      (index) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: _buildShimmerContainer(width: 72, height: 65, borderRadius: 14),
                       ),

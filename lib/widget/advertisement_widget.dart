@@ -19,7 +19,6 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8);
-    _startAutoScroll();
   }
 
   @override
@@ -29,11 +28,10 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
     super.dispose();
   }
 
-  void _startAutoScroll() {
+  void _startAutoScroll(int itemCount) {
+    _timer?.cancel(); // Cancel any previous timers
     _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
-      final maxIndex = (_pageController.positions.first.maxScrollExtent / _pageController.position.viewportDimension).round();
-
-      _currentIndex = (_currentIndex + 1) % (maxIndex + 1); // Ensure looping
+      _currentIndex = (_currentIndex + 1) % itemCount; // Ensure looping
 
       _pageController.animateToPage(
         _currentIndex,
@@ -61,6 +59,9 @@ class _AdvertisementWidgetState extends State<AdvertisementWidget> {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
           docs.sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
+
+          // Start auto-scroll with the updated number of items
+          _startAutoScroll(docs.length);
 
           return SizedBox(
             height: 600,

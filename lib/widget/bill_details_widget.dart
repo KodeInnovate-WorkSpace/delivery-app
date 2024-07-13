@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/providers/order_provider.dart';
 import '../providers/cart_provider.dart';
 import '../shared/constants.dart';
 
@@ -13,9 +14,12 @@ class BillDetails extends StatefulWidget {
 }
 
 class _BillDetailsState extends State<BillDetails> {
+  double deliveryCharge = 29;
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final orderProvider = Provider.of<OrderProvider>(context);
 
     return StreamBuilder<DocumentSnapshot>(
       stream: constantDocumentStream,
@@ -30,18 +34,24 @@ class _BillDetailsState extends State<BillDetails> {
           return const Text('No data available');
         } else {
           var data = snapshot.data!.data() as Map<String, dynamic>;
-          double deliveryCharge = (data['deliveryCharge'] ?? 29).toDouble();
-          // double handlingCharge = (data['handlingCharge'] ?? 1.85).toDouble();
+
+          // Update the delivery charge based on the selected payment method
+          if (orderProvider.selectedPaymentMethod == "Online") {
+            deliveryCharge = 0;
+          } else {
+            deliveryCharge = (data['deliveryCharge'] ?? 29).toDouble();
+          }
+
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+              borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1), // Shadow color
-                  spreadRadius: 2, // Spread radius
-                  blurRadius: 5, // Blur radius
-                  offset: const Offset(0, 2), // Shadow offset (x, y)
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -54,6 +64,7 @@ class _BillDetailsState extends State<BillDetails> {
                     padding: EdgeInsets.all(8.0),
                     child: Text('Bill details', style: TextStyle(fontSize: 18, fontFamily: 'Gilroy-Black')),
                   ),
+
                   // Row 1: Item total
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,15 +100,21 @@ class _BillDetailsState extends State<BillDetails> {
                       ),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: Text(
-                          '\u{20B9}${deliveryCharge.toStringAsFixed(0)}',
-                          style: const TextStyle(fontSize: 14),
+                        child: Consumer<OrderProvider>(
+                          builder: (context, orderProvider, child) {
+                            return Text(
+                              // '\u{20B9}${deliveryCharge.toStringAsFixed(0)}',
+                              '\u{20B9}${orderProvider.delvChrg.toStringAsFixed(0)}',
+                              style: const TextStyle(fontSize: 14),
+                            );
+                          },
                         ),
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 8),
+
                   // Row 3: Handling Charges
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,8 +123,6 @@ class _BillDetailsState extends State<BillDetails> {
                         children: [
                           Icon(Icons.payment, size: 14),
                           SizedBox(width: 4),
-                          // Text('Handling Charges', style: TextStyle(fontSize: 14)),
-
                           Text('Handling Charges', style: TextStyle(fontSize: 14)),
                         ],
                       ),
@@ -122,6 +137,7 @@ class _BillDetailsState extends State<BillDetails> {
                     ],
                   ),
                   const SizedBox(height: 8),
+
                   // Discount Row
                   if (cartProvider.Discount > 0)
                     Row(
@@ -143,6 +159,7 @@ class _BillDetailsState extends State<BillDetails> {
                         ),
                       ],
                     ),
+
                   // const Divider(),
                   const SizedBox(
                     height: 20,
@@ -159,15 +176,14 @@ class _BillDetailsState extends State<BillDetails> {
                   const SizedBox(
                     height: 10,
                   ),
+
                   // Grand Total Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('To pay', style: TextStyle(fontSize: 16, fontFamily: 'Gilroy-Black')),
                       Text(
-                        // '\u{20B9}${cartProvider.calculateGrandTotal().toStringAsFixed(2)}',
-                        '\u{20B9}${cartProvider.calculateGrandTotal()}',
-
+                        '\u{20B9}${cartProvider.calculateGrandTotal(deliveryCharge)}',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ],

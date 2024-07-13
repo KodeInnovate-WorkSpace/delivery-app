@@ -77,7 +77,7 @@ class _ManageProductState extends State<ManageProduct> {
             onRefresh: _refreshPage,
             child: ListView(children: [
               PaginatedDataTable(
-                dataRowHeight: 65,
+                dataRowHeight: 100,
                 columns: const [
                   DataColumn(label: Text('ID')),
                   DataColumn(label: Text('Image')),
@@ -172,9 +172,10 @@ class TableData extends DataTableSource {
           ),
         ),
       ),
+
       //name
       DataCell(SizedBox(
-        width: 100,
+        width: 130,
         child: Text(
           data['name'],
           softWrap: true,
@@ -203,7 +204,7 @@ class TableData extends DataTableSource {
 
       //price
       DataCell(SizedBox(
-        width: 100,
+        width: 40,
         child: Text(
           data['price'].toString(),
           softWrap: true,
@@ -213,7 +214,7 @@ class TableData extends DataTableSource {
 
       //mrp
       DataCell(SizedBox(
-        width: 100,
+        width: 40,
         child: Text(
           data['mrp'].toString(),
           softWrap: true,
@@ -223,7 +224,7 @@ class TableData extends DataTableSource {
 
       //stock
       DataCell(SizedBox(
-        width: 100,
+        width: 40,
         child: Text(
           data['stock'].toString(),
           softWrap: true,
@@ -233,7 +234,7 @@ class TableData extends DataTableSource {
 
       //Unit
       DataCell(SizedBox(
-        width: 100,
+        width: 50,
         child: Text(
           data['unit'],
           softWrap: true,
@@ -270,6 +271,7 @@ class TableData extends DataTableSource {
           },
         ),
       ),
+
       //Edit
       DataCell(
         IconButton(

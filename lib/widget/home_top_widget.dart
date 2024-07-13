@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../shared/constants.dart';
 import '../shared/search_bar.dart';
 import 'location_button_widget.dart';
@@ -75,7 +74,11 @@ class _HomeTopState extends State<HomeTop> {
                           onTap: () {
                             Navigator.pushNamed(context, '/profile');
                           },
-                          child: SvgPicture.asset("assets/images/profile_icon.svg"),
+                          // child: SvgPicture.asset("assets/images/profile_icon.svg"),
+                          child: Image.asset(
+                            "assets/images/photo.png",
+                            width: 40,
+                          ),
                         ),
                       )
                     ],

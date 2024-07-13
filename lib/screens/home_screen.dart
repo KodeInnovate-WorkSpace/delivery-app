@@ -6,12 +6,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
-import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
@@ -45,9 +45,8 @@ class HomeScreenState extends State<HomeScreen> {
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
-    // initialize cart provider for loading cart items
     final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
-    // calling method to load the cart items
+
     initiateCartProvider.loadCart();
 
     fetchDataFuture = fetchData();
@@ -88,6 +87,7 @@ class HomeScreenState extends State<HomeScreen> {
       log('Error checking app maintenance status: $e');
     }
   }
+
   Future<void> checkLocationService() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -128,29 +128,24 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> checkAccess(String postalCode) async {
     try {
-      // Fetch all documents from the "location" collection
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('location').get();
 
-      // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
-        // Iterate through each document
         for (DocumentSnapshot document in querySnapshot.docs) {
-          // Assuming each document has 'postal_code' and 'status' fields
           int docPostalCode = document['postal_code'];
           int status = document['status'];
 
-          // Check if the postal code matches and the status is 1
           if (postalCode == docPostalCode.toString() && status == 1) {
             log("Access granted");
-            return; // Exit the function if access is granted
+            return;
           }
         }
-        // If no document with matching postal code and status 1 is found
+
         log("No document with matching postal code and status 1 found in Firestore");
       } else {
         log("No documents found in Firestore");
       }
-      // If no document with matching postal code and status 1 is found or no documents are found
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
@@ -193,7 +188,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   void showLocationDialog() {
     showDialog(
       context: context,
@@ -212,8 +206,9 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    ).then((_) => checkLocationService()); // Check location service again after dialog is closed
+    ).then((_) => checkLocationService());
   }
+
   Future<void> fetchCategory() async {
     try {
       final snapshot = await FirebaseFirestore.instance.collection("category").get();
@@ -237,7 +232,6 @@ class HomeScreenState extends State<HomeScreen> {
           // Sort categories by priority
           categories.sort((a, b) => a.priority.compareTo(b.priority));
         });
-
       } else {
         log("No Category Document Found!");
       }
@@ -276,38 +270,37 @@ class HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       log("Error fetching sub-category: $e");
-    }
-    finally{
+    } finally {
       setState(() {
         _isLoading = false;
       });
     }
-
   }
 
   Future<bool> showExitDialog() async {
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Exit'),
-        content: const Text('Do you want to exit the app?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Yes'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Exit'),
+            content: const Text('Do you want to exit the app?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('No'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false) ,
-            child: const Text('No'),
-          ),
-        ],
-      ),
-    ) ??
+        ) ??
         false;
   }
+
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? SkeletonScreen() : buildActualContent();
+    return _isLoading ? const SkeletonScreen() : buildActualContent();
   }
 
   Widget buildActualContent() {
@@ -342,10 +335,10 @@ class HomeScreenState extends State<HomeScreen> {
                         final alerts = snapshot.data!.docs
                             .where((doc) => doc['status'] == 1)
                             .map((doc) => {
-                          'message': doc['message'],
-                          'color': doc['color'],
-                          'textcolor': doc['textcolor'],
-                        })
+                                  'message': doc['message'],
+                                  'color': doc['color'],
+                                  'textcolor': doc['textcolor'],
+                                })
                             .toList();
 
                         if (alerts.isEmpty) {
@@ -353,7 +346,7 @@ class HomeScreenState extends State<HomeScreen> {
                         }
                         return SliverList(
                           delegate: SliverChildBuilderDelegate(
-                                (context, index) {
+                            (context, index) {
                               final alert = alerts[index];
                               return Container(
                                 color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
@@ -388,7 +381,7 @@ class HomeScreenState extends State<HomeScreen> {
                     // Displaying categories
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
+                        (BuildContext context, int index) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
                             child: FutureBuilder<void>(
@@ -400,6 +393,16 @@ class HomeScreenState extends State<HomeScreen> {
                                       color: Colors.black,
                                     ),
                                   );
+                                  // return Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   children: List.generate(
+                                  //     4,
+                                  //     (index) => Padding(
+                                  //       padding: const EdgeInsets.symmetric(horizontal: 5),
+                                  //       child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
+                                  //     ),
+                                  //   ),
+                                  // );
                                 } else if (snapshot.hasError) {
                                   return const Center(child: Text("Error"));
                                 } else {
@@ -427,7 +430,8 @@ class HomeScreenState extends State<HomeScreen> {
                                             itemCount: itemCount,
                                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 4,
-                                              childAspectRatio: 0.62,
+                                              // childAspectRatio: 0.62,
+                                              childAspectRatio: 0.56,
                                             ),
                                             itemBuilder: (context, subIndex) {
                                               if (subIndex < filteredSubCategories.length) {
@@ -448,8 +452,9 @@ class HomeScreenState extends State<HomeScreen> {
                                                         );
                                                       },
                                                       child: Container(
-                                                        width: 100,
-                                                        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
+                                                        // width: 100,
+                                                        width: 150,
+                                                        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                                                         decoration: const BoxDecoration(
                                                           color: Color(0xffeaf1fc),
                                                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -457,9 +462,11 @@ class HomeScreenState extends State<HomeScreen> {
                                                         child: Padding(
                                                           padding: const EdgeInsets.all(8.0),
                                                           child: CachedNetworkImage(
-                                                            height: 60,
+                                                            // height: 60,
+                                                            height: 80,
+                                                            // fit: BoxFit.fill,
                                                             imageUrl: subCategory.img,
-                                                            placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
+                                                            // placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
                                                             errorWidget: (context, url, error) => const Icon(Icons.error),
                                                           ),
                                                         ),
@@ -470,7 +477,9 @@ class HomeScreenState extends State<HomeScreen> {
                                                     Text(
                                                       subCategory.name,
                                                       textAlign: TextAlign.center,
-                                                      style: const TextStyle(fontSize: 12),
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.fade,
+                                                      style: const TextStyle(fontSize: 13, fontFamily: 'Gilroy-SemiBold'),
                                                     ),
                                                   ],
                                                 );
@@ -536,4 +545,19 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  // Widget _buildShimmerContainer({required double width, required double height, double borderRadius = 5}) {
+  //   return Shimmer.fromColors(
+  //     baseColor: Colors.grey[300]!,
+  //     highlightColor: Colors.grey[100]!,
+  //     child: Container(
+  //       width: width,
+  //       height: height,
+  //       decoration: BoxDecoration(
+  //         color: Colors.grey[300],
+  //         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

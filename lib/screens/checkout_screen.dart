@@ -277,7 +277,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final addressProvider = Provider.of<AddressProvider>(context);
 
     setState(() {
-      totalAmt = cartProvider.calculateGrandTotal();
+      totalAmt = cartProvider.calculateGrandTotal(deliveryCharge!);
       customerPhone = authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
 
@@ -288,6 +288,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Checkout'),
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
         ),
         body: cartProvider.cart.isEmpty
             ? Center(
@@ -398,7 +400,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             ),
                                           ],
                                         ),
-                                        // PaymentButton(selectedMethod: _selectedPaymentMethod),
                                         ElevatedButton(
                                           onPressed: () {
                                             HapticFeedback.heavyImpact();
