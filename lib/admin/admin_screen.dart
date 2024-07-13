@@ -4,6 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/admin/alertlabel/manage_alert_label.dart';
 import 'package:speedy_delivery/admin/appmaintenance/app_maintenance_list_screen.dart';
 import 'package:speedy_delivery/admin/banner/manage_banner_screen.dart';
+import 'package:speedy_delivery/admin/constants/manage_constant.dart';
+import 'package:speedy_delivery/admin/deliveredshopname/manage_shop_name.dart';
+import 'package:speedy_delivery/admin/discountcoupon/manage_coupon.dart';
 import 'package:speedy_delivery/admin/location/manage_location.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
@@ -20,8 +23,6 @@ class AdminScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Admin Panel"),
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: const Color(0xfff7f7f7),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -35,15 +36,13 @@ class AdminScreen extends StatelessWidget {
                             "Logout",
                             style: TextStyle(fontFamily: 'Gilroy-ExtraBold'),
                           ),
-                          content:
-                              const Text("Are you sure you want to logout?"),
+                          content: const Text("Are you sure you want to logout?"),
                           actions: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
+                                    onPressed: () => Navigator.of(context).pop(),
                                     child: const Text(
                                       "No",
                                       style: TextStyle(
@@ -53,14 +52,11 @@ class AdminScreen extends StatelessWidget {
                                 TextButton(
                                     onPressed: () async {
                                       await FirebaseAuth.instance.signOut();
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
                                       await prefs.remove('isLoggedIn');
                                       Navigator.pushAndRemoveUntil(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SigninScreen()),
+                                        MaterialPageRoute(builder: (context) => const SigninScreen()),
                                         (route) => false,
                                       );
                                     },
@@ -97,288 +93,381 @@ class AdminScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Manage User
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 18,
+              ),
+              // Manage User
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
                   ),
                 ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ManageUserScreen(),
-                    ));
-              },
-              child: const Text(
-                "Manage Users",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-
-            // Manage Category
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ManageCategoryScreen(),
-                    ));
-              },
-              child: const Text(
-                "Manage Categories",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-            // Manage Sub-Category
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ManageSubCategoryScreen(),
-                    ));
-              },
-              child: const Text(
-                "Manage Sub-Categories",
-                style: TextStyle(color: Colors.white, fontSize: 17),
-                //changed size
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-
-            // Manage Products
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      // builder: (context) => const ManageProductScreen(),
-                      builder: (context) => const ManageProduct(),
-                    ));
-              },
-              child: const Text(
-                "Manage Products",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-
-            // Manage Add images
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ManageBannerScreen(),
-                    ));
-              },
-              child: const Text(
-                "Manage Banner",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-
-            const SizedBox(
-              height: 18,
-            ),
-
-            //Assign Valet
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ManageValetScreen(),
-                    ));
-              },
-              child: const Text(
-                "Manage Orders",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-
-            //Manage App enabled
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  AppMaintenanceListScreen(),
-                  ),
-                );
-              },
-              child: const Align(
-                alignment: Alignment.center, // Adjust alignment as needed
-                child: Text(
-                  "Manage App Enabled",
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageUserScreen(),
+                      ));
+                },
+                child: const Text(
+                  "Manage Users",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-
-            //Manage Location
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
-                ),
+              const SizedBox(
+                height: 18,
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  LocationListScreen(),
+
+              // Manage Category
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                );
-              },
-              child: const Align(
-                alignment: Alignment.center, // Adjust alignment as needed
-                child: Text(
-                  "Manage Location",
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageCategoryScreen(),
+                      ));
+                },
+                child: const Text(
+                  "Manage Categories",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-
-            //Manage Alert
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+              const SizedBox(
+                height: 18,
+              ),
+              // Manage Sub-Category
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
                   ),
                 ),
-                fixedSize: WidgetStateProperty.all<Size>(
-                  const Size(260, 50), // Set your desired width and height here
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageSubCategoryScreen(),
+                      ));
+                },
+                child: const Text(
+                  "Manage Sub-Categories",
+                  style: TextStyle(color: Colors.white, fontSize: 17),
+                  //changed size
                 ),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  AlertLabelListScreen(),
+              const SizedBox(
+                height: 18,
+              ),
+
+              // Manage Products
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                );
-              },
-              child: const Align(
-                alignment: Alignment.center, // Adjust alignment as needed
-                child: Text(
-                  "Manage Alert Label",
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        // builder: (context) => const ManageProductScreen(),
+                        builder: (context) => const ManageProduct(),
+                      ));
+                },
+                child: const Text(
+                  "Manage Products",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-          ],
+              const SizedBox(
+                height: 18,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageBannerScreen(),
+                      ));
+                },
+                child: const Text(
+                  "Manage Banner",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+
+              const SizedBox(
+                height: 18,
+              ),
+
+              //Assign Valet
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageValetScreen(),
+                      ));
+                },
+                child: const Text(
+                  "Manage Orders",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+
+              //Manage App enabled
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppMaintenanceListScreen(),
+                    ),
+                  );
+                },
+                child: const Align(
+                  alignment: Alignment.center, // Adjust alignment as needed
+                  child: Text(
+                    "Manage App Enabled",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LocationListScreen(),
+                    ),
+                  );
+                },
+                child: const Align(
+                  alignment: Alignment.center, // Adjust alignment as needed
+                  child: Text(
+                    "Manage Location",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AlertLabelListScreen(),
+                    ),
+                  );
+                },
+                child: const Align(
+                  alignment: Alignment.center, // Adjust alignment as needed
+                  child: Text(
+                    "Manage Alert Label",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageOffersScreen(),
+                    ),
+                  );
+                },
+                child: const Align(
+                  alignment: Alignment.center, // Adjust alignment as needed
+                  child: Text(
+                    "Manage Coupon",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConstantsListScreen(),
+                    ),
+                  );
+                },
+                child: const Align(
+                  alignment: Alignment.center, // Adjust alignment as needed
+                  child: Text(
+                    "Manage Constants",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  fixedSize: WidgetStateProperty.all<Size>(
+                    const Size(260, 50), // Set your desired width and height here
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageDeliveredShopScreen(),
+                    ),
+                  );
+                },
+                child: const Align(
+                  alignment: Alignment.center, // Adjust alignment as needed
+                  child: Text(
+                    "See ShopNames",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+              // const SizedBox(
+              //   height: 18,
+              // ),
+              //first part
+            ],
+          ),
         ),
       ),
     );
