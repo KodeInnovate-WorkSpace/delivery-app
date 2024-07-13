@@ -437,7 +437,8 @@ class HomeScreenState extends State<HomeScreen> {
                                             itemCount: itemCount,
                                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 4,
-                                              childAspectRatio: 0.62,
+                                              // childAspectRatio: 0.62,
+                                              childAspectRatio: 0.56,
                                             ),
                                             itemBuilder: (context, subIndex) {
                                               if (subIndex < filteredSubCategories.length) {
@@ -458,8 +459,9 @@ class HomeScreenState extends State<HomeScreen> {
                                                         );
                                                       },
                                                       child: Container(
-                                                        width: 100,
-                                                        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
+                                                        // width: 100,
+                                                        width: 150,
+                                                        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                                                         decoration: const BoxDecoration(
                                                           color: Color(0xffeaf1fc),
                                                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -467,9 +469,11 @@ class HomeScreenState extends State<HomeScreen> {
                                                         child: Padding(
                                                           padding: const EdgeInsets.all(8.0),
                                                           child: CachedNetworkImage(
-                                                            height: 60,
+                                                            // height: 60,
+                                                            height: 80,
+                                                            // fit: BoxFit.fill,
                                                             imageUrl: subCategory.img,
-                                                            placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
+                                                            // placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
                                                             errorWidget: (context, url, error) => const Icon(Icons.error),
                                                           ),
                                                         ),
@@ -480,7 +484,9 @@ class HomeScreenState extends State<HomeScreen> {
                                                     Text(
                                                       subCategory.name,
                                                       textAlign: TextAlign.center,
-                                                      style: const TextStyle(fontSize: 12),
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: const TextStyle(fontSize: 13, fontFamily: 'Gilroy-SemiBold'),
                                                     ),
                                                   ],
                                                 );
