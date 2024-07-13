@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../shared/show_msg.dart';
+
 class ConstantsListScreen extends StatelessWidget {
   final CollectionReference collection = FirebaseFirestore.instance.collection('constants');
 
@@ -107,8 +109,7 @@ class EditConstantScreen extends StatefulWidget {
   final num currentDeliveryTime;
   final bool currentIsDeliveryFree;
 
-  const EditConstantScreen({
-    super.key,
+  EditConstantScreen({
     required this.docId,
     required this.currentAppVersion,
     required this.currentDeliveryCharge,
@@ -117,7 +118,7 @@ class EditConstantScreen extends StatefulWidget {
   });
 
   @override
-  State<EditConstantScreen> createState() => _EditConstantScreenState();
+  _EditConstantScreenState createState() => _EditConstantScreenState();
 }
 
 class _EditConstantScreenState extends State<EditConstantScreen> {
@@ -141,6 +142,21 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
     deliveryChargeController.dispose();
     deliveryTimeController.dispose();
     super.dispose();
+  }
+
+  void _updateConstant() async {
+    try {
+      await FirebaseFirestore.instance.collection('constants').doc(widget.docId).update({
+        'app_version': appVersionController.text,
+        'deliveryCharge': num.parse(deliveryChargeController.text),
+        'deliveryTime': num.parse(deliveryTimeController.text),
+        'isDeliveryFree': isDeliveryFree,
+      });
+      showMessage('Constant updated successfully');
+      Navigator.of(context).pop();
+    } catch (e) {
+      showMessage('Failed to update constant: $e');
+    }
   }
 
   @override
@@ -175,16 +191,7 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
               },
             ),
             ElevatedButton(
-              onPressed: () {
-                FirebaseFirestore.instance.collection('constants').doc(widget.docId).update({
-                  'app_version': appVersionController.text,
-                  'deliveryCharge': num.parse(deliveryChargeController.text),
-                  'deliveryTime': num.parse(deliveryTimeController.text),
-                  'isDeliveryFree': isDeliveryFree,
-                }).then((_) {
-                  Navigator.of(context).pop();
-                });
-              },
+              onPressed: _updateConstant,
               child: const Text('Save'),
             ),
           ],
@@ -205,6 +212,21 @@ class AddConstantScreen extends StatelessWidget {
     final deliveryChargeController = TextEditingController();
     final deliveryTimeController = TextEditingController();
     bool isDeliveryFree = false;
+
+    void _addConstant() async {
+      try {
+        await collection.add({
+          'app_version': appVersionController.text,
+          'deliveryCharge': num.parse(deliveryChargeController.text),
+          'deliveryTime': num.parse(deliveryTimeController.text),
+          'isDeliveryFree': isDeliveryFree,
+        });
+        showMessage('Constant added successfully');
+        Navigator.of(context).pop();
+      } catch (e) {
+        showMessage('Failed to add constant: $e');
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Add Constant')),
@@ -234,16 +256,7 @@ class AddConstantScreen extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              onPressed: () {
-                collection.add({
-                  'app_version': appVersionController.text,
-                  'deliveryCharge': num.parse(deliveryChargeController.text),
-                  'deliveryTime': num.parse(deliveryTimeController.text),
-                  'isDeliveryFree': isDeliveryFree,
-                }).then((_) {
-                  Navigator.of(context).pop();
-                });
-              },
+              onPressed: _addConstant,
               child: const Text('Add'),
             ),
           ],

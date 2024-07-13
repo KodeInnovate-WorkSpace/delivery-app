@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../shared/show_msg.dart';
+
 class EditLocationScreen extends StatefulWidget {
   final String docId;
   final int currentStatus;
   final int currentPostalCode;
 
-  const EditLocationScreen({super.key, 
+  const EditLocationScreen({
+    super.key,
     required this.docId,
     required this.currentStatus,
     required this.currentPostalCode,
@@ -37,11 +40,10 @@ class _EditLocationScreenState extends State<EditLocationScreen> {
         'status': _status,
         'postal_code': int.parse(postalCodeController.text),
       });
+      showMessage('Location updated successfully.');
       Navigator.pop(context, true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update: $e')),
-      );
+      showMessage('Failed to update location: $e');
     }
   }
 

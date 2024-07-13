@@ -29,7 +29,7 @@ class _ManageDeliveredShopScreenState extends State<ManageDeliveredShopScreen> {
         stream: _deliveredShopStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Text('Something went wrong');
+            return const Center(child: Text('Something went wrong'));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -37,32 +37,56 @@ class _ManageDeliveredShopScreenState extends State<ManageDeliveredShopScreen> {
           }
 
           return ListView(
+            padding: const EdgeInsets.all(8.0),
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
               List<dynamic> images = data['images'] ?? [];
 
               return Card(
-                child: ListTile(
-                  leading: images.isNotEmpty
-                      ? SizedBox(
-                    width: 100, // Adjust width as needed
-                    child: Wrap(
-                      spacing: 5.0, // Adjust spacing as needed
-                      children: images.map((image) {
-                        return SizedBox(
-                          width: 50, // Adjust width as needed
-                          child: CachedNetworkImage(imageUrl: image),
-                        );
-                      }).toList(),
-                    ),
-                  )
-                      : null,
-                  title: Text('Order ID: ${data['orderId']}'),
-                  subtitle: Column(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 4.0,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (images.isNotEmpty)
+                        SizedBox(
+                          height: 100,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: images.map((image) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: CachedNetworkImage(
+                                    imageUrl: image,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        'Order ID: ${data['orderId']}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      const SizedBox(height: 4.0),
                       Text('Phone Number: ${data['phoneNumber']}'),
+                      const SizedBox(height: 4.0),
                       Text('Shop Name: ${data['shopName']}'),
+                      const SizedBox(height: 4.0),
                       Text('Time of Pickup: ${DateFormat('yyyy-MM-dd – kk:mm').format((data['timeOfPickup'] as Timestamp).toDate())}'),
                     ],
                   ),

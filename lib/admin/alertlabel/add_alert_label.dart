@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../shared/show_msg.dart';
+
 class AddAlertLabelScreen extends StatefulWidget {
+  const AddAlertLabelScreen({super.key});
+
   @override
   _AddAlertLabelScreenState createState() => _AddAlertLabelScreenState();
 }
@@ -9,6 +13,7 @@ class AddAlertLabelScreen extends StatefulWidget {
 class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
   final CollectionReference collection = FirebaseFirestore.instance.collection('AlertLabel');
   final List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
+  final TextEditingController idController = TextEditingController(); // Controller for ID
   final TextEditingController colorController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
   final TextEditingController textColorController = TextEditingController();
@@ -16,17 +21,18 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
 
   void _addAlertLabel() async {
     try {
+      int id = int.parse(idController.text); // Parsing ID as an integer
       await collection.add({
+        'id': id, // Adding ID to Firestore document
         'color': colorController.text,
         'message': messageController.text,
         'status': _status,
         'textcolor': textColorController.text,
       });
+      showMessage('Alert label added successfully');
       Navigator.pop(context, true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add: $e')),
-      );
+      showMessage('Failed to add alert label: $e');
     }
   }
 
@@ -39,6 +45,15 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
         child: Column(
           children: [
             const SizedBox(height: 16.0),
+            TextField(
+              controller: idController,
+              decoration: const InputDecoration(
+                labelText: 'ID',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 20.0),
             TextField(
               controller: colorController,
               decoration: const InputDecoration(
@@ -114,3 +129,4 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
     );
   }
 }
+

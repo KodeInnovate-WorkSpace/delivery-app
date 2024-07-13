@@ -388,7 +388,7 @@ class AdminScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ManageOffersScreen(),
+                      builder: (context) => MainDisplayScreen(),
                     ),
                   );
                 },
@@ -462,9 +462,9 @@ class AdminScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // const SizedBox(
-              //   height: 18,
-              // ),
+              const SizedBox(
+                height: 18,
+              ),
               //first part
             ],
           ),

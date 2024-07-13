@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../shared/constants.dart';
-
 class Order {
   final String orderId;
   final String productName;
@@ -101,15 +99,15 @@ class OrderProvider with ChangeNotifier {
   String _selectedPaymentMethod = 'Online';
 
   double delvChrg = 0;
-  bool isDelfree;
+  // bool isDelfree;
 
   List<Order> get orders => _orders;
   String get selectedPaymentMethod => _selectedPaymentMethod;
 
   set setSelectedPaymentMethod(String value) {
     _selectedPaymentMethod = value;
-    var isDelivFree = getIsDelFree();
-    if (value == "Online" && isDelivFree) {
+    // var isDelivFree = getIsDelFree();
+    if (value == "Online") {
       delvChrg = 0;
     } else {
       delvChrg = 29;
@@ -117,10 +115,10 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getIsDelFree() async {
-    isDelfree = await fetchIsDeliveryFree();
-    return isDelfree;
-  }
+  // getIsDelFree() async {
+  //   isDelfree = await fetchIsDeliveryFree();
+  //   return isDelfree;
+  // }
 
   OrderProvider() {
     fetchOrders();

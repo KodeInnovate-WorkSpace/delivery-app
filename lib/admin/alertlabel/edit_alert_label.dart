@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../shared/show_msg.dart';
+
 class EditAlertLabelScreen extends StatefulWidget {
   final String docId;
   final String currentColor;
@@ -8,7 +10,7 @@ class EditAlertLabelScreen extends StatefulWidget {
   final int currentStatus;
   final String currentTextColor;
 
-  const EditAlertLabelScreen({super.key, 
+  const EditAlertLabelScreen({super.key,
     required this.docId,
     required this.currentColor,
     required this.currentMessage,
@@ -51,11 +53,10 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
         'status': _status,
         'textcolor': textColorController.text,
       });
+      showMessage('Update successful');
       Navigator.pop(context, true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update: $e')),
-      );
+      showMessage('Failed to update: $e');
     }
   }
 

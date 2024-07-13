@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../shared/show_msg.dart';
+
+
 class EditAppMaintenanceScreen extends StatefulWidget {
   final String docId;
   final int currentStatus;
@@ -25,11 +28,10 @@ class _EditAppMaintenanceScreenState extends State<EditAppMaintenanceScreen> {
   void _updateStatus() async {
     try {
       await collection.doc(widget.docId).update({'isAppEnabled': _isAppEnabled});
+      showMessage('Status updated successfully');
       Navigator.pop(context, true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update: $e')),
-      );
+      showMessage('Failed to update status: $e');
     }
   }
 
