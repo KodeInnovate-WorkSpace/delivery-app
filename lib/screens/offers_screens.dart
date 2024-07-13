@@ -15,7 +15,11 @@ class _OffersScreensState extends State<OffersScreens> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Apply Coupon"),
+        elevation: 0,
+        backgroundColor: const Color(0xfff7f7f7),
+        surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: const Color(0xfff7f7f7),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('offers').snapshots(),
         builder: (context, snapshot) {
@@ -45,19 +49,19 @@ class _OffersScreensState extends State<OffersScreens> {
                       child: Stack(
                         children: [
                           Card(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20), // Set the desired border radius
+                            ),
                             color: Colors.white,
-                            child: offerImage.isNotEmpty
-                                ? CachedNetworkImage(imageUrl: offerImage)
-                                : Image.asset(
-                                    "assets/images/placeholder_banner.png"),
+                            child: offerImage.isNotEmpty ? CachedNetworkImage(imageUrl: offerImage) : Image.asset("assets/images/placeholder_banner.png"),
                           ),
                           Positioned(
                               top: 10,
                               left: 20,
                               child: Text(
                                 "$offerName: Rs.$discount Off",
-                                style: const TextStyle(
-                                    fontFamily: 'Gilroy-Black', fontSize: 20),
+                                style: const TextStyle(fontFamily: 'Gilroy-Black', fontSize: 20),
                               )),
                         ],
                       ),

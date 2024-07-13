@@ -53,8 +53,9 @@ class _ProfilePageState extends State<ProfilePage> {
             Navigator.of(context).pop();
           },
         ),
-        backgroundColor: const Color(0xfff7f7f7),
         elevation: 0,
+        backgroundColor: const Color(0xfff7f7f7),
+        surfaceTintColor: Colors.transparent,
       ),
       backgroundColor: const Color(0xfff7f7f7),
       body: FutureBuilder<void>(

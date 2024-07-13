@@ -46,9 +46,8 @@ class HomeScreenState extends State<HomeScreen> {
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
-    // initialize cart provider for loading cart items
     final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
-    // calling method to load the cart items
+
     initiateCartProvider.loadCart();
 
     fetchDataFuture = fetchData();
@@ -130,29 +129,24 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> checkAccess(String postalCode) async {
     try {
-      // Fetch all documents from the "location" collection
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('location').get();
 
-      // Check if there are any documents in the collection
       if (querySnapshot.docs.isNotEmpty) {
-        // Iterate through each document
         for (DocumentSnapshot document in querySnapshot.docs) {
-          // Assuming each document has 'postal_code' and 'status' fields
           int docPostalCode = document['postal_code'];
           int status = document['status'];
 
-          // Check if the postal code matches and the status is 1
           if (postalCode == docPostalCode.toString() && status == 1) {
             log("Access granted");
-            return; // Exit the function if access is granted
+            return;
           }
         }
-        // If no document with matching postal code and status 1 is found
+
         log("No document with matching postal code and status 1 found in Firestore");
       } else {
         log("No documents found in Firestore");
       }
-      // If no document with matching postal code and status 1 is found or no documents are found
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
@@ -213,7 +207,7 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         );
       },
-    ).then((_) => checkLocationService()); // Check location service again after dialog is closed
+    ).then((_) => checkLocationService());
   }
 
   Future<void> fetchCategory() async {
@@ -485,7 +479,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                       subCategory.name,
                                                       textAlign: TextAlign.center,
                                                       maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow: TextOverflow.fade,
                                                       style: const TextStyle(fontSize: 13, fontFamily: 'Gilroy-SemiBold'),
                                                     ),
                                                   ],

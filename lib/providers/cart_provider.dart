@@ -1,12 +1,10 @@
-import 'dart:developer';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy_delivery/providers/order_provider.dart';
 import '../models/cart_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import '../shared/constants.dart';
+import 'dart:math';
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
@@ -39,9 +37,10 @@ class CartProvider extends ChangeNotifier {
     final totalPrice = calculateTotalPrice();
     final deliveryChargeValue = deliveryCharge ?? 0;
     final discountValue = _discount ?? 0;
-    final handlingCharge = (totalPrice + deliveryChargeValue - discountValue) * 0.018;
-
+    var handlingCharge = (totalPrice + deliveryChargeValue - discountValue) * 0.018;
+    handlingCharge = max(handlingCharge, 1.8);
     return handlingCharge.floorToDouble();
+    // return double.parse(handlingCharge.toStringAsFixed(2));
   }
 
   String itemCount(Cart item) {
@@ -153,9 +152,9 @@ class CartProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final String encodedCart = convert.jsonEncode(cartItems.map((item) => item.toJson()).toList());
       await prefs.setString(CARTITEM_KEY, encodedCart);
-      log("Item Stored in SP");
+      print("Item Stored in SP");
     } catch (e) {
-      log("Error storing cart in shared preference: $e");
+      print("Error storing cart in shared preference: $e");
     }
   }
 
@@ -164,13 +163,13 @@ class CartProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final String? encodedCart = prefs.getString(CARTITEM_KEY);
       if (encodedCart == null) {
-        log("No cart data exists");
+        print("No cart data exists");
         return [];
       }
       final List<dynamic> decodedCart = convert.jsonDecode(encodedCart);
       return decodedCart.map((item) => Cart.fromJson(item)).toList();
     } catch (e) {
-      log("Error retrieving cart for SP: $e");
+      print("Error retrieving cart for SP: $e");
       rethrow;
     }
   }

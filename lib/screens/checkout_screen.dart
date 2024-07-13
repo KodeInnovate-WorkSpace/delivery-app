@@ -288,6 +288,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Checkout'),
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
         ),
         body: cartProvider.cart.isEmpty
             ? Center(
@@ -385,11 +387,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     setState(() {
                                                       orderProvider.setSelectedPaymentMethod = newValue!;
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
-                                                      if (orderProvider.selectedPaymentMethod == "Online") {
-                                                        deliveryCharge = 0;
-                                                      } else {
-                                                        deliveryCharge = 29;
-                                                      }
+                                                      // if (orderProvider.selectedPaymentMethod == "Online") {
+                                                      //   deliveryCharge = 0;
+                                                      // } else {
+                                                      //   deliveryCharge = 29;
+                                                      // }
                                                     });
                                                   },
                                                   items: <String>['Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {

@@ -98,12 +98,19 @@ class OrderProvider with ChangeNotifier {
   List<Order> _orders = [];
   String _selectedPaymentMethod = 'Online';
 
+  double delvChrg = 0;
+
   List<Order> get orders => _orders;
   String get selectedPaymentMethod => _selectedPaymentMethod;
-  // Setter for selectedPaymentMethod
+
   set setSelectedPaymentMethod(String value) {
-    // Add any validation logic here if needed
     _selectedPaymentMethod = value;
+    if (value == "Online") {
+      delvChrg = 0;
+    } else {
+      delvChrg = 29;
+    }
+    notifyListeners();
   }
 
   OrderProvider() {
