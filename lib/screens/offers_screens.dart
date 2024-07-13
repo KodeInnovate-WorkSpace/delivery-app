@@ -56,13 +56,13 @@ class _OffersScreensState extends State<OffersScreens> {
                             color: Colors.white,
                             child: offerImage.isNotEmpty ? CachedNetworkImage(imageUrl: offerImage) : Image.asset("assets/images/placeholder_banner.png"),
                           ),
-                          Positioned(
-                              top: 10,
-                              left: 20,
-                              child: Text(
-                                "$offerName: Rs.$discount Off",
-                                style: const TextStyle(fontFamily: 'Gilroy-Black', fontSize: 20),
-                              )),
+                          // Positioned(
+                          //     top: 10,
+                          //     left: 20,
+                          //     child: Text(
+                          //       "$offerName: Rs.$discount Off",
+                          //       style: const TextStyle(fontFamily: 'Gilroy-Black', fontSize: 20),
+                          //     )),
                         ],
                       ),
                     )
