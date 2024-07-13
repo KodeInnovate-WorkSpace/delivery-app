@@ -1,7 +1,8 @@
 //updated file
 import 'package:flutter/material.dart';
 
-class ClosedScreen extends StatelessWidget {
+class
+ClosedScreen extends StatelessWidget {
   const ClosedScreen({super.key});
 
   @override
