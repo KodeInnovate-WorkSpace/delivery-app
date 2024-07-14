@@ -213,7 +213,7 @@ class AddConstantScreen extends StatelessWidget {
     final deliveryTimeController = TextEditingController();
     bool isDeliveryFree = false;
 
-    void _addConstant() async {
+    void addConstant() async {
       try {
         await collection.add({
           'app_version': appVersionController.text,
@@ -256,7 +256,7 @@ class AddConstantScreen extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              onPressed: _addConstant,
+              onPressed: addConstant,
               child: const Text('Add'),
             ),
           ],

@@ -14,8 +14,6 @@ class BillDetails extends StatefulWidget {
 }
 
 class _BillDetailsState extends State<BillDetails> {
-  double deliveryCharge = 29;
-
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -34,13 +32,6 @@ class _BillDetailsState extends State<BillDetails> {
           return const Text('No data available');
         } else {
           var data = snapshot.data!.data() as Map<String, dynamic>;
-
-          // Update the delivery charge based on the selected payment method
-          if (orderProvider.selectedPaymentMethod == "Online") {
-            deliveryCharge = 0;
-          } else {
-            deliveryCharge = (data['deliveryCharge'] ?? 29).toDouble();
-          }
 
           return Container(
             decoration: BoxDecoration(
@@ -100,14 +91,9 @@ class _BillDetailsState extends State<BillDetails> {
                       ),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: Consumer<OrderProvider>(
-                          builder: (context, orderProvider, child) {
-                            return Text(
-                              // '\u{20B9}${deliveryCharge.toStringAsFixed(0)}',
-                              '\u{20B9}${orderProvider.delvChrg.toStringAsFixed(0)}',
-                              style: const TextStyle(fontSize: 14),
-                            );
-                          },
+                        child: Text(
+                          '\u{20B9}${orderProvider.delvChrg.toStringAsFixed(0)}',
+                          style: const TextStyle(fontSize: 14),
                         ),
                       ),
                     ],
@@ -129,7 +115,6 @@ class _BillDetailsState extends State<BillDetails> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          // '\u{20B9}${handlingCharge.toStringAsFixed(2)}',
                           '\u{20B9}${cartProvider.calculateHandlingCharge()}',
                           style: const TextStyle(fontSize: 14),
                         ),
@@ -160,7 +145,6 @@ class _BillDetailsState extends State<BillDetails> {
                       ],
                     ),
 
-                  // const Divider(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -183,7 +167,7 @@ class _BillDetailsState extends State<BillDetails> {
                     children: [
                       const Text('To pay', style: TextStyle(fontSize: 16, fontFamily: 'Gilroy-Black')),
                       Text(
-                        '\u{20B9}${cartProvider.calculateGrandTotal(deliveryCharge)}',
+                        '\u{20B9}${cartProvider.calculateGrandTotal(deliveryCharge!)}',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ],

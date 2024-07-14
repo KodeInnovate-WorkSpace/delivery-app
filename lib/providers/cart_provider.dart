@@ -62,7 +62,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  void applyCoupon(String coupon, double discount, double delCharge) {
+  void applyCouponLogic(String coupon, double discount, double delCharge) {
     double grandTotal = calculateGrandTotal(delCharge);
     if (grandTotal > 30) {
       _selectedCoupon = coupon;
@@ -70,15 +70,16 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       clearCoupon();
-
       debugPrint("Grand total is less than 30. Coupon cannot be applied.");
+      showMessage("Grand total is less than 30. Coupon cannot be applied.");
+      notifyListeners();
     }
   }
 
   void clearCoupon() {
     _selectedCoupon = null;
     _discount = 0.0;
-    notifyListeners();
+    notifyListeners(); // Notify listeners when coupon is cleared
   }
 
   void clearCart() {
@@ -117,7 +118,7 @@ class CartProvider extends ChangeNotifier {
       // Check if grand total falls below threshold after removing item
       if (calculateGrandTotal(deliveryCharge ?? 0) < 30) {
         clearCoupon();
-        showMessage("Coupon removed, grand total is less than 30");
+        // showMessage("Coupon removed, grand total is less than 30");
       }
     }
 

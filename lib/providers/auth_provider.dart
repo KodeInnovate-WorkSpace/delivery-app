@@ -1,10 +1,12 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/connectors/v1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../screens/home_screen.dart';
 import '../screens/verify_phone_num_screen.dart';
+import 'check_user_provider.dart';
 
 class MyAuthProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
@@ -15,7 +17,6 @@ class MyAuthProvider with ChangeNotifier {
   String get phone => textController.text;
   int? get specificNumber => int.tryParse(phone);
   set isKeyboardOpen(bool isKeyboardOpen) {}
-
 
   //disable/enable button
   void setButtonEnabled(bool value) {

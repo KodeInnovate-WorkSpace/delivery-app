@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product_model.dart';
 import '../providers/auth_provider.dart';
 import '../widget/add_to_cart_button.dart';
+import '../widget/cart_button.dart'; // Import the CartButton widget
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -186,8 +187,8 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _recentSearches.clear();
       saveRecentSearches();
-      _productSearches.clear();
-      saveProductSearches();
+      // _productSearches.clear();
+      // saveProductSearches();
     });
   }
 
@@ -219,9 +220,9 @@ class _SearchPageState extends State<SearchPage> {
         prefixIcon: const Icon(Icons.search),
         suffixIcon: _controller.text.isNotEmpty
             ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: clearSearch,
-              )
+          icon: const Icon(Icons.clear),
+          onPressed: clearSearch,
+        )
             : null,
       ),
       style: const TextStyle(color: Colors.black),
@@ -388,6 +389,115 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       title: const Text('Product Search'),
+  //       backgroundColor: const Color(0xfff7f7f7),
+  //       elevation: 0,
+  //     ),
+  //     backgroundColor: const Color(0xfff7f7f7),
+  //     body: SingleChildScrollView(
+  //       child: Padding(
+  //         padding: const EdgeInsets.all(16.0),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Row(
+  //               children: [
+  //                 Expanded(child: searchBar()),
+  //                 const SizedBox(width: 8),
+  //                 const CartButton(), // Add the CartButton widget here
+  //               ],
+  //             ),
+  //             const SizedBox(height: 20),
+  //             if (_filteredProducts.isNotEmpty)
+  //               Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   const Text(
+  //                     'Search Results',
+  //                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  //                   ),
+  //                   const SizedBox(height: 10),
+  //                   ListView.builder(
+  //                     shrinkWrap: true,
+  //                     physics: const NeverScrollableScrollPhysics(),
+  //                     itemCount: _filteredProducts.length,
+  //                     itemBuilder: (context, index) {
+  //                       final product = _filteredProducts[index];
+  //                       return productCard(product);
+  //                     },
+  //                   ),
+  //                 ],
+  //               ),
+  //             if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
+  //               Text(
+  //                 'Product not found',
+  //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
+  //               ),
+  //             if (_recentSearches.isNotEmpty) ...[
+  //               const SizedBox(height: 20),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   const Text(
+  //                     'Recently Searched',
+  //                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  //                   ),
+  //                   TextButton(
+  //                     onPressed: clearRecentSearches,
+  //                     child: const Text('Clear', style: TextStyle(color: Colors.red)),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 5),
+  //               const Divider(),
+  //               const SizedBox(height: 5),
+  //               SizedBox(
+  //                 height: 120,
+  //                 child: ListView.builder(
+  //                   itemCount: _recentSearches.length,
+  //                   scrollDirection: Axis.horizontal,
+  //                   itemBuilder: (context, index) {
+  //                     final recentSearch = _recentSearches[index];
+  //                     return Padding(
+  //                       padding: const EdgeInsets.only(right: 10),
+  //                       child: recentSearchCard(recentSearch),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             ],
+  //             if (_productSearches.isNotEmpty) ...[
+  //               const SizedBox(height: 20),
+  //               const Text(
+  //                 'Product Searches',
+  //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               SizedBox(
+  //                 height: 200,
+  //                 child: ListView.builder(
+  //                   itemCount: _productSearches.length,
+  //                   scrollDirection: Axis.vertical,
+  //                   itemBuilder: (context, index) {
+  //                     final productSearch = _productSearches[index];
+  //                     return Padding(
+  //                       padding: const EdgeInsets.only(bottom: 10),
+  //                       child: productSearchCard(productSearch),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             ],
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -397,8 +507,7 @@ class _SearchPageState extends State<SearchPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xfff7f7f7),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
+      body: SafeArea(
         child: Stack(
           children: [
             SingleChildScrollView(
@@ -493,9 +602,244 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CartButton(),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+//below cart button
+// @override
+// Widget build(BuildContext context) {
+//   return Scaffold(
+//     appBar: AppBar(
+//       title: const Text('Product Search'),
+//       backgroundColor: const Color(0xfff7f7f7),
+//       elevation: 0,
+//     ),
+//     backgroundColor: const Color(0xfff7f7f7),
+//     body: SafeArea(
+//       child: Stack(
+//         children: [
+//           SingleChildScrollView(
+//             child: Padding(
+//               padding: const EdgeInsets.all(16.0),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   searchBar(),
+//                   const SizedBox(height: 20),
+//                   if (_filteredProducts.isNotEmpty)
+//                     Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         const Text(
+//                           'Search Results',
+//                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+//                         ),
+//                         const SizedBox(height: 10),
+//                         ListView.builder(
+//                           shrinkWrap: true,
+//                           physics: const NeverScrollableScrollPhysics(),
+//                           itemCount: _filteredProducts.length,
+//                           itemBuilder: (context, index) {
+//                             final product = _filteredProducts[index];
+//                             return productCard(product);
+//                           },
+//                         ),
+//                       ],
+//                     ),
+//                   if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
+//                     Text(
+//                       'Product not found',
+//                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
+//                     ),
+//                   if (_recentSearches.isNotEmpty) ...[
+//                     const SizedBox(height: 20),
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                       children: [
+//                         const Text(
+//                           'Recently Searched',
+//                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+//                         ),
+//                         TextButton(
+//                           onPressed: clearRecentSearches,
+//                           child: const Text('Clear', style: TextStyle(color: Colors.red)),
+//                         ),
+//                       ],
+//                     ),
+//                     const SizedBox(height: 5),
+//                     const Divider(),
+//                     const SizedBox(height: 5),
+//                     SizedBox(
+//                       height: 120,
+//                       child: ListView.builder(
+//                         itemCount: _recentSearches.length,
+//                         scrollDirection: Axis.horizontal,
+//                         itemBuilder: (context, index) {
+//                           final recentSearch = _recentSearches[index];
+//                           return Padding(
+//                             padding: const EdgeInsets.only(right: 10),
+//                             child: recentSearchCard(recentSearch),
+//                           );
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                   if (_productSearches.isNotEmpty) ...[
+//                     const SizedBox(height: 20),
+//                     const Text(
+//                       'Product Searches',
+//                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+//                     ),
+//                     const SizedBox(height: 10),
+//                     SizedBox(
+//                       height: 200,
+//                       child: ListView.builder(
+//                         itemCount: _productSearches.length,
+//                         scrollDirection: Axis.vertical,
+//                         itemBuilder: (context, index) {
+//                           final productSearch = _productSearches[index];
+//                           return Padding(
+//                             padding: const EdgeInsets.only(bottom: 10),
+//                             child: productSearchCard(productSearch),
+//                           );
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                 ],
+//               ),
+//             ),
+//           ),
+//           Align(
+//             alignment: Alignment.bottomRight,
+//             child: Padding(
+//               padding: const EdgeInsets.all(16.0),
+//               child: CartButton(),
+//             ),
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }
+// no cart button
+// @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Product Search'),
+//         backgroundColor: const Color(0xfff7f7f7),
+//         elevation: 0,
+//       ),
+//       backgroundColor: const Color(0xfff7f7f7),
+//       body: SizedBox(
+//         height: MediaQuery.of(context).size.height,
+//         child: Stack(
+//           children: [
+//             SingleChildScrollView(
+//               child: Padding(
+//                 padding: const EdgeInsets.all(16.0),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     searchBar(),
+//                     const SizedBox(height: 20),
+//                     if (_filteredProducts.isNotEmpty)
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           const Text(
+//                             'Search Results',
+//                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+//                           ),
+//                           const SizedBox(height: 10),
+//                           ListView.builder(
+//                             shrinkWrap: true,
+//                             physics: const NeverScrollableScrollPhysics(),
+//                             itemCount: _filteredProducts.length,
+//                             itemBuilder: (context, index) {
+//                               final product = _filteredProducts[index];
+//                               return productCard(product);
+//                             },
+//                           ),
+//                         ],
+//                       ),
+//                     if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
+//                       Text(
+//                         'Product not found',
+//                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
+//                       ),
+//                     if (_recentSearches.isNotEmpty) ...[
+//                       const SizedBox(height: 20),
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           const Text(
+//                             'Recently Searched',
+//                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+//                           ),
+//                           TextButton(
+//                             onPressed: clearRecentSearches,
+//                             child: const Text('Clear', style: TextStyle(color: Colors.red)),
+//                           ),
+//                         ],
+//                       ),
+//                       const SizedBox(height: 5),
+//                       const Divider(),
+//                       const SizedBox(height: 5),
+//                       SizedBox(
+//                         height: 120,
+//                         child: ListView.builder(
+//                           itemCount: _recentSearches.length,
+//                           scrollDirection: Axis.horizontal,
+//                           itemBuilder: (context, index) {
+//                             final recentSearch = _recentSearches[index];
+//                             return Padding(
+//                               padding: const EdgeInsets.only(right: 10),
+//                               child: recentSearchCard(recentSearch),
+//                             );
+//                           },
+//                         ),
+//                       ),
+//                     ],
+//                     if (_productSearches.isNotEmpty) ...[
+//                       const SizedBox(height: 20),
+//                       const Text(
+//                         'Product Searches',
+//                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+//                       ),
+//                       const SizedBox(height: 10),
+//                       SizedBox(
+//                         height: 200,
+//                         child: ListView.builder(
+//                           itemCount: _productSearches.length,
+//                           scrollDirection: Axis.vertical,
+//                           itemBuilder: (context, index) {
+//                             final productSearch = _productSearches[index];
+//                             return Padding(
+//                               padding: const EdgeInsets.only(bottom: 10),
+//                               child: productSearchCard(productSearch),
+//                             );
+//                           },
+//                         ),
+//                       ),
+//                     ],
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }

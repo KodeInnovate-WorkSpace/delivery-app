@@ -119,6 +119,7 @@
 // }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -173,14 +174,14 @@ class CheckUserProvider with ChangeNotifier {
       String todayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
       // Check if the user exists
       await checkUserProvider.doesUserExists(authProvider.phone);
-
+      final token = await FirebaseMessaging.instance.getToken();
       if (!checkUserProvider._isUserExist) {
         // Add new user data if user does not exist
         await firestore.collection('users').add({
           'id': const Uuid().v4(),
           'phone': authProvider.phone,
           field: value,
-          // Add other user data here if necessary
+          'fcmToken': token,
           'date': todayDate,
           'status': 1,
           'name': '',

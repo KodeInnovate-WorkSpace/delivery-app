@@ -44,7 +44,7 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
             onRefresh: _refreshPage,
             child: ListView(children: [
               PaginatedDataTable(
-                dataRowHeight: 65,
+                dataRowHeight: 100,
                 showEmptyRows: false,
                 columns: const [
                   DataColumn(label: Text('No.')),

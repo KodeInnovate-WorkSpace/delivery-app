@@ -7,6 +7,7 @@ import 'package:speedy_delivery/widget/apply_coupon_widget.dart';
 import 'package:speedy_delivery/widget/bill_details_widget.dart';
 import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/order_provider.dart';
+import '../services/push_notification.dart';
 import '../widget/network_handler.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
@@ -25,7 +26,6 @@ import 'package:flutter_cashfree_pg_sdk/api/cftheme/cftheme.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:http/http.dart' as http;
-
 import '../screens/address_input.dart';
 import '../screens/order_confirmation_screen.dart';
 
@@ -384,8 +384,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   style: const TextStyle(color: Colors.black),
                                                   underline: Container(),
                                                   onChanged: (String? newValue) {
+                                                    // setState(() {
+                                                    //   orderProvider.setSelectedPaymentMethod = newValue!;
+                                                    //   _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
+                                                    // });
                                                     setState(() {
-                                                      orderProvider.setSelectedPaymentMethod = newValue!;
+                                                      orderProvider.selectedPaymentMethod = newValue!;
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
                                                     });
                                                   },
@@ -531,6 +535,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 },
                                               );
                                             }
+
+                                            LocalNotificationService().sendNotificationToSelectedAdmin(title: 'This is title', body: 'This is body', token: 'cL_n41xzQzKYIapYNkDebc:APA91bEZk0zrFurxYkRIgMYNwsgB2KCUhx5CIJRkrPuVnprtttUE1EKTG5DpEQ-2RmBLgpCEC3eHAmEdHY1bnPew9aWMXGaUDMjAbVQ5Njp2sPMkVK0KPgxlj6NI-ZoTZfPX2sPLKBRn');
                                           },
                                           style: ButtonStyle(
                                             shape: WidgetStateProperty.all<RoundedRectangleBorder>(

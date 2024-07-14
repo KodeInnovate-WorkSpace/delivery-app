@@ -15,6 +15,32 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
   String? selectedOffer;
   double? selectedDiscount;
 
+  @override
+  void initState() {
+    super.initState();
+    // Listen to changes in CartProvider
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    cartProvider.addListener(_updateCouponState);
+  }
+
+  @override
+  void dispose() {
+    // Remove listener to avoid memory leaks
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    cartProvider.removeListener(_updateCouponState);
+    super.dispose();
+  }
+
+  void _updateCouponState() {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    if (cartProvider.Discount == 0) {
+      setState(() {
+        selectedOffer = null;
+        selectedDiscount = null;
+      });
+    }
+  }
+
   void _removeCoupon() {
     setState(() {
       selectedOffer = null;
@@ -31,7 +57,9 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
     if (offer != null) {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
-      cartProvider.applyCoupon(offer['offerName'], offer['discount'].toDouble(), deliveryCharge!);
+      final delCharge = await fetchDeliveryCharge();
+
+      cartProvider.applyCouponLogic(offer['offerName'], offer['discount'].toDouble(), delCharge);
 
       // Check if coupon was successfully applied
       if (cartProvider.Discount != 0) {
