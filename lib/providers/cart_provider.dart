@@ -62,7 +62,6 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-
   void applyCoupon(String coupon, double discount, double delCharge) {
     double grandTotal = calculateGrandTotal(delCharge);
     if (grandTotal > 30) {
@@ -71,11 +70,10 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       clearCoupon();
-      showMessage("Coupon can only be applied on orders above Rs.30/-");
+
       debugPrint("Grand total is less than 30. Coupon cannot be applied.");
     }
   }
-
 
   void clearCoupon() {
     _selectedCoupon = null;
@@ -114,6 +112,12 @@ class CartProvider extends ChangeNotifier {
         if (_cartItems.isEmpty) {
           _cartItems.clear();
         }
+      }
+
+      // Check if grand total falls below threshold after removing item
+      if (calculateGrandTotal(deliveryCharge ?? 0) < 30) {
+        clearCoupon();
+        showMessage("Coupon removed, grand total is less than 30");
       }
     }
 
