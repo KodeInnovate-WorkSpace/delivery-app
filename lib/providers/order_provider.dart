@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/shared/constants.dart';
 
 class Order {
   final String orderId;
@@ -97,31 +98,42 @@ class Order {
 class OrderProvider with ChangeNotifier {
   List<Order> _orders = [];
   String _selectedPaymentMethod = 'Online';
-
   double delvChrg = 0;
-  // bool isDelfree;
 
   List<Order> get orders => _orders;
   String get selectedPaymentMethod => _selectedPaymentMethod;
 
-  set setSelectedPaymentMethod(String value) {
+  set selectedPaymentMethod(String value) {
     _selectedPaymentMethod = value;
-    // var isDelivFree = getIsDelFree();
-    if (value == "Online") {
-      delvChrg = 0;
-    } else {
-      delvChrg = 29;
-    }
-    notifyListeners();
+    _updateDeliveryCharge();
   }
-
-  // getIsDelFree() async {
-  //   isDelfree = await fetchIsDeliveryFree();
-  //   return isDelfree;
-  // }
 
   OrderProvider() {
     fetchOrders();
+    _updateDeliveryCharge();
+  }
+
+  void _updateDeliveryCharge() async {
+    bool isDeliveryFree = await _fetchDeliveryChargeStatus();
+    // delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : 29;
+    double charge = await fetchDeliveryCharge();
+
+    delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : charge;
+
+    notifyListeners();
+  }
+
+  Future<bool> _fetchDeliveryChargeStatus() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance.collection('constants').get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first.data()['isDeliveryFree'] as bool;
+      }
+    } catch (e) {
+      // Handle errors appropriately
+      print("Error fetching delivery charge status: $e");
+    }
+    return false; // Default value if there's an error or the document doesn't exist
   }
 
   void addOrders(List<Order> orders, String ordId, String phone) {

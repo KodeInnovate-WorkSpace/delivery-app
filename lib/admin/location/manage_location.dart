@@ -91,7 +91,7 @@ class LocationListScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddLocationScreen()),
+            MaterialPageRoute(builder: (context) => const AddLocationScreen()),
           );
         },
         child: const Icon(Icons.add),

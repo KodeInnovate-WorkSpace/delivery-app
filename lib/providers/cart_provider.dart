@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/shared/show_msg.dart';
 import '../models/cart_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
@@ -61,21 +62,29 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  void applyCoupon(String coupon, double discount) {
-    _selectedCoupon = coupon;
-    _discount = discount;
-    notifyListeners();
+  void applyCouponLogic(String coupon, double discount, double delCharge) {
+    double grandTotal = calculateGrandTotal(delCharge);
+    if (grandTotal > 30) {
+      _selectedCoupon = coupon;
+      _discount = discount;
+      notifyListeners();
+    } else {
+      clearCoupon();
+      debugPrint("Grand total is less than 30. Coupon cannot be applied.");
+      showMessage("Grand total is less than 30. Coupon cannot be applied.");
+      notifyListeners();
+    }
   }
 
   void clearCoupon() {
     _selectedCoupon = null;
     _discount = 0.0;
-    notifyListeners();
+    notifyListeners(); // Notify listeners when coupon is cleared
   }
 
   void clearCart() {
     _cartItems.clear();
-    clearCoupon(); // Clear the coupon state
+    clearCoupon();
     saveCart();
     notifyListeners();
   }
@@ -104,6 +113,12 @@ class CartProvider extends ChangeNotifier {
         if (_cartItems.isEmpty) {
           _cartItems.clear();
         }
+      }
+
+      // Check if grand total falls below threshold after removing item
+      if (calculateGrandTotal(deliveryCharge ?? 0) < 30) {
+        clearCoupon();
+        // showMessage("Coupon removed, grand total is less than 30");
       }
     }
 
