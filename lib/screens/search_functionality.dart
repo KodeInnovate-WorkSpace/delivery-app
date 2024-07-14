@@ -602,10 +602,10 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
-            Align(
+            const Align(
               alignment: Alignment.bottomRight,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: CartButton(),
               ),
             ),
