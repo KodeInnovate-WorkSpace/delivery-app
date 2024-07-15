@@ -31,6 +31,7 @@ class ConstantsListScreen extends StatelessWidget {
                     Text('Delivery Charge: \$${data['deliveryCharge']}'),
                     Text('Delivery Time: ${data['deliveryTime']} minutes'),
                     Text('Is Delivery Free: ${data['isDeliveryFree'] ? 'Yes' : 'No'}'),
+                    Text('Max Total for Coupon: ${data['maxTotalForCoupon']}'),
                   ],
                 ),
                 trailing: Row(
@@ -46,6 +47,7 @@ class ConstantsListScreen extends StatelessWidget {
                               docId: docs[index].id,
                               currentAppVersion: data['app_version'],
                               currentDeliveryCharge: data['deliveryCharge'],
+                              currentMaxTotalForCoupon: data['maxTotalForCoupon'],
                               currentDeliveryTime: data['deliveryTime'],
                               currentIsDeliveryFree: data['isDeliveryFree'],
                             ),
@@ -106,6 +108,7 @@ class EditConstantScreen extends StatefulWidget {
   final String docId;
   final String currentAppVersion;
   final num currentDeliveryCharge;
+  final num currentMaxTotalForCoupon;
   final num currentDeliveryTime;
   final bool currentIsDeliveryFree;
 
@@ -113,6 +116,7 @@ class EditConstantScreen extends StatefulWidget {
     required this.docId,
     required this.currentAppVersion,
     required this.currentDeliveryCharge,
+    required this.currentMaxTotalForCoupon,
     required this.currentDeliveryTime,
     required this.currentIsDeliveryFree,
   });
@@ -124,6 +128,7 @@ class EditConstantScreen extends StatefulWidget {
 class _EditConstantScreenState extends State<EditConstantScreen> {
   late TextEditingController appVersionController;
   late TextEditingController deliveryChargeController;
+  late TextEditingController maxTotalForCouponController;
   late TextEditingController deliveryTimeController;
   late bool isDeliveryFree;
 
@@ -132,6 +137,7 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
     super.initState();
     appVersionController = TextEditingController(text: widget.currentAppVersion);
     deliveryChargeController = TextEditingController(text: widget.currentDeliveryCharge.toString());
+    maxTotalForCouponController = TextEditingController(text: widget.currentMaxTotalForCoupon.toString());
     deliveryTimeController = TextEditingController(text: widget.currentDeliveryTime.toString());
     isDeliveryFree = widget.currentIsDeliveryFree;
   }
@@ -140,6 +146,7 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
   void dispose() {
     appVersionController.dispose();
     deliveryChargeController.dispose();
+    maxTotalForCouponController.dispose();
     deliveryTimeController.dispose();
     super.dispose();
   }
@@ -149,6 +156,7 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
       await FirebaseFirestore.instance.collection('constants').doc(widget.docId).update({
         'app_version': appVersionController.text,
         'deliveryCharge': num.parse(deliveryChargeController.text),
+        'maxTotalForCoupon': num.parse(maxTotalForCouponController.text),
         'deliveryTime': num.parse(deliveryTimeController.text),
         'isDeliveryFree': isDeliveryFree,
       });
@@ -174,6 +182,11 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
             TextField(
               controller: deliveryChargeController,
               decoration: const InputDecoration(labelText: 'Delivery Charge'),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: maxTotalForCouponController,
+              decoration: const InputDecoration(labelText: 'Max Total For Coupon'),
               keyboardType: TextInputType.number,
             ),
             TextField(
@@ -210,6 +223,7 @@ class AddConstantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appVersionController = TextEditingController();
     final deliveryChargeController = TextEditingController();
+    final maxTotalForCouponController = TextEditingController();
     final deliveryTimeController = TextEditingController();
     bool isDeliveryFree = false;
 
@@ -218,6 +232,7 @@ class AddConstantScreen extends StatelessWidget {
         await collection.add({
           'app_version': appVersionController.text,
           'deliveryCharge': num.parse(deliveryChargeController.text),
+          'maxTotalForCoupon': num.parse(maxTotalForCouponController.text),
           'deliveryTime': num.parse(deliveryTimeController.text),
           'isDeliveryFree': isDeliveryFree,
         });
@@ -243,6 +258,12 @@ class AddConstantScreen extends StatelessWidget {
               decoration: const InputDecoration(labelText: 'Delivery Charge'),
               keyboardType: TextInputType.number,
             ),
+            TextField(
+              controller: maxTotalForCouponController,
+              decoration: const InputDecoration(labelText: 'Max Total for Coupon'),
+              keyboardType: TextInputType.number,
+            ),
+
             TextField(
               controller: deliveryTimeController,
               decoration: const InputDecoration(labelText: 'Delivery Time'),

@@ -59,7 +59,7 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
 
       final delCharge = await fetchDeliveryCharge();
 
-      cartProvider.applyCouponLogic(offer['offerName'], offer['discount'].toDouble(), delCharge);
+      cartProvider.applyCouponLogic(offer['offerName'], offer['discount'].toDouble());
 
       // Check if coupon was successfully applied
       if (cartProvider.Discount != 0) {

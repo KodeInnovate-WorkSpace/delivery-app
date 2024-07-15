@@ -137,8 +137,9 @@ class _BillDetailsState extends State<BillDetails> {
                         ),
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Text(
-                            '- \u{20B9}${cartProvider.Discount.toStringAsFixed(2)}',
+                          child:
+                          Text(
+                            '- \u{20B9}${ cartProvider.Discount.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 14),
                           ),
                         ),
@@ -167,11 +168,15 @@ class _BillDetailsState extends State<BillDetails> {
                     children: [
                       const Text('To pay', style: TextStyle(fontSize: 16, fontFamily: 'Gilroy-Black')),
                       Text(
-                        '\u{20B9}${cartProvider.calculateGrandTotal(deliveryCharge!)}',
+                        '\u{20B9}${cartProvider.calculateGrandTotal(orderProvider.selectedPaymentMethod)}',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ],
                   ),
+                  Visibility(
+                    visible: cartProvider.calculateTotalDiscount(orderProvider.selectedPaymentMethod == 'Online' && isDeliveryFree! ? 0 : deliveryCharge!) > 0,
+                    child: Text('Awesome savings! You’re getting \u{20B9}${cartProvider.calculateTotalDiscount(orderProvider.selectedPaymentMethod == 'Online' && isDeliveryFree! ? 0 : deliveryCharge!)} off.', style: const TextStyle(fontSize: 14, fontFamily: 'Gilroy-Black', color: Colors.green,)),
+                  )
                 ],
               ),
             ),

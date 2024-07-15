@@ -431,22 +431,27 @@ class BannerModel extends ChangeNotifier {
 //   }
 //
 //
-// }
+
 class ValetModel extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> manageOrder() async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance.collection('OrderHistory').get();
-      return querySnapshot.docs
-          .map((doc) => {
-                ...doc.data(),
-                // 'sub_category_id': doc.id, // Include the document ID
-              })
-          .toList();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('OrderHistory')
+          .orderBy('timestamp', descending: true) // Sort by date, latest first
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        return {
+          ...doc.data(),
+          // 'sub_category_id': doc.id, // Uncomment if you want to include the document ID
+        };
+      }).toList();
     } catch (e) {
       log("Error: $e");
       return [];
     }
   }
+
 
   Future<List<Map<String, dynamic>>> manageValet() async {
     try {

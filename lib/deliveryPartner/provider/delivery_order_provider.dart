@@ -10,7 +10,9 @@ class AllOrderProvider with ChangeNotifier {
     fetchAllOrders();
   }
   void fetchAllOrders() {
-    FirebaseFirestore.instance.collection('OrderHistory').snapshots().listen((snapshot) {
+    FirebaseFirestore.instance.collection('OrderHistory')
+        .orderBy('timestamp', descending: true) // Sort by date, latest first
+        .snapshots().listen((snapshot) {
       _allOrders = snapshot.docs
           .map((doc) {
             final data = doc.data();

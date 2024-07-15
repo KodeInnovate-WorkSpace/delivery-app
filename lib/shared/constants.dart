@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 int? deliveryTime;
 String? appVer;
 double? deliveryCharge;
+double? maxTotalForCoupon;
 bool? isDeliveryFree;
 
 Future<void> fetchConstantFromFirebase() async {
@@ -14,7 +15,9 @@ Future<void> fetchConstantFromFirebase() async {
     if (constantDoc.exists) {
       deliveryCharge = (constantDoc.get('deliveryCharge') ?? 29).toDouble();
       deliveryTime = (constantDoc.get('deliveryTime') ?? 20);
+      isDeliveryFree = (constantDoc.get('isDeliveryFree') ?? false);
       appVer = constantDoc.get('app_version');
+      maxTotalForCoupon = (constantDoc.get('maxTotalForCoupon') ?? 50).toDouble();
     } else {
       log('Document does not exist');
     }

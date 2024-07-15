@@ -43,7 +43,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     super.initState();
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-
     customerId = _generateCustomerId();
     cfPaymentGatewayService.setCallback(verifyPayment, (errorResponse, orderId) => onError(errorResponse, orderId, context, orderProvider));
   }
@@ -277,7 +276,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final addressProvider = Provider.of<AddressProvider>(context);
 
     setState(() {
-      totalAmt = cartProvider.calculateGrandTotal(deliveryCharge!);
+      totalAmt = cartProvider.calculateGrandTotal(cartProvider.selectedPaymentMethod);
       customerPhone = authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
 
@@ -384,12 +383,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   style: const TextStyle(color: Colors.black),
                                                   underline: Container(),
                                                   onChanged: (String? newValue) {
-                                                    // setState(() {
-                                                    //   orderProvider.setSelectedPaymentMethod = newValue!;
-                                                    //   _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
-                                                    // });
                                                     setState(() {
                                                       orderProvider.selectedPaymentMethod = newValue!;
+                                                      double total = cartProvider.calculateGrandTotal(newValue);
+                                                      if((total - cartProvider.Discount) < 50){
+                                                        cartProvider.clearCoupon();
+                                                      }
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
                                                     });
                                                   },

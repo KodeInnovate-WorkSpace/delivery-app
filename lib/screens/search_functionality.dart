@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/widget/cart_button.dart';
 import '../models/product_model.dart';
 import '../providers/auth_provider.dart';
-import '../widget/add_to_cart_button.dart';
-import '../widget/cart_button.dart'; // Import the CartButton widget
+import '../widget/add_to_cart_button.dart';// Import your cart screen
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -187,8 +187,8 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _recentSearches.clear();
       saveRecentSearches();
-      // _productSearches.clear();
-      // saveProductSearches();
+      _productSearches.clear();
+      saveProductSearches();
     });
   }
 
@@ -240,7 +240,6 @@ class _SearchPageState extends State<SearchPage> {
   void clearSearch() {
     setState(() {
       _controller.clear();
-      // _productSearches.clear();
       _filteredProducts.clear();
       _hasStoredQuery = false;
     });
@@ -268,13 +267,13 @@ class _SearchPageState extends State<SearchPage> {
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+            borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), // Shadow color
-                spreadRadius: 2, // Spread radius
-                blurRadius: 5, // Blur radius
-                offset: const Offset(0, 2), // Shadow offset (x, y)
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -294,7 +293,6 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     const SizedBox(height: 5),
                     Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -389,115 +387,6 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text('Product Search'),
-  //       backgroundColor: const Color(0xfff7f7f7),
-  //       elevation: 0,
-  //     ),
-  //     backgroundColor: const Color(0xfff7f7f7),
-  //     body: SingleChildScrollView(
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(16.0),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Row(
-  //               children: [
-  //                 Expanded(child: searchBar()),
-  //                 const SizedBox(width: 8),
-  //                 const CartButton(), // Add the CartButton widget here
-  //               ],
-  //             ),
-  //             const SizedBox(height: 20),
-  //             if (_filteredProducts.isNotEmpty)
-  //               Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   const Text(
-  //                     'Search Results',
-  //                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-  //                   ),
-  //                   const SizedBox(height: 10),
-  //                   ListView.builder(
-  //                     shrinkWrap: true,
-  //                     physics: const NeverScrollableScrollPhysics(),
-  //                     itemCount: _filteredProducts.length,
-  //                     itemBuilder: (context, index) {
-  //                       final product = _filteredProducts[index];
-  //                       return productCard(product);
-  //                     },
-  //                   ),
-  //                 ],
-  //               ),
-  //             if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
-  //               Text(
-  //                 'Product not found',
-  //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
-  //               ),
-  //             if (_recentSearches.isNotEmpty) ...[
-  //               const SizedBox(height: 20),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   const Text(
-  //                     'Recently Searched',
-  //                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-  //                   ),
-  //                   TextButton(
-  //                     onPressed: clearRecentSearches,
-  //                     child: const Text('Clear', style: TextStyle(color: Colors.red)),
-  //                   ),
-  //                 ],
-  //               ),
-  //               const SizedBox(height: 5),
-  //               const Divider(),
-  //               const SizedBox(height: 5),
-  //               SizedBox(
-  //                 height: 120,
-  //                 child: ListView.builder(
-  //                   itemCount: _recentSearches.length,
-  //                   scrollDirection: Axis.horizontal,
-  //                   itemBuilder: (context, index) {
-  //                     final recentSearch = _recentSearches[index];
-  //                     return Padding(
-  //                       padding: const EdgeInsets.only(right: 10),
-  //                       child: recentSearchCard(recentSearch),
-  //                     );
-  //                   },
-  //                 ),
-  //               ),
-  //             ],
-  //             if (_productSearches.isNotEmpty) ...[
-  //               const SizedBox(height: 20),
-  //               const Text(
-  //                 'Product Searches',
-  //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-  //               ),
-  //               const SizedBox(height: 10),
-  //               SizedBox(
-  //                 height: 200,
-  //                 child: ListView.builder(
-  //                   itemCount: _productSearches.length,
-  //                   scrollDirection: Axis.vertical,
-  //                   itemBuilder: (context, index) {
-  //                     final productSearch = _productSearches[index];
-  //                     return Padding(
-  //                       padding: const EdgeInsets.only(bottom: 10),
-  //                       child: productSearchCard(productSearch),
-  //                     );
-  //                   },
-  //                 ),
-  //               ),
-  //             ],
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -507,7 +396,8 @@ class _SearchPageState extends State<SearchPage> {
         elevation: 0,
       ),
       backgroundColor: const Color(0xfff7f7f7),
-      body: SafeArea(
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
         child: Stack(
           children: [
             SingleChildScrollView(
@@ -517,7 +407,29 @@ class _SearchPageState extends State<SearchPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     searchBar(),
-                    const SizedBox(height: 20),
+                    if (_productSearches.isNotEmpty) ...[
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Product Searches',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 140,
+                        child: ListView.builder(
+                          itemCount: _productSearches.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, index) {
+                            final productSearch = _productSearches[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: productSearchCard(productSearch),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 10),
                     if (_filteredProducts.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -576,37 +488,9 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                     ],
-                    if (_productSearches.isNotEmpty) ...[
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Product Searches',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 200,
-                        child: ListView.builder(
-                          itemCount: _productSearches.length,
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (context, index) {
-                            final productSearch = _productSearches[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: productSearchCard(productSearch),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+
                   ],
                 ),
-              ),
-            ),
-            const Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: CartButton(),
               ),
             ),
           ],
@@ -615,231 +499,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-//below cart button
-// @override
-// Widget build(BuildContext context) {
-//   return Scaffold(
-//     appBar: AppBar(
-//       title: const Text('Product Search'),
-//       backgroundColor: const Color(0xfff7f7f7),
-//       elevation: 0,
-//     ),
-//     backgroundColor: const Color(0xfff7f7f7),
-//     body: SafeArea(
-//       child: Stack(
-//         children: [
-//           SingleChildScrollView(
-//             child: Padding(
-//               padding: const EdgeInsets.all(16.0),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   searchBar(),
-//                   const SizedBox(height: 20),
-//                   if (_filteredProducts.isNotEmpty)
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         const Text(
-//                           'Search Results',
-//                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-//                         ),
-//                         const SizedBox(height: 10),
-//                         ListView.builder(
-//                           shrinkWrap: true,
-//                           physics: const NeverScrollableScrollPhysics(),
-//                           itemCount: _filteredProducts.length,
-//                           itemBuilder: (context, index) {
-//                             final product = _filteredProducts[index];
-//                             return productCard(product);
-//                           },
-//                         ),
-//                       ],
-//                     ),
-//                   if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
-//                     Text(
-//                       'Product not found',
-//                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
-//                     ),
-//                   if (_recentSearches.isNotEmpty) ...[
-//                     const SizedBox(height: 20),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: [
-//                         const Text(
-//                           'Recently Searched',
-//                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-//                         ),
-//                         TextButton(
-//                           onPressed: clearRecentSearches,
-//                           child: const Text('Clear', style: TextStyle(color: Colors.red)),
-//                         ),
-//                       ],
-//                     ),
-//                     const SizedBox(height: 5),
-//                     const Divider(),
-//                     const SizedBox(height: 5),
-//                     SizedBox(
-//                       height: 120,
-//                       child: ListView.builder(
-//                         itemCount: _recentSearches.length,
-//                         scrollDirection: Axis.horizontal,
-//                         itemBuilder: (context, index) {
-//                           final recentSearch = _recentSearches[index];
-//                           return Padding(
-//                             padding: const EdgeInsets.only(right: 10),
-//                             child: recentSearchCard(recentSearch),
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                   if (_productSearches.isNotEmpty) ...[
-//                     const SizedBox(height: 20),
-//                     const Text(
-//                       'Product Searches',
-//                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-//                     ),
-//                     const SizedBox(height: 10),
-//                     SizedBox(
-//                       height: 200,
-//                       child: ListView.builder(
-//                         itemCount: _productSearches.length,
-//                         scrollDirection: Axis.vertical,
-//                         itemBuilder: (context, index) {
-//                           final productSearch = _productSearches[index];
-//                           return Padding(
-//                             padding: const EdgeInsets.only(bottom: 10),
-//                             child: productSearchCard(productSearch),
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ],
-//               ),
-//             ),
-//           ),
-//           Align(
-//             alignment: Alignment.bottomRight,
-//             child: Padding(
-//               padding: const EdgeInsets.all(16.0),
-//               child: CartButton(),
-//             ),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
-// no cart button
-// @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Product Search'),
-//         backgroundColor: const Color(0xfff7f7f7),
-//         elevation: 0,
-//       ),
-//       backgroundColor: const Color(0xfff7f7f7),
-//       body: SizedBox(
-//         height: MediaQuery.of(context).size.height,
-//         child: Stack(
-//           children: [
-//             SingleChildScrollView(
-//               child: Padding(
-//                 padding: const EdgeInsets.all(16.0),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     searchBar(),
-//                     const SizedBox(height: 20),
-//                     if (_filteredProducts.isNotEmpty)
-//                       Column(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: [
-//                           const Text(
-//                             'Search Results',
-//                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-//                           ),
-//                           const SizedBox(height: 10),
-//                           ListView.builder(
-//                             shrinkWrap: true,
-//                             physics: const NeverScrollableScrollPhysics(),
-//                             itemCount: _filteredProducts.length,
-//                             itemBuilder: (context, index) {
-//                               final product = _filteredProducts[index];
-//                               return productCard(product);
-//                             },
-//                           ),
-//                         ],
-//                       ),
-//                     if (_filteredProducts.isEmpty && _controller.text.isNotEmpty)
-//                       Text(
-//                         'Product not found',
-//                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey[600]),
-//                       ),
-//                     if (_recentSearches.isNotEmpty) ...[
-//                       const SizedBox(height: 20),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           const Text(
-//                             'Recently Searched',
-//                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-//                           ),
-//                           TextButton(
-//                             onPressed: clearRecentSearches,
-//                             child: const Text('Clear', style: TextStyle(color: Colors.red)),
-//                           ),
-//                         ],
-//                       ),
-//                       const SizedBox(height: 5),
-//                       const Divider(),
-//                       const SizedBox(height: 5),
-//                       SizedBox(
-//                         height: 120,
-//                         child: ListView.builder(
-//                           itemCount: _recentSearches.length,
-//                           scrollDirection: Axis.horizontal,
-//                           itemBuilder: (context, index) {
-//                             final recentSearch = _recentSearches[index];
-//                             return Padding(
-//                               padding: const EdgeInsets.only(right: 10),
-//                               child: recentSearchCard(recentSearch),
-//                             );
-//                           },
-//                         ),
-//                       ),
-//                     ],
-//                     if (_productSearches.isNotEmpty) ...[
-//                       const SizedBox(height: 20),
-//                       const Text(
-//                         'Product Searches',
-//                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-//                       ),
-//                       const SizedBox(height: 10),
-//                       SizedBox(
-//                         height: 200,
-//                         child: ListView.builder(
-//                           itemCount: _productSearches.length,
-//                           scrollDirection: Axis.vertical,
-//                           itemBuilder: (context, index) {
-//                             final productSearch = _productSearches[index];
-//                             return Padding(
-//                               padding: const EdgeInsets.only(bottom: 10),
-//                               child: productSearchCard(productSearch),
-//                             );
-//                           },
-//                         ),
-//                       ),
-//                     ],
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }

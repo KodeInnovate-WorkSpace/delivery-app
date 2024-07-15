@@ -143,14 +143,6 @@ class _SigninScreenState extends State<SigninScreen> {
                                 await userProvider.checkUserType(authProvider.phone);
 
                                 if (userProvider.isUserActive) {
-                                  if (userProvider.userType == 2) {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const DeliveryHomeScreen()),
-                                    );
-                                    // Set keyboard state to false when navigating away
-                                    Provider.of<MyAuthProvider>(context, listen: false).isKeyboardOpen = false;
-                                  }
 
                                   await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
                                 } else {
