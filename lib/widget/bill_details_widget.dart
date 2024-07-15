@@ -18,6 +18,17 @@ class _BillDetailsState extends State<BillDetails> {
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
     final orderProvider = Provider.of<OrderProvider>(context);
+    final selected = orderProvider.selectedPaymentMethod;
+    bool isDeliveryFrees = isDeliveryFree!;
+    if(selected == "Online" && isDeliveryFree!){
+      cartProvider.calculateGrandTotal(0);
+      orderProvider.updateDeliveryCharge(0);
+
+    }else{
+      cartProvider.calculateGrandTotal(deliveryCharge!);
+      orderProvider.updateDeliveryCharge(deliveryCharge!);
+
+    }
 
     return StreamBuilder<DocumentSnapshot>(
       stream: constantDocumentStream,
@@ -167,11 +178,16 @@ class _BillDetailsState extends State<BillDetails> {
                     children: [
                       const Text('To pay', style: TextStyle(fontSize: 16, fontFamily: 'Gilroy-Black')),
                       Text(
-                        '\u{20B9}${cartProvider.calculateGrandTotal(deliveryCharge!)}',
+                        '\u{20B9}${cartProvider.calculateGrandTotal(selected == 'Online' && isDeliveryFree! ? 0 : deliveryCharge!)}',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
+
                     ],
                   ),
+                  Visibility(
+                    visible: cartProvider.calculateTotalDiscount(selected == 'Online' && isDeliveryFree! ? 0 : deliveryCharge!) > 0,
+                    child: Text('Awesome savings! You’re getting \u{20B9}${cartProvider.calculateTotalDiscount(selected == 'Online' && isDeliveryFree! ? 0 : deliveryCharge!)} off.', style: TextStyle(fontSize: 14, fontFamily: 'Gilroy-Black', color: Colors.green,)),
+                  )
                 ],
               ),
             ),

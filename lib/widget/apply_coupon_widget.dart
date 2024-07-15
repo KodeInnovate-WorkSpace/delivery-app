@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/screens/offers_screens.dart';
 import '../providers/cart_provider.dart';
+import '../providers/order_provider.dart';
 import '../shared/constants.dart';
 
 class ApplyCouponWidget extends StatefulWidget {
@@ -14,7 +15,6 @@ class ApplyCouponWidget extends StatefulWidget {
 class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
   String? selectedOffer;
   double? selectedDiscount;
-
   @override
   void initState() {
     super.initState();
@@ -56,10 +56,16 @@ class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
     );
     if (offer != null) {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+      final selected = orderProvider.selectedPaymentMethod;
+      var finalDeliveryCharge = deliveryCharge;
 
-      final delCharge = await fetchDeliveryCharge();
-
-      cartProvider.applyCouponLogic(offer['offerName'], offer['discount'].toDouble(), delCharge);
+      if(selected == 'Online' && isDeliveryFree!) {
+        finalDeliveryCharge = 0;
+      }else{
+        finalDeliveryCharge = deliveryCharge!;
+      }
+      cartProvider.applyCouponLogic(offer['offerName'], offer['discount'].toDouble(), finalDeliveryCharge!);
 
       // Check if coupon was successfully applied
       if (cartProvider.Discount != 0) {

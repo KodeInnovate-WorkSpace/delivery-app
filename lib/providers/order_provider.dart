@@ -98,32 +98,41 @@ class Order {
 class OrderProvider with ChangeNotifier {
   List<Order> _orders = [];
   String _selectedPaymentMethod = 'Online';
-  double delvChrg = 0;
+  double delvChrg =  0;
+
 
   List<Order> get orders => _orders;
   String get selectedPaymentMethod => _selectedPaymentMethod;
 
   set selectedPaymentMethod(String value) {
     _selectedPaymentMethod = value;
-    _updateDeliveryCharge();
+    if(_selectedPaymentMethod == "Online" && isDeliveryFree!) {
+      updateDeliveryCharge(0);
+    }else{
+      updateDeliveryCharge(deliveryCharge!);
+    }
   }
 
   OrderProvider() {
     fetchOrders();
-    _updateDeliveryCharge();
+    if(_selectedPaymentMethod == "Online" && isDeliveryFree!) {
+      updateDeliveryCharge(0);
+    }else{
+      updateDeliveryCharge(deliveryCharge!);
+    }
   }
 
-  void _updateDeliveryCharge() async {
-    bool isDeliveryFree = await _fetchDeliveryChargeStatus();
-    // delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : 29;
-    double charge = await fetchDeliveryCharge();
+  void updateDeliveryCharge(double deliveryCharge) async {
+    // bool isDeliveryFree = await fetchDeliveryChargeStatus();
+    // // delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : 29;
+    // double charge = await fetchDeliveryCharge();
 
-    delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : charge;
+    delvChrg = deliveryCharge;
 
     notifyListeners();
   }
 
-  Future<bool> _fetchDeliveryChargeStatus() async {
+  Future<bool> fetchDeliveryChargeStatus() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance.collection('constants').get();
       if (querySnapshot.docs.isNotEmpty) {

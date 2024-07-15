@@ -12,6 +12,7 @@ class CartProvider extends ChangeNotifier {
   final List<Cart> _cartItems = [];
   double _discount = 0.0;
   String? _selectedCoupon;
+  bool? isCouponApplied = false;
 
   List<Cart> get cart => _cartItems;
   bool get isLoading => _isLoading;
@@ -30,9 +31,28 @@ class CartProvider extends ChangeNotifier {
   }
 
   calculateGrandTotal(double delCharge) {
-    final grandTotal = calculateTotalPrice() + (delCharge ?? 0) + calculateHandlingCharge() - _discount;
-    return grandTotal.ceilToDouble();
+    final grandTotal = calculateTotalPrice() + (delCharge ?? 0) + calculateHandlingCharge();
+    if(grandTotal < maxTotalForCoupon!){
+      clearCoupon();
+    }
+    final total = grandTotal - _discount;
+    calculateTotalDiscount(delCharge);
+    return total.ceilToDouble();
   }
+
+  double calculateTotalDiscount(double delCharge) {
+    final grandTotal = calculateTotalPrice() + calculateHandlingCharge();
+    double totalSave = 0;
+
+    if (isCouponApplied!) {
+      totalSave = _discount + (delCharge == 0 ? deliveryCharge! : 0);
+    } else if (delCharge == 0) {
+      totalSave = deliveryCharge!;
+    }
+
+    return totalSave;
+  }
+
 
   calculateHandlingCharge() {
     final totalPrice = calculateTotalPrice();
@@ -64,14 +84,15 @@ class CartProvider extends ChangeNotifier {
 
   void applyCouponLogic(String coupon, double discount, double delCharge) {
     double grandTotal = calculateGrandTotal(delCharge);
-    if (grandTotal > 30) {
+    if (grandTotal >= maxTotalForCoupon!) {
       _selectedCoupon = coupon;
       _discount = discount;
+      isCouponApplied = true;
       notifyListeners();
     } else {
       clearCoupon();
-      debugPrint("Grand total is less than 30. Coupon cannot be applied.");
-      showMessage("Grand total is less than 30. Coupon cannot be applied.");
+      debugPrint("Total amount is less than Rs.${maxTotalForCoupon!}. Please add more product to avail coupon.");
+      showMessage("Total amount is less than Rs.${maxTotalForCoupon!}. Please add more product to avail coupon.");
       notifyListeners();
     }
   }
@@ -79,6 +100,7 @@ class CartProvider extends ChangeNotifier {
   void clearCoupon() {
     _selectedCoupon = null;
     _discount = 0.0;
+    isCouponApplied = false;
     notifyListeners(); // Notify listeners when coupon is cleared
   }
 

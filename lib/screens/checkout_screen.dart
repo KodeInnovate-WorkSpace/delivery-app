@@ -46,6 +46,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     customerId = _generateCustomerId();
     cfPaymentGatewayService.setCallback(verifyPayment, (errorResponse, orderId) => onError(errorResponse, orderId, context, orderProvider));
+
+   // fetchDeliveryData();
   }
 
   //Payment Gateway Code
@@ -266,7 +268,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   //Payment Gateway Code End
+  //double deliveryChargess = 0.0;
+  //bool isDeliveryFreess = false;
 
+  // Future<void> fetchDeliveryData() async {
+  //   // Fetch from Firebase (replace with your actual data fetching logic)
+  //   var deliveryChargeStatus =  await fetchIsDeliveryFree(); // This should return a map or object
+  //   var deliveryCharge =  await fetchDeliveryCharge(); // This should return a map or object
+  //
+  //   deliveryCharge = deliveryCharge;
+  //   isDeliveryFree = deliveryChargeStatus;
+  //
+  //   setState(() {}); // Update UI after fetching
+  // }
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -275,9 +289,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     //Payment Gateway Code
     final authProvider = Provider.of<MyAuthProvider>(context);
     final addressProvider = Provider.of<AddressProvider>(context);
+    double finalDeliveryCharge = deliveryCharge!;
+    //double grandTotal = cartProvider.calculateGrandTotal(finalDeliveryCharge);
+
+    if(orderProvider.selectedPaymentMethod == 'Online' && isDeliveryFree!){
+    finalDeliveryCharge = 0.0;
+    }
+    else{
+      finalDeliveryCharge = deliveryCharge!;
+    }
 
     setState(() {
-      totalAmt = cartProvider.calculateGrandTotal(deliveryCharge!);
+      //totalAmt = cartProvider.calculateGrandTotal(finalDeliveryCharge);
       customerPhone = authProvider.phone.isEmpty ? "0000000000" : authProvider.phone;
     });
 
@@ -321,7 +344,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.all(18.0),
                                 child: Row(
-                                  children: [
+                                  children:
+                                  [
                                     const Icon(Icons.timer),
                                     const SizedBox(width: 12),
                                     Expanded(
@@ -392,6 +416,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       orderProvider.selectedPaymentMethod = newValue!;
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
                                                     });
+                                                    onPaymentMethodChanged(newValue);
                                                   },
                                                   items: <String>['Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
                                                     return DropdownMenuItem<String>(
@@ -579,5 +604,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
       ),
     );
+
+  }
+  double finalDeliveryCharge = 0.0;
+
+  void onPaymentMethodChanged(String? newValue) async {
+    bool isDeliveryFree = await fetchIsDeliveryFree();
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+    setState(() {
+      if (newValue == 'Online') {
+        // Check if delivery is free
+        if (isDeliveryFree) {
+          finalDeliveryCharge = 0.0; // Set to 0 if delivery is free
+        } else {
+          finalDeliveryCharge = deliveryCharge!; // Set to the fetched delivery charge
+        }
+      } else {
+        finalDeliveryCharge = deliveryCharge!;
+      }
+      setState(() {
+        cartProvider.calculateGrandTotal(finalDeliveryCharge);
+      });
+    });
   }
 }
