@@ -11,7 +11,7 @@ class NotInLocationScreen extends StatefulWidget {
   const NotInLocationScreen({super.key});
 
   @override
-  _NotInLocationScreenState createState() => _NotInLocationScreenState();
+  State<NotInLocationScreen> createState() => _NotInLocationScreenState();
 }
 
 class _NotInLocationScreenState extends State<NotInLocationScreen> {
@@ -55,28 +55,33 @@ class _NotInLocationScreenState extends State<NotInLocationScreen> {
         int docPostalCode = document['postal_code'];
         int status = document['status'];
         if (postalCode == docPostalCode.toString() && status == 1) {
+          if (!mounted) return;
           setState(() {
             locationCorrect = true;
             isLoading = false;
           });
-          if (!mounted) return;
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),
+                (Route<dynamic> route) => false,
           );
           return;
         }
       }
-      setState(() {
-        locationCorrect = false;
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          locationCorrect = false;
+          isLoading = false;
+        });
+      }
     } catch (e) {
       log("Error checking location: $e");
-      setState(() {
-        locationCorrect = false;
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          locationCorrect = false;
+          isLoading = false;
+        });
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -109,11 +110,37 @@ class _LocationButtonState extends State<LocationButton> {
     // Fetch and set the current location
     await fetchAndSetCurrentLocation();
 
-    if (completeAddress != null && !completeAddress!.contains('Mumbra')) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
-      );
+    // Check postal_code and status in Firestore
+    if (completeAddress != null) {
+      await _checkPostalCodeAndStatus();
+    }
+  }
+
+  Future<void> _checkPostalCodeAndStatus() async {
+    final BuildContext context = widget.scaffoldKey.currentContext!;
+
+    try {
+      // Extract postal code from the completeAddress
+      String? postalCode = completeAddress!.split('-').last.trim();
+
+      if (postalCode != null) {
+        // Query Firestore to check for the postal code and status
+        QuerySnapshot snapshot = await FirebaseFirestore.instance
+            .collection('location')
+            .where('postal_code', isEqualTo: int.tryParse(postalCode))
+            .where('status', isEqualTo: 1)
+            .get();
+
+        if (snapshot.docs.isEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
+          );
+        }
+      }
+    } catch (e) {
+      log("$e");
+      _showLocationErrorDialog(context);
     }
   }
 
@@ -189,7 +216,6 @@ class _LocationButtonState extends State<LocationButton> {
                     title: const Text(
                       'Recently Searched Locations',
                       style: TextStyle(color: Colors.black),
-                      // style: TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -198,7 +224,6 @@ class _LocationButtonState extends State<LocationButton> {
                     title: Text(
                       completeAddress ?? 'Fetching location...',
                       style: const TextStyle(color: Colors.black),
-                      // style: const TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -213,11 +238,9 @@ class _LocationButtonState extends State<LocationButton> {
           Text(
             completeAddress ?? 'Fetching location...',
             style: const TextStyle(color: Colors.black),
-            // style: const TextStyle(color: Colors.white, fontFamily: "Gilroy-ExtraBold"),
           ),
           const Icon(
             Icons.arrow_drop_down_sharp,
-            // color: Colors.white,
           ),
         ],
       ),
