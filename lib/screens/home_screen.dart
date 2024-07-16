@@ -41,7 +41,6 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    checkAppMaintenanceStatus(context);
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
@@ -74,7 +73,7 @@ class HomeScreenState extends State<HomeScreen> {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('AppMaintenance').get();
       for (var document in snapshot.docs) {
         var data = document.data() as Map<String, dynamic>;
-        if (data['isAppEnabled'] == 0 && specificNumber != 9876543210) {
+        if (data['isAppEnabled'] == 0 && specificNumber != 9326500602) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const ClosedScreen(),
