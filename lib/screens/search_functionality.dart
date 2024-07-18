@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy_delivery/widget/cart_button.dart';
 import '../models/product_model.dart';
 import '../providers/auth_provider.dart';
 import '../widget/add_to_cart_button.dart';// Import your cart screen
@@ -30,63 +29,24 @@ class _SearchPageState extends State<SearchPage> {
     loadRecentSearches();
     loadProductSearches();
   }
+
   Future<void> fetchProductsFromFirestore() async {
     try {
-      // Step 1: Fetch categories with status 1
-      final categoriesSnapshot = await FirebaseFirestore.instance
-          .collection('category')
-          .where('status', isEqualTo: 1)
-          .get();
-
-      // Extract category IDs as integers
-      final List<int> activeCategoryIds = categoriesSnapshot.docs
-          .map((doc) => doc['category_id'] as int)
-          .toList();
-
-      // Step 2: Fetch subcategories with status 1 for those categories
-      final subCategoriesSnapshot = await FirebaseFirestore.instance
-          .collection('sub_category')
-          .where('category_id', whereIn: activeCategoryIds)
-          .where('status', isEqualTo: 1)
-          .get();
-
-      // Extract subcategory IDs as integers
-      final List<int> activeSubCategoryIds = subCategoriesSnapshot.docs
-          .map((doc) => doc['sub_category_id'] as int)
-          .toList();
-
-      // Step 3: Fetch products with status 1 for those subcategories
-      List<Product> products = [];
-      const int batchSize = 30;
-
-      for (int i = 0; i < activeSubCategoryIds.length; i += batchSize) {
-        final batch = activeSubCategoryIds.sublist(
-            i,
-            i + batchSize > activeSubCategoryIds.length
-                ? activeSubCategoryIds.length
-                : i + batchSize);
-
-        final productsSnapshot = await FirebaseFirestore.instance
-            .collection('products')
-            .where('status', isEqualTo: 1)
-            .where('sub_category_id', whereIn: batch.isNotEmpty ? batch : [0]) // Avoid empty query
-            .get();
-
-        // Map products to your Product model
-        products.addAll(productsSnapshot.docs.map((doc) {
-          return Product(
-            name: doc['name'] as String,
-            price: doc['price'],
-            mrp: doc['mrp'],
-            id: doc['id'],
-            image: doc['image'],
-            stock: doc['stock'],
-            unit: doc['unit'],
-            subCatId: doc['sub_category_id'],
-            status: doc['status'],
-          );
-        }));
-      }
+      final productsCollection = FirebaseFirestore.instance.collection('products').where('status', isNotEqualTo: 0);
+      final snapshot = await productsCollection.get();
+      final products = snapshot.docs.map((doc) {
+        return Product(
+          name: doc['name'] as String,
+          price: doc['price'],
+          mrp: doc['mrp'],
+          id: doc['id'],
+          image: doc['image'],
+          stock: doc['stock'],
+          unit: doc['unit'],
+          subCatId: doc['sub_category_id'],
+          status: doc['status'],
+        );
+      }).toList();
 
       setState(() {
         _allProducts = products;

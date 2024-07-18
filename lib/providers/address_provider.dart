@@ -131,7 +131,6 @@ class AddressProvider with ChangeNotifier {
     await prefs.remove('selected_address');
     _selectedAddress = "";
 
-    // Notify listeners to update UI if needed
     notifyListeners();
   }
 }

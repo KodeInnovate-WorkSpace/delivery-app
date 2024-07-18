@@ -13,6 +13,8 @@ class ManageSubCategoryScreen extends StatefulWidget {
 
 class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
   late TableData src;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -21,12 +23,19 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
     src.addListener(() {
       setState(() {});
     });
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+        src.filterData(_searchQuery);
+      });
+    });
   }
 
   @override
   void dispose() {
     src.removeListener(() {});
     src.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -70,25 +79,53 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
       ),
       body: Stack(
         children: [
-          RefreshIndicator(
-            onRefresh: _refreshPage,
-            child: ListView(children: [
-              PaginatedDataTable(
-                dataRowHeight: 80,
-                columns: const [
-                  DataColumn(label: Text('Id'), tooltip: "Sub-Categoy ID"),
-                  DataColumn(label: Text('Category'), tooltip: "Name of the category this sub-category belongs to"),
-                  DataColumn(label: Text('Image')),
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('')),
-                  DataColumn(label: Text('')),
-                ],
-                source: src,
-                columnSpacing: 10,
-                rowsPerPage: 8,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search Sub-Categories',
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              src.filterData('');
+                            },
+                          )
+                        : null,
+                  ),
+                ),
               ),
-            ]),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refreshPage,
+                  child: ListView(
+                    children: [
+                      PaginatedDataTable(
+                        dataRowHeight: 80,
+                        columns: const [
+                          DataColumn(label: Text('Id'), tooltip: "Sub-Categoy ID"),
+                          DataColumn(label: Text('Category'), tooltip: "Name of the category this sub-category belongs to"),
+                          DataColumn(label: Text('Image')),
+                          DataColumn(label: Text('Name')),
+                          DataColumn(label: Text('Status')),
+                          DataColumn(label: Text('')),
+                          DataColumn(label: Text('')),
+                        ],
+                        source: src,
+                        columnSpacing: 10,
+                        rowsPerPage: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -105,6 +142,7 @@ class TableData extends DataTableSource {
 
   // Storing sub-category data in a list
   List<Map<String, dynamic>> subData = [];
+  List<Map<String, dynamic>> filteredData = [];
   Map<int, String> categoryData = {}; // Map to store category_id to category_name
 
   TableData(this.context) {
@@ -117,6 +155,7 @@ class TableData extends DataTableSource {
 
     // Sort subData by sub_category_id
     subData.sort((a, b) => a['sub_category_id'].compareTo(b['sub_category_id']));
+    filteredData = subData;
     notifyListeners();
   }
 
@@ -146,11 +185,20 @@ class TableData extends DataTableSource {
     notifyListeners();
   }
 
+  void filterData(String query) {
+    if (query.isEmpty) {
+      filteredData = subData;
+    } else {
+      filteredData = subData.where((subcategory) => subcategory['sub_category_name'].toString().toLowerCase().contains(query.toLowerCase())).toList();
+    }
+    notifyListeners();
+  }
+
   @override
   DataRow? getRow(int index) {
-    if (index >= subData.length) return null;
+    if (index >= filteredData.length) return null;
 
-    final data = subData[index];
+    final data = filteredData[index];
     final categoryName = categoryData[data['category_id']] ?? 'Deleted';
 
     return DataRow(cells: [
@@ -227,7 +275,7 @@ class TableData extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => subData.length;
+  int get rowCount => filteredData.length;
 
   @override
   int get selectedRowCount => 0;

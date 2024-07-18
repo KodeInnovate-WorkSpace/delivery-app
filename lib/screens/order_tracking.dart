@@ -1,4 +1,3 @@
-//update
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +49,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
               var status = orderData['status'];
               var paymentMode = orderData['paymentMode'];
 
+              if (status == 7) {
+                status = 5;
+              }
+
               if (status == 5) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -81,6 +84,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                   _buildOrderStatusCard('Order In Process', 'Your order is in process.', status >= 2),
                   _buildOrderStatusCard('Order Pickup', 'Your order is ready for pickup.', status >= 3),
                   _buildOrderStatusCard('Order Delivered', 'Your order has been delivered', status >= 4),
+                  // _buildOrderStatusCard('Order Delivered', 'Your order has been delivered', status >= 7),
                 ];
 
                 return Padding(
