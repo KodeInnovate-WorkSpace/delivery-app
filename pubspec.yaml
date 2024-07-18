@@ -71,6 +71,7 @@ flutter:
     - assets/icon.png
     - assets/images/dog.png
     - assets/images/stop.png
+    - lib/.env
 
   fonts:
     - family: Gilroy-Black

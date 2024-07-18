@@ -42,7 +42,6 @@ class _UpdateOfferScreenState extends State<UpdateOfferScreen> {
         _discountController.text = offer['discount'].toString();
         _statusController.text = offer['status'].toString();
       });
-      showMessage('Offer data loaded successfully.');
     } catch (e) {
       showMessage('Failed to load offer data.');
     }

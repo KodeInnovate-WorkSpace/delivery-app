@@ -19,8 +19,11 @@ import 'package:speedy_delivery/providers/valet_provider.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'deliveryPartner/provider/delivery_order_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load(fileName: 'lib/.env');
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 

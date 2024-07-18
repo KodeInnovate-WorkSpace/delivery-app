@@ -16,7 +16,14 @@ class EmailScreen extends StatefulWidget {
 
 class _EmailScreenState extends State<EmailScreen> {
   final TextEditingController emailController = TextEditingController();
-  final bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // TODO: implement initState
+    final authProvider = context.read<MyAuthProvider>();
+    authProvider.isLoading = !authProvider.isLoading;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +69,10 @@ class _EmailScreenState extends State<EmailScreen> {
                 onPressed: () async {
                   HapticFeedback.selectionClick();
 
+                  setState(() {
+                    authProvider.isLoading = true;
+                  });
+
                   await authProvider.sendMail(context, emailController.text, authProvider.generateOtp());
                 },
                 style: ButtonStyle(
@@ -79,7 +90,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     },
                   ),
                 ),
-                child: _isLoading
+                child: authProvider.isLoading
                     ? const SizedBox(
                         width: 250,
                         height: 50.0,

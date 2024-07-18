@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
@@ -69,15 +70,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      'x-client-id': "TEST102073159c36086010050049f41951370201",
-      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      // 'x-client-id': dotenv.env['TEST_CLIENT_ID']!,
+      // 'x-client-secret': dotenv.env['TEST_SECRET']!,
+
       //Prod
-      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      // 'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      'x-client-id': dotenv.env['PROD_CLIENT_ID']!,
+      'x-client-secret': dotenv.env['PROD_SECRET']!,
       'x-api-version': '2023-08-01',
     };
-    var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
-    // var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
+    // var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
+    var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     request.body = json.encode({
       "order_amount": totalAmt.toStringAsFixed(2),
       "order_id": myOrderId,
@@ -108,16 +110,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     var headers = {
       'Content-Type': 'application/json',
       //Test
-      'x-client-id': "TEST102073159c36086010050049f41951370201",
-      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      // 'x-client-id': dotenv.env['TEST_CLIENT_ID']!,
+      // 'x-client-secret': dotenv.env['TEST_SECRET']!,
+
       //Prod
-      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      // 'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      'x-client-id': dotenv.env['PROD_CLIENT_ID']!,
+      'x-client-secret': dotenv.env['PROD_SECRET']!,
       'x-api-version': '2023-08-01',
     };
 
-    // var request = http.Request('GET', Uri.parse('https://api.cashfree.com/pg/orders/$orderId')); // prod
-    var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
+    var request = http.Request('GET', Uri.parse('https://api.cashfree.com/pg/orders/$orderId')); // prod
+    // var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
 
     request.headers.addAll(headers);
 
@@ -211,8 +214,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
-      var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
 
       return session;
     } on CFException catch (e) {
@@ -421,6 +424,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       ),
                                                       TextButton(
                                                         onPressed: () {
+                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
                                                           Navigator.of(context).pop(); // Close the popup
                                                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
                                                             List<Order> orders = cartProvider.cart.map((item) {
@@ -476,6 +480,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       ),
                                                       TextButton(
                                                         onPressed: () {
+                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
                                                           Navigator.of(context).pop(); // Close the popup
                                                           pay(myOrderId).then((value) {
                                                             List<Order> orders = cartProvider.cart.map((item) {
@@ -508,7 +513,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               );
                                             }
 
-                                            LocalNotificationService().sendNotificationToSelectedAdmin(title: 'This is title', body: 'This is body', token: 'cL_n41xzQzKYIapYNkDebc:APA91bEZk0zrFurxYkRIgMYNwsgB2KCUhx5CIJRkrPuVnprtttUE1EKTG5DpEQ-2RmBLgpCEC3eHAmEdHY1bnPew9aWMXGaUDMjAbVQ5Njp2sPMkVK0KPgxlj6NI-ZoTZfPX2sPLKBRn');
                                           },
                                           style: ButtonStyle(
                                             shape: WidgetStateProperty.all<RoundedRectangleBorder>(
