@@ -70,8 +70,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      'x-client-id': dotenv.env['TEST_CLIENT_ID']!,
-      'x-client-secret': dotenv.env['TEST_SECRET']!,
+      // 'x-client-id': dotenv.env['TEST_CLIENT_ID']!,
+      // 'x-client-secret': dotenv.env['TEST_SECRET']!,
 
       //Prod
       'x-client-id': dotenv.env['PROD_CLIENT_ID']!,
