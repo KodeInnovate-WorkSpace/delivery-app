@@ -47,8 +47,8 @@ class _ManageProductState extends State<ManageProduct> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
