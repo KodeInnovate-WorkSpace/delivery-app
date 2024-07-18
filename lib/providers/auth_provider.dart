@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -49,15 +49,15 @@ class MyAuthProvider with ChangeNotifier {
   }
 
   Future<void> sendMail(BuildContext context, String receiverEmail, String code) async {
-    String username = 'team.randomguyz@gmail.com';
-    String password = 'jyakfkmqcsqlemrr';
+    String username = dotenv.env['EMAIL']!;
+    String password = dotenv.env['APP_PASSWORD']!;
 
     final smtpServer = gmail(username, password);
 
     final message = Message()
       ..from = Address(username, 'Delivo App')
       ..recipients.add(receiverEmail)
-      ..subject = 'Delivo App Verification Code'
+      ..subject = 'Verification Code: $code'
       ..html = '''
     <div
       style="
@@ -73,21 +73,6 @@ class MyAuthProvider with ChangeNotifier {
       color: #434343;
       "
     >
-      <header>
-        <table style="width: 100%;">
-          <tbody>
-            <tr style="height: 0;">
-              <td>
-                
-              </td>
-              <td style="text-align: right;">
-                <span style="font-size: 16px; line-height: 30px; color: #ffffff;">${DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.now())}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </header>
-
       <main>
         <div
           style="

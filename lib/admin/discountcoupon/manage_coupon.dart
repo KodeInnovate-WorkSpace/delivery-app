@@ -7,13 +7,16 @@ import 'edit_coupon.dart';
 class MainDisplayScreen extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-   MainDisplayScreen({super.key});
+  MainDisplayScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Offers'),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
       ),
       body: StreamBuilder(
         stream: _firestore.collection('offers').snapshots(),
@@ -28,16 +31,18 @@ class MainDisplayScreen extends StatelessWidget {
               var offer = offers[index];
               var offerImage = offer['image'] ?? '';
               return Card(
+                color: const Color(0xfff7f7f7),
+                elevation: 0,
                 margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16.0),
                   leading: offerImage.isNotEmpty
                       ? Image.network(
-                    offerImage,
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  )
+                          offerImage,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
                       : null,
                   title: Text(
                     offer['offerName'],
@@ -73,13 +78,17 @@ class MainDisplayScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddOfferScreen()),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
