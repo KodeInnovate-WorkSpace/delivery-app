@@ -13,6 +13,7 @@ class ManageProduct extends StatefulWidget {
 
 class _ManageProductState extends State<ManageProduct> {
   late TableData src;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -27,11 +28,12 @@ class _ManageProductState extends State<ManageProduct> {
   void dispose() {
     src.removeListener(() {});
     src.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
   Future<void> _refreshPage() async {
-    await src._loadproductData();
+    await src._loadProductData();
   }
 
   @override
@@ -51,15 +53,12 @@ class _ManageProductState extends State<ManageProduct> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                // fixedSize: WidgetStateProperty.all<Size>(
-                //   const Size(60, 50),
-                // ),
               ),
               onPressed: () async {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProduct()));
 
                 if (result != null && result as bool) {
-                  // Sub-category added successfully, refresh the list
+                  // Product added successfully, refresh the list
                   src._refreshProductList();
                 }
               },
@@ -73,29 +72,58 @@ class _ManageProductState extends State<ManageProduct> {
       ),
       body: Stack(
         children: [
-          RefreshIndicator(
-            onRefresh: _refreshPage,
-            child: ListView(children: [
-              PaginatedDataTable(
-                dataRowHeight: 100,
-                columns: const [
-                  DataColumn(label: Text('ID')),
-                  DataColumn(label: Text('Image')),
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Price')),
-                  DataColumn(label: Text('MRP')),
-                  DataColumn(label: Text('Stock')),
-                  DataColumn(label: Text('Unit')),
-                  DataColumn(label: Text('Sub-Category')),
-                  DataColumn(label: Text('')),
-                  DataColumn(label: Text('')),
-                ],
-                source: src,
-                columnSpacing: 10,
-                rowsPerPage: 8,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    hintText: 'Search by product name',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        searchController.clear();
+                        src.filterProducts('');
+                      },
+                    ),
+                  ),
+                  onChanged: (value) {
+                    src.filterProducts(value);
+                  },
+                ),
               ),
-            ]),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refreshPage,
+                  child: ListView(
+                    children: [
+                      PaginatedDataTable(
+                        dataRowHeight: 100,
+                        columns: const [
+                          DataColumn(label: Text('ID')),
+                          DataColumn(label: Text('Image')),
+                          DataColumn(label: Text('Name')),
+                          DataColumn(label: Text('Status')),
+                          DataColumn(label: Text('Price')),
+                          DataColumn(label: Text('MRP')),
+                          DataColumn(label: Text('Stock')),
+                          DataColumn(label: Text('Unit')),
+                          DataColumn(label: Text('Sub-Category')),
+                          DataColumn(label: Text('')),
+                          DataColumn(label: Text('')),
+                        ],
+                        source: src,
+                        columnSpacing: 10,
+                        rowsPerPage: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -108,22 +136,24 @@ class TableData extends DataTableSource {
 
   final ProductModel productObj = ProductModel();
   List<int> statusOptions = [0, 1];
-  // Storing sub-category data in a list
+  // Storing product data in a list
   List<Map<String, dynamic>> productData = [];
+  List<Map<String, dynamic>> filteredProductData = [];
 
   SubCatModel subCatObj = SubCatModel();
   Map<int, String> subCatData = {};
 
   TableData(this.context) {
-    _loadproductData();
+    _loadProductData();
   }
 
-  Future<void> _loadproductData() async {
+  Future<void> _loadProductData() async {
     await _loadSubCategoryData();
     productData = await productObj.manageProducts();
     debugPrint('Product Data: $productData');
 
     productData.sort((a, b) => a['id'].compareTo(b['id']));
+    filteredProductData = List.from(productData);
 
     notifyListeners(); // Notify the listeners that data has changed
   }
@@ -136,27 +166,39 @@ class TableData extends DataTableSource {
 
   Future<void> _updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
     await productObj.updateProduct(field, newValue, productField: categoryField, productValue: categoryValue);
-    _loadproductData(); // Reload data after update
+    _loadProductData(); // Reload data after update
   }
 
   Future<void> _deleteProduct(dynamic categoryValue) async {
     await productObj.deleteProduct(categoryValue);
-    await _loadproductData(); // Refresh data after deletion
+    await _loadProductData(); // Refresh data after deletion
   }
 
   void _refreshProductList() async {
     // Clear existing data
     productData.clear();
     // Reload data from the server (or local storage)
-    await _loadproductData();
+    await _loadProductData();
+  }
+
+  void filterProducts(String query) {
+    if (query.isEmpty) {
+      filteredProductData = List.from(productData);
+    } else {
+      filteredProductData = productData.where((product) {
+        final name = product['name'].toString().toLowerCase();
+        return name.contains(query.toLowerCase());
+      }).toList();
+    }
+    notifyListeners();
   }
 
   @override
   DataRow? getRow(int index) {
-    if (index >= productData.length) return null; // Check index bounds
+    if (index >= filteredProductData.length) return null; // Check index bounds
 
     // Storing each index of productData list in data variable to iterate over each list
-    final data = productData[index];
+    final data = filteredProductData[index];
     final subCatName = subCatData[data['sub_category_id']] ?? 'Unknown';
 
     return DataRow(cells: [
@@ -280,7 +322,6 @@ class TableData extends DataTableSource {
             final result = await Navigator.push(
               context,
               MaterialPageRoute(
-                // builder: (context) => UpdateProduct(data: data),
                 builder: (context) => UpdateProduct(data: data),
               ),
             );
@@ -299,7 +340,7 @@ class TableData extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => productData.length;
+  int get rowCount => filteredProductData.length;
 
   @override
   int get selectedRowCount => 0;

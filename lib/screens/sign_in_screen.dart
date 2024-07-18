@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/deliveryPartner/screen/delivery_home.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/account_disabled.dart';
+import 'package:speedy_delivery/screens/email_screen.dart';
 import 'package:speedy_delivery/widget/terms_privacy_line.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -143,8 +143,11 @@ class _SigninScreenState extends State<SigninScreen> {
                                 await userProvider.checkUserType(authProvider.phone);
 
                                 if (userProvider.isUserActive) {
-
-                                  await authProvider.verifyPhoneNumber(context, authProvider.textController.text);
+                                  // await authProvider.verifyPhoneNumber(authProvider.textController.text, "Authenticating OTP: ");
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => EmailScreen(phoneNumber: authProvider.phone)),
+                                  );
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AccountDisabled()));
                                   // Set keyboard state to false when navigating away

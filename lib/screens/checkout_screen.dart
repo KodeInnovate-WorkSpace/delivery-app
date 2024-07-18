@@ -132,19 +132,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
-  // void verifyPayment(String oId) {
-  //   debugPrint("Verify Payment");
-  //   debugPrint("Order ID = $oId");
-  //   final cartProvider = Provider.of<CartProvider>(context, listen: false);
-  //   cartProvider.clearCart();
-  //   Navigator.pushReplacement(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
-  //   );
-  //
-  //   showMessage("Payment Successful");
-  // }
-
   void verifyPayment(String oId) async {
     debugPrint("Verify Payment");
     debugPrint("Order ID = $oId");
@@ -152,7 +139,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       final paymentStatus = await verifyPaymentStatus(oId);
       if (paymentStatus['order_status'] == 'PAID') {
+        final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+        await orderProvider.acceptOrder(oId);
+
         final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
         cartProvider.clearCart();
         Navigator.pushReplacement(
           context,
@@ -161,7 +152,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         showMessage("Payment Successful");
       } else {
         final orderProvider = Provider.of<OrderProvider>(context);
-
         showMessage("Payment not successful. Please try again.");
         await orderProvider.cancelOrder(oId);
         return;
@@ -171,22 +161,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       showMessage("Error verifying payment. Please try again.");
     }
   }
-
-  // void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
-  //   debugPrint(errorResponse.getMessage().toString());
-  //   debugPrint("Error while making payment");
-  //   debugPrint("Order ID is $orderId");
-  //
-  //   await orderProvider.cancelOrder(orderId);
-  //
-  //   // Navigate to OrderTrackingScreen
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => OrderTrackingScreen(orderId: orderId),
-  //     ),
-  //   );
-  // }
 
   void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
     debugPrint(errorResponse.getMessage().toString());
@@ -386,7 +360,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     setState(() {
                                                       orderProvider.selectedPaymentMethod = newValue!;
                                                       double total = cartProvider.calculateGrandTotal(newValue);
-                                                      if((total - cartProvider.Discount) < 50){
+                                                      if ((total - cartProvider.Discount) < 50) {
                                                         cartProvider.clearCoupon();
                                                       }
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
@@ -508,7 +482,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                               return Order(
                                                                 orderId: myOrderId,
                                                                 paymentMode: orderProvider.selectedPaymentMethod,
-                                                                productName: item.itemName +' - '+ item.itemUnit,
+                                                                productName: '${item.itemName} - ${item.itemUnit}',
                                                                 productImage: item.itemImage,
                                                                 quantity: item.qnt,
                                                                 price: item.itemPrice.toDouble(),
@@ -520,7 +494,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 valetPhone: "",
                                                               );
                                                             }).toList();
-
                                                             orderProvider.addOrders(orders, myOrderId, authProvider.phone);
                                                           });
                                                         },

@@ -13,6 +13,8 @@ class ManageCategoryScreen extends StatefulWidget {
 
 class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
   late TableData src;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -21,12 +23,19 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
     src.addListener(() {
       setState(() {});
     });
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+        src.filterData(_searchQuery);
+      });
+    });
   }
 
   @override
   void dispose() {
     src.removeListener(() {});
     src.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -38,25 +47,50 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
       ),
       body: Stack(
         children: [
-          RefreshIndicator(
-            onRefresh: src._refreshCategoryList,
-            child: ListView(
-              children: [
-                PaginatedDataTable(
-                  columns: const [
-                    DataColumn(label: Text('ID')),
-                    DataColumn(label: Text('Category')),
-                    DataColumn(label: Text('Status')),
-                    DataColumn(label: Text('Priority')), // Added priority column
-                    DataColumn(label: Text('')),
-                    DataColumn(label: Text('')),
-                  ],
-                  source: src,
-                  columnSpacing: 20,
-                  rowsPerPage: 8,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search Categories',
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                      },
+                    )
+                        : null,
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: src._refreshCategoryList,
+                  child: ListView(
+                    children: [
+                      PaginatedDataTable(
+                        columns: const [
+                          DataColumn(label: Text('ID')),
+                          DataColumn(label: Text('Category')),
+                          DataColumn(label: Text('Status')),
+                          DataColumn(label: Text('Priority')),
+                          DataColumn(label: Text('')),
+                          DataColumn(label: Text('')),
+                        ],
+                        source: src,
+                        columnSpacing: 20,
+                        rowsPerPage: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           Positioned(
             bottom: 25,
@@ -94,6 +128,7 @@ class TableData extends DataTableSource {
 
   CatModel category = CatModel();
   List<Map<String, dynamic>> catData = [];
+  List<Map<String, dynamic>> filteredData = [];
   List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
 
   TableData(this.context) {
@@ -104,16 +139,31 @@ class TableData extends DataTableSource {
     catData = await category.manageCategories();
     // Sort categories by priority (ascending)
     catData.sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
+    filteredData = catData;
     notifyListeners(); // Notify the listeners that data has changed
   }
+
   Future<void> _refreshCategoryList() async {
     await _loadCatData();
     notifyListeners();
   }
+
+  void filterData(String query) {
+    if (query.isEmpty) {
+      filteredData = catData;
+    } else {
+      filteredData = catData
+          .where((category) =>
+          category['category_name'].toString().toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+    notifyListeners();
+  }
+
   @override
   DataRow? getRow(int index) {
-    if (index >= catData.length) return null; // Check index bounds
-    final data = catData[index];
+    if (index >= filteredData.length) return null; // Check index bounds
+    final data = filteredData[index];
     return DataRow(cells: [
       DataCell(Text(data['category_id'].toString())),
       DataCell(Text(data['category_name'].toString())),
@@ -170,7 +220,7 @@ class TableData extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => catData.length;
+  int get rowCount => filteredData.length;
 
   @override
   int get selectedRowCount => 0;

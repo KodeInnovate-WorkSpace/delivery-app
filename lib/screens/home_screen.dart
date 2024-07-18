@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/skeleton.dart';
@@ -37,10 +36,10 @@ class HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   // products
   List<Product> products = [];
-
   @override
   void initState() {
     super.initState();
+    checkAppMaintenanceStatus(context);
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
@@ -49,7 +48,7 @@ class HomeScreenState extends State<HomeScreen> {
     initiateCartProvider.loadCart();
 
     fetchDataFuture = fetchData();
-    requestNotificationPermission();
+
   }
 
   Future<void> fetchData() async {
@@ -73,7 +72,7 @@ class HomeScreenState extends State<HomeScreen> {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('AppMaintenance').get();
       for (var document in snapshot.docs) {
         var data = document.data() as Map<String, dynamic>;
-        if (data['isAppEnabled'] == 0 && specificNumber != 9326500602) {
+        if (data['isAppEnabled'] == 0 && specificNumber != 9876543210) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const ClosedScreen(),
@@ -158,34 +157,34 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> requestNotificationPermission() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    // Check the current notification settings
-    NotificationSettings settings = await messaging.getNotificationSettings();
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      log('Notification permission already granted');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      log('Provisional notification permission already granted');
-    } else {
-      // Request notification permission if not already granted
-      settings = await messaging.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-        provisional: false,
-      );
-
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        log('User granted permission');
-      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-        log('User granted provisional permission');
-      } else {
-        log('User declined or has not accepted permission');
-      }
-    }
-  }
+  // Future<void> requestNotificationPermission() async {
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //
+  //   // Check the current notification settings
+  //   NotificationSettings settings = await messaging.getNotificationSettings();
+  //
+  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //     log('Notification permission already granted');
+  //   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+  //     log('Provisional notification permission already granted');
+  //   } else {
+  //     // Request notification permission if not already granted
+  //     settings = await messaging.requestPermission(
+  //       alert: true,
+  //       badge: true,
+  //       sound: true,
+  //       provisional: false,
+  //     );
+  //
+  //     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //       log('User granted permission');
+  //     } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+  //       log('User granted provisional permission');
+  //     } else {
+  //       log('User declined or has not accepted permission');
+  //     }
+  //   }
+  // }
 
   void showLocationDialog() {
     showDialog(
@@ -295,7 +294,7 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ) ??
         false;
-  }
+}
 
   @override
   Widget build(BuildContext context) {

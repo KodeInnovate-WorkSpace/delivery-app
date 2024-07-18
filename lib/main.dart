@@ -1,8 +1,7 @@
-//updated home checked for auto update method
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
@@ -110,23 +109,30 @@ class MyAppState extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyAppState> {
-  late Future<User?> _authCheckFuture;
+  // late Future<User?> _authCheckFuture;
+  late Future<bool> _loginCheckFuture;
 
   @override
   void initState() {
     checkForUpdate();
     super.initState();
-    _authCheckFuture = _checkAuthStatus();
+    // _authCheckFuture = _checkAuthStatus();
+    _loginCheckFuture = _checkLoginStatus();
     _initAuthProvider();
   }
 
-  Future<User?> _checkAuthStatus() async {
-    return FirebaseAuth.instance.currentUser;
+  // Future<User?> _checkAuthStatus() async {
+  //   return FirebaseAuth.instance.currentUser;
+  // }
+
+  Future<bool> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
   }
 
   void _initAuthProvider() {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-    authProvider.setPhone(); // Initialize any necessary data for auth provider
+    authProvider.retrievePhone(); // Initialize any necessary data for auth provider
   }
 
   Future<void> checkForUpdate() async {
@@ -153,8 +159,8 @@ class _MyAppState extends State<MyAppState> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<User?>(
-      future: _authCheckFuture,
+    return FutureBuilder<bool?>(
+      future: _loginCheckFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -166,7 +172,8 @@ class _MyAppState extends State<MyAppState> {
             ),
           );
         } else {
-          if (snapshot.hasData && snapshot.data != null) {
+          // if (snapshot.hasData && snapshot.data != null) {
+          if (snapshot.hasData && snapshot.data == true) {
             return const HomeScreen();
           } else {
             return const SigninScreen();

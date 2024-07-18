@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 
+
 class Order {
   final String orderId;
   final String productName;
@@ -151,27 +152,50 @@ class OrderProvider with ChangeNotifier {
   void _saveOrdersToFirebase(List<Order> orders) {
     if (orders.isEmpty) return;
 
-    Map<String, dynamic> combinedOrderData = {
-      'orderId': orders.first.orderId,
-      'address': orders.first.address,
-      'paymentMode': orders.first.paymentMode,
-      'status': orders.first.status,
-      'overallTotal': orders.first.overallTotal,
-      'phone': orders.first.phone,
-      'timestamp': orders.first.timestamp.toIso8601String(),
-      'valetName': orders.first.valetName,
-      'valetPhone': orders.first.valetPhone,
-      'orders': orders.map((order) {
-        return {
-          'productName': order.productName,
-          'productImage': order.productImage,
-          'quantity': order.quantity,
-          'price': order.price,
-        };
-      }).toList(),
-    };
-
-    FirebaseFirestore.instance.collection('OrderHistory').doc(orders.first.orderId).set(combinedOrderData);
+    if (orders.first.paymentMode == 'Online') {
+      Map<String, dynamic> combinedOrderData = {
+        'orderId': orders.first.orderId,
+        'address': orders.first.address,
+        'paymentMode': orders.first.paymentMode,
+        // 'status': orders.first.status,
+        'status': 7,
+        'overallTotal': orders.first.overallTotal,
+        'phone': orders.first.phone,
+        'timestamp': orders.first.timestamp.toIso8601String(),
+        'valetName': orders.first.valetName,
+        'valetPhone': orders.first.valetPhone,
+        'orders': orders.map((order) {
+          return {
+            'productName': order.productName,
+            'productImage': order.productImage,
+            'quantity': order.quantity,
+            'price': order.price,
+          };
+        }).toList(),
+      };
+      FirebaseFirestore.instance.collection('OrderHistory').doc(orders.first.orderId).set(combinedOrderData);
+    } else {
+      Map<String, dynamic> combinedOrderData = {
+        'orderId': orders.first.orderId,
+        'address': orders.first.address,
+        'paymentMode': orders.first.paymentMode,
+        'status': orders.first.status,
+        'overallTotal': orders.first.overallTotal,
+        'phone': orders.first.phone,
+        'timestamp': orders.first.timestamp.toIso8601String(),
+        'valetName': orders.first.valetName,
+        'valetPhone': orders.first.valetPhone,
+        'orders': orders.map((order) {
+          return {
+            'productName': order.productName,
+            'productImage': order.productImage,
+            'quantity': order.quantity,
+            'price': order.price,
+          };
+        }).toList(),
+      };
+      FirebaseFirestore.instance.collection('OrderHistory').doc(orders.first.orderId).set(combinedOrderData);
+    }
   }
 
   Future<void> fetchOrders() async {
@@ -196,7 +220,8 @@ class OrderProvider with ChangeNotifier {
                   paymentMode: data['paymentMode'],
                   address: data['address'],
                   phone: data['phone'],
-                  status: data['status'] ?? 0,
+                  // status: data['status'] ?? 0,
+                  status: data['status'] ?? 6,
                   overallTotal: data['overallTotal'],
                   timestamp: DateTime.parse(data['timestamp']),
                   valetName: data['valetName'],
@@ -226,7 +251,8 @@ class OrderProvider with ChangeNotifier {
                   paymentMode: data['paymentMode'],
                   address: data['address'],
                   phone: data['phone'],
-                  status: data['status'] ?? 0,
+                  // status: data['status'] ?? 0,
+                  status: data['status'] ?? 6,
                   overallTotal: data['overallTotal'],
                   timestamp: DateTime.parse(data['timestamp']),
                   valetName: data['valetName'],
@@ -241,13 +267,13 @@ class OrderProvider with ChangeNotifier {
     int orderIndex = _orders.indexWhere((o) => o.orderId == order.orderId);
     if (orderIndex != -1) {
       _orders[orderIndex] = order.copyWith(status: status, phone: phone);
-      await _updateOrderStatusInFirebase(order.orderId, status);
+      await updateOrderStatusInFirebase(order.orderId, status);
       _saveOrdersToPreferences();
       notifyListeners();
     }
   }
 
-  Future<void> _updateOrderStatusInFirebase(String orderId, int status) async {
+  Future<void> updateOrderStatusInFirebase(String orderId, int status) async {
     final docRef = FirebaseFirestore.instance.collection('OrderHistory').doc(orderId);
     final doc = await docRef.get();
     if (doc.exists) {
@@ -256,7 +282,12 @@ class OrderProvider with ChangeNotifier {
   }
 
   Future<void> cancelOrder(String orderId) async {
-    await _updateOrderStatusInFirebase(orderId, 5);
+    await updateOrderStatusInFirebase(orderId, 5);
+    notifyListeners();
+  }
+
+  Future<void> acceptOrder(String orderId) async {
+    await updateOrderStatusInFirebase(orderId, 8);
     notifyListeners();
   }
 

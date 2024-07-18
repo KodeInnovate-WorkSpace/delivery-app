@@ -47,7 +47,7 @@ class CartProvider extends ChangeNotifier {
     final grandTotal = calculateTotalPrice() + calculateHandlingCharge();
     double totalSave = 0;
 
-    if (isCouponApplied!) {
+    if (isCouponApplied) {
       totalSave = _discount + (delCharge == 0 ? deliveryCharge! : 0);
     } else if (delCharge == 0) {
       totalSave = deliveryCharge!;
