@@ -53,6 +53,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 status = 5;
               }
 
+              if (status == 8) {
+                status = 0;
+              }
+
               if (status == 5) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),

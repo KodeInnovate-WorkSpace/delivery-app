@@ -54,7 +54,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               ),
               Text(
                 // "+91 ${authProvider.phone}",
-                "${widget.email}",
+                widget.email,
                 style: const TextStyle(fontFamily: "Gilroy-SemiBold", fontSize: 17),
               ),
               Padding(

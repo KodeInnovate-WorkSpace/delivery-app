@@ -99,7 +99,7 @@ class OrderDataRow extends StatelessWidget {
   final ValetModel valetObj;
   final Future<void> Function() refreshCallback;
 
-  const OrderDataRow({
+  const OrderDataRow({super.key, 
     required this.data,
     required this.valetData,
     required this.statusMessages,
@@ -157,7 +157,7 @@ class OrderDataRow extends StatelessWidget {
 class TableData extends ChangeNotifier {
   ValetModel valetObj = ValetModel();
 
-  List<int> statusOptions = [0, 1, 2, 3, 4, 5, 6];
+  List<int> statusOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   Map<int, String> statusMessages = {
     0: 'Received',
     1: 'Confirmed',
@@ -166,6 +166,8 @@ class TableData extends ChangeNotifier {
     4: 'Delivered',
     5: 'Failed',
     6: 'Cancelled',
+    7: 'New order in process',
+    8: 'Order Generated',
   };
 
   List<Map<String, dynamic>> orderData = [];

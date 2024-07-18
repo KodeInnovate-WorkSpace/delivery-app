@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 
-import '../services/push_notification.dart';
 
 class Order {
   final String orderId;
@@ -288,7 +287,7 @@ class OrderProvider with ChangeNotifier {
   }
 
   Future<void> acceptOrder(String orderId) async {
-    await updateOrderStatusInFirebase(orderId, 0);
+    await updateOrderStatusInFirebase(orderId, 8);
     notifyListeners();
   }
 

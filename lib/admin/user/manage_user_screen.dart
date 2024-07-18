@@ -57,7 +57,7 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                     decoration: InputDecoration(
                       labelText: 'Search by phone number',
                       suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
+                        icon: const Icon(Icons.clear),
                         onPressed: () {
                           _searchController.clear();
                           _searchUser('');

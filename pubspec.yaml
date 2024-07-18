@@ -1,7 +1,7 @@
 name: speedy_delivery
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.2.0+10
+version: 0.1.8+8
 
 
 environment:
@@ -51,6 +51,8 @@ dependencies:
   in_app_update: ^4.2.3
   googleapis: ^13.2.0
   googleapis_auth: ^1.6.0
+  onesignal_flutter: ^5.2.2
+  mailer: ^6.1.1
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+
 import '../screens/verify_phone_num_screen.dart';
 
 class MyAuthProvider with ChangeNotifier {
