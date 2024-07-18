@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +40,6 @@ class _ProfilePageState extends State<ProfilePage> {
     final userProvider = Provider.of<CheckUserProvider>(context, listen: false);
 
     final cartProvider = Provider.of<CartProvider>(context);
-    // final addressProvider = Provider.of<AddressProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -217,7 +215,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             },
                           ),
                         // Delivery Partner Screen
-                        if (userProvider.userType == 1 || userProvider.userType == 2)
+                        if (userProvider.userType == 2)
                           ListTile(
                             leading: Container(
                                 decoration: BoxDecoration(
@@ -409,7 +407,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             //Yes
                                             TextButton(
                                                 onPressed: () async {
-                                                  await FirebaseAuth.instance.signOut();
+                                                  // await FirebaseAuth.instance.signOut();
+
                                                   //Clear login
                                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                                   await prefs.remove('isLoggedIn');

@@ -169,12 +169,14 @@ class CheckUserProvider with ChangeNotifier {
     final checkUserProvider = Provider.of<CheckUserProvider>(context, listen: false);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+    uploadFCMToken(authProvider.phone);
     try {
       // Get today's date
       String todayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
       // Check if the user exists
       await checkUserProvider.doesUserExists(authProvider.phone);
-      final token = await FirebaseMessaging.instance.getToken();
+      // final token = await FirebaseMessaging.instance.getToken();
+      final token = await FirebaseMessaging.instance.getToken().then((token) async {});
       if (!checkUserProvider._isUserExist) {
         // Add new user data if user does not exist
         await firestore.collection('users').add({
@@ -253,7 +255,28 @@ class CheckUserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getUserToken(String phone) async {
+  Future<void> uploadFCMToken(String phone) async {
+    try {
+      FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
+        log("Refresh Token: $token");
+
+        final FirebaseFirestore firestore = FirebaseFirestore.instance;
+        final QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: phone).get();
+        if (querySnapshot.docs.isNotEmpty) {
+          final DocumentReference userDocRef = querySnapshot.docs.first.reference;
+          await userDocRef.update({'fcmToken': token});
+        } else {
+          log('User not found for phone number: $phone');
+        }
+      });
+    } catch (e) {
+      log("Error setting user token: $e");
+    }
+
+    notifyListeners();
+  }
+
+  Future<String> getUserToken(String phone) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     try {
@@ -262,13 +285,13 @@ class CheckUserProvider with ChangeNotifier {
       if (querySnapshot.docs.isNotEmpty) {
         final userDoc = querySnapshot.docs.first;
         final userToken = userDoc.get('fcmToken');
-        _userToken = userToken;
         log("User token = $_userToken");
+        return _userToken = userToken;
       }
     } catch (e) {
       log("Error getting user token: $e");
     }
-
+    return "Token Not Found";
     notifyListeners();
   }
 }

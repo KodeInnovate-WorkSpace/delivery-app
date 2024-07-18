@@ -119,6 +119,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       return 'Failed';
                     case 6:
                       return 'Cancelled';
+                    case 7:
+                      return 'Failed';
                     default:
                       return 'Ongoing';
                   }

@@ -69,15 +69,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<Map<String, dynamic>> createSessionID(String myOrderId) async {
     var headers = {
       'Content-Type': 'application/json',
-      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
-      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      'x-client-id': "TEST102073159c36086010050049f41951370201",
+      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       //Prod
-      'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
+      // 'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
-    // var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
-    var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
+    var request = http.Request('POST', Uri.parse('https://sandbox.cashfree.com/pg/orders')); // test
+    // var request = http.Request('POST', Uri.parse('https://api.cashfree.com/pg/orders')); // prod
     request.body = json.encode({
       "order_amount": totalAmt.toStringAsFixed(2),
       "order_id": myOrderId,
@@ -108,16 +108,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     var headers = {
       'Content-Type': 'application/json',
       //Test
-      // 'x-client-id': "TEST102073159c36086010050049f41951370201",
-      // 'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
+      'x-client-id': "TEST102073159c36086010050049f41951370201",
+      'x-client-secret': "cfsk_ma_test_85d10e30b385bd991902bfa67e3222bd_69af2996",
       //Prod
-      'x-client-id': "6983506cac38e05faf1b6e3085053896",
-      'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
+      // 'x-client-id': "6983506cac38e05faf1b6e3085053896",
+      // 'x-client-secret': "cfsk_ma_prod_d184d86eba0c9e3ff1ba85866e4c6639_abf28ea8",
       'x-api-version': '2023-08-01',
     };
 
-    var request = http.Request('GET', Uri.parse('https://api.cashfree.com/pg/orders/$orderId')); // prod
-    // var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
+    // var request = http.Request('GET', Uri.parse('https://api.cashfree.com/pg/orders/$orderId')); // prod
+    var request = http.Request('GET', Uri.parse('https://sandbox.cashfree.com/pg/orders/$orderId')); // test
 
     request.headers.addAll(headers);
 
@@ -132,19 +132,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
-  // void verifyPayment(String oId) {
-  //   debugPrint("Verify Payment");
-  //   debugPrint("Order ID = $oId");
-  //   final cartProvider = Provider.of<CartProvider>(context, listen: false);
-  //   cartProvider.clearCart();
-  //   Navigator.pushReplacement(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => const OrderConfirmationPage()),
-  //   );
-  //
-  //   showMessage("Payment Successful");
-  // }
-
   void verifyPayment(String oId) async {
     debugPrint("Verify Payment");
     debugPrint("Order ID = $oId");
@@ -152,7 +139,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       final paymentStatus = await verifyPaymentStatus(oId);
       if (paymentStatus['order_status'] == 'PAID') {
+        final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+        await orderProvider.acceptOrder(oId);
+
         final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
         cartProvider.clearCart();
         Navigator.pushReplacement(
           context,
@@ -161,7 +152,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         showMessage("Payment Successful");
       } else {
         final orderProvider = Provider.of<OrderProvider>(context);
-
         showMessage("Payment not successful. Please try again.");
         await orderProvider.cancelOrder(oId);
         return;
@@ -171,22 +161,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       showMessage("Error verifying payment. Please try again.");
     }
   }
-
-  // void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
-  //   debugPrint(errorResponse.getMessage().toString());
-  //   debugPrint("Error while making payment");
-  //   debugPrint("Order ID is $orderId");
-  //
-  //   await orderProvider.cancelOrder(orderId);
-  //
-  //   // Navigate to OrderTrackingScreen
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => OrderTrackingScreen(orderId: orderId),
-  //     ),
-  //   );
-  // }
 
   void onError(CFErrorResponse errorResponse, String orderId, BuildContext context, OrderProvider orderProvider) async {
     debugPrint(errorResponse.getMessage().toString());
@@ -237,8 +211,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Future<CFSession?> createSession(String myOrdId) async {
     try {
       final paymentSessionId = await createSessionID(myOrdId);
-      var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
-      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      // var session = CFSessionBuilder().setEnvironment(CFEnvironment.PRODUCTION).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
+      var session = CFSessionBuilder().setEnvironment(CFEnvironment.SANDBOX).setOrderId(myOrdId).setPaymentSessionId(paymentSessionId["payment_session_id"]).build();
 
       return session;
     } on CFException catch (e) {
@@ -386,7 +360,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     setState(() {
                                                       orderProvider.selectedPaymentMethod = newValue!;
                                                       double total = cartProvider.calculateGrandTotal(newValue);
-                                                      if((total - cartProvider.Discount) < 50){
+                                                      if ((total - cartProvider.Discount) < 50) {
                                                         cartProvider.clearCoupon();
                                                       }
                                                       _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
@@ -508,7 +482,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                               return Order(
                                                                 orderId: myOrderId,
                                                                 paymentMode: orderProvider.selectedPaymentMethod,
-                                                                productName: item.itemName +' - '+ item.itemUnit,
+                                                                productName: '${item.itemName} - ${item.itemUnit}',
                                                                 productImage: item.itemImage,
                                                                 quantity: item.qnt,
                                                                 price: item.itemPrice.toDouble(),
@@ -520,7 +494,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 valetPhone: "",
                                                               );
                                                             }).toList();
-
                                                             orderProvider.addOrders(orders, myOrderId, authProvider.phone);
                                                           });
                                                         },

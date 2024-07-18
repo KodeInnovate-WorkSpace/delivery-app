@@ -1,4 +1,6 @@
+//updated_order_screen
 import 'package:flutter/material.dart';
+import '../order_details.dart';
 import '../admin_model.dart';
 
 class ManageValetScreen extends StatefulWidget {
@@ -42,22 +44,43 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
         children: [
           RefreshIndicator(
             onRefresh: _refreshPage,
-            child: ListView(
+            child: src.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
               children: [
-                PaginatedDataTable(
-                  dataRowHeight: 100,
-                  showEmptyRows: false,
-                  columns: const [
-                    DataColumn(label: Text('Order ID')),
-                    DataColumn(label: Text('Cust Phone')),
-                    DataColumn(label: Text('Date')),
-                    DataColumn(label: Text('Address')),
-                    DataColumn(label: Text('Assign')),
-                    DataColumn(label: Text('Status')),
-                  ],
-                  source: src,
-                  columnSpacing: 15,
-                  rowsPerPage: 5,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Total Orders: ${src.rowCount}',
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: src.orderData.length,
+                    itemBuilder: (context, index) {
+                      final data = src.orderData[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderDetailsScreen(orderId: data['orderId']),
+                            ),
+                          );
+                        },
+                        child: OrderDataRow(
+                          data: data,
+                          valetData: src.valetData,
+                          statusMessages: src.statusMessages,
+                          statusOptions: src.statusOptions,
+                          valetObj: src.valetObj,
+                          refreshCallback: _refreshPage,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -68,7 +91,70 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
   }
 }
 
-class TableData extends DataTableSource {
+class OrderDataRow extends StatelessWidget {
+  final Map<String, dynamic> data;
+  final List<Map<String, dynamic>> valetData;
+  final Map<int, String> statusMessages;
+  final List<int> statusOptions;
+  final ValetModel valetObj;
+  final Future<void> Function() refreshCallback;
+
+  const OrderDataRow({
+    required this.data,
+    required this.valetData,
+    required this.statusMessages,
+    required this.statusOptions,
+    required this.valetObj,
+    required this.refreshCallback,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Order ID: ${data['orderId']}'),
+            Text('Cust Phone: ${data['phone']}'),
+            Text('Date: ${data['timestamp']}'),
+            Text('Address: ${data['address']}'),
+            DropdownButton<String>(
+              value: data['valetPhone'],
+              onChanged: (String? newValue) async {
+                await valetObj.assignValet(data['orderId'].toString(), newValue!);
+                await refreshCallback();
+              },
+              items: valetData.map<DropdownMenuItem<String>>((valet) {
+                return DropdownMenuItem<String>(
+                  value: valet['phone'],
+                  child: Text(valet['name']),
+                );
+              }).toList(),
+            ),
+            DropdownButton<int>(
+              value: data['status'],
+              onChanged: (int? newValue) async {
+                await valetObj.updateStatus(data['orderId'].toString(), newValue!);
+                await refreshCallback(); // Reload data after updating
+              },
+              items: statusOptions.map<DropdownMenuItem<int>>((status) {
+                return DropdownMenuItem<int>(
+                  value: status,
+                  child: Text(statusMessages[status] ?? 'Unknown'),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TableData extends ChangeNotifier {
   ValetModel valetObj = ValetModel();
 
   List<int> statusOptions = [0, 1, 2, 3, 4, 5, 6];
@@ -92,79 +178,12 @@ class TableData extends DataTableSource {
 
   Future<void> _loadData() async {
     isLoading = true; // Set loading state
+    notifyListeners();
     orderData = await valetObj.manageOrder();
     valetData = await valetObj.manageValet();
     isLoading = false; // Data loaded
     notifyListeners();
   }
 
-  @override
-  DataRow? getRow(int index) {
-    if (isLoading || index >= orderData.length) return null;
-
-    final data = orderData[index];
-
-    return DataRow(cells: [
-      DataCell(SizedBox(
-        width: 100,
-        child: Text(
-          data['orderId'].toString(),
-          softWrap: true,
-          overflow: TextOverflow.visible,
-        ),
-      )),
-      DataCell(Text(data['phone'].toString())),
-      DataCell(SizedBox(
-        width: 100,
-        child: Text(
-          data['timestamp'],
-          softWrap: true,
-          overflow: TextOverflow.visible,
-        ),
-      )),
-      DataCell(SizedBox(
-        width: 100,
-        child: Text(
-          data['address'].toString(),
-          softWrap: true,
-          overflow: TextOverflow.visible,
-        ),
-      )),
-      DataCell(DropdownButton<String>(
-        value: data['valetPhone'],
-        onChanged: (String? newValue) async {
-          await valetObj.assignValet(data['orderId'].toString(), newValue!);
-          await _loadData();
-        },
-        items: valetData.map<DropdownMenuItem<String>>((valet) {
-          return DropdownMenuItem<String>(
-            value: valet['phone'],
-            child: Text(valet['name']),
-          );
-        }).toList(),
-      )),
-      DataCell(DropdownButton<int>(
-        value: data['status'],
-        onChanged: (int? newValue) async {
-          await valetObj.updateStatus(data['orderId'].toString(), newValue!);
-          await _loadData(); // Reload data after updating
-        },
-        items: statusOptions.map<DropdownMenuItem<int>>((status) {
-          return DropdownMenuItem<int>(
-            value: status,
-            child: Text(statusMessages[status] ?? 'Unknown'),
-          );
-        }).toList(),
-      )),
-    ]);
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => orderData.length;
-
-  @override
-  int get selectedRowCount => 0;
+  int get rowCount => orderData.length; // Total number of orders
 }
