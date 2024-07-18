@@ -424,6 +424,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       ),
                                                       TextButton(
                                                         onPressed: () {
+                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
                                                           Navigator.of(context).pop(); // Close the popup
                                                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
                                                             List<Order> orders = cartProvider.cart.map((item) {
@@ -479,6 +480,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       ),
                                                       TextButton(
                                                         onPressed: () {
+                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
                                                           Navigator.of(context).pop(); // Close the popup
                                                           pay(myOrderId).then((value) {
                                                             List<Order> orders = cartProvider.cart.map((item) {
@@ -511,7 +513,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               );
                                             }
 
-                                            LocalNotificationService().sendNotificationToSelectedAdmin(title: 'This is title', body: 'This is body', token: 'cL_n41xzQzKYIapYNkDebc:APA91bEZk0zrFurxYkRIgMYNwsgB2KCUhx5CIJRkrPuVnprtttUE1EKTG5DpEQ-2RmBLgpCEC3eHAmEdHY1bnPew9aWMXGaUDMjAbVQ5Njp2sPMkVK0KPgxlj6NI-ZoTZfPX2sPLKBRn');
                                           },
                                           style: ButtonStyle(
                                             shape: WidgetStateProperty.all<RoundedRectangleBorder>(
