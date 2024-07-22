@@ -1,8 +1,9 @@
-//updated_order_screen
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../order_details.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../admin_model.dart';
+import '../order_details.dart';
 
 class ManageValetScreen extends StatefulWidget {
   const ManageValetScreen({super.key});
@@ -13,6 +14,11 @@ class ManageValetScreen extends StatefulWidget {
 
 class _ManageValetScreenState extends State<ManageValetScreen> {
   late TableData src;
+
+  String? selectedValet;
+  String? selectedPaymentMethod;
+  int? selectedStatus;
+  DateTime? selectedDate;
 
   @override
   void initState() {
@@ -34,8 +40,35 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
     await src._loadData();
   }
 
+  void _filterData() {
+    setState(() {
+      // No need to do anything here, as we're using the selected filters in the build method
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> filteredData = src.orderData.where((order) {
+      if (selectedValet != null && order['valetPhone'] != selectedValet) {
+        return false;
+      }
+      if (selectedPaymentMethod != null && selectedPaymentMethod != 'Both' && order['paymentMode'] != selectedPaymentMethod) {
+        return false;
+      }
+      if (selectedStatus != null && order['status'] != selectedStatus) {
+        return false;
+      }
+      if (selectedDate != null) {
+        DateTime orderDate = DateTime.parse(order['timestamp']);
+        if (orderDate.year != selectedDate!.year ||
+            orderDate.month != selectedDate!.month ||
+            orderDate.day != selectedDate!.day) {
+          return false;
+        }
+      }
+      return true;
+    }).toList();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -52,22 +85,24 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Total Orders: ${src.rowCount}',
+                    'Total Orders: ${filteredData.length}',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
+                _buildFilters(),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: src.orderData.length,
+                    itemCount: filteredData.length,
                     itemBuilder: (context, index) {
-                      final data = src.orderData[index];
+                      final data = filteredData[index];
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => OrderDetailsScreen(orderId: data['orderId']),
+                              builder: (context) =>
+                                  OrderDetailsScreen(orderId: data['orderId']),
                             ),
                           );
                         },
@@ -90,6 +125,120 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
       ),
     );
   }
+
+  Widget _buildFilters() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButton<String>(
+                  hint: const Text('Select Valet'),
+                  value: selectedValet,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedValet = newValue;
+                      _filterData();
+                    });
+                  },
+                  items: src.valetData.map<DropdownMenuItem<String>>((valet) {
+                    return DropdownMenuItem<String>(
+                      value: valet['phone'],
+                      child: Text(valet['name']),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButton<String>(
+                  hint: const Text('Payment Method'),
+                  value: selectedPaymentMethod,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedPaymentMethod = newValue;
+                      _filterData();
+                    });
+                  },
+                  items: <String>['Both', 'Online', 'Cash on delivery']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButton<int>(
+                  hint: const Text('Select Status'),
+                  value: selectedStatus,
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      selectedStatus = newValue;
+                      _filterData();
+                    });
+                  },
+                  items: src.statusOptions.map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
+                      value: value,
+                      child: Text(src.statusMessages[value] ?? 'Unknown'),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () async {
+                    DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        selectedDate = picked;
+                        _filterData();
+                      });
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Text(
+                      selectedDate == null
+                          ? 'Select Date'
+                          : DateFormat('dd MMM yyyy').format(selectedDate!),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class OrderDataRow extends StatelessWidget {
@@ -100,7 +249,8 @@ class OrderDataRow extends StatelessWidget {
   final ValetModel valetObj;
   final Future<void> Function() refreshCallback;
 
-  const OrderDataRow({super.key, 
+  const OrderDataRow({
+    super.key,
     required this.data,
     required this.valetData,
     required this.statusMessages,
@@ -120,8 +270,9 @@ class OrderDataRow extends StatelessWidget {
           children: [
             Text('Order ID: ${data['orderId']}'),
             Text('Cust Phone: ${data['phone']}'),
-            Text('Date:  ${data['timestamp']}'),
+            Text('Date: ${_formatTimestamp(data['timestamp'])}'),
             Text('Address: ${data['address']}'),
+            Text('Payment Mode: ${data['paymentMode']}'),
             DropdownButton<String>(
               value: data['valetPhone'],
               onChanged: (String? newValue) async {
@@ -154,8 +305,9 @@ class OrderDataRow extends StatelessWidget {
     );
   }
 
-  String formatTimestamp(DateTime timestamp) {
-    return DateFormat('dd MMM yyyy, hh:mm a').format(timestamp);
+  String _formatTimestamp(String timestamp) {
+    DateTime dateTime = DateTime.parse(timestamp);
+    return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
   }
 }
 
@@ -186,10 +338,23 @@ class TableData extends ChangeNotifier {
   Future<void> _loadData() async {
     isLoading = true; // Set loading state
     notifyListeners();
-    orderData = await valetObj.manageOrder();
+    orderData = await _fetchOrders();
     valetData = await valetObj.manageValet();
     isLoading = false; // Data loaded
     notifyListeners();
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchOrders() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('OrderHistory')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      data['orderId'] = doc.id;
+      return data;
+    }).toList();
   }
 
   int get rowCount => orderData.length; // Total number of orders

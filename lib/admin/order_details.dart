@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../providers/order_provider.dart'; // Update the import path
 
 class OrderDetailsScreen extends StatelessWidget {
@@ -34,7 +35,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text('Phone: ${order.phone}'),
                   const SizedBox(height: 10),
-                  Text('Timestamp: ${order.timestamp.toLocal()}'),
+                  Text('Timestamp: ${_formatTimestamp(order.timestamp)}'),
                   const SizedBox(height: 10),
                   Text('Valet Name: ${order.valetName}'),
                   const SizedBox(height: 10),
@@ -72,5 +73,9 @@ class OrderDetailsScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _formatTimestamp(DateTime timestamp) {
+    return DateFormat('dd MMM yyyy, hh:mm a').format(timestamp.toLocal());
   }
 }
