@@ -34,8 +34,24 @@ class _ManageBannerScreenState extends State<ManageBannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Banner'),
+        title: const Text(
+          'Manage Banner',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           RefreshIndicator(
@@ -53,6 +69,8 @@ class _ManageBannerScreenState extends State<ManageBannerScreen> {
                   source: src,
                   columnSpacing: 20,
                   rowsPerPage: 8,
+                  showFirstLastButtons: true,
+                  arrowHeadColor: const Color(0xff1a1a1c),
                 ),
               ],
             ),

@@ -46,9 +46,23 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Manage Sub-Categories'),
+        title: const Text(
+          'Manage Sub-Categories',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -77,6 +91,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
           )
         ],
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           Column(
@@ -85,6 +100,7 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: _searchController,
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
                   decoration: InputDecoration(
                     labelText: 'Search Sub-Categories',
                     border: const OutlineInputBorder(),
@@ -120,6 +136,8 @@ class _ManageSubCategoryScreenState extends State<ManageSubCategoryScreen> {
                         source: src,
                         columnSpacing: 10,
                         rowsPerPage: 8,
+                        showFirstLastButtons: true,
+                        arrowHeadColor: const Color(0xff1a1a1c),
                       ),
                     ],
                   ),

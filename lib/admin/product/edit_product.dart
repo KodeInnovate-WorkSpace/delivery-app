@@ -25,9 +25,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   File? _image;
 
   int? dropdownValue = 1;
-  // final List<String> subcategories = [];
-  // Map<String, int> subcategoriesMap = {};
-  // int? selectedSubCategory;
   final List<String> subCategoryNames = [];
   final Map<String, int> subCategoryMap = {};
   String? selectedSubCategoryName;
@@ -81,44 +78,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
     }
   }
 
-  // Future<void> addNewProduct(BuildContext context) async {
-  //   try {
-  //     // Fetch productData from Firestore
-  //     productData = await product.manageProducts();
-  //     notifyListeners();
-  //
-  //     // Check if sub-category already exists
-  //     final querySnapshot = await FirebaseFirestore.instance.collection('products').where('name', isEqualTo: nameController.text).get();
-  //
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       showMessage("Product already exists");
-  //       log("Product already exists");
-  //       return;
-  //     }
-  //
-  //     // Upload image and add sub-category to Firestore
-  //     String imageUrl = await uploadImage(_image!);
-  //     final productDoc = FirebaseFirestore.instance.collection('products').doc();
-  //
-  //     await productDoc.set({
-  //       'id': productData.length + 1,
-  //       'image': imageUrl,
-  //       'name': nameController.text,
-  //       'price': int.parse(priceController.text),
-  //       'mrp': int.parse(mrpController.text),
-  //       'status': dropdownValue,
-  //       'stock': int.parse(stockController.text),
-  //       'sub_category_id': selectedSubCategoryId,
-  //       'unit': unitController.text,
-  //     });
-  //
-  //     showMessage("Product added to database");
-  //     log("Product added successfully");
-  //   } catch (e) {
-  //     showMessage("Error adding Product: $e");
-  //     log("Error adding Product: $e");
-  //   }
-  // }
   Future<void> addNewProduct(BuildContext context) async {
     try {
       // Fetch productData from Firestore
@@ -207,11 +166,26 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   @override
   Widget build(BuildContext context) {
-    // bool isButtonDisabled = false;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add new product"),
+        title: const Text(
+          "Add new product",
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
@@ -387,7 +361,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                     child: const Text(
                       "Open Camera",
-                      style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                      style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -408,20 +382,28 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                     child: const Text(
                       "Pick Image",
-                      style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                      style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
                     ),
                   ),
                 ],
               ),
 
-              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+              _image != null
+                  ? Image.file(_image!, height: 100, width: 100)
+                  : const Text(
+                      "No image selected",
+                      style: TextStyle(color: Color(0xffb3b3b3)),
+                    ),
               const SizedBox(height: 20),
 
               // Status
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Status: "),
+                  const Text(
+                    "Status: ",
+                    style: TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                   DropdownButton<int>(
                     value: dropdownValue,
                     onChanged: (int? value) {
@@ -433,8 +415,18 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       value == 1 ? log("Enabled") : log("Disabled");
                     },
                     items: const [
-                      DropdownMenuItem(value: 1, child: Text("Enable")),
-                      DropdownMenuItem(value: 0, child: Text("Disable")),
+                      DropdownMenuItem(
+                          value: 1,
+                          child: Text(
+                            "Enable",
+                            style: TextStyle(color: Color(0xffb3b3b3)),
+                          )),
+                      DropdownMenuItem(
+                          value: 0,
+                          child: Text(
+                            "Disable",
+                            style: TextStyle(color: Color(0xffb3b3b3)),
+                          )),
                     ],
                   ),
                 ],
@@ -442,7 +434,10 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               const SizedBox(height: 20),
 
               // Select Sub-Category
-              const Text("Sub-Category: "),
+              const Text(
+                "Sub-Category: ",
+                style: TextStyle(color: Color(0xffb3b3b3)),
+              ),
               DropdownButton<String>(
                 value: selectedSubCategoryName,
                 onChanged: (String? newValue) {
@@ -454,10 +449,16 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
                   return DropdownMenuItem<String>(
                     value: subcat,
-                    child: Text(subcat.toString()),
+                    child: Text(
+                      subcat.toString(),
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
+                    ),
                   );
                 }).toList(),
-                hint: const Text("Select a sub-category"),
+                hint: const Text(
+                  "Select a sub-category",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -510,7 +511,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                       : const Text(
                           "Add",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Color(0xffb3b3b3),
                             fontFamily: 'Gilroy-Bold',
                           ),
                         ),

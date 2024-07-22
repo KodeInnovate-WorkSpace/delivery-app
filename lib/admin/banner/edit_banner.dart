@@ -106,14 +106,35 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add New Banner"),
+        title: const Text(
+          "Add New Banner",
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+            _image != null
+                ? Image.file(_image!, height: 100, width: 100)
+                : const Text(
+                    "No image selected",
+                    style: TextStyle(color: Color(0xffb3b3b3)),
+                  ),
             const SizedBox(height: 20),
 
             // Open Camera
@@ -133,7 +154,7 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
               ),
               child: const Text(
                 "Open Camera",
-                style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
               ),
             ),
             const SizedBox(width: 10),
@@ -155,7 +176,7 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
               ),
               child: const Text(
                 "Pick Image",
-                style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
               ),
             ),
             const SizedBox(height: 20),
@@ -194,7 +215,9 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text("Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: dropdownValue,
                   onChanged: (int? value) {
@@ -206,8 +229,18 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
                     value == 1 ? log("Enabled") : log("Disabled");
                   },
                   items: const [
-                    DropdownMenuItem(value: 1, child: Text("Enable")),
-                    DropdownMenuItem(value: 0, child: Text("Disable")),
+                    DropdownMenuItem(
+                        value: 1,
+                        child: Text(
+                          "Enable",
+                          style: TextStyle(color: Color(0xffb3b3b3)),
+                        )),
+                    DropdownMenuItem(
+                        value: 0,
+                        child: Text(
+                          "Disable",
+                          style: TextStyle(color: Color(0xffb3b3b3)),
+                        )),
                   ],
                 ),
               ],
@@ -263,7 +296,7 @@ class _EditBannerState extends State<EditBanner> with ChangeNotifier {
                     : const Text(
                         "Add",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xffb3b3b3),
                           fontFamily: 'Gilroy-Bold',
                         ),
                       ),

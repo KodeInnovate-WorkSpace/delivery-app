@@ -118,6 +118,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -186,7 +187,10 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: dropdownValue,
                   onChanged: (int? value) {
@@ -198,8 +202,18 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                     value == 1 ? log("Enabled") : log("Disabled");
                   },
                   items: const [
-                    DropdownMenuItem(value: 1, child: Text("Enable")),
-                    DropdownMenuItem(value: 0, child: Text("Disable")),
+                    DropdownMenuItem(
+                        value: 1,
+                        child: Text(
+                          "Enable",
+                          style: TextStyle(color: Color(0xffb3b3b3)),
+                        )),
+                    DropdownMenuItem(
+                        value: 0,
+                        child: Text(
+                          "Disable",
+                          style: TextStyle(color: Color(0xffb3b3b3)),
+                        )),
                   ],
                 ),
               ],
@@ -255,7 +269,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                     : const Text(
                         "Save",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xffb3b3b3),
                           fontFamily: 'Gilroy-Bold',
                         ),
                       ),

@@ -73,41 +73,6 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
     }
   }
 
-  // Future<void> addNewSubCategory(BuildContext context) async {
-  //   try {
-  //     // Fetch subData from Firestore
-  //     subData = await subcat.manageSubCategories();
-  //     notifyListeners();
-  //
-  //     // Check if sub-category already exists
-  //     final querySnapshot = await FirebaseFirestore.instance.collection('sub_category').where('sub_category_name', isEqualTo: nameController.text).get();
-  //
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       showMessage("Sub-Category already exists");
-  //       log("Sub-category already exists");
-  //       return;
-  //     }
-  //
-  //     // Upload image and add sub-category to Firestore
-  //     String imageUrl = await uploadImage(_image!);
-  //     final subCategoryDoc = FirebaseFirestore.instance.collection('sub_category').doc();
-  //
-  //     await subCategoryDoc.set({
-  //       'sub_category_id': subData.length + 1,
-  //       'sub_category_name': nameController.text,
-  //       'sub_category_img': imageUrl,
-  //       'category_id': selectedCategoryId,
-  //       'status': dropdownValue,
-  //     });
-  //
-  //     showMessage("Sub-Category added to database");
-  //     log("Sub-category added successfully");
-  //   } catch (e) {
-  //     showMessage("Error adding sub-category: $e");
-  //     log("Error adding sub-category: $e");
-  //   }
-  // }
-
   Future<void> addNewSubCategory(BuildContext context) async {
     try {
       // Fetch subData from Firestore
@@ -194,8 +159,24 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add new sub-category"),
+        title: const Text(
+          "Add new sub-category",
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -251,7 +232,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                   ),
                   child: const Text(
                     "Open Camera",
-                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                    style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -272,20 +253,28 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                   ),
                   child: const Text(
                     "Pick Image",
-                    style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                    style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
                   ),
                 ),
               ],
             ),
 
-            _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+            _image != null
+                ? Image.file(_image!, height: 100, width: 100)
+                : const Text(
+                    "No image selected",
+                    style: TextStyle(color: Color(0xffb3b3b3)),
+                  ),
             const SizedBox(height: 20),
 
             //Status Dropdown
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: dropdownValue,
                   onChanged: (int? value) {
@@ -297,15 +286,28 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                     value == 1 ? log("Enabled") : log("Disabled");
                   },
                   items: const [
-                    DropdownMenuItem(value: 1, child: Text("Enable")),
-                    DropdownMenuItem(value: 0, child: Text("Disable")),
+                    DropdownMenuItem(
+                        value: 1,
+                        child: Text(
+                          "Enable",
+                          style: TextStyle(color: Color(0xffb3b3b3)),
+                        )),
+                    DropdownMenuItem(
+                        value: 0,
+                        child: Text(
+                          "Disable",
+                          style: TextStyle(color: Color(0xffb3b3b3)),
+                        )),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: 20),
             // Select Category Dropdown
-            const Text("Category: "),
+            const Text(
+              "Category: ",
+              style: TextStyle(color: Color(0xffb3b3b3)),
+            ),
             DropdownButton<String>(
               value: selectedCategoryName,
               onChanged: (String? newValue) {
@@ -317,10 +319,16 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
               items: categoryNames.map<DropdownMenuItem<String>>((String category) {
                 return DropdownMenuItem<String>(
                   value: category,
-                  child: Text(category.toString()),
+                  child: Text(
+                    category.toString(),
+                    style: const TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                 );
               }).toList(),
-              hint: const Text("Select a category"),
+              hint: const Text(
+                "Select a category",
+                style: TextStyle(color: Color(0xffb3b3b3)),
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -373,7 +381,7 @@ class _EditSubCategoryState extends State<EditSubCategory> with ChangeNotifier {
                     : const Text(
                         "Add",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xffb3b3b3),
                           fontFamily: 'Gilroy-Bold',
                         ),
                       ),

@@ -71,6 +71,7 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                     controller: _searchController,
                     decoration: InputDecoration(
                       labelText: 'Search by phone number',
+                      border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
@@ -79,6 +80,8 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                         },
                       ),
                     ),
+                    style: const TextStyle(color: Color(0xffb3b3b3)),
+                    keyboardType: TextInputType.number,
                     onChanged: _searchUser,
                   ),
                 ),
@@ -101,6 +104,8 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                         source: src,
                         columnSpacing: 15,
                         rowsPerPage: 5,
+                        showFirstLastButtons: true,
+                        arrowHeadColor: const Color(0xff1a1a1c),
                       ),
                     ],
                   ),

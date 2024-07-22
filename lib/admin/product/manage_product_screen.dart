@@ -39,9 +39,11 @@ class _ManageProductState extends State<ManageProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Manage Products'),
+        title: const Text(
+          'Manage Products',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -69,7 +71,20 @@ class _ManageProductState extends State<ManageProduct> {
             ),
           )
         ],
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           Column(
@@ -81,6 +96,7 @@ class _ManageProductState extends State<ManageProduct> {
                   decoration: InputDecoration(
                     labelText: 'Search',
                     hintText: 'Search by product name',
+                    border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -90,6 +106,7 @@ class _ManageProductState extends State<ManageProduct> {
                       },
                     ),
                   ),
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
                   onChanged: (value) {
                     src.filterProducts(value);
                   },
@@ -118,6 +135,8 @@ class _ManageProductState extends State<ManageProduct> {
                         source: src,
                         columnSpacing: 10,
                         rowsPerPage: 8,
+                        showFirstLastButtons: true,
+                        arrowHeadColor: const Color(0xff1a1a1c),
                       ),
                     ],
                   ),

@@ -78,8 +78,24 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Product'),
+        title: const Text(
+          'Update Product',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -128,42 +144,13 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
-            // sub-category dropdown
-            // Column(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     const Text("Change Sub-Category: "),
-            //     DropdownButton<String>(
-            //       // value: selectedSubCategoryName ?? subcategoryMap.keys.first,
-            //       value: selectedSubCategoryName,
-            //       onChanged: (String? newValue) {
-            //         try {
-            //           setState(() {
-            //             selectedSubCategoryName = newValue!;
-            //             selectedSubCategoryId = subcategoryMap[selectedSubCategoryName]!;
-            //           });
-            //         } catch (e) {
-            //           log("Error getting sub-categories: $e");
-            //         }
-            //       },
-            //       items: subcategoryMap.keys.map<DropdownMenuItem<String>>((String sub) {
-            //         return DropdownMenuItem<String>(
-            //           value: sub,
-            //           child: Text(sub),
-            //         );
-            //       }).toList(),
-            //       hint: const Text("Select a sub-category"),
-            //     )
-            //   ],
-            // ),
-            // const SizedBox(height: 20),
-
-            // status dropdown
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: dropdownValue, // Use the state variable here
                   onChanged: (int? newValue) {
@@ -172,17 +159,20 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
                     });
                     productObj
                         .updateProduct(
-                      'status',
-                      newValue,
-                      productField: 'sub_category_id',
-                      productValue: widget.data['sub_category_id'],
-                    )
+                          'status',
+                          newValue,
+                          productField: 'sub_category_id',
+                          productValue: widget.data['sub_category_id'],
+                        )
                         .then((_) => productObj.manageProducts());
                   },
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                     return DropdownMenuItem<int>(
                       value: status,
-                      child: Text(status == 0 ? 'Inactive' : 'Active'),
+                      child: Text(
+                        status == 0 ? 'Inactive' : 'Active',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -241,7 +231,7 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
                   child: Text(
                     "UPDATE",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xffb3b3b3),
                       fontFamily: 'Gilroy-ExtraBold',
                       fontSize: 16.0,
                     ),
