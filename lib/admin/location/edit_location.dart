@@ -50,17 +50,41 @@ class _EditLocationScreenState extends State<EditLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Location')),
+      appBar: AppBar(
+        title: const Text(
+          'Edit Location',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('ID: ${widget.docId}'),
+            Text(
+              'ID: ${widget.docId}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
             const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: _status,
                   onChanged: (int? newValue) {
@@ -71,7 +95,10 @@ class _EditLocationScreenState extends State<EditLocationScreen> {
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                     return DropdownMenuItem<int>(
                       value: status,
-                      child: Text(status == 0 ? 'Inactive' : 'Active'),
+                      child: Text(
+                        status == 0 ? 'Inactive' : 'Active',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -80,6 +107,7 @@ class _EditLocationScreenState extends State<EditLocationScreen> {
             const SizedBox(height: 20.0),
             TextField(
               controller: postalCodeController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'Postal Code',
                 border: OutlineInputBorder(),
@@ -105,7 +133,7 @@ class _EditLocationScreenState extends State<EditLocationScreen> {
                 child: const Text(
                   "Update",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xffb3b3b3),
                     fontFamily: 'Gilroy-Bold',
                   ),
                 ),

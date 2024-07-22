@@ -34,7 +34,25 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Location')),
+      appBar: AppBar(
+        title: const Text(
+          'Add Location',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -45,6 +63,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 controller: _idController,
                 decoration: const InputDecoration(
                   labelText: 'ID',
+                  labelStyle: TextStyle(color: Color(0xffb3b3b3)),
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
@@ -63,6 +82,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 controller: _statusController,
                 decoration: const InputDecoration(
                   labelText: 'Status',
+                  labelStyle: TextStyle(color: Color(0xffb3b3b3)),
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
@@ -81,6 +101,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 controller: _postalCodeController,
                 decoration: const InputDecoration(
                   labelText: 'Postal Code',
+                  labelStyle: TextStyle(color: Color(0xffb3b3b3)),
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
@@ -113,7 +134,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                   child: const Text(
                     "Save Location",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xffb3b3b3),
                       fontFamily: 'Gilroy-Bold',
                     ),
                   ),
@@ -126,4 +147,3 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     );
   }
 }
-

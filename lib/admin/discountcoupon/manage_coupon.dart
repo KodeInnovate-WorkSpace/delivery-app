@@ -13,11 +13,24 @@ class MainDisplayScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Offers'),
+        title: const Text(
+          'Offers',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xff1a1a1c),
         surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: StreamBuilder(
         stream: _firestore.collection('offers').snapshots(),
         builder: (context, snapshot) {
@@ -31,7 +44,7 @@ class MainDisplayScreen extends StatelessWidget {
               var offer = offers[index];
               var offerImage = offer['image'] ?? '';
               return Card(
-                color: const Color(0xfff7f7f7),
+                color: Colors.grey[850],
                 elevation: 0,
                 margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: ListTile(
@@ -46,14 +59,20 @@ class MainDisplayScreen extends StatelessWidget {
                       : null,
                   title: Text(
                     offer['offerName'],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Color(0xffb3b3b3), fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text('Discount: ${offer['discount']}%'),
+                  subtitle: Text(
+                    'Discount: ${offer['discount']}%',
+                    style: const TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.edit),
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Color(0xffb3b3b3),
+                        ),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -64,7 +83,7 @@ class MainDisplayScreen extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete),
+                        icon: const Icon(Icons.delete, color: Color(0xffb3b3b3)),
                         onPressed: () async {
                           await _firestore.collection('offers').doc(offer.id).delete();
                         },
@@ -87,7 +106,7 @@ class MainDisplayScreen extends StatelessWidget {
         },
         child: const Icon(
           Icons.add,
-          color: Colors.white,
+          color: Color(0xffb3b3b3),
         ),
       ),
     );
