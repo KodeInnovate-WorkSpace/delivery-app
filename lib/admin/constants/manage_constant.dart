@@ -11,7 +11,25 @@ class ConstantsListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Constants Management')),
+      appBar: AppBar(
+        title: const Text(
+          'Constants Management',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: StreamBuilder(
         stream: collection.snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -24,21 +42,39 @@ class ConstantsListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               var data = docs[index].data() as Map<String, dynamic>;
               return ListTile(
-                title: Text('App Version: ${data['app_version']}'),
+                title: Text(
+                  'App Version: ${data['app_version']}',
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Delivery Charge: \$${data['deliveryCharge']}'),
-                    Text('Delivery Time: ${data['deliveryTime']} minutes'),
-                    Text('Is Delivery Free: ${data['isDeliveryFree'] ? 'Yes' : 'No'}'),
-                    Text('Max Total for Coupon: ${data['maxTotalForCoupon']}'),
+                    Text(
+                      'Delivery Charge: \$${data['deliveryCharge']}',
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
+                    ),
+                    Text(
+                      'Delivery Time: ${data['deliveryTime']} minutes',
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
+                    ),
+                    Text(
+                      'Is Delivery Free: ${data['isDeliveryFree'] ? 'Yes' : 'No'}',
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
+                    ),
+                    Text(
+                      'Max Total for Coupon: ${data['maxTotalForCoupon']}',
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
+                    ),
                   ],
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.edit),
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Color(0xffb3b3b3),
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -55,35 +91,6 @@ class ConstantsListScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    // IconButton(
-                    //   icon: const Icon(Icons.delete),
-                    //   onPressed: () {
-                    //     showDialog(
-                    //       context: context,
-                    //       builder: (context) {
-                    //         return AlertDialog(
-                    //           title: const Text('Delete Constant'),
-                    //           content: const Text('Are you sure you want to delete this constant?'),
-                    //           actions: [
-                    //             TextButton(
-                    //               onPressed: () {
-                    //                 Navigator.of(context).pop();
-                    //               },
-                    //               child: const Text('Cancel'),
-                    //             ),
-                    //             TextButton(
-                    //               onPressed: () {
-                    //                 collection.doc(docs[index].id).delete();
-                    //                 Navigator.of(context).pop();
-                    //               },
-                    //               child: const Text('Delete'),
-                    //             ),
-                    //           ],
-                    //         );
-                    //       },
-                    //     );
-                    //   },
-                    // ),
                   ],
                 ),
               );
@@ -92,13 +99,17 @@ class ConstantsListScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddConstantScreen(collection: collection)),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Color(0xffb3b3b3),
+        ),
       ),
     );
   }
@@ -112,7 +123,8 @@ class EditConstantScreen extends StatefulWidget {
   final num currentDeliveryTime;
   final bool currentIsDeliveryFree;
 
-  const EditConstantScreen({super.key,
+  const EditConstantScreen({
+    super.key,
     required this.docId,
     required this.currentAppVersion,
     required this.currentDeliveryCharge,
@@ -170,29 +182,75 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Constant')),
+      appBar: AppBar(
+        title: const Text(
+          'Edit Constant',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: appVersionController,
-              decoration: const InputDecoration(labelText: 'App Version'),
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'App Version',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
             ),
             TextField(
               controller: deliveryChargeController,
-              decoration: const InputDecoration(labelText: 'Delivery Charge'),
               keyboardType: TextInputType.number,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'Delivery Charge',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
             ),
             TextField(
               controller: maxTotalForCouponController,
-              decoration: const InputDecoration(labelText: 'Max Total For Coupon'),
               keyboardType: TextInputType.number,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'Max Total For Coupon',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
             ),
             TextField(
               controller: deliveryTimeController,
-              decoration: const InputDecoration(labelText: 'Delivery Time'),
               keyboardType: TextInputType.number,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'Delivery Time',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
             ),
             SwitchListTile(
               title: const Text('Is Delivery Free'),
@@ -203,9 +261,18 @@ class _EditConstantScreenState extends State<EditConstantScreen> {
                 });
               },
             ),
+            const SizedBox(
+              height: 25,
+            ),
             ElevatedButton(
               onPressed: _updateConstant,
-              child: const Text('Save'),
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.black),
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(color: Color(0xffb3b3b3), fontFamily: "Gilroy-Bold", fontSize: 16),
+              ),
             ),
           ],
         ),
@@ -244,41 +311,97 @@ class AddConstantScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Constant')),
+      appBar: AppBar(
+        title: const Text(
+          'Add Constant',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: appVersionController,
-              decoration: const InputDecoration(labelText: 'App Version'),
+              // decoration: const InputDecoration(labelText: 'App Version'),
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'App Version',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
             ),
             TextField(
               controller: deliveryChargeController,
-              decoration: const InputDecoration(labelText: 'Delivery Charge'),
               keyboardType: TextInputType.number,
+              // decoration: const InputDecoration(labelText: 'Delivery Charge'),
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'Delivery Charge',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
             ),
             TextField(
               controller: maxTotalForCouponController,
-              decoration: const InputDecoration(labelText: 'Max Total for Coupon'),
               keyboardType: TextInputType.number,
+              // decoration: const InputDecoration(labelText: 'Max Total for Coupon'),
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'Max Total for Coupon',
+                border: OutlineInputBorder(),
+              ),
             ),
-
+            const SizedBox(
+              height: 25,
+            ),
             TextField(
               controller: deliveryTimeController,
-              decoration: const InputDecoration(labelText: 'Delivery Time'),
               keyboardType: TextInputType.number,
+              // decoration: const InputDecoration(labelText: 'Delivery Time'),
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+              decoration: const InputDecoration(
+                labelText: 'Delivery Time',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
             ),
             SwitchListTile(
-              title: const Text('Is Delivery Free'),
+              title: const Text(
+                'Is Delivery Free',
+                style: TextStyle(color: Color(0xffb3b3b3)),
+              ),
               value: isDeliveryFree,
               onChanged: (value) {
                 isDeliveryFree = value;
               },
             ),
             ElevatedButton(
+              style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.black)),
               onPressed: addConstant,
-              child: const Text('Add'),
+              child: const Text(
+                'Add',
+                style: TextStyle(color: Color(0xffb3b3b3)),
+              ),
             ),
           ],
         ),

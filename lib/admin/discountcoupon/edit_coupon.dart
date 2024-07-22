@@ -97,8 +97,24 @@ class _UpdateOfferScreenState extends State<UpdateOfferScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Offer'),
+        title: const Text(
+          'Update Offer',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -106,33 +122,65 @@ class _UpdateOfferScreenState extends State<UpdateOfferScreen> {
             children: [
               TextField(
                 controller: _offerIdController,
-                decoration: const InputDecoration(labelText: 'Offer ID'),
-                keyboardType: TextInputType.number,
+                style: const TextStyle(color: Color(0xffb3b3b3)),
+                decoration: const InputDecoration(
+                  labelText: 'Offer ID',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
               ),
               TextField(
                 controller: _offerNameController,
-                decoration: const InputDecoration(labelText: 'Offer Name'),
+                style: const TextStyle(color: Color(0xffb3b3b3)),
+                decoration: const InputDecoration(
+                  labelText: 'Offer Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
               ),
               TextField(
                 controller: _discountController,
-                decoration: const InputDecoration(labelText: 'Discount'),
                 keyboardType: TextInputType.number,
+                style: const TextStyle(color: Color(0xffb3b3b3)),
+                decoration: const InputDecoration(
+                  labelText: 'Discount',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
               ),
               TextField(
                 controller: _statusController,
-                decoration: const InputDecoration(labelText: 'Status'),
                 keyboardType: TextInputType.number,
+                style: const TextStyle(color: Color(0xffb3b3b3)),
+                decoration: const InputDecoration(
+                  labelText: 'Status',
+                  border: OutlineInputBorder(),
+                ),
               ),
-             const SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               _image != null ? Image.file(File(_image!.path), height: 150) : Container(),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: const Text('Pick Image'),
+                style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.black)),
+                child: const Text(
+                  'Pick Image',
+                  style: TextStyle(color: Color(0xffb3b3b3), fontFamily: "Gilroy-SemiBold"),
+                ),
               ),
-             const  SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _updateOffer,
-                child: const Text('Update Offer'),
+                style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.black)),
+                child: const Text(
+                  'Update Offer',
+                  style: TextStyle(color: Color(0xffb3b3b3), fontFamily: "Gilroy-SemiBold"),
+                ),
               ),
             ],
           ),

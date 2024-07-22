@@ -23,13 +23,33 @@ class _ManageDeliveredShopScreenState extends State<ManageDeliveredShopScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Delivered Shop'),
+        title: const Text(
+          'Manage Delivered Shop',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: StreamBuilder<QuerySnapshot>(
         stream: _deliveredShopStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong'));
+            return const Center(
+                child: Text(
+              'Something went wrong',
+              style: TextStyle(color: Color(0xffb3b3b3)),
+            ));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -47,7 +67,8 @@ class _ManageDeliveredShopScreenState extends State<ManageDeliveredShopScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                elevation: 4.0,
+                color: Colors.grey[850],
+                elevation: 0,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -77,17 +98,23 @@ class _ManageDeliveredShopScreenState extends State<ManageDeliveredShopScreen> {
                       const SizedBox(height: 8.0),
                       Text(
                         'Order ID: ${data['orderId']}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Color(0xffb3b3b3)),
                       ),
                       const SizedBox(height: 4.0),
-                      Text('Phone Number: ${data['phoneNumber']}'),
+                      Text(
+                        'Phone Number: ${data['phoneNumber']}',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                       const SizedBox(height: 4.0),
-                      Text('Shop Name: ${data['shopName']}'),
+                      Text(
+                        'Shop Name: ${data['shopName']}',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                       const SizedBox(height: 4.0),
-                      Text('Time of Pickup: ${DateFormat('yyyy-MM-dd – kk:mm').format((data['timeOfPickup'] as Timestamp).toDate())}'),
+                      Text(
+                        'Time of Pickup: ${DateFormat('yyyy-MM-dd – kk:mm').format((data['timeOfPickup'] as Timestamp).toDate())}',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     ],
                   ),
                 ),
