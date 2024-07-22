@@ -1,7 +1,7 @@
 name: speedy_delivery
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.8+8
+version: 0.2.2+12
 
 
 environment:
@@ -32,7 +32,6 @@ dependencies:
   share_plus: ^9.0.0
   shared_preferences: ^2.2.3
   url_launcher: ^6.2.6
-  mailer: ^6.1.1
 
   http: any
   uuid: any

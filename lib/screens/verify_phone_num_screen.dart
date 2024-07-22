@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../providers/auth_provider.dart';
@@ -20,7 +23,7 @@ class VerifyPhoneNumScreen extends StatefulWidget {
 
 class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
   final TextEditingController _otpController = TextEditingController();
-  final bool _isLoading = false;
+   bool _isLoading = false;
 
   @override
   void initState() {
@@ -30,6 +33,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.read<MyAuthProvider>();
+    final userProvider = context.read<CheckUserProvider>();
 
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -39,6 +43,12 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
           elevation: 0,
           backgroundColor: const Color(0xfff7f7f7),
           surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Restart.restartApp();
+            },
+          ),
         ),
         backgroundColor: const Color(0xfff7f7f7),
         body: SizedBox(
@@ -73,22 +83,29 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
               ElevatedButton(
                 onPressed: () async {
                   HapticFeedback.selectionClick();
-                  // await _verifyOtp(_otpController.text);
+                  await _verifyOtp(_otpController.text);
 
                   if (widget.otp == _otpController.text) {
 
+                    setState(() {
+                      _isLoading = true;
+                    });
                     authProvider.setLoginState(true);
-                    authProvider.setUserPhone(authProvider.phone);
+                    authProvider.setUserPhone(authProvider.phone,authProvider.email);
+
+                    await userProvider.storeDetail(context, 'phone', authProvider.textController.text, email: authProvider.textEmailController.text);
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    _showSnackBar("Login Successful", Colors.green);
 
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => const HomeScreen()),
                     );
-
-
-
                   } else {
-                    showMessage("Wrong OTP");
+                    _showSnackBar("OTP is wrong, Please enter correct OTP", Colors.red);
                   }
                 },
                 style: ButtonStyle(
@@ -138,42 +155,18 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
     );
   }
 
-  // Future<void> _verifyOtp(String otp) async {
-  //   if (otp.isEmpty) {
-  //     _showSnackBar("Please enter the OTP.", Colors.red);
-  //     return;
-  //   }
-  //
-  //   if (otp.length != 6) {
-  //     _showSnackBar("Invalid OTP. Please enter a 6-digit code.", Colors.red);
-  //     return;
-  //   }
-  //
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //
-  //   try {
-  //     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: widget.verificationId, smsCode: otp);
-  //
-  //     await FirebaseAuth.instance.signInWithCredential(credential);
-  //
-  //     _showSnackBar("Login Successful", Colors.green);
-  //
-  //     Navigator.pushAndRemoveUntil(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const HomeScreen()),
-  //       (route) => false,
-  //     );
-  //   } catch (e) {
-  //     log("Error: $e");
-  //     _showSnackBar("Incorrect OTP. Please try again.", Colors.red);
-  //   } finally {
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
+  Future<void> _verifyOtp(String otp) async {
+    if (otp.isEmpty) {
+      _showSnackBar("Please enter the OTP.", Colors.red);
+      return;
+    }
+
+    if (otp.length != 6) {
+      _showSnackBar("Invalid OTP. Please enter a 6-digit code.", Colors.red);
+      return;
+    }
+
+  }
 
   Future<bool> _onWillPop() async {
     return (await showDialog(

@@ -165,7 +165,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               time: data['timestamp'],
             );
           })
-              .where((order) => order.status != 4)
+              .where((order) => order.status == 0 || order.status == 1 || order.status == 2 || order.status == 3)
               .toList()
               .reversed
               .toList();
@@ -234,11 +234,13 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
   }
 
   Widget completedOrders(BuildContext context) {
+    final authProvider = Provider.of<MyAuthProvider>(context);
+
     return RefreshIndicator(
       onRefresh: _refreshOrders,
       child: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('OrderHistory').snapshots(),
-        builder: (context, snapshot) {
+        stream: FirebaseFirestore.instance.collection('OrderHistory')
+            .where('valetPhone', isEqualTo: authProvider.phone).snapshots(),        builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator(color: Colors.black));
           }
@@ -266,7 +268,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               time: data['timestamp'],
             );
           })
-              .where((order) => order.status == 4)
+              .where((order) => order.status == 4 || order.status == 5 || order.status == 6 )
               .toList()
               .reversed
               .toList();

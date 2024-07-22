@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -40,7 +41,6 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    checkAppMaintenanceStatus(context);
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
@@ -49,7 +49,7 @@ class HomeScreenState extends State<HomeScreen> {
     initiateCartProvider.loadCart();
 
     fetchDataFuture = fetchData();
-
+    requestNotificationPermission();
   }
 
   Future<void> fetchData() async {
@@ -158,34 +158,31 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Future<void> requestNotificationPermission() async {
-  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  //
-  //   // Check the current notification settings
-  //   NotificationSettings settings = await messaging.getNotificationSettings();
-  //
-  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //     log('Notification permission already granted');
-  //   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-  //     log('Provisional notification permission already granted');
-  //   } else {
-  //     // Request notification permission if not already granted
-  //     settings = await messaging.requestPermission(
-  //       alert: true,
-  //       badge: true,
-  //       sound: true,
-  //       provisional: false,
-  //     );
-  //
-  //     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //       log('User granted permission');
-  //     } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-  //       log('User granted provisional permission');
-  //     } else {
-  //       log('User declined or has not accepted permission');
-  //     }
-  //   }
-  // }
+  Future<void> requestNotificationPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.getNotificationSettings();
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+       log('Notification permission already granted');
+     } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+       log('Provisional notification permission already granted');
+     } else {
+       // Request notification permission if not already granted
+       settings = await messaging.requestPermission(
+         alert: true,
+         badge: true,
+         sound: true,
+         provisional: false,
+       );
+
+       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+         log('User granted permission');
+       } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+         log('User granted provisional permission');
+       } else {
+         log('User declined or has not accepted permission');
+       }
+     }
+   }
 
   void showLocationDialog() {
     showDialog(

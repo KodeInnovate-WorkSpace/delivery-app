@@ -1,5 +1,6 @@
 //updated_order_screen
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../order_details.dart';
 import '../admin_model.dart';
 
@@ -119,7 +120,7 @@ class OrderDataRow extends StatelessWidget {
           children: [
             Text('Order ID: ${data['orderId']}'),
             Text('Cust Phone: ${data['phone']}'),
-            Text('Date: ${data['timestamp']}'),
+            Text('Date:  ${data['timestamp']}'),
             Text('Address: ${data['address']}'),
             DropdownButton<String>(
               value: data['valetPhone'],
@@ -151,6 +152,10 @@ class OrderDataRow extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String formatTimestamp(DateTime timestamp) {
+    return DateFormat('dd MMM yyyy, hh:mm a').format(timestamp);
   }
 }
 

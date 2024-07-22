@@ -148,13 +148,14 @@ class CheckUserProvider with ChangeNotifier {
   String? get userToken => _userToken;
 
   // Check if User Exists
-  Future<void> doesUserExists(String phone) async {
+  Future<void> doesUserExists(String phone,BuildContext context) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
 
     try {
       QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: phone).get();
-
       _isUserExist = querySnapshot.docs.isNotEmpty;
+
       notifyListeners();
     } catch (e) {
       log("Error checking user existence: $e");
@@ -164,7 +165,7 @@ class CheckUserProvider with ChangeNotifier {
   }
 
   // Store or Update User Details
-  Future<void> storeDetail(BuildContext context, String field, String value) async {
+  Future<void> storeDetail(BuildContext context, String field, String value,{String email =''}) async {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     final checkUserProvider = Provider.of<CheckUserProvider>(context, listen: false);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -174,9 +175,9 @@ class CheckUserProvider with ChangeNotifier {
       // Get today's date
       String todayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
       // Check if the user exists
-      await checkUserProvider.doesUserExists(authProvider.phone);
-      // final token = await FirebaseMessaging.instance.getToken();
-      final token = await FirebaseMessaging.instance.getToken().then((token) async {});
+      await checkUserProvider.doesUserExists(authProvider.phone!,context);
+      final token = await FirebaseMessaging.instance.getToken();
+      //final token = await FirebaseMessaging.instance.getToken().then((token) async {});
       if (!checkUserProvider._isUserExist) {
         // Add new user data if user does not exist
         await firestore.collection('users').add({
@@ -188,27 +189,23 @@ class CheckUserProvider with ChangeNotifier {
           'status': 1,
           'name': '',
           'type': 0,
+          'email': authProvider.email
         });
         log("New user added successfully");
       } else {
-        log("User already exists, updating user data");
 
-        // Query the user document based on phone number
-        QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: authProvider.phone).get();
+          QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: authProvider.phone).get();
 
-        if (querySnapshot.docs.isNotEmpty) {
-          // Get the document ID of the user
-          String userDocId = querySnapshot.docs.first.id;
+          if (querySnapshot.docs.isNotEmpty) {
+            // Get the document ID of the user
+            String userDocId = querySnapshot.docs.first.id;
 
-          // Update the user details directly
-          await firestore.collection('users').doc(userDocId).update({
-            field: value,
-          });
-
-          log("User field updated successfully");
-        } else {
-          log("User not found, which is unexpected since it should exist");
-        }
+            // Update the user details directly
+            await firestore.collection('users').doc(userDocId).update({
+              field: value,
+              'email': authProvider.email,
+            });
+          }
       }
     } catch (e) {
       log("Error: $e");

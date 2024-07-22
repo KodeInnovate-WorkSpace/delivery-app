@@ -109,6 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               )),
                           title: Text(authProvider.phone.isEmpty ? "Please Login" : "+91 ${authProvider.textController.text}", style: const TextStyle(color: Color(0xff1c1c1c))),
+                          subtitle: Text(authProvider.textEmailController.text, style: const TextStyle(color: Color(0xff1c1c1c))),
                         ),
 
                         // Your Orders

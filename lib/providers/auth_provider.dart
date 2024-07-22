@@ -10,11 +10,13 @@ import '../screens/verify_phone_num_screen.dart';
 
 class MyAuthProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
+  final TextEditingController textEmailController = TextEditingController();
   bool isButtonEnabled = false;
   bool isLoading = false;
   String? _verificationId;
 
   String get phone => textController.text;
+  String get email => textEmailController.text;
 
   int? get specificNumber => int.tryParse(phone);
 
@@ -42,6 +44,9 @@ class MyAuthProvider with ChangeNotifier {
       if (user != null) {
         textController.text = user.phoneNumber.toString().substring(3);
         textController.text = prefs.getString('userPhone')?.substring(3) ?? '';
+
+        textEmailController.text = user.email.toString().substring(3);
+        textEmailController.text = prefs.getString('userEmail')?.substring(3) ?? '';
       } else {
         // User is not logged in, navigate to SignInScreen
       }
@@ -183,18 +188,24 @@ class MyAuthProvider with ChangeNotifier {
     await prefs.setBool('isLoggedIn', isLoggedIn);
   }
 
-  Future<void> setUserPhone(String phone) async {
+  Future<void> setUserPhone(String phone, String email) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userPhone', phone);
+    await prefs.setString('userEmail', email);
 
     if (textController.text.isEmpty) {
       textController.text = prefs.getString('userPhone') ?? '';
+    }
+
+    if (textEmailController.text.isEmpty) {
+      textEmailController.text = prefs.getString('userEmail') ?? '';
     }
   }
 
   Future<void> retrievePhone() async {
     final prefs = await SharedPreferences.getInstance();
     textController.text = prefs.getString('userPhone') ?? '';
+    textEmailController.text = prefs.getString('userEmail') ?? '';
   }
 
   void reset() {
@@ -202,6 +213,7 @@ class MyAuthProvider with ChangeNotifier {
     isButtonEnabled = false;
     isLoading = false;
     _verificationId = '';
+    textEmailController.clear();
     notifyListeners();
   }
 }
