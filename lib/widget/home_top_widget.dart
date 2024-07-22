@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../shared/constants.dart';
 import '../shared/search_bar.dart';
 import 'location_button_widget.dart';
