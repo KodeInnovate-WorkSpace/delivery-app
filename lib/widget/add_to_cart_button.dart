@@ -135,7 +135,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
                 _saveCartState();
               });
               // Code for shared preference
-              await cartProvider.saveCart();
+              // await cartProvider.saveCart();
               // Show Snackbar
               // showMessage('${widget.productName} added to cart');
             },

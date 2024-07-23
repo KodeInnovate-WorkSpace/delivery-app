@@ -1,5 +1,5 @@
+//Code Updated Removed Shared Preference
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../models/cart_model.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'dart:math';
 
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
-   bool isCouponApplied = false;
+  bool isCouponApplied = false;
   final List<Cart> _cartItems = [];
   double _discount = 0.0;
   String? _selectedCoupon;
@@ -20,7 +20,7 @@ class CartProvider extends ChangeNotifier {
   double get Discount => _discount;
 
   CartProvider() {
-    loadCart();
+    // Load cart can be removed if we are not storing the cart persistently
   }
 
   double calculateTotalPrice() {
@@ -34,7 +34,7 @@ class CartProvider extends ChangeNotifier {
   calculateGrandTotal([String? selectedValue]) {
     double finalDeliveryCharges = deliveryCharge!;
     selectedPaymentMethod = selectedValue;
-    if(selectedPaymentMethod == "Online" && isDeliveryFree!){
+    if (selectedPaymentMethod == "Online" && isDeliveryFree!) {
       finalDeliveryCharges = 0;
     }
 
@@ -63,7 +63,6 @@ class CartProvider extends ChangeNotifier {
     var handlingCharge = (totalPrice + deliveryChargeValue - discountValue) * 0.018;
     handlingCharge = max(handlingCharge, 1.8);
     return handlingCharge.floorToDouble();
-    // return double.parse(handlingCharge.toStringAsFixed(2));
   }
 
   String itemCount(Cart item) {
@@ -103,13 +102,12 @@ class CartProvider extends ChangeNotifier {
     _selectedCoupon = null;
     _discount = 0.0;
     isCouponApplied = false;
-    notifyListeners(); // Notify listeners when coupon is cleared
+    notifyListeners();
   }
 
   void clearCart() {
     _cartItems.clear();
     clearCoupon();
-    saveCart();
     notifyListeners();
   }
 
@@ -122,7 +120,6 @@ class CartProvider extends ChangeNotifier {
       _cartItems.add(item);
     }
     logCartContents();
-    saveCart(); // Save cart state to SP after adding an item
     notifyListeners();
   }
 
@@ -139,16 +136,14 @@ class CartProvider extends ChangeNotifier {
         }
       }
 
-      double total = calculateGrandTotal(selectedPaymentMethod) -_discount;
+      double total = calculateGrandTotal(selectedPaymentMethod) - _discount;
 
-      // Check if grand total falls below threshold after removing item
-       if (total < maxTotalForCoupon!) {
-         clearCoupon();
-       }
+      if (total < maxTotalForCoupon!) {
+        clearCoupon();
+      }
     }
 
     logCartContents();
-    saveCart(); // Save cart state to SP after removing an item
     notifyListeners();
   }
 
@@ -172,45 +167,5 @@ class CartProvider extends ChangeNotifier {
     }
 
     return itemNames.length;
-  }
-
-  Future<void> loadCart() async {
-    final List<Cart> cartItemsSP = await retrieveCart();
-    _cartItems.clear();
-    _cartItems.addAll(cartItemsSP);
-    notifyListeners();
-  }
-
-  Future<void> saveCart() async {
-    await storeCart(_cartItems);
-  }
-
-  static const String CARTITEM_KEY = 'cart_items';
-
-  Future<void> storeCart(List<Cart> cartItems) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final String encodedCart = convert.jsonEncode(cartItems.map((item) => item.toJson()).toList());
-      await prefs.setString(CARTITEM_KEY, encodedCart);
-      print("Item Stored in SP");
-    } catch (e) {
-      print("Error storing cart in shared preference: $e");
-    }
-  }
-
-  Future<List<Cart>> retrieveCart() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final String? encodedCart = prefs.getString(CARTITEM_KEY);
-      if (encodedCart == null) {
-        print("No cart data exists");
-        return [];
-      }
-      final List<dynamic> decodedCart = convert.jsonDecode(encodedCart);
-      return decodedCart.map((item) => Cart.fromJson(item)).toList();
-    } catch (e) {
-      print("Error retrieving cart for SP: $e");
-      rethrow;
-    }
   }
 }

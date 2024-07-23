@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import '../models/product_model.dart';
 import '../providers/auth_provider.dart';
-import '../widget/add_to_cart_button.dart';// Import your cart screen
+import '../widget/add_to_cart_button.dart'; // Import your cart screen
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -20,7 +20,6 @@ class _SearchPageState extends State<SearchPage> {
   List<Product> _filteredProducts = [];
   List<Product> _recentSearches = [];
   List<Product> _productSearches = [];
-  bool _hasStoredQuery = false;
 
   @override
   void initState() {
@@ -30,6 +29,7 @@ class _SearchPageState extends State<SearchPage> {
     loadRecentSearches();
     loadProductSearches();
   }
+
   Future<void> fetchProductsFromFirestore() async {
     try {
       // Step 1: Fetch categories with status 1
@@ -170,42 +170,18 @@ class _SearchPageState extends State<SearchPage> {
     prefs.setStringList('recentSearches', recentSearches);
   }
 
-  void filterProducts() async {
-    final query = _controller.text;
-    final lowerCaseQuery = query.toLowerCase();
-    final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-    final phoneNumber = authProvider.phone;
+  void filterProducts() {
+    final query = _controller.text.toLowerCase();
 
     setState(() {
       if (query.isEmpty) {
         _filteredProducts.clear();
-        _hasStoredQuery = false;
       } else {
         _filteredProducts = _allProducts.where((product) {
-          return product.name.toLowerCase().contains(lowerCaseQuery);
+          return product.name.toLowerCase().contains(query);
         }).toList();
       }
     });
-
-    if (query.length == 4 && !_hasStoredQuery) {
-      final userSuggestedProducts = FirebaseFirestore.instance.collection('UserSuggestedProducts');
-      final existingQuery = await userSuggestedProducts.where('searchQuery', isEqualTo: query).get();
-
-      if (existingQuery.docs.isEmpty) {
-        try {
-          await userSuggestedProducts.add({
-            'searchQuery': query,
-            'timestamp': Timestamp.now(),
-            'phoneNumber': phoneNumber,
-          });
-          _hasStoredQuery = true;
-        } catch (e) {
-          debugPrint("$e");
-        }
-      }
-    } else if (query.isEmpty) {
-      _hasStoredQuery = false;
-    }
   }
 
   void saveSearch(Product product) {
@@ -280,7 +256,6 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _controller.clear();
       _filteredProducts.clear();
-      _hasStoredQuery = false;
     });
   }
 
@@ -527,7 +502,6 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                     ],
-
                   ],
                 ),
               ),

@@ -16,7 +16,10 @@ class _ManageDeliveredShopScreenState extends State<ManageDeliveredShopScreen> {
   @override
   void initState() {
     super.initState();
-    _deliveredShopStream = FirebaseFirestore.instance.collection('DeliveredShopName').snapshots();
+    _deliveredShopStream = FirebaseFirestore.instance
+        .collection('DeliveredShopName')
+        .orderBy('timeOfPickup', descending: true)
+        .snapshots();
   }
 
   @override

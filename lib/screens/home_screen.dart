@@ -44,9 +44,9 @@ class HomeScreenState extends State<HomeScreen> {
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
-    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
-
-    initiateCartProvider.loadCart();
+    // final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
+    //
+    // // initiateCartProvider.loadCart();
 
     fetchDataFuture = fetchData();
     requestNotificationPermission();
@@ -274,25 +274,32 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<bool> showExitDialog() async {
+    final initiateCartProvider = Provider.of<CartProvider>(
+        context, listen: false);
     return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Confirm Exit'),
-            content: const Text('Do you want to exit the app?'),
-            actions: [
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: const Text("Exit App"),
+            content: const Text("Do you want to exit the app?"),
+            actions: <Widget>[
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Yes'),
+                child: const Text("No"),
+                onPressed: () {
+                  Navigator.of(context).pop(false); // Stay in the app
+                },
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No'),
+                child: const Text("Yes"),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                  initiateCartProvider.clearCart();// Exit the app
+                },
               ),
             ],
           ),
-        ) ??
-        false;
-}
+    ) ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {

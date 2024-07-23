@@ -46,6 +46,16 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
     });
   }
 
+  void _resetFilters() {
+    setState(() {
+      selectedValet = null;
+      selectedPaymentMethod = null;
+      selectedStatus = null;
+      selectedDate = null;
+      _filterData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredData = src.orderData.where((order) {
@@ -232,6 +242,16 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                     ),
                   ),
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: _resetFilters,
+                child: const Text('Reset Filters'),
               ),
             ],
           ),
