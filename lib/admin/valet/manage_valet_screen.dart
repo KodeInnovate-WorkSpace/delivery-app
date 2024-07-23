@@ -41,8 +41,16 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
   }
 
   void _filterData() {
+    setState(() {});
+  }
+
+  void _resetFilters() {
     setState(() {
-      // No need to do anything here, as we're using the selected filters in the build method
+      selectedValet = null;
+      selectedPaymentMethod = null;
+      selectedStatus = null;
+      selectedDate = null;
+      _filterData();
     });
   }
 
@@ -60,9 +68,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
       }
       if (selectedDate != null) {
         DateTime orderDate = DateTime.parse(order['timestamp']);
-        if (orderDate.year != selectedDate!.year ||
-            orderDate.month != selectedDate!.month ||
-            orderDate.day != selectedDate!.day) {
+        if (orderDate.year != selectedDate!.year || orderDate.month != selectedDate!.month || orderDate.day != selectedDate!.day) {
           return false;
         }
       }
@@ -70,10 +76,25 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Manage Orders'),
+        title: const Text(
+          'Manage Orders',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           RefreshIndicator(
@@ -81,45 +102,43 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
             child: src.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Total Orders: ${filteredData.length}',
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                _buildFilters(),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredData.length,
-                    itemBuilder: (context, index) {
-                      final data = filteredData[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  OrderDetailsScreen(orderId: data['orderId']),
-                            ),
-                          );
-                        },
-                        child: OrderDataRow(
-                          data: data,
-                          valetData: src.valetData,
-                          statusMessages: src.statusMessages,
-                          statusOptions: src.statusOptions,
-                          valetObj: src.valetObj,
-                          refreshCallback: _refreshPage,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Total Orders: ${filteredData.length}',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xffb3b3b3)),
                         ),
-                      );
-                    },
+                      ),
+                      _buildFilters(),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: filteredData.length,
+                          itemBuilder: (context, index) {
+                            final data = filteredData[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OrderDetailsScreen(orderId: data['orderId']),
+                                  ),
+                                );
+                              },
+                              child: OrderDataRow(
+                                data: data,
+                                valetData: src.valetData,
+                                statusMessages: src.statusMessages,
+                                statusOptions: src.statusOptions,
+                                valetObj: src.valetObj,
+                                refreshCallback: _refreshPage,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
@@ -135,7 +154,10 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
             children: [
               Expanded(
                 child: DropdownButton<String>(
-                  hint: const Text('Select Valet'),
+                  hint: const Text(
+                    'Select Valet',
+                    style: TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                   value: selectedValet,
                   onChanged: (String? newValue) {
                     setState(() {
@@ -146,7 +168,10 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                   items: src.valetData.map<DropdownMenuItem<String>>((valet) {
                     return DropdownMenuItem<String>(
                       value: valet['phone'],
-                      child: Text(valet['name']),
+                      child: Text(
+                        valet['name'],
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -158,7 +183,10 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
             children: [
               Expanded(
                 child: DropdownButton<String>(
-                  hint: const Text('Payment Method'),
+                  hint: const Text(
+                    'Payment Method',
+                    style: TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                   value: selectedPaymentMethod,
                   onChanged: (String? newValue) {
                     setState(() {
@@ -166,11 +194,13 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                       _filterData();
                     });
                   },
-                  items: <String>['Both', 'Online', 'Cash on delivery']
-                      .map<DropdownMenuItem<String>>((String value) {
+                  items: <String>['Both', 'Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(
+                        value,
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -182,7 +212,10 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
             children: [
               Expanded(
                 child: DropdownButton<int>(
-                  hint: const Text('Select Status'),
+                  hint: const Text(
+                    'Select Status',
+                    style: TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                   value: selectedStatus,
                   onChanged: (int? newValue) {
                     setState(() {
@@ -193,7 +226,10 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                   items: src.statusOptions.map<DropdownMenuItem<int>>((int value) {
                     return DropdownMenuItem<int>(
                       value: value,
-                      child: Text(src.statusMessages[value] ?? 'Unknown'),
+                      child: Text(
+                        src.statusMessages[value] ?? 'Unknown',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -226,11 +262,26 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: Text(
-                      selectedDate == null
-                          ? 'Select Date'
-                          : DateFormat('dd MMM yyyy').format(selectedDate!),
+                      selectedDate == null ? 'Select Date' : DateFormat('dd MMM yyyy').format(selectedDate!),
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
                     ),
                   ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: _resetFilters,
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.black),
+                ),
+                child: const Text(
+                  'Reset Filters',
+                  style: TextStyle(color: Color(0xffb3b3b3)),
                 ),
               ),
             ],
@@ -263,16 +314,32 @@ class OrderDataRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8.0),
+      color: Colors.grey[850],
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Order ID: ${data['orderId']}'),
-            Text('Cust Phone: ${data['phone']}'),
-            Text('Date: ${_formatTimestamp(data['timestamp'])}'),
-            Text('Address: ${data['address']}'),
-            Text('Payment Mode: ${data['paymentMode']}'),
+            Text(
+              'Order ID: ${data['orderId']}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
+            Text(
+              'Cust Phone: ${data['phone']}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
+            Text(
+              'Date: ${_formatTimestamp(data['timestamp'])}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
+            Text(
+              'Address: ${data['address']}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
+            Text(
+              'Payment Mode: ${data['paymentMode']}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
             DropdownButton<String>(
               value: data['valetPhone'],
               onChanged: (String? newValue) async {
@@ -282,7 +349,10 @@ class OrderDataRow extends StatelessWidget {
               items: valetData.map<DropdownMenuItem<String>>((valet) {
                 return DropdownMenuItem<String>(
                   value: valet['phone'],
-                  child: Text(valet['name']),
+                  child: Text(
+                    valet['name'],
+                    style: const TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                 );
               }).toList(),
             ),
@@ -295,7 +365,10 @@ class OrderDataRow extends StatelessWidget {
               items: statusOptions.map<DropdownMenuItem<int>>((status) {
                 return DropdownMenuItem<int>(
                   value: status,
-                  child: Text(statusMessages[status] ?? 'Unknown'),
+                  child: Text(
+                    statusMessages[status] ?? 'Unknown',
+                    style: const TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                 );
               }).toList(),
             ),
@@ -345,10 +418,7 @@ class TableData extends ChangeNotifier {
   }
 
   Future<List<Map<String, dynamic>>> _fetchOrders() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('OrderHistory')
-        .orderBy('timestamp', descending: true)
-        .get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('OrderHistory').orderBy('timestamp', descending: true).get();
 
     return querySnapshot.docs.map((doc) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;

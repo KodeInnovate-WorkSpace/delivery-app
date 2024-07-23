@@ -12,6 +12,7 @@ import 'package:speedy_delivery/admin/location/manage_location.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
+import 'package:speedy_delivery/admin/valet/manage_valet_screen.dart';
 import '../screens/sign_in_screen.dart';
 import 'category/manage_category_screen.dart';
 
@@ -20,7 +21,7 @@ class AdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> pages = ["Users", "Categories", "Sub-Categories", "Products", "Banner", "App Status", "Location", "Alert", "Coupon", "Constants", "Shop Name"];
+    List<String> pages = ["Users", "Categories", "Sub-Categories", "Products", "Banner", "Orders", "App Status", "Location", "Alert", "Coupon", "Constants", "Shop Name"];
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -136,12 +137,13 @@ class AdminScreen extends StatelessWidget {
       'p3': (context) => const ManageSubCategoryScreen(),
       'p4': (context) => const ManageProduct(),
       'p5': (context) => const ManageBannerScreen(),
-      'p6': (context) => AppMaintenanceListScreen(),
-      'p7': (context) => LocationListScreen(),
-      'p8': (context) => AlertLabelListScreen(),
-      'p9': (context) => MainDisplayScreen(),
-      'p10': (context) => ConstantsListScreen(),
-      'p11': (context) => const ManageDeliveredShopScreen(),
+      'p6': (context) => const ManageValetScreen(),
+      'p7': (context) => AppMaintenanceListScreen(),
+      'p8': (context) => LocationListScreen(),
+      'p9': (context) => AlertLabelListScreen(),
+      'p10': (context) => MainDisplayScreen(),
+      'p11': (context) => ConstantsListScreen(),
+      'p12': (context) => const ManageDeliveredShopScreen(),
     };
 
     return GestureDetector(
