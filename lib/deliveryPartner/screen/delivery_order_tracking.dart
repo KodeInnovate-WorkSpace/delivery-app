@@ -51,8 +51,8 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         .collection('OrderHistory')
         .doc(widget.orderId)
         .snapshots();
-    imageTaken = List<bool>.filled(widget.order.length, false);
-    _loadImagePaths();
+    // imageTaken = List<bool>.filled(widget.order.length, false);
+    // _loadImagePaths();
     _orderStatusStream.listen((snapshot) {
       if (snapshot.exists) {
         setState(() {
@@ -194,7 +194,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
             0: FlexColumnWidth(),
             1: FixedColumnWidth(80.0),
             2: FixedColumnWidth(80.0),
-            3: FixedColumnWidth(80.0),
           },
           border: TableBorder.all(color: Colors.grey[300]!),
           children: [
@@ -205,31 +204,24 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               children: const [
                 Padding(
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Items",
                       style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Qnt",
                       style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Image",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Price",
                       style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -251,30 +243,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 8.0, horizontal: 16.0),
-                    child: IconButton(
-                      onPressed: orderStatus == 4 ||
-                              orderStatus == 5 ||
-                              orderStatus == 6
-                          ? null
-                          : () {
-                              takePictureAndAddToImages(index).then((value) {
-                                uploadAllImages(
-                                    widget.order[index].productName);
-                              });
-                            },
-                      icon: Icon(
-                        orderStatus == 4 || orderStatus == 5 || orderStatus == 6
-                            ? Icons.close
-                            : (imageTaken[index]
-                                ? Icons.check
-                                : Icons.camera_alt),
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
                     child: Text(widget.order[index].price.toStringAsFixed(2)),
                   ),
                 ],
@@ -292,8 +260,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               ),
               Text(
                 "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -311,7 +278,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
             0: FlexColumnWidth(),
             1: FixedColumnWidth(80.0),
             2: FixedColumnWidth(80.0),
-            3: FixedColumnWidth(80.0),
           },
           border: TableBorder.all(color: Colors.grey[300]!),
           children: [
@@ -322,31 +288,21 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               children: const [
                 Padding(
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Items",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Qnt",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Image",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Price",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -364,17 +320,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 8.0, horizontal: 16.0),
                     child: Text("x ${widget.order[index].quantity.toString()}"),
-                  ),
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: IconButton(
-                      onPressed: null,
-                      icon: Icon(
-                        Icons.close,
-                        size: 18,
-                      ),
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -396,8 +341,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               ),
               Text(
                 "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -406,57 +350,73 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
-  Future<void> uploadAllImages(String productName) async {
-    if (itemImages.length != widget.order.length) {
-      showMessage("Please upload images for all items before proceeding.");
-      return;
-    }
-    String formattedDate = DateFormat('ddMMyyyy_HHmm').format(DateTime.now());
-    for (var image in itemImages) {
-      String fileName = path.basename(image.path);
-      try {
-        await firebase_storage.FirebaseStorage.instance
-            .ref('order_images/${formattedDate}_$fileName')
-            .putFile(image);
-      } catch (e) {
-        log('Error uploading image: $e');
-      }
-    }
-  }
 
-  Future<void> _loadImagePaths() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? paths = prefs.getStringList('imagePaths_${widget.orderId}');
-    if (paths != null) {
-      setState(() {
-        itemImages = paths.map((path) => File(path)).toList();
-        for (int i = 0; i < paths.length; i++) {
-          imageTaken[i] = true;
-        }
-      });
-    }
-  }
+  // // Future<void> uploadAllImages(String productName) async {
+  // //   if (itemImages.length != widget.order.length) {
+  // //     showMessage("Please upload images for all items before proceeding.");
+  // //     return;
+  // //   }
+  // //   String formattedDate = DateFormat('ddMMyyyy_HHmm').format(DateTime.now());
+  // //   for (var image in itemImages) {
+  // //     String fileName = path.basename(image.path);
+  // //     try {
+  // //       await firebase_storage.FirebaseStorage.instance
+  // //           .ref('order_images/${formattedDate}_$fileName')
+  // //           .putFile(image);
+  // //     } catch (e) {
+  // //       log('Error uploading image: $e');
+  // //     }
+  // //   }
+  // // }
+  //
+  // Future<void> _loadImagePaths() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   List<String>? paths = prefs.getStringList('imagePaths_${widget.orderId}');
+  //   if (paths != null) {
+  //     setState(() {
+  //       itemImages = paths.map((path) => File(path)).toList();
+  //       for (int i = 0; i < paths.length; i++) {
+  //         imageTaken[i] = true;
+  //       }
+  //     });
+  //   }
+  // }
+  //
+  // Future<void> _saveImagePaths() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   List<String> paths = itemImages.map((image) => image.path).toList();
+  //   await prefs.setStringList('imagePaths_${widget.orderId}', paths);
+  // }
+  //
+  // Future<void> takePictureAndAddToImages(int index) async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  //
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       itemImages.add(File(pickedFile.path));
+  //       imageTaken[index] = true;
+  //     });
+  //     _saveImagePaths();
+  //   }
+  // }
 
-  Future<void> _saveImagePaths() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> paths = itemImages.map((image) => image.path).toList();
-    await prefs.setStringList('imagePaths_${widget.orderId}', paths);
-  }
-
-  Future<void> takePictureAndAddToImages(int index) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-
-    if (pickedFile != null) {
-      setState(() {
-        itemImages.add(File(pickedFile.path));
-        imageTaken[index] = true;
-      });
-      _saveImagePaths();
-    }
-  }
 
   Widget _buildCustomerDetailsTable() {
+    DateTime orderDateTime;
+
+    try {
+      // Convert the string to DateTime
+      orderDateTime = DateTime.parse(widget.orderTime); // Adjust parsing if format is different
+    } catch (e) {
+      // Handle parsing error (e.g., invalid format)
+      orderDateTime = DateTime.now(); // Fallback to current time if there's an error
+      print('Error parsing date: $e');
+    }
+
+    final DateFormat dateFormat = DateFormat('dd MMM yyyy, hh:mm a');
+    final String formattedTime = dateFormat.format(orderDateTime);
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
@@ -494,7 +454,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 fontSize: 16,
               )),
 
-          Text("Time: ${widget.orderTime}",
+          Text("Time: $formattedTime",
               style: const TextStyle(
                 fontSize: 16,
               )),
@@ -503,13 +463,15 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
-  Future<void> _showShopNameDialog() async {
-    return showDialog<void>(
+
+  Future<bool> _showShopNameDialog() async {
+    bool confirmed = false;
+    await showDialog<void>(
       context: context,
       barrierDismissible: true, // user can tap outside to close the dialog
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Enter Shop Name'),
+          title: const Text('Enter Shop and Products Name'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -534,6 +496,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               child: const Text('OK'),
               onPressed: () {
                 if (_shopNameController.text.isNotEmpty) {
+                  confirmed = true;
                   Navigator.of(context).pop(); // Close the dialog
                 } else {
                   showMessage("Shop name cannot be empty.");
@@ -544,26 +507,12 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         );
       },
     );
+    return confirmed;
   }
 
+
   Future<void> _savePickupDetails() async {
-    String formattedDate = DateFormat('ddMMyyyy_HHmm').format(DateTime.now());
-    List<String> imageUrls = [];
-
-    for (var image in itemImages) {
-      String fileName = path.basename(image.path);
-      try {
-        firebase_storage.Reference ref = firebase_storage
-            .FirebaseStorage.instance
-            .ref('order_images/${formattedDate}_$fileName');
-        await ref.putFile(image);
-        String downloadUrl = await ref.getDownloadURL();
-        imageUrls.add(downloadUrl);
-      } catch (e) {
-        log('Error uploading image: $e');
-      }
-    }
-
+    // Upload images functionality is removed
     await FirebaseFirestore.instance
         .collection('DeliveredShopName')
         .doc(widget.orderId)
@@ -571,14 +520,14 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       'orderId': widget.orderId,
       'phoneNumber': widget.customerPhone,
       'timeOfPickup': DateTime.now(),
-      'images': imageUrls,
       'shopName': _shopNameController.text,
     });
 
-    // Clear saved image paths
+    // Clear saved image paths if required
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('imagePaths_${widget.orderId}');
   }
+
 
   Widget _buildOrderStatusCard(String title, String description, bool done,
       [Color color = Colors.green, IconData icon = Icons.check_circle]) {
@@ -609,18 +558,9 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         }
 
         if (title == 'Order Pickup') {
-          if (itemImages.length < widget.order.length) {
-            showMessage(
-                "Please upload images for all items before picking up the order.");
-            setState(() {
-              _isCardLoading = false;
-            });
-            return;
-          }
+          bool confirmed = await _showShopNameDialog();
 
-          await _showShopNameDialog();
-
-          if (_shopNameController.text.isNotEmpty) {
+          if (confirmed) {
             await _savePickupDetails();
           } else {
             setState(() {
@@ -680,18 +620,20 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           leading: Icon(icon, color: done ? Colors.white : Colors.grey),
           title: _isCardLoading
               ? const CupertinoActivityIndicator(
-                  radius: 10,
-                  animating: true,
-                  color: Colors.white,
-                )
+            radius: 10,
+            animating: true,
+            color: Colors.white,
+          )
               : Text(title,
-                  style: TextStyle(color: done ? Colors.white : Colors.grey)),
+              style: TextStyle(color: done ? Colors.white : Colors.grey)),
           subtitle: Text(description,
               style: TextStyle(color: done ? Colors.white : Colors.grey)),
         ),
       ),
     );
   }
+
+
 
   Widget _buildOrderFailedCard(String title, String description, bool done,
       [Color color = Colors.red, IconData icon = Icons.error]) {
