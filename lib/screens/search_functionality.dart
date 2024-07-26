@@ -214,6 +214,32 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
+  void showExpandedImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.network(imageUrl),
+                SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget searchBar() {
     return TextField(
       controller: _controller,
@@ -264,7 +290,12 @@ class _SearchPageState extends State<SearchPage> {
       elevation: 0,
       color: Colors.white,
       child: ListTile(
-        leading: Image.network(product.image, width: 50, height: 50),
+        leading: GestureDetector(
+          onTap: () {
+            showExpandedImage(context, product.image);
+          },
+          child: Image.network(product.image, width: 50, height: 50),
+        ),
         title: Text(product.name),
         onTap: () {
           saveSearch(product);
@@ -295,7 +326,12 @@ class _SearchPageState extends State<SearchPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.network(product.image, width: 100, height: 100),
+              GestureDetector(
+                onTap: () {
+                  showExpandedImage(context, product.image);
+                },
+                child: Image.network(product.image, width: 100, height: 100),
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -353,7 +389,12 @@ class _SearchPageState extends State<SearchPage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Image.network(product.image, width: 40, height: 40),
+            GestureDetector(
+              onTap: () {
+                showExpandedImage(context, product.image);
+              },
+              child: Image.network(product.image, width: 40, height: 40),
+            ),
             const SizedBox(height: 5),
             Text(product.name),
           ],
@@ -361,6 +402,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+
 
   Widget _searchListView() {
     if (_productSearches.isEmpty) {

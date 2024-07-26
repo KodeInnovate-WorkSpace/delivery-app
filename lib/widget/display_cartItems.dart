@@ -13,6 +13,41 @@ class DisplayCartItems extends StatefulWidget {
 }
 
 class _DisplayCartItemsState extends State<DisplayCartItems> {
+  void _showImageDialog(BuildContext context, String imageUrl) {
+    final mediaQuery = MediaQuery.of(context);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  width: mediaQuery.size.width * 0.8,
+                  height: mediaQuery.size.height * 0.6,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
@@ -22,15 +57,17 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
             return Card(
               color: Colors.white,
               shadowColor: Colors.grey.withOpacity(0.1),
-
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    CachedNetworkImage(
-                      imageUrl: item.itemImage,
-                      width: 50,
-                      height: 50,
+                    GestureDetector(
+                      onTap: () => _showImageDialog(context, item.itemImage),
+                      child: CachedNetworkImage(
+                        imageUrl: item.itemImage,
+                        width: 50,
+                        height: 50,
+                      ),
                     ),
                     const SizedBox(width: 15),
                     Expanded(
