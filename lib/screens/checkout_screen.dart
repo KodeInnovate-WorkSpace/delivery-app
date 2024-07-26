@@ -381,7 +381,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ],
                                         ),
                                         ElevatedButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             HapticFeedback.heavyImpact();
 
                                             // Generate order id
@@ -414,7 +414,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       'Confirmation',
                                                       style: TextStyle(color: Color(0xff666666)),
                                                     ),
-                                                    content: const Text('Are you sure you want to make this order as Cash? You can save more if you select payment method type as Online.', style: TextStyle(color: Color(0xff666666))),
+                                                    content: const Text(
+                                                      'Are you sure you want to make this order as Cash? You can save more if you select payment method type as Online.',
+                                                      style: TextStyle(color: Color(0xff666666)),
+                                                    ),
                                                     actions: [
                                                       TextButton(
                                                         onPressed: () {
@@ -423,8 +426,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         child: const Text('Change Payment Method', style: TextStyle(color: Colors.black)),
                                                       ),
                                                       TextButton(
-                                                        onPressed: () {
-                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
+                                                        onPressed: () async {
+                                                          await sendNotification(myOrderId, orderProvider.selectedPaymentMethod); // Send notification
+
                                                           Navigator.of(context).pop(); // Close the popup
                                                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
                                                             List<Order> orders = cartProvider.cart.map((item) {
@@ -479,8 +483,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         ),
                                                       ),
                                                       TextButton(
-                                                        onPressed: () {
-                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
+                                                        onPressed: () async {
+                                                          await sendNotification(myOrderId, orderProvider.selectedPaymentMethod); // Send notification
+
                                                           Navigator.of(context).pop(); // Close the popup
                                                           pay(myOrderId).then((value) {
                                                             List<Order> orders = cartProvider.cart.map((item) {
@@ -512,7 +517,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 },
                                               );
                                             }
-
                                           },
                                           style: ButtonStyle(
                                             shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -521,7 +525,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               ),
                                             ),
                                             backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                              (Set<WidgetState> states) {
+                                                  (Set<WidgetState> states) {
                                                 return Colors.black;
                                               },
                                             ),
@@ -540,6 +544,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             ),
                                           ),
                                         )
+
                                       ],
                                     ),
                                   ],
@@ -555,5 +560,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
       ),
     );
+  }
+  Future<void> sendNotification(String orderId, String paymentMethod) async {
+    const url = 'https://onesignal.com/api/v1/notifications';
+    final headers = {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Authorization': 'Basic YWViODYwZmMtZjEyMC00ODNjLWIxMTctYTQ1ODBjNDBmZjU0  ',
+    };
+    final body = {
+      'app_id': '5116d634-83ff-4294-86a9-900e3b4cc538',
+      'included_segments': ['All'],
+      'contents': {'en': 'Order $orderId placed with $paymentMethod'},
+      'headings': {'en': 'New Order Placed'},
+    };
+try {
+  final response = await http.post(
+    Uri.parse(url),
+    headers: headers,
+    body: json.encode(body),
+  );
+
+  if (response.statusCode == 200) {
+    print('Notification sent successfully');
+  } else {
+    print('Failed to send notification: ${response.body}');
+  }
+}
+catch(e){
+  print("Error Sending Notification = $e");
+}
+
+
   }
 }
