@@ -25,6 +25,44 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
+  void showProductImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.6,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.0),
+              color: Colors.white,
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.contain,
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -77,12 +115,18 @@ class _ProductCardState extends State<ProductCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // item image
-                          Center(
-                            child: CachedNetworkImage(
-                              imageUrl: product.image,
-                              height: 75,
-                              fit: BoxFit.contain,
-                              errorWidget: (context, url, error) => const Icon(Icons.error),
+                          GestureDetector(
+                            onTap: () {
+                              showProductImage(context, product.image);
+                            },
+                            child: Center(
+                              child: CachedNetworkImage(
+                                imageUrl: product.image,
+                                height: 75,
+                                fit: BoxFit.contain,
+                                errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 15),
@@ -109,7 +153,8 @@ class _ProductCardState extends State<ProductCard> {
                           SizedBox(
                             height: 40,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   "Rs.${product.price}",
@@ -123,7 +168,8 @@ class _ProductCardState extends State<ProductCard> {
                                   style: const TextStyle(
                                     fontSize: 11,
                                     color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough,
+                                    decoration:
+                                    TextDecoration.lineThrough,
                                   ),
                                 ),
                               ],
@@ -131,7 +177,8 @@ class _ProductCardState extends State<ProductCard> {
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height / 22,
+                            height: MediaQuery.of(context).size.height /
+                                22,
                             child: AddToCartButton(
                               productName: product.name,
                               productPrice: product.price,
@@ -149,8 +196,10 @@ class _ProductCardState extends State<ProductCard> {
                         child: Container(
                           padding: const EdgeInsets.all(4.0),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.green, width: 2.0),
-                            borderRadius: BorderRadius.circular(4.0), // Square outline
+                            border: Border.all(
+                                color: Colors.green, width: 2.0),
+                            borderRadius:
+                            BorderRadius.circular(4.0), // Square outline
                           ),
                           child: const Icon(
                             Icons.circle,
