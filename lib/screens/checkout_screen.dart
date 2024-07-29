@@ -269,290 +269,290 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         body: cartProvider.cart.isEmpty
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/images/empty.png"),
-                    const Text(
-                      "No item in cart",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
-              )
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/empty.png"),
+              const Text(
+                "No item in cart",
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
+        )
             : Stack(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    color: const Color(0xffeaf1fc),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Card(
-                              elevation: 0,
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Row(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              color: const Color(0xffeaf1fc),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.timer),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.timer),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                    Text(
+                                      'Delivery within $deliveryTime minutes',
+                                      style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                    ),
+                                    const Text(
+                                      'Shipment of 1 item',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const DisplayCartItems(),
+                      const SizedBox(height: 20),
+                      const BillDetails(),
+                      const SizedBox(height: 20),
+                      const ApplyCouponWidget(),
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              const AddressSelection(),
+                              const Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            'Delivery within $deliveryTime minutes',
-                                            style: const TextStyle(fontSize: 18, fontFamily: 'Gilroy-ExtraBold'),
+                                          Icon(
+                                            _paymentIcon,
+                                            size: 12,
                                           ),
-                                          const Text(
-                                            'Shipment of 1 item',
-                                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                                          const SizedBox(width: 10),
+                                          DropdownButton<String>(
+                                            value: orderProvider.selectedPaymentMethod,
+                                            icon: const Icon(Icons.arrow_drop_down),
+                                            iconSize: 24,
+                                            elevation: 16,
+                                            style: const TextStyle(color: Colors.black),
+                                            underline: Container(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                orderProvider.selectedPaymentMethod = newValue!;
+                                                double total = cartProvider.calculateGrandTotal(newValue);
+                                                if ((total - cartProvider.Discount) < 50) {
+                                                  cartProvider.clearCoupon();
+                                                }
+                                                _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
+                                              });
+                                            },
+                                            items: <String>['Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            const DisplayCartItems(),
-                            const SizedBox(height: 20),
-                            const BillDetails(),
-                            const SizedBox(height: 20),
-                            const ApplyCouponWidget(),
-                            const SizedBox(height: 20),
-                            Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: Colors.white,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    const AddressSelection(),
-                                    const Divider(),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  _paymentIcon,
-                                                  size: 12,
+                                    ],
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      HapticFeedback.heavyImpact();
+
+                                      // Generate order id
+                                      final myOrderId = generateOrderId();
+
+                                      if (cartProvider.cart.isEmpty) {
+                                        showMessage("Cart is empty");
+                                        return;
+                                      }
+
+                                      if (addressProvider.address.isEmpty && addressProvider.selectedAddress.isEmpty) {
+                                        showMessage("Please select an address");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => const AddressInputForm(),
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+
+                                      if (orderProvider.selectedPaymentMethod == 'Cash on delivery') {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              backgroundColor: const Color(0xfff7f7f7),
+                                              title: const Text(
+                                                'Confirmation',
+                                                style: TextStyle(color: Color(0xff666666)),
+                                              ),
+                                              content: const Text('Are you sure you want to make this order as Cash? You can save more if you select payment method type as Online.', style: TextStyle(color: Color(0xff666666))),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                  },
+                                                  child: const Text('Change Payment Method', style: TextStyle(color: Colors.black)),
                                                 ),
-                                                const SizedBox(width: 10),
-                                                DropdownButton<String>(
-                                                  value: orderProvider.selectedPaymentMethod,
-                                                  icon: const Icon(Icons.arrow_drop_down),
-                                                  iconSize: 24,
-                                                  elevation: 16,
-                                                  style: const TextStyle(color: Colors.black),
-                                                  underline: Container(),
-                                                  onChanged: (String? newValue) {
-                                                    setState(() {
-                                                      orderProvider.selectedPaymentMethod = newValue!;
-                                                      double total = cartProvider.calculateGrandTotal(newValue);
-                                                      if ((total - cartProvider.Discount) < 50) {
-                                                        cartProvider.clearCoupon();
-                                                      }
-                                                      _paymentIcon = newValue == 'Online' ? Icons.account_balance : Icons.currency_rupee;
+                                                TextButton(
+                                                  onPressed: () {
+                                                    LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
+                                                      List<Order> orders = cartProvider.cart.map((item) {
+                                                        return Order(
+                                                          orderId: myOrderId,
+                                                          paymentMode: orderProvider.selectedPaymentMethod,
+                                                          productName: '${item.itemName} - ${item.itemUnit}',
+                                                          productImage: item.itemImage,
+                                                          quantity: item.qnt,
+                                                          price: item.itemPrice.toDouble(),
+                                                          address: addressProvider.selectedAddress,
+                                                          phone: authProvider.phone,
+                                                          overallTotal: totalAmt,
+                                                          timestamp: DateTime.timestamp(),
+                                                          valetName: "",
+                                                          valetPhone: "",
+                                                        );
+                                                      }).toList();
+
+                                                      orderProvider.addOrders(orders, myOrderId, authProvider.phone);
+                                                      cartProvider.clearCart();
                                                     });
                                                   },
-                                                  items: <String>['Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
-                                                    return DropdownMenuItem<String>(
-                                                      value: value,
-                                                      child: Text(value),
-                                                    );
-                                                  }).toList(),
+                                                  child: const Text('Proceed with Cash', style: TextStyle(color: Colors.black)),
                                                 ),
                                               ],
-                                            ),
-                                          ],
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            HapticFeedback.heavyImpact();
-
-                                            // Generate order id
-                                            final myOrderId = generateOrderId();
-
-                                            if (cartProvider.cart.isEmpty) {
-                                              showMessage("Cart is empty");
-                                              return;
-                                            }
-
-                                            if (addressProvider.address.isEmpty && addressProvider.selectedAddress.isEmpty) {
-                                              showMessage("Please select an address");
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) => const AddressInputForm(),
-                                                ),
-                                              );
-                                              return;
-                                            }
-
-                                            final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-
-                                            if (orderProvider.selectedPaymentMethod == 'Cash on delivery') {
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    backgroundColor: const Color(0xfff7f7f7),
-                                                    title: const Text(
-                                                      'Confirmation',
-                                                      style: TextStyle(color: Color(0xff666666)),
-                                                    ),
-                                                    content: const Text('Are you sure you want to make this order as Cash? You can save more if you select payment method type as Online.', style: TextStyle(color: Color(0xff666666))),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).pop(); // Close the popup
-                                                        },
-                                                        child: const Text('Change Payment Method', style: TextStyle(color: Colors.black)),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
-                                                          Navigator.of(context).pop(); // Close the popup
-                                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
-                                                            List<Order> orders = cartProvider.cart.map((item) {
-                                                              return Order(
-                                                                orderId: myOrderId,
-                                                                paymentMode: orderProvider.selectedPaymentMethod,
-                                                                productName: '${item.itemName} - ${item.itemUnit}',
-                                                                productImage: item.itemImage,
-                                                                quantity: item.qnt,
-                                                                price: item.itemPrice.toDouble(),
-                                                                address: addressProvider.selectedAddress,
-                                                                phone: authProvider.phone,
-                                                                overallTotal: totalAmt,
-                                                                timestamp: DateTime.timestamp(),
-                                                                valetName: "",
-                                                                valetPhone: "",
-                                                              );
-                                                            }).toList();
-
-                                                            orderProvider.addOrders(orders, myOrderId, authProvider.phone);
-                                                            cartProvider.clearCart();
-                                                          });
-                                                        },
-                                                        child: const Text('Proceed with Cash', style: TextStyle(color: Colors.black)),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            } else if (orderProvider.selectedPaymentMethod == 'Online') {
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    backgroundColor: const Color(0xfff7f7f7),
-                                                    title: const Text(
-                                                      'Confirmation',
-                                                      style: TextStyle(color: Color(0xff666666)),
-                                                    ),
-                                                    content: const Text(
-                                                      'Are you sure you want to continue with online payment method?',
-                                                      style: TextStyle(color: Color(0xff666666)),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).pop(); // Close the popup
-                                                        },
-                                                        child: const Text(
-                                                          'Cancel',
-                                                          style: TextStyle(color: Colors.black),
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
-                                                          Navigator.of(context).pop(); // Close the popup
-                                                          pay(myOrderId).then((value) {
-                                                            List<Order> orders = cartProvider.cart.map((item) {
-                                                              return Order(
-                                                                orderId: myOrderId,
-                                                                paymentMode: orderProvider.selectedPaymentMethod,
-                                                                productName: '${item.itemName} - ${item.itemUnit}',
-                                                                productImage: item.itemImage,
-                                                                quantity: item.qnt,
-                                                                price: item.itemPrice.toDouble(),
-                                                                address: addressProvider.selectedAddress,
-                                                                phone: authProvider.phone,
-                                                                overallTotal: totalAmt,
-                                                                timestamp: DateTime.timestamp(),
-                                                                valetName: "",
-                                                                valetPhone: "",
-                                                              );
-                                                            }).toList();
-                                                            orderProvider.addOrders(orders, myOrderId, authProvider.phone);
-                                                          });
-                                                        },
-                                                        child: const Text(
-                                                          'Yes',
-                                                          style: TextStyle(color: Colors.black),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            }
-
+                                            );
                                           },
-                                          style: ButtonStyle(
-                                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(14.0),
+                                        );
+                                      } else if (orderProvider.selectedPaymentMethod == 'Online') {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              backgroundColor: const Color(0xfff7f7f7),
+                                              title: const Text(
+                                                'Confirmation',
+                                                style: TextStyle(color: Color(0xff666666)),
                                               ),
-                                            ),
-                                            backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                              (Set<WidgetState> states) {
-                                                return Colors.black;
-                                              },
-                                            ),
-                                          ),
-                                          child: const SizedBox(
-                                            width: 120,
-                                            height: 50.0,
-                                            child: Center(
-                                              child: Text(
-                                                "Continue",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16.0,
+                                              content: const Text(
+                                                'Are you sure you want to continue with online payment method?',
+                                                style: TextStyle(color: Color(0xff666666)),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                  },
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(color: Colors.black),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
+                                                TextButton(
+                                                  onPressed: () {
+                                                    LocalNotificationService.sendOrderNotification(context, myOrderId, authProvider.phone, totalAmt, addressProvider.selectedAddress, orderProvider.selectedPaymentMethod);
+                                                    Navigator.of(context).pop(); // Close the popup
+                                                    pay(myOrderId).then((value) {
+                                                      List<Order> orders = cartProvider.cart.map((item) {
+                                                        return Order(
+                                                          orderId: myOrderId,
+                                                          paymentMode: orderProvider.selectedPaymentMethod,
+                                                          productName: '${item.itemName} - ${item.itemUnit}',
+                                                          productImage: item.itemImage,
+                                                          quantity: item.qnt,
+                                                          price: item.itemPrice.toDouble(),
+                                                          address: addressProvider.selectedAddress,
+                                                          phone: authProvider.phone,
+                                                          overallTotal: totalAmt,
+                                                          timestamp: DateTime.timestamp(),
+                                                          valetName: "",
+                                                          valetPhone: "",
+                                                        );
+                                                      }).toList();
+                                                      orderProvider.addOrders(orders, myOrderId, authProvider.phone);
+                                                    });
+                                                  },
+                                                  child: const Text(
+                                                    'Yes',
+                                                    style: TextStyle(color: Colors.black),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
+
+                                    },
+                                    style: ButtonStyle(
+                                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(14.0),
+                                        ),
+                                      ),
+                                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                                            (Set<WidgetState> states) {
+                                          return Colors.black;
+                                        },
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                    child: const SizedBox(
+                                      width: 120,
+                                      height: 50.0,
+                                      child: Center(
+                                        child: Text(
+                                          "Continue",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
+            ),
+          ],
+        ),
       ),
     );
   }
