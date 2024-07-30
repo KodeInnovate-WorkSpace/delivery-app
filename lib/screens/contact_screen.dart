@@ -32,7 +32,7 @@ class ContactScreen extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.all(2.0),
               child: Text(
-                ''' If You have any question or need assistance ,please contact us at : Kodeinnovate Solutions Private Limited Kausa Mumbra 400612
+                '''If You have any question or need assistance ,please contact us at : Kodeinnovate Solutions Private Limited Kausa Mumbra 400612
          ''',
                 // textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 10, color: Color(0xff666666)),
