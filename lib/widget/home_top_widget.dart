@@ -74,7 +74,6 @@ class _HomeTopState extends State<HomeTop> {
                           onTap: () {
                             Navigator.pushNamed(context, '/profile');
                           },
-                          // child: SvgPicture.asset("assets/images/profile_icon.svg"),
                           child: Image.asset(
                             "assets/images/photo.png",
                             width: 40,

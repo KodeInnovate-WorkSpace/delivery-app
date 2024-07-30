@@ -221,6 +221,8 @@ class _LocationButtonState extends State<LocationButton> {
                     leading: const Icon(Icons.location_on),
                     title: Text(
                       completeAddress ?? 'Fetching location...',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: Colors.black),
                     ),
                     onTap: () => Navigator.pop(context),
@@ -235,6 +237,8 @@ class _LocationButtonState extends State<LocationButton> {
         children: [
           Text(
             completeAddress ?? 'Fetching location...',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(color: Colors.black),
           ),
           const Icon(

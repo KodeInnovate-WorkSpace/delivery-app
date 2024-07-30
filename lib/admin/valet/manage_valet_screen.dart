@@ -100,7 +100,10 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
           RefreshIndicator(
             onRefresh: _refreshPage,
             child: src.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ))
                 : Column(
                     children: [
                       Padding(
@@ -145,148 +148,289 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
     );
   }
 
+  // Widget _buildFilters() {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Column(
+  //       children: [
+  //         //Select Valet
+  //         Row(
+  //           children: [
+  //             Expanded(
+  //               child: DropdownButton<String>(
+  //                 hint: Text(
+  //                   'Select Valet',
+  //                   style: TextStyle(color: Color(0xffb3b3b3)),
+  //                 ),
+  //                 value: selectedValet,
+  //                 onChanged: (String? newValue) {
+  //                   setState(() {
+  //                     selectedValet = newValue;
+  //                     _filterData();
+  //                   });
+  //                 },
+  //                 items: src.valetData.map<DropdownMenuItem<String>>((valet) {
+  //                   return DropdownMenuItem<String>(
+  //                     value: valet['phone'],
+  //                     child: Text(
+  //                       valet['name'],
+  //                       style: const TextStyle(color: Color(0xffb3b3b3)),
+  //                     ),
+  //                   );
+  //                 }).toList(),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 8.0),
+  //         //Payment Method
+  //         Row(
+  //           children: [
+  //             Expanded(
+  //               child: DropdownButton<String>(
+  //                 hint: Text(
+  //                   'Payment Method',
+  //                   style: TextStyle(color: Color(0xffb3b3b3)),
+  //                 ),
+  //                 value: selectedPaymentMethod,
+  //                 onChanged: (String? newValue) {
+  //                   setState(() {
+  //                     selectedPaymentMethod = newValue;
+  //                     _filterData();
+  //                   });
+  //                 },
+  //                 items: <String>['Both', 'Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
+  //                   return DropdownMenuItem<String>(
+  //                     value: value,
+  //                     child: Text(
+  //                       value,
+  //                       style: const TextStyle(color: Color(0xffb3b3b3)),
+  //                     ),
+  //                   );
+  //                 }).toList(),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 8.0),
+  //         // Order Status
+  //         Row(
+  //           children: [
+  //             Expanded(
+  //               child: DropdownButton<int>(
+  //                 hint: Text(
+  //                   'Select Status',
+  //                   style: TextStyle(color: Color(0xffb3b3b3)),
+  //                 ),
+  //                 value: selectedStatus,
+  //                 onChanged: (int? newValue) {
+  //                   setState(() {
+  //                     selectedStatus = newValue;
+  //                     _filterData();
+  //                   });
+  //                 },
+  //                 items: src.statusOptions.map<DropdownMenuItem<int>>((int value) {
+  //                   return DropdownMenuItem<int>(
+  //                     value: value,
+  //                     child: Text(
+  //                       src.statusMessages[value] ?? 'Unknown',
+  //                       style: const TextStyle(color: Color(0xffb3b3b3)),
+  //                     ),
+  //                   );
+  //                 }).toList(),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 8.0),
+  //         //Date
+  //         Row(
+  //           children: [
+  //             Expanded(
+  //               child: GestureDetector(
+  //                 onTap: () async {
+  //                   DateTime? picked = await showDatePicker(
+  //                     context: context,
+  //                     initialDate: DateTime.now(),
+  //                     firstDate: DateTime(2000),
+  //                     lastDate: DateTime(2101),
+  //                   );
+  //                   if (picked != null) {
+  //                     setState(() {
+  //                       selectedDate = picked;
+  //                       _filterData();
+  //                     });
+  //                   }
+  //                 },
+  //                 child: Container(
+  //                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+  //                   decoration: BoxDecoration(
+  //                     border: Border.all(color: Colors.grey),
+  //                     borderRadius: BorderRadius.circular(5.0),
+  //                   ),
+  //                   child: Text(
+  //                     selectedDate == null ? 'Select Date' : DateFormat('dd MMM yyyy').format(selectedDate!),
+  //                     style: TextStyle(color: Color(0xffb3b3b3)),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 8.0),
+  //         //Reset button
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.end,
+  //           children: [
+  //             ElevatedButton(
+  //               onPressed: _resetFilters,
+  //               style: ButtonStyle(
+  //                 backgroundColor: WidgetStateProperty.all(Colors.black),
+  //               ),
+  //               child: Text(
+  //                 'Reset Filters',
+  //                 style: TextStyle(color: Color(0xffb3b3b3)),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _buildFilters() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: DropdownButton<String>(
-                  hint: const Text(
-                    'Select Valet',
-                    style: TextStyle(color: Color(0xffb3b3b3)),
-                  ),
-                  value: selectedValet,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedValet = newValue;
-                      _filterData();
-                    });
-                  },
-                  items: src.valetData.map<DropdownMenuItem<String>>((valet) {
-                    return DropdownMenuItem<String>(
-                      value: valet['phone'],
-                      child: Text(
-                        valet['name'],
-                        style: const TextStyle(color: Color(0xffb3b3b3)),
-                      ),
-                    );
-                  }).toList(),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            // Select Valet
+            Chip(
+              label: DropdownButton<String>(
+                dropdownColor: const Color(0xff1a1a1c),
+                hint: const Text(
+                  'Select Valet',
+                  style: TextStyle(color: Color(0xffb3b3b3)),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            children: [
-              Expanded(
-                child: DropdownButton<String>(
-                  hint: const Text(
-                    'Payment Method',
-                    style: TextStyle(color: Color(0xffb3b3b3)),
-                  ),
-                  value: selectedPaymentMethod,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedPaymentMethod = newValue;
-                      _filterData();
-                    });
-                  },
-                  items: <String>['Both', 'Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(color: Color(0xffb3b3b3)),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            children: [
-              Expanded(
-                child: DropdownButton<int>(
-                  hint: const Text(
-                    'Select Status',
-                    style: TextStyle(color: Color(0xffb3b3b3)),
-                  ),
-                  value: selectedStatus,
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      selectedStatus = newValue;
-                      _filterData();
-                    });
-                  },
-                  items: src.statusOptions.map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(
-                        src.statusMessages[value] ?? 'Unknown',
-                        style: const TextStyle(color: Color(0xffb3b3b3)),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
-                    if (picked != null) {
-                      setState(() {
-                        selectedDate = picked;
-                        _filterData();
-                      });
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                value: selectedValet,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedValet = newValue;
+                    _filterData();
+                  });
+                },
+                items: src.valetData.map<DropdownMenuItem<String>>((valet) {
+                  return DropdownMenuItem<String>(
+                    value: valet['phone'],
                     child: Text(
-                      selectedDate == null ? 'Select Date' : DateFormat('dd MMM yyyy').format(selectedDate!),
+                      valet['name'],
                       style: const TextStyle(color: Color(0xffb3b3b3)),
                     ),
-                  ),
-                ),
+                  );
+                }).toList(),
               ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                onPressed: _resetFilters,
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.black),
+              backgroundColor: const Color(0xff1a1a1c),
+            ),
+            const SizedBox(width: 8.0),
+            // Payment Method
+            Chip(
+              label: DropdownButton<String>(
+                dropdownColor: const Color(0xff1a1a1c),
+                hint: const Text(
+                  'Payment Method',
+                  style: TextStyle(color: Color(0xffb3b3b3)),
                 ),
-                child: const Text(
-                  'Reset Filters',
+                value: selectedPaymentMethod,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedPaymentMethod = newValue;
+                    _filterData();
+                  });
+                },
+                items: <String>['Both', 'Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
+                    ),
+                  );
+                }).toList(),
+              ),
+              backgroundColor: const Color(0xff1a1a1c),
+            ),
+            const SizedBox(width: 8.0),
+            // Order Status
+            Chip(
+              label: DropdownButton<int>(
+                dropdownColor: const Color(0xff1a1a1c),
+                hint: const Text(
+                  'Select Status',
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
+                value: selectedStatus,
+                onChanged: (int? newValue) {
+                  setState(() {
+                    selectedStatus = newValue;
+                    _filterData();
+                  });
+                },
+                items: src.statusOptions.map<DropdownMenuItem<int>>((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text(
+                      src.statusMessages[value] ?? 'Unknown',
+                      style: const TextStyle(color: Color(0xffb3b3b3)),
+                    ),
+                  );
+                }).toList(),
+              ),
+              backgroundColor: const Color(0xff1a1a1c),
+            ),
+            const SizedBox(width: 8.0),
+            // Date
+            GestureDetector(
+              onTap: () async {
+                DateTime? picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2101),
+                );
+                if (picked != null) {
+                  setState(() {
+                    selectedDate = picked;
+                    _filterData();
+                  });
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Text(
+                  selectedDate == null ? 'Select Date' : DateFormat('dd MMM yyyy').format(selectedDate!),
                   style: TextStyle(color: Color(0xffb3b3b3)),
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(width: 8.0),
+            // Reset button
+            ElevatedButton(
+              onPressed: _resetFilters,
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.black),
+              ),
+              child: const Text(
+                'Reset Filters',
+                style: TextStyle(fontSize: 15, color: Color(0xffb3b3b3)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
