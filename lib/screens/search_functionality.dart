@@ -328,13 +328,14 @@ class _SearchPageState extends State<SearchPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      showExpandedImage(context, product.image);
-                    },
-                    child: Image.network(product.image, width: 100, height: 100),
-                  ),
-                  const SizedBox(width: 10),
+                  if (product.image.isNotEmpty)
+                    GestureDetector(
+                      onTap: () {
+                        showExpandedImage(context, product.image);
+                      },
+                      child: Image.network(product.image, width: 100, height: 100),
+                    ),
+                  if (product.image.isNotEmpty) const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,36 +365,39 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AddToCartButton(
-                        productName: product.name,
-                        productPrice: product.price.toInt(),
-                        productImage: product.image,
-                        productUnit: product.unit,
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AddToCartButton(
+                          productName: product.name,
+                          productPrice: product.price.toInt(),
+                          productImage: product.image,
+                          productUnit: product.unit,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            if (product.isVeg) // Add the green square outline
+            if (product.isVeg)
               Positioned(
-                top: 8,
+                top: 4,
                 right: 8,
                 child: Container(
-                  width: 24, // Match the width of the circular icon
-                  height: 24, // Match the height of the circular icon
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.green, width: 2),
-                    borderRadius: BorderRadius.circular(5), // Square outline
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
               ),
-            if (product.isVeg) // Add the green circular icon
+            if (product.isVeg)
               Positioned(
-                top: 12,
+                top: 8,
                 right: 12,
                 child: Container(
                   width: 16,
@@ -412,6 +416,8 @@ class _SearchPageState extends State<SearchPage> {
       ],
     );
   }
+
+
 
   Widget recentSearchCard(Product product) {
     return Card(

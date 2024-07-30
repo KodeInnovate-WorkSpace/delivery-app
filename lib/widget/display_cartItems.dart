@@ -91,15 +91,17 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        GestureDetector(
-                          onTap: () => _showImageDialog(context, item.itemImage),
-                          child: CachedNetworkImage(
-                            imageUrl: item.itemImage,
-                            width: 50,
-                            height: 50,
+                        if (item.itemImage.isNotEmpty) ...[
+                          GestureDetector(
+                            onTap: () => _showImageDialog(context, item.itemImage),
+                            child: CachedNetworkImage(
+                              imageUrl: item.itemImage,
+                              width: 50,
+                              height: 50,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 15),
+                          const SizedBox(width: 15),
+                        ],
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

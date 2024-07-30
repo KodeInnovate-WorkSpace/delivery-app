@@ -20,10 +20,10 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController mrpController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
-  final TextEditingController imageController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
   File? _image;
   bool isVeg = false; // New field
+  bool isFood = false; // New field
 
   int? dropdownValue = 1;
   final List<String> subCategoryNames = [];
@@ -110,7 +110,11 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       }
 
       // Upload image and add product to Firestore
-      String imageUrl = await uploadImage(_image!);
+      String imageUrl = '';
+      // if (!isFood) {
+      imageUrl = await uploadImage(_image!);
+      // }
+
       final productDoc = FirebaseFirestore.instance.collection('products').doc();
 
       await productDoc.set({
@@ -124,6 +128,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         'sub_category_id': selectedSubCategoryId,
         'unit': unitController.text,
         'isVeg': isVeg, // New field
+        'isFood': isFood, // New field
       });
 
       showMessage("Product added to database");
@@ -245,7 +250,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   controller: mrpController,
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
-                    hintText: 'Enter product MRP',
+                    hintText: 'Enter product mrp',
                     hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14.0),
@@ -261,7 +266,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.currency_rupee),
+                    prefixIcon: const Icon(Icons.price_change),
                   ),
                 ),
               ),
@@ -291,7 +296,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.warehouse),
+                    prefixIcon: const Icon(Icons.inventory),
                   ),
                 ),
               ),
@@ -327,6 +332,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               const SizedBox(height: 20),
 
               // Select Image
+              // if (!isFood)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -373,8 +379,10 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                 ],
               ),
-
-              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+              // if (!isFood)
+              _image != null
+                  ? Image.file(_image!, height: 100, width: 100)
+                  : const Text("No image selected"),
               const SizedBox(height: 20),
 
               // Status
@@ -440,12 +448,34 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               ),
               const SizedBox(height: 20),
 
+              // Is Food Slider
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Is Food: "),
+                  Switch(
+                    value: isFood,
+                    onChanged: (value) {
+                      setState(() {
+                        isFood = value;
+                        // if (isFood) {
+                        //   _image = null;
+                        // }
+                      });
+                    },
+                    activeColor: Colors.green,
+                    inactiveThumbColor: Colors.red,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
               Center(
                 child: ElevatedButton(
                   onPressed: isLoading
                       ? null
                       : () async {
-                    if (nameController.text.isEmpty || _image == null || selectedSubCategoryName == null) {
+                    if (nameController.text.isEmpty || (!isFood && _image == null) || selectedSubCategoryName == null) {
                       showMessage("Please fill necessary details");
                       log("Please fill all the fields");
 

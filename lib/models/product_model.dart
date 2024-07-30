@@ -8,7 +8,8 @@ class Product {
   final String unit;
   final int subCatId;
   final int status;
-  final bool isVeg; // New field
+  final bool isVeg;
+  final bool isFood; // New field
 
   Product({
     required this.id,
@@ -20,10 +21,10 @@ class Product {
     required this.unit,
     required this.subCatId,
     required this.status,
-    this.isVeg = false, // Default value set to false
+    this.isVeg = false,
+    this.isFood = false, // Default value set to false
   });
 
-  // Assuming you'll have a method to convert the Product to JSON for Firestore
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -35,23 +36,24 @@ class Product {
       'unit': unit,
       'sub_category_id': subCatId,
       'status': status,
-      'isVeg': isVeg, // New field
+      'isVeg': isVeg,
+      'isFood': isFood, // New field
     };
   }
 
-  // Assuming you'll have a method to create a Product from JSON
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id'],
       name: json['name'],
       price: json['price'],
       mrp: json['mrp'],
-      image: json['image'],
+      image: json['image'] ?? '', // Handle missing image
       stock: json['stock'],
       unit: json['unit'],
       subCatId: json['sub_category_id'],
       status: json['status'],
-      isVeg: json['isVeg'] ?? false, // Handle previous products without isVeg field
+      isVeg: json['isVeg'] ?? false,
+      isFood: json['isFood'] ?? false, // Handle missing isFood field
     );
   }
 }
