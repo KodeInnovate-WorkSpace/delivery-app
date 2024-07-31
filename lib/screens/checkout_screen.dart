@@ -428,6 +428,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     Navigator.of(context).pop(); // Close the popup
                                                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OrderConfirmationPage())).then((value) {
                                                       List<Order> orders = cartProvider.cart.map((item) {
+                                                        // debugPrint("Item Category Name: ${item.itemCategory}");
+
                                                         return Order(
                                                           orderId: myOrderId,
                                                           paymentMode: orderProvider.selectedPaymentMethod,
@@ -441,6 +443,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           timestamp: DateTime.timestamp(),
                                                           valetName: "",
                                                           valetPhone: "",
+                                                          itemSubCatId: item.itemSubCat,
                                                         );
                                                       }).toList();
 
@@ -497,6 +500,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           timestamp: DateTime.timestamp(),
                                                           valetName: "",
                                                           valetPhone: "",
+                                                          itemSubCatId: item.itemSubCat,
                                                         );
                                                       }).toList();
                                                       orderProvider.addOrders(orders, myOrderId, authProvider.phone);
@@ -512,7 +516,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           },
                                         );
                                       }
-
                                     },
                                     style: ButtonStyle(
                                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
