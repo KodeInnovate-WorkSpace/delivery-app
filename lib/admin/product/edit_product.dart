@@ -20,14 +20,12 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController mrpController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
-  final TextEditingController imageController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
   File? _image;
+  bool isVeg = false; // New field
+  bool isFood = false; // New field
 
   int? dropdownValue = 1;
-  // final List<String> subcategories = [];
-  // Map<String, int> subcategoriesMap = {};
-  // int? selectedSubCategory;
   final List<String> subCategoryNames = [];
   final Map<String, int> subCategoryMap = {};
   String? selectedSubCategoryName;
@@ -81,44 +79,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
     }
   }
 
-  // Future<void> addNewProduct(BuildContext context) async {
-  //   try {
-  //     // Fetch productData from Firestore
-  //     productData = await product.manageProducts();
-  //     notifyListeners();
-  //
-  //     // Check if sub-category already exists
-  //     final querySnapshot = await FirebaseFirestore.instance.collection('products').where('name', isEqualTo: nameController.text).get();
-  //
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       showMessage("Product already exists");
-  //       log("Product already exists");
-  //       return;
-  //     }
-  //
-  //     // Upload image and add sub-category to Firestore
-  //     String imageUrl = await uploadImage(_image!);
-  //     final productDoc = FirebaseFirestore.instance.collection('products').doc();
-  //
-  //     await productDoc.set({
-  //       'id': productData.length + 1,
-  //       'image': imageUrl,
-  //       'name': nameController.text,
-  //       'price': int.parse(priceController.text),
-  //       'mrp': int.parse(mrpController.text),
-  //       'status': dropdownValue,
-  //       'stock': int.parse(stockController.text),
-  //       'sub_category_id': selectedSubCategoryId,
-  //       'unit': unitController.text,
-  //     });
-  //
-  //     showMessage("Product added to database");
-  //     log("Product added successfully");
-  //   } catch (e) {
-  //     showMessage("Error adding Product: $e");
-  //     log("Error adding Product: $e");
-  //   }
-  // }
   Future<void> addNewProduct(BuildContext context) async {
     try {
       // Fetch productData from Firestore
@@ -150,7 +110,11 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       }
 
       // Upload image and add product to Firestore
-      String imageUrl = await uploadImage(_image!);
+      String imageUrl = '';
+      // if (!isFood) {
+      imageUrl = await uploadImage(_image!);
+      // }
+
       final productDoc = FirebaseFirestore.instance.collection('products').doc();
 
       await productDoc.set({
@@ -163,6 +127,8 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         'stock': int.parse(stockController.text),
         'sub_category_id': selectedSubCategoryId,
         'unit': unitController.text,
+        'isVeg': isVeg, // New field
+        'isFood': isFood, // New field
       });
 
       showMessage("Product added to database");
@@ -207,7 +173,6 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   @override
   Widget build(BuildContext context) {
-    // bool isButtonDisabled = false;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add new product"),
@@ -285,7 +250,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   controller: mrpController,
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
-                    hintText: 'Enter product MRP',
+                    hintText: 'Enter product mrp',
                     hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14.0),
@@ -301,7 +266,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.currency_rupee),
+                    prefixIcon: const Icon(Icons.price_change),
                   ),
                 ),
               ),
@@ -331,7 +296,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.warehouse),
+                    prefixIcon: const Icon(Icons.inventory),
                   ),
                 ),
               ),
@@ -367,6 +332,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
               const SizedBox(height: 20),
 
               // Select Image
+              // if (!isFood)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -374,13 +340,13 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ElevatedButton(
                     onPressed: openCamera,
                     style: ButtonStyle(
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
                           return Colors.black;
                         },
                       ),
@@ -395,13 +361,13 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ElevatedButton(
                     onPressed: pickImage,
                     style: ButtonStyle(
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
                           return Colors.black;
                         },
                       ),
@@ -413,8 +379,10 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                 ],
               ),
-
-              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+              // if (!isFood)
+              _image != null
+                  ? Image.file(_image!, height: 100, width: 100)
+                  : const Text("No image selected"),
               const SizedBox(height: 20),
 
               // Status
@@ -459,7 +427,47 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 }).toList(),
                 hint: const Text("Select a sub-category"),
               ),
+              const SizedBox(height: 20),
 
+              // Is Veg Slider
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Is Veg: "),
+                  Switch(
+                    value: isVeg,
+                    onChanged: (value) {
+                      setState(() {
+                        isVeg = value;
+                      });
+                    },
+                    activeColor: Colors.green,
+                    inactiveThumbColor: Colors.red,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Is Food Slider
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Is Food: "),
+                  Switch(
+                    value: isFood,
+                    onChanged: (value) {
+                      setState(() {
+                        isFood = value;
+                        // if (isFood) {
+                        //   _image = null;
+                        // }
+                      });
+                    },
+                    activeColor: Colors.green,
+                    inactiveThumbColor: Colors.red,
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
 
               Center(
@@ -467,29 +475,29 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   onPressed: isLoading
                       ? null
                       : () async {
-                          if (nameController.text.isEmpty || _image == null || selectedSubCategoryName == null) {
-                            showMessage("Please fill necessary details");
-                            log("Please fill all the fields");
+                    if (nameController.text.isEmpty || (!isFood && _image == null) || selectedSubCategoryName == null) {
+                      showMessage("Please fill necessary details");
+                      log("Please fill all the fields");
 
-                            setState(() {
-                              isLoading = false;
-                            });
+                      setState(() {
+                        isLoading = false;
+                      });
 
-                            return;
-                          }
+                      return;
+                    }
 
-                          setState(() {
-                            isLoading = true;
-                          });
+                    setState(() {
+                      isLoading = true;
+                    });
 
-                          await addNewProduct(context);
+                    await addNewProduct(context);
 
-                          setState(() {
-                            isLoading = false;
-                          });
+                    setState(() {
+                      isLoading = false;
+                    });
 
-                          Navigator.pop(context, true);
-                        },
+                    Navigator.pop(context, true);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -504,16 +512,16 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   child: isLoading
                       ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        )
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  )
                       : const Text(
-                          "Add",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Gilroy-Bold',
-                          ),
-                        ),
+                    "Add",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Gilroy-Bold',
+                    ),
+                  ),
                 ),
               ),
             ],
