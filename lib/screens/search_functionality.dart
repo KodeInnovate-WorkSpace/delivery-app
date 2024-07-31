@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/widget/cart_button.dart';
 import '../models/product_model.dart';
-import '../widget/add_to_cart_button.dart';
+import '../providers/auth_provider.dart';
+import '../widget/add_to_cart_button.dart'; // Import your cart screen
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -29,24 +32,34 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> fetchProductsFromFirestore() async {
     try {
-      // Step 1: Fetch categories with status 1
-      final categoriesSnapshot = await FirebaseFirestore.instance.collection('category').where('status', isEqualTo: 1).get();
+      final categoriesSnapshot = await FirebaseFirestore.instance
+          .collection('category')
+          .where('status', isEqualTo: 1)
+          .get();
 
-      // Extract category IDs as integers
-      final List<int> activeCategoryIds = categoriesSnapshot.docs.map((doc) => doc['category_id'] as int).toList();
+      final List<int> activeCategoryIds = categoriesSnapshot.docs
+          .map((doc) => doc['category_id'] as int)
+          .toList();
 
-      // Step 2: Fetch subcategories with status 1 for those categories
-      final subCategoriesSnapshot = await FirebaseFirestore.instance.collection('sub_category').where('category_id', whereIn: activeCategoryIds).where('status', isEqualTo: 1).get();
+      final subCategoriesSnapshot = await FirebaseFirestore.instance
+          .collection('sub_category')
+          .where('category_id', whereIn: activeCategoryIds)
+          .where('status', isEqualTo: 1)
+          .get();
 
-      // Extract subcategory IDs as integers
-      final List<int> activeSubCategoryIds = subCategoriesSnapshot.docs.map((doc) => doc['sub_category_id'] as int).toList();
+      final List<int> activeSubCategoryIds = subCategoriesSnapshot.docs
+          .map((doc) => doc['sub_category_id'] as int)
+          .toList();
 
-      // Step 3: Fetch products with status 1 for those subcategories
       List<Product> products = [];
       const int batchSize = 30;
 
       for (int i = 0; i < activeSubCategoryIds.length; i += batchSize) {
-        final batch = activeSubCategoryIds.sublist(i, i + batchSize > activeSubCategoryIds.length ? activeSubCategoryIds.length : i + batchSize);
+        final batch = activeSubCategoryIds.sublist(
+            i,
+            i + batchSize > activeSubCategoryIds.length
+                ? activeSubCategoryIds.length
+                : i + batchSize);
 
         final productsSnapshot = await FirebaseFirestore.instance
             .collection('products')
@@ -54,7 +67,6 @@ class _SearchPageState extends State<SearchPage> {
             .where('sub_category_id', whereIn: batch.isNotEmpty ? batch : [0]) // Avoid empty query
             .get();
 
-        // Map products to your Product model
         products.addAll(productsSnapshot.docs.map((doc) {
           return Product(
             name: doc['name'] as String,
@@ -66,6 +78,7 @@ class _SearchPageState extends State<SearchPage> {
             unit: doc['unit'],
             subCatId: doc['sub_category_id'],
             status: doc['status'],
+            isVeg: doc.data().containsKey('isVeg') ? doc['isVeg'] as bool : false, // Check for field presence
           );
         }));
       }
@@ -77,6 +90,9 @@ class _SearchPageState extends State<SearchPage> {
       debugPrint("$e");
     }
   }
+
+
+
 
   Future<void> loadProductSearches() async {
     try {
@@ -196,6 +212,32 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
+  void showExpandedImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.network(imageUrl),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget searchBar() {
     return TextField(
       controller: _controller,
@@ -240,110 +282,185 @@ class _SearchPageState extends State<SearchPage> {
       _filteredProducts.clear();
     });
   }
-
   Widget productCard(Product product) {
     return Card(
       elevation: 0,
       color: Colors.white,
-      child: ListTile(
-        leading: Image.network(product.image, width: 50, height: 50),
-        title: Text(product.name),
-        onTap: () {
-          saveSearch(product);
-        },
+      child: Stack(
+        children: [
+          ListTile(
+            // leading: GestureDetector(
+            //   onTap: () {
+            //     showExpandedImage(context, product.image);
+            //   },
+            //   child: Image.network(product.image, width: 50, height: 50),
+            // ),
+            title: Text(product.name),
+            onTap: () {
+              saveSearch(product);
+            },
+          ),
+        ],
       ),
     );
   }
-
   Widget productSearchCard(Product product) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Image.network(product.image, width: 100, height: 100),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 5),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Rs.${product.price.toStringAsFixed(2)}',
-                          style: const TextStyle(color: Color(0xff1c1c1c)),
-                        ),
-                        Text(
-                          "Rs.${product.mrp.toString()}",
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AddToCartButton(
-                    productName: product.name,
-                    productPrice: product.price.toInt(),
-                    productImage: product.image,
-                    productUnit: product.unit,
-                    productSubCat: product.subCatId,
+        Stack(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-            ],
-          ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (product.image.isNotEmpty)
+                    GestureDetector(
+                      onTap: () {
+                        showExpandedImage(context, product.image);
+                      },
+                      child: Image.network(product.image, width: 100, height: 100),
+                    ),
+                  if (product.image.isNotEmpty) const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Rs.${product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(color: Color(0xff1c1c1c)),
+                            ),
+                            Text(
+                              "Rs.${product.mrp.toString()}",
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AddToCartButton(
+                          productName: product.name,
+                          productPrice: product.price.toInt(),
+                          productImage: product.image,
+                          productUnit: product.unit,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (product.isVeg)
+              Positioned(
+                top: 4,
+                right: 8,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green, width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            if (product.isVeg)
+              Positioned(
+                top: 8,
+                right: 12,
+                child: Container(
+                  width: 16,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.green,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: const Icon(Icons.circle, color: Colors.green, size: 12),
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 10),
       ],
     );
   }
 
+
+
   Widget recentSearchCard(Product product) {
     return Card(
       color: Colors.white,
       elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Image.network(product.image, width: 40, height: 40),
-            const SizedBox(height: 5),
-            Text(product.name),
-          ],
-        ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                // GestureDetector(
+                //   onTap: () {
+                //     showExpandedImage(context, product.image);
+                //   },
+                //   child: Image.network(product.image, width: 40, height: 40),
+                // ),
+                const SizedBox(height: 5),
+                Text(product.name),
+              ],
+            ),
+          ),
+          // if (product.isVeg)
+          //   Positioned(
+          //     top: 0,
+          //     left: 0,
+          //     child: Container(
+          //       width: 20,
+          //       height: 20,
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: Colors.green,
+          //         border: Border.all(color: Colors.white, width: 2),
+          //       ),
+          //       child: const Icon(Icons.circle, color: Colors.green, size: 14),
+          //     ),
+          //   ),
+        ],
       ),
     );
   }
+
+
 
   Widget _searchListView() {
     if (_productSearches.isEmpty) {

@@ -10,15 +10,12 @@ class AddToCartButton extends StatefulWidget {
   final String productImage;
   final String productUnit;
 
-  final int productSubCat;
-
   const AddToCartButton({
     super.key,
     required this.productName,
     required this.productPrice,
     required this.productImage,
     required this.productUnit,
-    required this.productSubCat,
   });
 
   @override
@@ -59,7 +56,6 @@ class AddToCartButtonState extends State<AddToCartButton> {
       itemPrice: widget.productPrice,
       itemImage: widget.productImage,
       itemUnit: widget.productUnit,
-      itemSubCat: widget.productSubCat,
     );
 
     // Update state based on provider
@@ -68,112 +64,112 @@ class AddToCartButtonState extends State<AddToCartButton> {
 
     return _isClicked
         ? Container(
-      width: 70,
-      height: 30,
-      decoration: BoxDecoration(
-        color: Colors.green,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          //Remove button
-          Expanded(
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              icon:
-              const Icon(Icons.remove, size: 15, color: Colors.white),
-              onPressed: () async {
-                setState(() {
-                  if (_count > 1) {
-                    _count--;
-                    cartProvider.removeItem(cartItem);
-                  } else if (_count == 1) {
-                    _count--;
-                    cartProvider.removeItem(cartItem);
-                    _isClicked = false;
-                  }
-                  _saveCartState();
-                });
-                // Code for shared preference
-                // await cartProvider.saveCart();
-              },
+            width: 70,
+            height: 30,
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(5),
             ),
-          ),
-          // Item Count Display
-          Text(
-            _count.toString(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontFamily: 'Gilroy-SemiBold',
-              fontSize: 14,
-            ),
-          ),
-          // Add button
-          Expanded(
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              icon: const Icon(Icons.add, size: 15, color: Colors.white),
-              onPressed: () async {
-                setState(() {
-                  _count++;
-                  cartProvider.addItem(cartItem);
-                  _saveCartState();
-                });
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                //Remove button
+                Expanded(
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon:
+                        const Icon(Icons.remove, size: 15, color: Colors.white),
+                    onPressed: () async {
+                      setState(() {
+                        if (_count > 1) {
+                          _count--;
+                          cartProvider.removeItem(cartItem);
+                        } else if (_count == 1) {
+                          _count--;
+                          cartProvider.removeItem(cartItem);
+                          _isClicked = false;
+                        }
+                        _saveCartState();
+                      });
+                      // Code for shared preference
+                      // await cartProvider.saveCart();
+                    },
+                  ),
+                ),
+                // Item Count Display
+                Text(
+                  _count.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Gilroy-SemiBold',
+                    fontSize: 14,
+                  ),
+                ),
+                // Add button
+                Expanded(
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(Icons.add, size: 15, color: Colors.white),
+                    onPressed: () async {
+                      setState(() {
+                        _count++;
+                        cartProvider.addItem(cartItem);
+                        _saveCartState();
+                      });
 
-              },
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    )
+          )
         : OutlinedButton(
-      onPressed: () async {
-        setState(() {
-          _isClicked = true;
-          _count = 1;
-          cartProvider.addItem(cartItem);
-          _saveCartState();
-        });
-        // Code for shared preference
-        // await cartProvider.saveCart();
-        // Show Snackbar
-        // showMessage('${widget.productName} added to cart');
-      },
-      style: ButtonStyle(
-        backgroundColor:
-        WidgetStateProperty.all<Color>(Colors.transparent),
-        overlayColor: WidgetStateProperty.resolveWith<Color>(
-              (Set<WidgetState> states) {
-            if (states.contains(WidgetState.hovered)) {
-              return Colors.green.withOpacity(0.1);
-            }
-            if (states.contains(WidgetState.pressed)) {
-              return Colors.green.withOpacity(0.3);
-            }
-            return Colors.green.withOpacity(0.6);
-          },
-        ),
-        side: WidgetStateProperty.all<BorderSide>(
-            const BorderSide(color: Colors.green)),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-          ),
-        ),
-        minimumSize: WidgetStateProperty.all<Size>(const Size(70, 30)),
-      ),
-      child: const Text(
-        'Add',
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.green,
-          fontFamily: 'Gilroy-SemiBold',
-        ),
-      ),
-    );
+            onPressed: () async {
+              setState(() {
+                _isClicked = true;
+                _count = 1;
+                cartProvider.addItem(cartItem);
+                _saveCartState();
+              });
+              // Code for shared preference
+              // await cartProvider.saveCart();
+              // Show Snackbar
+              // showMessage('${widget.productName} added to cart');
+            },
+            style: ButtonStyle(
+              backgroundColor:
+                  WidgetStateProperty.all<Color>(Colors.transparent),
+              overlayColor: WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) {
+                  if (states.contains(WidgetState.hovered)) {
+                    return Colors.green.withOpacity(0.1);
+                  }
+                  if (states.contains(WidgetState.pressed)) {
+                    return Colors.green.withOpacity(0.3);
+                  }
+                  return Colors.green.withOpacity(0.6);
+                },
+              ),
+              side: WidgetStateProperty.all<BorderSide>(
+                  const BorderSide(color: Colors.green)),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                ),
+              ),
+              minimumSize: WidgetStateProperty.all<Size>(const Size(70, 30)),
+            ),
+            child: const Text(
+              'Add',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.green,
+                fontFamily: 'Gilroy-SemiBold',
+              ),
+            ),
+          );
   }
 }
