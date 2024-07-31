@@ -139,6 +139,7 @@ class _ProductCardState extends State<ProductCard> {
                                 productPrice: product.price,
                                 productImage: product.image,
                                 productUnit: product.unit,
+                                productSubCat: product.subCatId,
                                 // refreshCart: refreshCart,
                               ),
                             )

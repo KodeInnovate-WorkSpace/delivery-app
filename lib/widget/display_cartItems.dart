@@ -64,6 +64,7 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
                           productPrice: item.itemPrice,
                           productImage: item.itemImage,
                           productUnit: item.itemUnit,
+                          productSubCat: item.itemSubCat,
                         ),
                       ],
                     ),

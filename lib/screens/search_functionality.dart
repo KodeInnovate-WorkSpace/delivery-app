@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy_delivery/widget/cart_button.dart';
 import '../models/product_model.dart';
-import '../providers/auth_provider.dart';
-import '../widget/add_to_cart_button.dart'; // Import your cart screen
+import '../widget/add_to_cart_button.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -33,38 +30,23 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> fetchProductsFromFirestore() async {
     try {
       // Step 1: Fetch categories with status 1
-      final categoriesSnapshot = await FirebaseFirestore.instance
-          .collection('category')
-          .where('status', isEqualTo: 1)
-          .get();
+      final categoriesSnapshot = await FirebaseFirestore.instance.collection('category').where('status', isEqualTo: 1).get();
 
       // Extract category IDs as integers
-      final List<int> activeCategoryIds = categoriesSnapshot.docs
-          .map((doc) => doc['category_id'] as int)
-          .toList();
+      final List<int> activeCategoryIds = categoriesSnapshot.docs.map((doc) => doc['category_id'] as int).toList();
 
       // Step 2: Fetch subcategories with status 1 for those categories
-      final subCategoriesSnapshot = await FirebaseFirestore.instance
-          .collection('sub_category')
-          .where('category_id', whereIn: activeCategoryIds)
-          .where('status', isEqualTo: 1)
-          .get();
+      final subCategoriesSnapshot = await FirebaseFirestore.instance.collection('sub_category').where('category_id', whereIn: activeCategoryIds).where('status', isEqualTo: 1).get();
 
       // Extract subcategory IDs as integers
-      final List<int> activeSubCategoryIds = subCategoriesSnapshot.docs
-          .map((doc) => doc['sub_category_id'] as int)
-          .toList();
+      final List<int> activeSubCategoryIds = subCategoriesSnapshot.docs.map((doc) => doc['sub_category_id'] as int).toList();
 
       // Step 3: Fetch products with status 1 for those subcategories
       List<Product> products = [];
       const int batchSize = 30;
 
       for (int i = 0; i < activeSubCategoryIds.length; i += batchSize) {
-        final batch = activeSubCategoryIds.sublist(
-            i,
-            i + batchSize > activeSubCategoryIds.length
-                ? activeSubCategoryIds.length
-                : i + batchSize);
+        final batch = activeSubCategoryIds.sublist(i, i + batchSize > activeSubCategoryIds.length ? activeSubCategoryIds.length : i + batchSize);
 
         final productsSnapshot = await FirebaseFirestore.instance
             .collection('products')
@@ -235,9 +217,9 @@ class _SearchPageState extends State<SearchPage> {
         prefixIcon: const Icon(Icons.search),
         suffixIcon: _controller.text.isNotEmpty
             ? IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: clearSearch,
-        )
+                icon: const Icon(Icons.clear),
+                onPressed: clearSearch,
+              )
             : null,
       ),
       style: const TextStyle(color: Colors.black),
@@ -334,6 +316,7 @@ class _SearchPageState extends State<SearchPage> {
                     productPrice: product.price.toInt(),
                     productImage: product.image,
                     productUnit: product.unit,
+                    productSubCat: product.subCatId,
                   ),
                 ],
               ),
