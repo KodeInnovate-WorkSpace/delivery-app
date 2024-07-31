@@ -112,7 +112,6 @@ class _ManageProductState extends State<ManageProduct> {
                           DataColumn(label: Text('Stock')),
                           DataColumn(label: Text('Unit')),
                           DataColumn(label: Text('Sub-Category')),
-                          DataColumn(label: Text('IsVeg')),
                           DataColumn(label: Text('')),
                           DataColumn(label: Text('')),
                         ],
@@ -304,20 +303,6 @@ class TableData extends DataTableSource {
           );
         }).toList(),
       )),
-
-      // isVeg
-      DataCell(
-        SizedBox(
-          width: 50,
-          child: data.containsKey('isVeg')
-              ? Text(
-            data['isVeg'] == true ? 'Vegetarian' : '',
-            softWrap: true,
-            overflow: TextOverflow.visible,
-          )
-              : const Text(''),
-        ),
-      ),
 
       //Delete
       DataCell(

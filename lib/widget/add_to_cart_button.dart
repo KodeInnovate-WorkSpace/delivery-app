@@ -10,12 +10,15 @@ class AddToCartButton extends StatefulWidget {
   final String productImage;
   final String productUnit;
 
+  final int productSubCat;
+
   const AddToCartButton({
     super.key,
     required this.productName,
     required this.productPrice,
     required this.productImage,
     required this.productUnit,
+    required this.productSubCat,
   });
 
   @override
@@ -56,6 +59,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
       itemPrice: widget.productPrice,
       itemImage: widget.productImage,
       itemUnit: widget.productUnit,
+      itemSubCat: widget.productSubCat,
     );
 
     // Update state based on provider

@@ -3,6 +3,8 @@ class Cart {
   final int itemPrice;
   final String itemImage;
   final String itemUnit;
+  //new value
+  final int itemSubCat;
   int qnt;
 
   Cart({
@@ -10,6 +12,8 @@ class Cart {
     required this.itemName,
     required this.itemPrice,
     required this.itemUnit,
+    //new value
+    required this.itemSubCat,
     this.qnt = 1,
   });
 
@@ -21,6 +25,7 @@ class Cart {
         'itemName': itemName,
         'itemPrice': itemPrice,
         'itemUnit': itemUnit,
+        'itemSubCat': itemSubCat,
         'qnt': qnt,
       };
 
@@ -30,6 +35,7 @@ class Cart {
         itemName: json['itemName'] as String,
         itemPrice: json['itemPrice'] as int,
         itemUnit: json['itemUnit'] as String,
+        itemSubCat: json['itemSubCat'] ,
         qnt: json['qnt'] as int,
       );
 }

@@ -38,9 +38,6 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
 
   Map<String, int> subcategoryMap = {};
 
-  // isVeg state
-  bool isVeg = false;
-
   @override
   void initState() {
     super.initState();
@@ -52,9 +49,6 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
     priceController.text = widget.data['price'].toString();
     stockController.text = widget.data['stock'].toString();
     unitController.text = widget.data['unit'];
-
-    // Initialize isVeg state
-    isVeg = widget.data['isVeg'] ?? false;
   }
 
   Future<void> _loadSubCatData() async {
@@ -117,7 +111,6 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
-
             // stock
             InputBox(
               hintText: "Update product stock",
@@ -126,7 +119,6 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
-
             // unit
             InputBox(
               hintText: "Update product unit",
@@ -136,24 +128,38 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
-            // isVeg checkbox
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Vegetarian: "),
-                Checkbox(
-                  value: isVeg,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      isVeg = newValue ?? false;
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
+            // sub-category dropdown
+            // Column(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     const Text("Change Sub-Category: "),
+            //     DropdownButton<String>(
+            //       // value: selectedSubCategoryName ?? subcategoryMap.keys.first,
+            //       value: selectedSubCategoryName,
+            //       onChanged: (String? newValue) {
+            //         try {
+            //           setState(() {
+            //             selectedSubCategoryName = newValue!;
+            //             selectedSubCategoryId = subcategoryMap[selectedSubCategoryName]!;
+            //           });
+            //         } catch (e) {
+            //           log("Error getting sub-categories: $e");
+            //         }
+            //       },
+            //       items: subcategoryMap.keys.map<DropdownMenuItem<String>>((String sub) {
+            //         return DropdownMenuItem<String>(
+            //           value: sub,
+            //           child: Text(sub),
+            //         );
+            //       }).toList(),
+            //       hint: const Text("Select a sub-category"),
+            //     )
+            //   ],
+            // ),
+            // const SizedBox(height: 20),
 
             // status dropdown
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -164,6 +170,14 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
                     setState(() {
                       dropdownValue = newValue!; // Update state on change
                     });
+                    productObj
+                        .updateProduct(
+                      'status',
+                      newValue,
+                      productField: 'sub_category_id',
+                      productValue: widget.data['sub_category_id'],
+                    )
+                        .then((_) => productObj.manageProducts());
                   },
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                     return DropdownMenuItem<int>(
@@ -206,10 +220,6 @@ class _UpdateProductState extends State<UpdateProduct> with ChangeNotifier {
                     // Update unit
                     await productObj.updateProduct('unit', unitController.text, productField: 'id', productValue: widget.data['id']);
                     log("Unit = ${unitController.text}");
-
-                    // Update isVeg
-                    await productObj.updateProduct('isVeg', isVeg, productField: 'id', productValue: widget.data['id']);
-                    log("isVeg = $isVeg");
 
                     // Update sub-category (if selected)
                     if (selectedSubCategoryId != -1) {

@@ -98,25 +98,10 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
         return;
       }
 
-      // Calculate the new category ID
-      int newCategoryId = catData.length + 1;
-
-      // Check if the ID is already used
-      bool isIdUsed = true;
-      while (isIdUsed) {
-        final idCheckSnapshot = await FirebaseFirestore.instance.collection('category').where('category_id', isEqualTo: newCategoryId).get();
-
-        if (idCheckSnapshot.docs.isEmpty) {
-          isIdUsed = false;
-        } else {
-          newCategoryId += 1;
-        }
-      }
-
       // Update existing category in Firestore
-      final catDoc = FirebaseFirestore.instance.collection('category').doc(selectedCategory.toString());
+      final catDoc = FirebaseFirestore.instance.collection('category').doc();
       await catDoc.set({
-        'category_id': newCategoryId,
+        'category_id': catData.length + 1,
         'category_name': nameController.text,
         'status': dropdownValue,
         'priority': int.parse(priorityController.text),
@@ -227,29 +212,29 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 onPressed: isLoading
                     ? null
                     : () async {
-                  if (nameController.text.isEmpty || priorityController.text.isEmpty) {
-                    showMessage("Please fill necessary details");
-                    log("Please fill all the fields");
+                        if (nameController.text.isEmpty || priorityController.text.isEmpty) {
+                          showMessage("Please fill necessary details");
+                          log("Please fill all the fields");
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    return;
-                  }
+                          return;
+                        }
 
-                  setState(() {
-                    isLoading = true;
-                  });
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                  await addOrUpdateCategory(context);
+                        await addOrUpdateCategory(context);
 
-                  setState(() {
-                    isLoading = false;
-                  });
+                        setState(() {
+                          isLoading = false;
+                        });
 
-                  Navigator.pop(context, true);
-                },
+                        Navigator.pop(context, true);
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -264,16 +249,16 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : const Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Gilroy-Bold',
-                  ),
-                ),
+                        "Save",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Gilroy-Bold',
+                        ),
+                      ),
               ),
             )
           ],

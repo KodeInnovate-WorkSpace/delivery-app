@@ -58,7 +58,6 @@ class CategoryScreenState extends State<CategoryScreen> {
               stock: data['stock'] ?? 0,
               subCatId: data['sub_category_id'] ?? 0,
               status: data['status'],
-              isVeg: data['isVeg'] ?? false, // Handle the new field
             );
 
             if (product.status == 1) {
@@ -99,10 +98,8 @@ class CategoryScreenState extends State<CategoryScreen> {
                     fetchProducts(id);
                   });
                 }),
-                Expanded(
-                  child: ProductCard(
-                    productList: products,
-                  ),
+                ProductCard(
+                  productList: products,
                 ),
               ],
             ),

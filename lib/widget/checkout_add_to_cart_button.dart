@@ -10,6 +10,7 @@ class CheckoutAddToCartButton extends StatefulWidget {
   final int productPrice;
   final String productImage;
   final String productUnit;
+  final int productSubCat;
 
   const CheckoutAddToCartButton({
     super.key,
@@ -17,6 +18,7 @@ class CheckoutAddToCartButton extends StatefulWidget {
     required this.productPrice,
     required this.productImage,
     required this.productUnit,
+    required this.productSubCat,
   });
 
   @override
@@ -55,6 +57,7 @@ class CheckoutAddToCartButtonState extends State<CheckoutAddToCartButton> {
       itemPrice: widget.productPrice,
       itemImage: widget.productImage,
       itemUnit: widget.productUnit,
+      itemSubCat: widget.productSubCat,
     );
 
     return Container(
