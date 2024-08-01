@@ -293,6 +293,7 @@ class OrderDataRow extends StatelessWidget {
             Text('Date: ${_formatTimestamp(data['timestamp'])}'),
             Text('Address: ${data['address']}'),
             Text('Payment Mode: ${data['paymentMode']}'),
+            Text('Overall Total:${data['overallTotal']}'),
             DropdownButton<String>(
               value: data['valetPhone'],
               onChanged: (String? newValue) async {
