@@ -68,6 +68,7 @@ class Order {
       'productName': productName,
       'productImage': productImage,
       'quantity': quantity,
+      'unit': unit,
       'price': price,
       'paymentMode': paymentMode,
       'address': address,
