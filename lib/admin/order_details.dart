@@ -50,19 +50,27 @@ class OrderDetailsScreen extends StatelessWidget {
                     itemCount: orderProvider.orders.where((o) => o.orderId == orderId).length,
                     itemBuilder: (context, index) {
                       final product = orderProvider.orders.where((o) => o.orderId == orderId).elementAt(index);
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Product Name: ${product.productName}', style: const TextStyle(fontSize: 16)),
-                            const SizedBox(height: 5),
-                            Text('Quantity: ${product.quantity}'),
-                            const SizedBox(height: 5),
-                            Text('Price: ${product.price}'),
-                            const Divider(),
-                          ],
-                        ),
+                      return FutureBuilder<String?>(
+                        future: orderProvider.fetchCategoryName(product.productName),
+                        builder: (context, snapshot) {
+                          final categoryName = snapshot.data ?? 'Unknown';
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Product Name: ${product.productName}', style: const TextStyle(fontSize: 16)),
+                                const SizedBox(height: 5),
+                                Text('Category Name: $categoryName'), // Display the category name
+                                const SizedBox(height: 5),
+                                Text('Quantity: ${product.quantity}'),
+                                const SizedBox(height: 5),
+                                Text('Price: ${product.price}'),
+                                const Divider(),
+                              ],
+                            ),
+                          );
+                        },
                       );
                     },
                   ),

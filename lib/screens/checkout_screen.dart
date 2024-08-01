@@ -431,7 +431,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         return Order(
                                                           orderId: myOrderId,
                                                           paymentMode: orderProvider.selectedPaymentMethod,
-                                                          productName: '${item.itemName} - ${item.itemUnit}',
+                                                          productName: item.itemName,//- ${item.itemUnit}
                                                           productImage: item.itemImage,
                                                           quantity: item.qnt,
                                                           price: item.itemPrice.toDouble(),
@@ -487,7 +487,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         return Order(
                                                           orderId: myOrderId,
                                                           paymentMode: orderProvider.selectedPaymentMethod,
-                                                          productName: '${item.itemName} - ${item.itemUnit}',
+                                                          productName: item.itemName,//- ${item.itemUnit}
                                                           productImage: item.itemImage,
                                                           quantity: item.qnt,
                                                           price: item.itemPrice.toDouble(),

@@ -113,7 +113,48 @@ class OrderProvider with ChangeNotifier {
     fetchOrders();
     _updateDeliveryCharge();
   }
+  Future<String?> fetchCategoryName(String productName) async {
+    try {
+      // Step 1: Get product document with matching product name
+      QuerySnapshot productSnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('name', isEqualTo: productName)
+          .get();
 
+      if (productSnapshot.docs.isNotEmpty) {
+        for (var productDoc in productSnapshot.docs) {
+          int subCategoryId = productDoc['sub_category_id'];
+
+          // Step 2: Get sub category document with matching sub_category_id
+          QuerySnapshot subCategorySnapshot = await FirebaseFirestore.instance
+              .collection('sub_category')
+              .where('sub_category_id', isEqualTo: subCategoryId)
+              .get();
+
+          if (subCategorySnapshot.docs.isNotEmpty) {
+            for (var subCategoryDoc in subCategorySnapshot.docs) {
+              int categoryId = subCategoryDoc['category_id'];
+
+              // Step 3: Get category document with matching category_id
+              QuerySnapshot categorySnapshot = await FirebaseFirestore.instance
+                  .collection('category')
+                  .where('category_id', isEqualTo: categoryId)
+                  .get();
+
+              if (categorySnapshot.docs.isNotEmpty) {
+                for (var categoryDoc in categorySnapshot.docs) {
+                  return categoryDoc['category_name'];
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching category name: $e");
+    }
+    return null;
+  }
   void _updateDeliveryCharge() async {
     bool isDeliveryFree = await _fetchDeliveryChargeStatus();
     // delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : 29;
