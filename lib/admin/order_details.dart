@@ -3,11 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/order_provider.dart'; // Update the import path
 
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailsScreen extends StatefulWidget {
   final String orderId;
 
   const OrderDetailsScreen({super.key, required this.orderId});
 
+  @override
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+}
+
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +22,7 @@ class OrderDetailsScreen extends StatelessWidget {
       body: Consumer<OrderProvider>(
         builder: (context, orderProvider, child) {
           // Find the order with the given orderId
-          final order = orderProvider.orders.firstWhere((order) => order.orderId == orderId);
+          final order = orderProvider.orders.firstWhere((order) => order.orderId == widget.orderId);
 
           return SingleChildScrollView(
             child: Padding(
@@ -47,9 +52,9 @@ class OrderDetailsScreen extends StatelessWidget {
                   ListView.builder(
                     shrinkWrap: true, // Use shrinkWrap to make the ListView fit its content
                     physics: const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
-                    itemCount: orderProvider.orders.where((o) => o.orderId == orderId).length,
+                    itemCount: orderProvider.orders.where((o) => o.orderId == widget.orderId).length,
                     itemBuilder: (context, index) {
-                      final product = orderProvider.orders.where((o) => o.orderId == orderId).elementAt(index);
+                      final product = orderProvider.orders.where((o) => o.orderId == widget.orderId).elementAt(index);
                       return FutureBuilder<String?>(
                         future: orderProvider.fetchCategoryName(product.productName),
                         builder: (context, snapshot) {
@@ -64,6 +69,8 @@ class OrderDetailsScreen extends StatelessWidget {
                                 Text('Category Name: $categoryName'), // Display the category name
                                 const SizedBox(height: 5),
                                 Text('Quantity: ${product.quantity}'),
+                                const SizedBox(height: 5),
+                                Text('Unit: ${product.unit}'),
                                 const SizedBox(height: 5),
                                 Text('Price: ${product.price}'),
                                 const Divider(),

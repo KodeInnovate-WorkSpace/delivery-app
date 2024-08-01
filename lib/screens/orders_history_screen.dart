@@ -27,7 +27,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Order History", style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold')),
+        title: const Text(
+          "Order History",
+          style: TextStyle(color: Color(0xff666666), fontFamily: 'Gilroy-Bold'),
+        ),
         backgroundColor: const Color(0xfff7f7f7),
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xff666666)),
@@ -140,17 +143,18 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     );
                   },
                   child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                      borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.1), // Shadow color
-                          spreadRadius: 2, // Spread radius
-                          blurRadius: 5, // Blur radius
-                          offset: const Offset(0, 2), // Shadow offset (x, y)
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -159,18 +163,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       children: [
                         Text(
                           'Order ID: $orderId',
-                          style: const TextStyle(fontFamily: 'Gilroy-Bold', fontSize: 15, color: Color(0xff1c1c1c)),
+                          style: const TextStyle(
+                              fontFamily: 'Gilroy-Bold',
+                              fontSize: 15,
+                              color: Color(0xff1c1c1c)),
                         ),
                         const SizedBox(height: 10),
                         Text(
                           'Order Date: ${formatTimestamp(orderTimestamp)}',
-                          style: const TextStyle(fontSize: 14, color: Color(0xff666666)),
+                          style: const TextStyle(
+                              fontSize: 14, color: Color(0xff666666)),
                         ),
                         const SizedBox(height: 15),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: orders.map((order) {
-                            return Text("${order.productName} x ${order.quantity}");
+                            // Handle null unit by providing a default empty string
+                            final unit = order.unit ?? '';
+                            final quantityText = unit.isNotEmpty
+                                ? "${order.productName} x ${order.quantity} $unit"
+                                : "${order.productName} x ${order.quantity}";
+
+                            return Text(quantityText);
                           }).toList(),
                         ),
                         const SizedBox(height: 20),
@@ -187,27 +201,30 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                           children: [
                             Text(
                               'To Pay: ₹${orders.first.overallTotal}',
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             Row(
                               children: [
                                 Text(
                                   getOrderStatusText(orders.first.status),
                                   style: TextStyle(
-                                    color: getOrderStatusColor(orders.first.status),
+                                    color: getOrderStatusColor(
+                                        orders.first.status),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(width: 4.0),
                                 Icon(
                                   getOrderStatusIcon(orders.first.status),
-                                  color: getOrderStatusColor(orders.first.status),
+                                  color:
+                                  getOrderStatusColor(orders.first.status),
                                   size: 18,
                                 ),
                                 const Icon(
-                                  Icons.arrow_forward_ios, // Use an arrow icon here
-                                  color: Color(0xff666666), // Adjust the color as needed
-                                  size: 18, // Adjust the size as needed
+                                  Icons.arrow_forward_ios,
+                                  color: Color(0xff666666),
+                                  size: 18,
                                 ),
                               ],
                             ),

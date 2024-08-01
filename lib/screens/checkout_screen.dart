@@ -434,6 +434,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           productName: item.itemName,//- ${item.itemUnit}
                                                           productImage: item.itemImage,
                                                           quantity: item.qnt,
+                                                          unit:  item.itemUnit,
                                                           price: item.itemPrice.toDouble(),
                                                           address: addressProvider.selectedAddress,
                                                           phone: authProvider.phone,
@@ -490,6 +491,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           productName: item.itemName,//- ${item.itemUnit}
                                                           productImage: item.itemImage,
                                                           quantity: item.qnt,
+                                                          unit : item.itemUnit,
                                                           price: item.itemPrice.toDouble(),
                                                           address: addressProvider.selectedAddress,
                                                           phone: authProvider.phone,

@@ -11,6 +11,7 @@ class Order {
   final String productImage;
   final int quantity;
   final double price;
+  final String unit;
   final double overallTotal;
   final String paymentMode;
   final String address;
@@ -25,6 +26,7 @@ class Order {
     required this.productName,
     required this.productImage,
     required this.quantity,
+    required this.unit,
     required this.price,
     required this.paymentMode,
     required this.address,
@@ -47,6 +49,7 @@ class Order {
       productName: productName,
       productImage: productImage,
       quantity: quantity,
+      unit : unit,
       price: price,
       paymentMode: paymentMode,
       address: address,
@@ -79,19 +82,20 @@ class Order {
 
   factory Order.fromMap(Map<String, dynamic> map) {
     return Order(
-      orderId: map['orderId'],
-      productName: map['productName'],
-      productImage: map['productImage'],
-      quantity: map['quantity'],
-      price: map['price'],
-      paymentMode: map['paymentMode'],
-      address: map['address'],
-      status: map['status'],
-      phone: map['phone'],
-      overallTotal: map['overallTotal'],
-      timestamp: DateTime.parse(map['timestamp']),
-      valetName: map['valetName'],
-      valetPhone: map['valetPhone'],
+      orderId: map['orderId'] ?? '',
+      productName: map['productName'] ?? '',
+      productImage: map['productImage'] ?? '',
+      quantity: map['quantity'] ?? 0,
+      unit: map['unit'] ?? 'N/A', // Provide a default value
+      price: map['price'] ?? 0.0,
+      paymentMode: map['paymentMode'] ?? '',
+      address: map['address'] ?? '',
+      status: map['status'] ?? 0,
+      phone: map['phone'] ?? '',
+      overallTotal: map['overallTotal'] ?? 0.0,
+      timestamp: DateTime.parse(map['timestamp'] ?? DateTime.now().toIso8601String()),
+      valetName: map['valetName'] ?? '',
+      valetPhone: map['valetPhone'] ?? '',
     );
   }
 }
@@ -113,6 +117,7 @@ class OrderProvider with ChangeNotifier {
     fetchOrders();
     _updateDeliveryCharge();
   }
+
   Future<String?> fetchCategoryName(String productName) async {
     try {
       // Step 1: Get product document with matching product name
@@ -211,6 +216,7 @@ class OrderProvider with ChangeNotifier {
             'productImage': order.productImage,
             'quantity': order.quantity,
             'price': order.price,
+            'unit':order.unit,
           };
         }).toList(),
       };
@@ -233,6 +239,7 @@ class OrderProvider with ChangeNotifier {
             'productImage': order.productImage,
             'quantity': order.quantity,
             'price': order.price,
+            'unit':order.unit,
           };
         }).toList(),
       };
@@ -252,24 +259,22 @@ class OrderProvider with ChangeNotifier {
       _orders = snapshot.docs.expand((doc) {
         final data = doc.data();
         List<dynamic> ordersData = data['orders'];
-        return ordersData
-            .map((orderData) => Order(
-                  orderId: data['orderId'],
-                  productName: orderData['productName'],
-                  productImage: orderData['productImage'],
-                  quantity: orderData['quantity'],
-                  price: orderData['price'],
-                  paymentMode: data['paymentMode'],
-                  address: data['address'],
-                  phone: data['phone'],
-                  // status: data['status'] ?? 0,
-                  status: data['status'] ?? 6,
-                  overallTotal: data['overallTotal'],
-                  timestamp: DateTime.parse(data['timestamp']),
-                  valetName: data['valetName'],
-                  valetPhone: data['valetPhone'],
-                ))
-            .toList();
+        return ordersData.map((orderData) => Order(
+          orderId: data['orderId'] ?? '',
+          productName: orderData['productName'] ?? '',
+          productImage: orderData['productImage'] ?? '',
+          quantity: orderData['quantity'] ?? 0,
+          unit: orderData['unit'] ?? 'N/A', // Provide a default value
+          price: orderData['price'] ?? 0.0,
+          paymentMode: data['paymentMode'] ?? '',
+          address: data['address'] ?? '',
+          phone: data['phone'] ?? '',
+          status: data['status'] ?? 6,
+          overallTotal: data['overallTotal'] ?? 0.0,
+          timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
+          valetName: data['valetName'] ?? '',
+          valetPhone: data['valetPhone'] ?? '',
+        )).toList();
       }).toList();
     }
 
@@ -283,25 +288,24 @@ class OrderProvider with ChangeNotifier {
       return snapshot.docs.expand((doc) {
         final data = doc.data();
         List<dynamic> ordersData = data['orders'];
-        return ordersData
-            .map((orderData) => Order(
-                  orderId: data['orderId'],
-                  productName: orderData['productName'],
-                  productImage: orderData['productImage'],
-                  quantity: orderData['quantity'],
-                  price: orderData['price'],
-                  paymentMode: data['paymentMode'],
-                  address: data['address'],
-                  phone: data['phone'],
-                  // status: data['status'] ?? 0,
-                  status: data['status'] ?? 6,
-                  overallTotal: data['overallTotal'],
-                  timestamp: DateTime.parse(data['timestamp']),
-                  valetName: data['valetName'],
-                  valetPhone: data['valetPhone'],
-                ))
-            .toList();
+        return ordersData.map((orderData) => Order(
+          orderId: data['orderId'] ?? '',
+          productName: orderData['productName'] ?? '',
+          productImage: orderData['productImage'] ?? '',
+          quantity: orderData['quantity'] ?? 0,
+          unit: orderData['unit'] ?? 'N/A', // Provide a default value
+          price: orderData['price'] ?? 0.0,
+          paymentMode: data['paymentMode'] ?? '',
+          address: data['address'] ?? '',
+          phone: data['phone'] ?? '',
+          status: data['status'] ?? 6,
+          overallTotal: data['overallTotal'] ?? 0.0,
+          timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
+          valetName: data['valetName'] ?? '',
+          valetPhone: data['valetPhone'] ?? '',
+        )).toList();
       }).toList();
+
     });
   }
 
