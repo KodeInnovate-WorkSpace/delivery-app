@@ -14,12 +14,10 @@ class OrderDetailsScreen extends StatefulWidget {
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
-  void initState() {
-    super.initState();
-    // Refresh the orders every time this screen is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<OrderProvider>(context, listen: false).fetchOrders();
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Refresh the orders every time this screen is displayed
+    Provider.of<OrderProvider>(context, listen: false).fetchOrders();
   }
 
   @override
