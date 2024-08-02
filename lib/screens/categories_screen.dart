@@ -41,7 +41,7 @@ class CategoryScreenState extends State<CategoryScreen> {
 
   Future<void> fetchProducts(int subCategoryId) async {
     try {
-      final productSnap = await FirebaseFirestore.instance.collection("products").get();
+      final productSnap = await FirebaseFirestore.instance.collection("product3").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
