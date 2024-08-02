@@ -9,7 +9,9 @@ class Product {
   final int subCatId;
   final int status;
   final bool isVeg;
-  final bool isFood; // New field
+  final bool isFood;
+  final bool isCustom;
+  final Map<String, Map<String, int>>? unitList;
 
   Product({
     required this.id,
@@ -22,7 +24,9 @@ class Product {
     required this.subCatId,
     required this.status,
     this.isVeg = false,
-    this.isFood = false, // Default value set to false
+    this.isFood = false,
+    this.isCustom = false,
+    this.unitList,
   });
 
   Map<String, dynamic> toJson() {
@@ -37,7 +41,9 @@ class Product {
       'sub_category_id': subCatId,
       'status': status,
       'isVeg': isVeg,
-      'isFood': isFood, // New field
+      'isFood': isFood,
+      'isCustom': isCustom,
+      'unitList': unitList,
     };
   }
 
@@ -47,13 +53,15 @@ class Product {
       name: json['name'],
       price: json['price'],
       mrp: json['mrp'],
-      image: json['image'] ?? '', // Handle missing image
+      image: json['image'] ?? '',
       stock: json['stock'],
       unit: json['unit'],
       subCatId: json['sub_category_id'],
       status: json['status'],
       isVeg: json['isVeg'] ?? false,
-      isFood: json['isFood'] ?? false, // Handle missing isFood field
+      isFood: json['isFood'] ?? false,
+      isCustom: json['isCustom'] ?? false,
+      unitList: json['unitList'] != null ? Map<String, Map<String, int>>.from(json['unitList']) : null,
     );
   }
 }

@@ -22,8 +22,8 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   final TextEditingController stockController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
   File? _image;
-  bool isVeg = false; // New field
-  bool isFood = false; // New field
+  bool isVeg = false;
+  bool isFood = false;
 
   int? dropdownValue = 1;
   final List<String> subCategoryNames = [];

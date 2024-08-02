@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../admin_model.dart';
 import '../order_details.dart';
 
@@ -14,7 +13,6 @@ class ManageValetScreen extends StatefulWidget {
 
 class _ManageValetScreenState extends State<ManageValetScreen> {
   late TableData src;
-
   String? selectedValet;
   String? selectedPaymentMethod;
   int? selectedStatus;
@@ -70,9 +68,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
       }
       if (selectedDate != null) {
         DateTime orderDate = DateTime.parse(order['timestamp']);
-        if (orderDate.year != selectedDate!.year ||
-            orderDate.month != selectedDate!.month ||
-            orderDate.day != selectedDate!.day) {
+        if (orderDate.year != selectedDate!.year || orderDate.month != selectedDate!.month || orderDate.day != selectedDate!.day) {
           return false;
         }
       }
@@ -91,45 +87,43 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
             child: src.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Total Orders: ${filteredData.length}',
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                _buildFilters(),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredData.length,
-                    itemBuilder: (context, index) {
-                      final data = filteredData[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  OrderDetailsScreen(orderId: data['orderId']),
-                            ),
-                          );
-                        },
-                        child: OrderDataRow(
-                          data: data,
-                          valetData: src.valetData,
-                          statusMessages: src.statusMessages,
-                          statusOptions: src.statusOptions,
-                          valetObj: src.valetObj,
-                          refreshCallback: _refreshPage,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Total Orders: ${filteredData.length}',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                      );
-                    },
+                      ),
+                      _buildFilters(),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: filteredData.length,
+                          itemBuilder: (context, index) {
+                            final data = filteredData[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OrderDetailsScreen(orderId: data['orderId']),
+                                  ),
+                                );
+                              },
+                              child: OrderDataRow(
+                                data: data,
+                                valetData: src.valetData,
+                                statusMessages: src.statusMessages,
+                                statusOptions: src.statusOptions,
+                                valetObj: src.valetObj,
+                                refreshCallback: _refreshPage,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
@@ -176,8 +170,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                       _filterData();
                     });
                   },
-                  items: <String>['Both', 'Online', 'Cash on delivery']
-                      .map<DropdownMenuItem<String>>((String value) {
+                  items: <String>['Both', 'Online', 'Cash on delivery'].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -236,9 +229,7 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: Text(
-                      selectedDate == null
-                          ? 'Select Date'
-                          : DateFormat('dd MMM yyyy').format(selectedDate!),
+                      selectedDate == null ? 'Select Date' : DateFormat('dd MMM yyyy').format(selectedDate!),
                     ),
                   ),
                 ),
@@ -366,10 +357,7 @@ class TableData extends ChangeNotifier {
   }
 
   Future<List<Map<String, dynamic>>> _fetchOrders() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('OrderHistory')
-        .orderBy('timestamp', descending: true)
-        .get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('OrderHistory').orderBy('timestamp', descending: true).get();
 
     return querySnapshot.docs.map((doc) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;

@@ -5,8 +5,9 @@ import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
+import '../models/product_model2.dart';
 import '../widget/sidebar.dart';
-import '../widget/network_handler.dart'; // Import NetworkHandler
+import '../widget/network_handler.dart';
 
 class CategoryScreen extends StatefulWidget {
   final double imageWidth;
@@ -29,7 +30,7 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class CategoryScreenState extends State<CategoryScreen> {
-  List<Product> products = [];
+  List<Product2> products = [];
   int? selectedSubCategoryId;
 
   @override
@@ -39,27 +40,53 @@ class CategoryScreenState extends State<CategoryScreen> {
     fetchProducts(selectedSubCategoryId!);
   }
 
+  // Future<void> fetchProducts(int subCategoryId) async {
+  //   try {
+  //     final productSnap = await FirebaseFirestore.instance.collection("product2").get();
+  //
+  //     if (productSnap.docs.isNotEmpty) {
+  //       setState(() {
+  //         products.clear();
+  //         for (var doc in productSnap.docs) {
+  //           final data = doc.data();
+  //           final product = Product(
+  //             id: data['id'] ?? 0,
+  //             name: data['name'] ?? '',
+  //             image: data['image'] ?? '',
+  //             unit: data['unit'] ?? '0',
+  //             price: data['price'] ?? 0,
+  //             mrp: data['mrp'] ?? 0,
+  //             stock: data['stock'] ?? 0,
+  //             subCatId: data['sub_category_id'] ?? 0,
+  //             status: data['status'],
+  //             isVeg: data['isVeg'] ?? false,
+  //           );
+  //
+  //           if (product.status == 1) {
+  //             products.add(product);
+  //           }
+  //         }
+  //         products = products.where((x) => x.subCatId == subCategoryId).toList();
+  //         log("Products: ${products.map((p) => p.name)}");
+  //       });
+  //     } else {
+  //       log("No Products Document Found!");
+  //     }
+  //   } catch (e) {
+  //     log("Error fetching products: $e");
+  //   }
+  // }
+
   Future<void> fetchProducts(int subCategoryId) async {
     try {
-      final productSnap = await FirebaseFirestore.instance.collection("products").get();
+      final productSnap = await FirebaseFirestore.instance.collection("product2").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
           products.clear();
           for (var doc in productSnap.docs) {
             final data = doc.data();
-            final product = Product(
-              id: data['id'] ?? 0,
-              name: data['name'] ?? '',
-              image: data['image'] ?? '',
-              unit: data['unit'] ?? '0',
-              price: data['price'] ?? 0,
-              mrp: data['mrp'] ?? 0,
-              stock: data['stock'] ?? 0,
-              subCatId: data['sub_category_id'] ?? 0,
-              status: data['status'],
-              isVeg: data['isVeg'] ?? false, // Handle the new field
-            );
+            final product = Product2.fromJson(data);
 
             if (product.status == 1) {
               products.add(product);

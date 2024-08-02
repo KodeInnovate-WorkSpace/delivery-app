@@ -79,6 +79,7 @@ class _SearchPageState extends State<SearchPage> {
             subCatId: doc['sub_category_id'],
             status: doc['status'],
             isVeg: doc.data().containsKey('isVeg') ? doc['isVeg'] as bool : false, // Check for field presence
+
           );
         }));
       }
