@@ -164,11 +164,9 @@ class _ProductCardState extends State<ProductCard> {
                                   height: MediaQuery.of(context).size.height / 22,
                                   child: AddToCartButton(
                                     productName: product.name,
-                                    // productPrice: selectedUnit != null ? product.items!.firstWhere((item) => item.unit == selectedUnit).price : product.mrp,
-                                    // productPrice: product.items!.firstWhere((item) => item.unit == selectedUnit).price,
-                                    productPrice: 20,
+                                    productPrice: selectedUnit != null ? product.items!.firstWhere((item) => item.unit == selectedUnit).price : product.items!.first.price,
                                     productImage: product.image,
-                                    productUnit: selectedUnit ?? "default",
+                                    productUnit: selectedUnit ?? product.items!.first.unit,
                                   ),
                                 ),
                               ],
