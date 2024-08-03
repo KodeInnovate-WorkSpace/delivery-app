@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/product_card.dart';
 import '../models/category_model.dart';
-import '../models/product_model.dart';
 import '../models/product_model2.dart';
 import '../widget/sidebar.dart';
 import '../widget/network_handler.dart';
