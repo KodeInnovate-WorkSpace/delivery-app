@@ -21,9 +21,11 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   final TextEditingController mrpController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
+  List<Map<String, dynamic>> customizableOptions = [];
   File? _image;
-  bool isVeg = false;
-  bool isFood = false;
+  bool isVeg = false; // New field
+  bool isFood = false; // New field
+  bool isCustomizable = false; // New field
 
   int? dropdownValue = 1;
   final List<String> subCategoryNames = [];
@@ -32,7 +34,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   int? selectedSubCategoryId;
 
   ProductModel product = ProductModel();
-  List<Map<String, dynamic>> productData = [];
+  List<Map<String, dynamic>> productDataList = [];
 
   bool isLoading = false;
 
@@ -81,12 +83,18 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<void> addNewProduct(BuildContext context) async {
     try {
+      // Validate customizable options if isCustomizable is true
+      if (isCustomizable && !validateCustomizableOptions()) {
+        showMessage("Please add at least one complete customizable option.");
+        return;
+      }
+
       // Fetch productData from Firestore
-      productData = await product.manageProducts();
+      productDataList = await product.manageProducts();
       notifyListeners();
 
       // Check if product already exists
-      final querySnapshot = await FirebaseFirestore.instance.collection('products').where('name', isEqualTo: nameController.text).get();
+      final querySnapshot = await FirebaseFirestore.instance.collection('product2').where('name', isEqualTo: nameController.text).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         showMessage("Product already exists");
@@ -95,12 +103,12 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       }
 
       // Calculate the new product ID
-      int newProductId = productData.length + 1;
+      int newProductId = productDataList.length + 1;
 
       // Check if the ID is already used
       bool isIdUsed = true;
       while (isIdUsed) {
-        final idCheckSnapshot = await FirebaseFirestore.instance.collection('products').where('id', isEqualTo: newProductId).get();
+        final idCheckSnapshot = await FirebaseFirestore.instance.collection('product2').where('id', isEqualTo: newProductId).get();
 
         if (idCheckSnapshot.docs.isEmpty) {
           isIdUsed = false;
@@ -111,28 +119,35 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       // Upload image and add product to Firestore
       String imageUrl = '';
-      // if (!isFood) {
       imageUrl = await uploadImage(_image!);
-      // }
 
-      final productDoc = FirebaseFirestore.instance.collection('products').doc();
+      final productDoc = FirebaseFirestore.instance.collection('product2').doc();
 
-      await productDoc.set({
+      final newProductData = {
         'id': newProductId,
         'image': imageUrl,
         'name': nameController.text,
-        'price': int.parse(priceController.text),
-        'mrp': int.parse(mrpController.text),
         'status': dropdownValue,
         'stock': int.parse(stockController.text),
         'sub_category_id': selectedSubCategoryId,
-        'unit': unitController.text,
         'isVeg': isVeg, // New field
         'isFood': isFood, // New field
-      });
+        'isCustom': isCustomizable, // New field
+        'item': isCustomizable ? customizableOptions : [],
+      };
+
+      // Conditionally add price, mrp, and unit fields if not customizable
+      if (!isCustomizable) {
+        newProductData['price'] = int.parse(priceController.text);
+        newProductData['mrp'] = int.parse(mrpController.text);
+        newProductData['unit'] = unitController.text;
+      }
+
+      await productDoc.set(newProductData);
 
       showMessage("Product added to database");
       log("Product added successfully");
+      Navigator.pop(context);
     } catch (e) {
       showMessage("Error adding Product: $e");
       log("Error adding Product: $e");
@@ -171,6 +186,20 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
     }
   }
 
+  void addCustomizableOption() {
+    customizableOptions.add({'price': 0, 'mrp': 0, 'unit': ''});
+    setState(() {});
+  }
+
+  void removeCustomizableOption(int index) {
+    customizableOptions.removeAt(index);
+    setState(() {});
+  }
+
+  bool validateCustomizableOptions() {
+    return customizableOptions.any((option) => option['price'] != null && option['mrp'] != null && option['unit'] != '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,349 +212,174 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Enter name of product
-              SizedBox(
-                width: 250,
-                child: TextFormField(
-                  controller: nameController,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Name',
-                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.drive_file_rename_outline),
-                  ),
-                ),
-              ),
+              buildTextFormField(nameController, "Enter Name", Icons.drive_file_rename_outline, TextInputType.text),
               const SizedBox(height: 20),
-
-              // Enter Price
-              SizedBox(
-                width: 250,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: priceController,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    hintText: 'Enter product price',
-                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.currency_rupee),
-                  ),
-                ),
-              ),
+              if (!isCustomizable) buildTextFormField(priceController, "Enter product price", Icons.currency_rupee, TextInputType.number),
               const SizedBox(height: 20),
-
-              // Enter MRP
-              SizedBox(
-                width: 250,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: mrpController,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    hintText: 'Enter product mrp',
-                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.price_change),
-                  ),
-                ),
-              ),
+              if (!isCustomizable) buildTextFormField(mrpController, "Enter product mrp", Icons.currency_rupee, TextInputType.number),
               const SizedBox(height: 20),
-
-              // Enter available stock
-              SizedBox(
-                width: 250,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: stockController,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Available Stock',
-                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.inventory),
-                  ),
-                ),
-              ),
+              buildTextFormField(stockController, "Enter product stock", Icons.confirmation_number_outlined, TextInputType.number),
               const SizedBox(height: 20),
-
-              // Enter unit of a product
-              SizedBox(
-                width: 250,
-                child: TextFormField(
-                  controller: unitController,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Unit Eg: 100g, 5 L',
-                    hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.production_quantity_limits),
-                  ),
-                ),
-              ),
+              if (!isCustomizable) buildTextFormField(unitController, "Enter Unit", Icons.ad_units_outlined, TextInputType.text),
               const SizedBox(height: 20),
-
-              // Select Image
-              // if (!isFood)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // select image from camera
-                  ElevatedButton(
-                    onPressed: openCamera,
-                    style: ButtonStyle(
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          return Colors.black;
-                        },
-                      ),
-                    ),
-                    child: const Text(
-                      "Open Camera",
-                      style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  // select image from gallery
-                  ElevatedButton(
-                    onPressed: pickImage,
-                    style: ButtonStyle(
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          return Colors.black;
-                        },
-                      ),
-                    ),
-                    child: const Text(
-                      "Pick Image",
-                      style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
-                    ),
-                  ),
-                ],
-              ),
-              // if (!isFood)
-              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
-              const SizedBox(height: 20),
-
-              // Status
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Status: "),
-                  DropdownButton<int>(
-                    value: dropdownValue,
-                    onChanged: (int? value) {
-                      setState(() {
-                        dropdownValue = value;
-                      });
-
-                      log("Status: ${value.toString()}");
-                      value == 1 ? log("Enabled") : log("Disabled");
-                    },
-                    items: const [
-                      DropdownMenuItem(value: 1, child: Text("Enable")),
-                      DropdownMenuItem(value: 0, child: Text("Disable")),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Select Sub-Category
-              const Text("Sub-Category: "),
-              DropdownButton<String>(
-                value: selectedSubCategoryName,
-                onChanged: (String? newValue) {
+              buildDropdownFormField(
+                "Choose Status",
+                dropdownValue,
+                [const DropdownMenuItem(value: 1, child: Text('Active')), const DropdownMenuItem(value: 2, child: Text('Inactive'))],
+                (int? newValue) {
                   setState(() {
-                    selectedSubCategoryName = newValue!;
-                    selectedSubCategoryId = subCategoryMap[selectedSubCategoryName]!;
+                    dropdownValue = newValue;
                   });
                 },
-                items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
+              ),
+              const SizedBox(height: 20),
+              buildDropdownFormField(
+                "Choose Sub-Category",
+                selectedSubCategoryName,
+                subCategoryNames.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
-                    value: subcat,
-                    child: Text(subcat.toString()),
+                    value: value,
+                    child: Text(value),
                   );
                 }).toList(),
-                hint: const Text("Select a sub-category"),
+                (String? newValue) {
+                  setState(() {
+                    selectedSubCategoryName = newValue;
+                    selectedSubCategoryId = subCategoryMap[selectedSubCategoryName!]!;
+                  });
+                },
               ),
               const SizedBox(height: 20),
-
-              // Is Veg Slider
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Is Veg: "),
-                  Switch(
-                    value: isVeg,
-                    onChanged: (value) {
-                      setState(() {
-                        isVeg = value;
-                      });
-                    },
-                    activeColor: Colors.green,
-                    inactiveThumbColor: Colors.red,
-                  ),
-                ],
+              ElevatedButton(
+                onPressed: pickImage,
+                child: const Text('Add Image'),
               ),
               const SizedBox(height: 20),
-
-              // Is Food Slider
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Is Food: "),
-                  Switch(
-                    value: isFood,
-                    onChanged: (value) {
-                      setState(() {
-                        isFood = value;
-                        // if (isFood) {
-                        //   _image = null;
-                        // }
-                      });
-                    },
-                    activeColor: Colors.green,
-                    inactiveThumbColor: Colors.red,
-                  ),
-                ],
-              ),
+              _image == null ? const Text('No image selected.') : Image.file(_image!, height: 200),
               const SizedBox(height: 20),
-
-              Center(
-                child: ElevatedButton(
-                  onPressed: isLoading
-                      ? null
-                      : () async {
-                          if (nameController.text.isEmpty || (!isFood && _image == null) || selectedSubCategoryName == null) {
-                            showMessage("Please fill necessary details");
-                            log("Please fill all the fields");
-
-                            setState(() {
-                              isLoading = false;
-                            });
-
-                            return;
-                          }
-
-                          setState(() {
-                            isLoading = true;
-                          });
-
-                          await addNewProduct(context);
-
-                          setState(() {
-                            isLoading = false;
-                          });
-
-                          Navigator.pop(context, true);
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    textStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        )
-                      : const Text(
-                          "Add",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Gilroy-Bold',
-                          ),
+              buildSwitchTile("Is Veg?", isVeg, (bool value) {
+                setState(() {
+                  isVeg = value;
+                });
+              }),
+              buildSwitchTile("Is Food?", isFood, (bool value) {
+                setState(() {
+                  isFood = value;
+                });
+              }),
+              buildSwitchTile("Is Customizable?", isCustomizable, (bool value) {
+                setState(() {
+                  isCustomizable = value;
+                });
+              }),
+              if (isCustomizable) ...[
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: customizableOptions.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        buildTextFormField(
+                          TextEditingController(text: customizableOptions[index]['price'].toString()),
+                          "Enter option price",
+                          Icons.currency_rupee,
+                          TextInputType.number,
+                          onChanged: (value) {
+                            customizableOptions[index]['price'] = int.tryParse(value) ?? 0;
+                          },
                         ),
+                        buildTextFormField(
+                          TextEditingController(text: customizableOptions[index]['mrp'].toString()),
+                          "Enter option MRP",
+                          Icons.currency_rupee,
+                          TextInputType.number,
+                          onChanged: (value) {
+                            customizableOptions[index]['mrp'] = int.tryParse(value) ?? 0;
+                          },
+                        ),
+                        buildTextFormField(
+                          TextEditingController(text: customizableOptions[index]['unit']),
+                          "Enter option unit",
+                          Icons.ad_units,
+                          TextInputType.text,
+                          onChanged: (value) {
+                            customizableOptions[index]['unit'] = value;
+                          },
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            removeCustomizableOption(index);
+                          },
+                          icon: const Icon(Icons.remove_circle, color: Colors.red),
+                        ),
+                      ],
+                    );
+                  },
                 ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: addCustomizableOption,
+                  child: const Text('Add Customizable Option'),
+                ),
+              ],
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  addNewProduct(context);
+                },
+                child: const Text('Add New Product'),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildTextFormField(
+    TextEditingController controller,
+    String hintText,
+    IconData icon,
+    TextInputType inputType, {
+    ValueChanged<String>? onChanged,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: Icon(icon),
+      ),
+      keyboardType: inputType,
+      onChanged: onChanged,
+    );
+  }
+
+  Widget buildDropdownFormField<T>(
+    String hintText,
+    T? value,
+    List<DropdownMenuItem<T>> items,
+    ValueChanged<T?> onChanged,
+  ) {
+    return DropdownButtonFormField<T>(
+      value: value,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: const Icon(Icons.arrow_drop_down),
+      ),
+      items: items,
+      onChanged: onChanged,
+    );
+  }
+
+  Widget buildSwitchTile(
+    String title,
+    bool value,
+    ValueChanged<bool> onChanged,
+  ) {
+    return SwitchListTile(
+      title: Text(title),
+      value: value,
+      onChanged: onChanged,
     );
   }
 }
