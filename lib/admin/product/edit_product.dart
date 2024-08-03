@@ -83,6 +83,12 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
   Future<void> addNewProduct(BuildContext context) async {
     try {
+      // Validate customizable options if isCustomizable is true
+      if (isCustomizable && !validateCustomizableOptions()) {
+        showMessage("Please add at least one complete customizable option.");
+        return;
+      }
+
       // Fetch productData from Firestore
       productData = await product.manageProducts();
       notifyListeners();
@@ -113,9 +119,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       // Upload image and add product to Firestore
       String imageUrl = '';
-      // if (!isFood) {
       imageUrl = await uploadImage(_image!);
-      // }
 
       final productDoc = FirebaseFirestore.instance.collection('product3').doc();
 
@@ -123,12 +127,12 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
         'id': newProductId,
         'image': imageUrl,
         'name': nameController.text,
-        'price': isCustomizable ? null : int.parse(priceController.text),
-        'mrp': isCustomizable ? null : int.parse(mrpController.text),
+        'price': isCustomizable ? 45 : int.parse(priceController.text),
+        'mrp': isCustomizable ? 50 : int.parse(mrpController.text),
         'status': dropdownValue,
         'stock': int.parse(stockController.text),
         'sub_category_id': selectedSubCategoryId,
-        'unit': isCustomizable ? null : unitController.text,
+        'unit': isCustomizable ? "Demo g" : unitController.text,
         'isVeg': isVeg, // New field
         'isFood': isFood, // New field
         'isCustomizable': isCustomizable, // New field
@@ -137,6 +141,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       showMessage("Product added to database");
       log("Product added successfully");
+      Navigator.pop(context);
     } catch (e) {
       showMessage("Error adding Product: $e");
       log("Error adding Product: $e");
@@ -176,13 +181,18 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   }
 
   void addCustomizableOption() {
-    customizableOptions.add({'price': '', 'mrp': '', 'unit': ''});
+    customizableOptions.add({'price': 0, 'mrp': 0, 'unit': ''});
     setState(() {});
   }
 
   void removeCustomizableOption(int index) {
     customizableOptions.removeAt(index);
     setState(() {});
+  }
+
+  bool validateCustomizableOptions() {
+    return customizableOptions.any((option) =>
+    option['price'] != null && option['mrp'] != null && option['unit'] != '');
   }
 
   @override
@@ -199,31 +209,43 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
             children: [
               buildTextFormField(nameController, "Enter Name", Icons.drive_file_rename_outline, TextInputType.text),
               const SizedBox(height: 20),
-              if (!isCustomizable) buildTextFormField(priceController, "Enter product price", Icons.currency_rupee, TextInputType.number),
+              if (!isCustomizable)
+                buildTextFormField(priceController, "Enter product price", Icons.currency_rupee, TextInputType.number),
               const SizedBox(height: 20),
-              if (!isCustomizable) buildTextFormField(mrpController, "Enter product mrp", Icons.currency_rupee, TextInputType.number),
+              if (!isCustomizable)
+                buildTextFormField(mrpController, "Enter product mrp", Icons.currency_rupee, TextInputType.number),
               const SizedBox(height: 20),
               buildTextFormField(stockController, "Enter product stock", Icons.confirmation_number_outlined, TextInputType.number),
               const SizedBox(height: 20),
               if (!isCustomizable) buildTextFormField(unitController, "Enter Unit", Icons.ad_units_outlined, TextInputType.text),
               const SizedBox(height: 20),
-              buildDropdownFormField("Choose Status", dropdownValue, [DropdownMenuItem(value: 1, child: Text('Active')), DropdownMenuItem(value: 2, child: Text('Inactive'))], (int? newValue) {
-                setState(() {
-                  dropdownValue = newValue;
-                });
-              }),
+              buildDropdownFormField(
+                "Choose Status",
+                dropdownValue,
+                [DropdownMenuItem(value: 1, child: Text('Active')), DropdownMenuItem(value: 2, child: Text('Inactive'))],
+                    (int? newValue) {
+                  setState(() {
+                    dropdownValue = newValue;
+                  });
+                },
+              ),
               const SizedBox(height: 20),
-              buildDropdownFormField("Choose Sub-Category", selectedSubCategoryName, subCategoryNames.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(), (String? newValue) {
-                setState(() {
-                  selectedSubCategoryName = newValue;
-                  selectedSubCategoryId = subCategoryMap[selectedSubCategoryName!]!;
-                });
-              }),
+              buildDropdownFormField(
+                "Choose Sub-Category",
+                selectedSubCategoryName,
+                subCategoryNames.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                    (String? newValue) {
+                  setState(() {
+                    selectedSubCategoryName = newValue;
+                    selectedSubCategoryId = subCategoryMap[selectedSubCategoryName!]!;
+                  });
+                },
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: pickImage,
@@ -247,13 +269,62 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   isCustomizable = value;
                 });
               }),
-              if (isCustomizable) buildCustomizableOptions(),
-              if (isCustomizable) ElevatedButton(onPressed: addCustomizableOption, child: const Text('Add Customizable Option')),
+              if (isCustomizable) ...[
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: customizableOptions.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        buildTextFormField(
+                          TextEditingController(text: customizableOptions[index]['price'].toString()),
+                          "Enter option price",
+                          Icons.currency_rupee,
+                          TextInputType.number,
+                          onChanged: (value) {
+                            customizableOptions[index]['price'] = int.tryParse(value) ?? 0;
+                          },
+                        ),
+                        buildTextFormField(
+                          TextEditingController(text: customizableOptions[index]['mrp'].toString()),
+                          "Enter option MRP",
+                          Icons.currency_rupee,
+                          TextInputType.number,
+                          onChanged: (value) {
+                            customizableOptions[index]['mrp'] = int.tryParse(value) ?? 0;
+                          },
+                        ),
+                        buildTextFormField(
+                          TextEditingController(text: customizableOptions[index]['unit']),
+                          "Enter option unit",
+                          Icons.ad_units,
+                          TextInputType.text,
+                          onChanged: (value) {
+                            customizableOptions[index]['unit'] = value;
+                          },
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            removeCustomizableOption(index);
+                          },
+                          icon: Icon(Icons.remove_circle, color: Colors.red),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: addCustomizableOption,
+                  child: const Text('Add Customizable Option'),
+                ),
+              ],
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   addNewProduct(context);
                 },
-                child: const Text('Add Product'),
+                child: const Text('Add New Product'),
               ),
             ],
           ),
@@ -262,94 +333,49 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
     );
   }
 
-  TextFormField buildTextFormField(TextEditingController controller, String hintText, IconData icon, TextInputType keyboardType) {
+  Widget buildTextFormField(
+      TextEditingController controller,
+      String hintText,
+      IconData icon,
+      TextInputType inputType, {
+        ValueChanged<String>? onChanged,
+      }) {
     return TextFormField(
       controller: controller,
-      cursorColor: Colors.black,
-      keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.black),
-        prefixIcon: Icon(icon, color: Colors.black),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(color: Colors.black),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(color: Colors.black54),
-        ),
+        prefixIcon: Icon(icon),
       ),
+      keyboardType: inputType,
+      onChanged: onChanged,
     );
   }
 
-  DropdownButtonFormField<T> buildDropdownFormField<T>(String hintText, T? value, List<DropdownMenuItem<T>> items, ValueChanged<T?> onChanged) {
+  Widget buildDropdownFormField<T>(
+      String hintText,
+      T? value,
+      List<DropdownMenuItem<T>> items,
+      ValueChanged<T?> onChanged,
+      ) {
     return DropdownButtonFormField<T>(
       value: value,
       decoration: InputDecoration(
-        labelText: hintText,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
+        hintText: hintText,
+        prefixIcon: Icon(Icons.arrow_drop_down),
       ),
       items: items,
       onChanged: onChanged,
     );
   }
 
-  SwitchListTile buildSwitchTile(String title, bool value, ValueChanged<bool> onChanged) {
+  Widget buildSwitchTile(
+      String title,
+      bool value,
+      ValueChanged<bool> onChanged,
+      ) {
     return SwitchListTile(
       title: Text(title),
       value: value,
-      onChanged: onChanged,
-    );
-  }
-
-  Column buildCustomizableOptions() {
-    return Column(
-      children: [
-        for (int i = 0; i < customizableOptions.length; i++)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  buildTextFormFieldForCustomizableOption("Enter Customizable Price", Icons.currency_rupee, TextInputType.number, (value) {
-                    customizableOptions[i]['price'] = value;
-                  }),
-                  buildTextFormFieldForCustomizableOption("Enter Customizable Mrp", Icons.currency_rupee, TextInputType.number, (value) {
-                    customizableOptions[i]['mrp'] = value;
-                  }),
-                  buildTextFormFieldForCustomizableOption("Enter Customizable Unit", Icons.ad_units_outlined, TextInputType.text, (value) {
-                    customizableOptions[i]['unit'] = value;
-                  }),
-                  ElevatedButton(onPressed: () => removeCustomizableOption(i), child: const Text('Remove Option')),
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  TextFormField buildTextFormFieldForCustomizableOption(String hintText, IconData icon, TextInputType keyboardType, ValueChanged<String?> onChanged) {
-    return TextFormField(
-      cursorColor: Colors.black,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.black),
-        prefixIcon: Icon(icon, color: Colors.black),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(color: Colors.black),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(color: Colors.black54),
-        ),
-      ),
       onChanged: onChanged,
     );
   }
