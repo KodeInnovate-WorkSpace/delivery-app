@@ -474,13 +474,10 @@ class HomeScreenState extends State<HomeScreen> {
                                                           borderRadius: BorderRadius.all(Radius.circular(10)),
                                                         ),
                                                         child: Padding(
-                                                          padding: const EdgeInsets.all(8.0),
+                                                          padding: const EdgeInsets.all(4.0),
                                                           child: CachedNetworkImage(
-                                                            // height: 60,
                                                             height: 80,
-                                                            // fit: BoxFit.fill,
                                                             imageUrl: subCategory.img,
-                                                            // placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
                                                             errorWidget: (context, url, error) => const Icon(Icons.error),
                                                           ),
                                                         ),
@@ -513,7 +510,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           //See all button
                                           Positioned(
                                               left: 0,
-                                              right: -265,
+                                              right: -285,
                                               top: -10,
                                               child: TextButton(
                                                 onPressed: () {
@@ -559,19 +556,4 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // Widget _buildShimmerContainer({required double width, required double height, double borderRadius = 5}) {
-  //   return Shimmer.fromColors(
-  //     baseColor: Colors.grey[300]!,
-  //     highlightColor: Colors.grey[100]!,
-  //     child: Container(
-  //       width: width,
-  //       height: height,
-  //       decoration: BoxDecoration(
-  //         color: Colors.grey[300],
-  //         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
