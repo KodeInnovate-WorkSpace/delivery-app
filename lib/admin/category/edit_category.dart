@@ -13,86 +13,23 @@ class EditCategory extends StatefulWidget {
 }
 
 class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
-  int? dropdownValue = 1;
-  final List<int> categories = [];
-  int? selectedCategory;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priorityController = TextEditingController();
-
-  CatModel category = CatModel();
-
-  // list to store fetched categories
+  int? dropdownValue = 1;
   List<Map<String, dynamic>> catData = [];
   bool isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchCategory();
-  }
-
-  Future<void> fetchCategory() async {
+  Future<void> addCategory(BuildContext context) async {
     try {
-      final snapshot = await FirebaseFirestore.instance.collection("category").get();
-
-      if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          categories.clear();
-          for (var doc in snapshot.docs) {
-            final data = doc.data();
-            final category = Category(
-              id: data['category_id'],
-              name: data['category_name'],
-              status: data['status'],
-              priority: data['priority'], // Added priority field
-            );
-
-            if (category.status == 1) {
-              categories.add(category.id);
-            }
-          }
-
-          if (categories.isNotEmpty) {
-            selectedCategory = categories.first;
-            fetchCategoryDetails(selectedCategory!);
-          }
-        });
-      } else {
-        log("No Category Document Found!");
-      }
-    } catch (e) {
-      log("Error fetching category: $e");
-    }
-  }
-
-  Future<void> fetchCategoryDetails(int categoryId) async {
-    try {
-      final doc = await FirebaseFirestore.instance.collection("category").doc(categoryId.toString()).get();
-      if (doc.exists) {
-        final data = doc.data();
-        setState(() {
-          nameController.text = data!['category_name'];
-          priorityController.text = data['priority'].toString();
-          dropdownValue = data['status'];
-        });
-      } else {
-        log("Category details not found for ID: $categoryId");
-      }
-    } catch (e) {
-      log("Error fetching category details: $e");
-    }
-  }
-
-  Future<void> addOrUpdateCategory(BuildContext context) async {
-    try {
-      // Fetch catData from Firestore
-      catData = await category.manageCategories();
+      // Fetch existing categories to determine the new category ID
+      final snapshot = await FirebaseFirestore.instance.collection('category').get();
+      catData = snapshot.docs.map((doc) => doc.data()).toList();
       notifyListeners();
 
       // Check if category already exists
       final querySnapshot = await FirebaseFirestore.instance.collection('category').where('category_name', isEqualTo: nameController.text).get();
 
-      if (querySnapshot.docs.isNotEmpty && querySnapshot.docs.first.id != selectedCategory.toString()) {
+      if (querySnapshot.docs.isNotEmpty) {
         showMessage("Category already exists");
         log("Category already exists");
         return;
@@ -113,39 +50,41 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
         }
       }
 
-      // Update existing category in Firestore
-      final catDoc = FirebaseFirestore.instance.collection('category').doc(selectedCategory.toString());
-      await catDoc.set({
+      // Add new category to Firestore
+      await FirebaseFirestore.instance.collection('category').doc(newCategoryId.toString()).set({
         'category_id': newCategoryId,
         'category_name': nameController.text,
         'status': dropdownValue,
         'priority': int.parse(priorityController.text),
       });
 
-      showMessage("Category updated successfully");
-      log("Category updated successfully");
+      showMessage("Category added successfully");
+      log("Category added successfully");
     } catch (e) {
-      showMessage("Error updating category: $e");
-      log("Error updating category: $e");
+      showMessage("Error adding category: $e");
+      log("Error adding category: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add new category"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //Name
+            // Name
             SizedBox(
               width: 250,
               child: TextFormField(
                 controller: nameController,
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
-                  hintText: 'Enter Name',
+                  hintText: 'Enter Category',
                   hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
@@ -167,7 +106,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
-            //Priority
+            // Priority
             SizedBox(
               width: 250,
               child: TextFormField(
@@ -197,7 +136,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
-            //Status
+            // Status
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -221,7 +160,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
             ),
             const SizedBox(height: 20),
 
-            //Add Button
+            // Add Button
             Center(
               child: ElevatedButton(
                 onPressed: isLoading
@@ -242,7 +181,7 @@ class _EditCategoryState extends State<EditCategory> with ChangeNotifier {
                     isLoading = true;
                   });
 
-                  await addOrUpdateCategory(context);
+                  await addCategory(context);
 
                   setState(() {
                     isLoading = false;
