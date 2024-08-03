@@ -1,9 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../models/category_model.dart';
 import '../../shared/show_msg.dart';
-import '../admin_model.dart';
 
 class EditCategory extends StatefulWidget {
   const EditCategory({super.key});

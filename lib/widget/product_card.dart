@@ -6,7 +6,7 @@ import 'add_to_cart_button.dart';
 class ProductCard extends StatefulWidget {
   final List<Product2> productList;
 
-  ProductCard({super.key, required this.productList});
+  const ProductCard({super.key, required this.productList});
 
   @override
   State<ProductCard> createState() => _ProductCardState();

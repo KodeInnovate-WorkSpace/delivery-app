@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
 import '../providers/auth_provider.dart';
@@ -45,7 +44,7 @@ class _EmailScreenState extends State<EmailScreen> {
               backgroundColor: const Color(0xfff7f7f7),
               surfaceTintColor: Colors.transparent,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Restart.restartApp();
                 },
@@ -91,22 +90,22 @@ class _EmailScreenState extends State<EmailScreen> {
                               keyboardType: TextInputType.emailAddress,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: isEmailValid
                                 ? () async => await _onVerifyPressed()
                                 : null,
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14.0),
                                 ),
                               ),
-                              backgroundColor: MaterialStateProperty
+                              backgroundColor: WidgetStateProperty
                                   .resolveWith<Color>(
-                                    (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.disabled)) {
+                                    (Set<WidgetState> states) {
+                                  if (states.contains(WidgetState.disabled)) {
                                     return Colors.black.withOpacity(0.3);
                                   }
                                   return Colors.black;
@@ -114,7 +113,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               ),
                             ),
                             child: isLoading
-                                ? SizedBox(
+                                ? const SizedBox(
                               width: 250,
                               height: 50.0,
                               child: Center(
@@ -123,7 +122,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                 ),
                               ),
                             )
-                                : SizedBox(
+                                : const SizedBox(
                               width: 250,
                               height: 50.0,
                               child: Center(
@@ -137,7 +136,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           termsPrivacyLine(),
                         ],
                       ),

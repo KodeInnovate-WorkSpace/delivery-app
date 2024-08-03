@@ -35,8 +35,9 @@ class _CartButtonState extends State<CartButton> {
                 onPressed: () {
                   HapticFeedback.vibrate();
 
-                 checkAppMaintenanceStatus(context);
+                  // checkAppMaintenanceStatus(context);
                   // Navigator.pushNamed(context, '/checkout');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const CheckoutScreen()));
                 },
                 backgroundColor: Colors.white,
                 child: const Icon(
@@ -64,6 +65,7 @@ class _CartButtonState extends State<CartButton> {
       ),
     );
   }
+
   Future<void> checkAppMaintenanceStatus(BuildContext context) async {
     try {
       // Get the specific number from MyAuthProvider
@@ -90,8 +92,7 @@ class _CartButtonState extends State<CartButton> {
             _showSnackBar("We're currently closed for a moment. Please try again in a few minutes. Thank you for your understanding!", Colors.red);
           }
           return;
-        }
-        else{
+        } else {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CheckoutScreen()),

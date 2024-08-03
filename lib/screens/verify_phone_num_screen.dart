@@ -41,7 +41,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
           backgroundColor: const Color(0xfff7f7f7),
           surfaceTintColor: Colors.transparent,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Restart.restartApp();
             },
