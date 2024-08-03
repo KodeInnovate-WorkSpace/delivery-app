@@ -34,7 +34,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
   int? selectedSubCategoryId;
 
   ProductModel product = ProductModel();
-  List<Map<String, dynamic>> productData = [];
+  List<Map<String, dynamic>> productDataList = [];
 
   bool isLoading = false;
 
@@ -90,7 +90,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       }
 
       // Fetch productData from Firestore
-      productData = await product.manageProducts();
+      productDataList = await product.manageProducts();
       notifyListeners();
 
       // Check if product already exists
@@ -103,7 +103,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
       }
 
       // Calculate the new product ID
-      int newProductId = productData.length + 1;
+      int newProductId = productDataList.length + 1;
 
       // Check if the ID is already used
       bool isIdUsed = true;
@@ -123,21 +123,27 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
 
       final productDoc = FirebaseFirestore.instance.collection('product3').doc();
 
-      await productDoc.set({
+      final newProductData = {
         'id': newProductId,
         'image': imageUrl,
         'name': nameController.text,
-        'price': isCustomizable ? 45 : int.parse(priceController.text),
-        'mrp': isCustomizable ? 50 : int.parse(mrpController.text),
         'status': dropdownValue,
         'stock': int.parse(stockController.text),
         'sub_category_id': selectedSubCategoryId,
-        'unit': isCustomizable ? "Demo g" : unitController.text,
         'isVeg': isVeg, // New field
         'isFood': isFood, // New field
         'isCustomizable': isCustomizable, // New field
         'customizableOptions': isCustomizable ? customizableOptions : [],
-      });
+      };
+
+      // Conditionally add price, mrp, and unit fields if not customizable
+      if (!isCustomizable) {
+        newProductData['price'] = int.parse(priceController.text);
+        newProductData['mrp'] = int.parse(mrpController.text);
+        newProductData['unit'] = unitController.text;
+      }
+
+      await productDoc.set(newProductData);
 
       showMessage("Product added to database");
       log("Product added successfully");
