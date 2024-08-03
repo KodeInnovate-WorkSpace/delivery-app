@@ -49,7 +49,6 @@ class MyAuthProvider with ChangeNotifier {
         textEmailController.text = prefs.getString('userEmail')?.substring(3) ?? '';
       } else {
         // User is not logged in, navigate to SignInScreen
-
       }
     });
   }

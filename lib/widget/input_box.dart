@@ -5,11 +5,7 @@ class InputBox extends StatefulWidget {
   final IconData myIcon;
   final TextEditingController myController;
 
-  const InputBox(
-      {super.key,
-        required this.hintText,
-        required this.myIcon,
-        required this.myController, required TextInputType keyboardType});
+  const InputBox({super.key, required this.hintText, required this.myIcon, required this.myController, required TextInputType keyboardType});
 
   @override
   State<InputBox> createState() => _InputBoxState();
@@ -25,8 +21,7 @@ class _InputBoxState extends State<InputBox> {
         cursorColor: Colors.black,
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: const TextStyle(
-              color: Colors.black, fontWeight: FontWeight.normal),
+          hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.0),
             borderSide: const BorderSide(color: Colors.black),

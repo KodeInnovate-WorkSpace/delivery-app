@@ -135,7 +135,7 @@ class _MyAppState extends State<MyAppState> {
 
   void _initAuthProvider() {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-    authProvider.retrievePhone(); // Initialize any necessary data for auth provider
+    authProvider.retrievePhone();
   }
 
   Future<void> checkForUpdate() async {

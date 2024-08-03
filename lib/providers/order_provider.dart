@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 
-
 class Order {
   final String orderId;
   final String productName;
@@ -49,7 +48,7 @@ class Order {
       productName: productName,
       productImage: productImage,
       quantity: quantity,
-      unit : unit,
+      unit: unit,
       price: price,
       paymentMode: paymentMode,
       address: address,
@@ -122,30 +121,21 @@ class OrderProvider with ChangeNotifier {
   Future<String?> fetchCategoryName(String productName) async {
     try {
       // Step 1: Get product document with matching product name
-      QuerySnapshot productSnapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .where('name', isEqualTo: productName)
-          .get();
+      QuerySnapshot productSnapshot = await FirebaseFirestore.instance.collection('products').where('name', isEqualTo: productName).get();
 
       if (productSnapshot.docs.isNotEmpty) {
         for (var productDoc in productSnapshot.docs) {
           int subCategoryId = productDoc['sub_category_id'];
 
           // Step 2: Get sub category document with matching sub_category_id
-          QuerySnapshot subCategorySnapshot = await FirebaseFirestore.instance
-              .collection('sub_category')
-              .where('sub_category_id', isEqualTo: subCategoryId)
-              .get();
+          QuerySnapshot subCategorySnapshot = await FirebaseFirestore.instance.collection('sub_category').where('sub_category_id', isEqualTo: subCategoryId).get();
 
           if (subCategorySnapshot.docs.isNotEmpty) {
             for (var subCategoryDoc in subCategorySnapshot.docs) {
               int categoryId = subCategoryDoc['category_id'];
 
               // Step 3: Get category document with matching category_id
-              QuerySnapshot categorySnapshot = await FirebaseFirestore.instance
-                  .collection('category')
-                  .where('category_id', isEqualTo: categoryId)
-                  .get();
+              QuerySnapshot categorySnapshot = await FirebaseFirestore.instance.collection('category').where('category_id', isEqualTo: categoryId).get();
 
               if (categorySnapshot.docs.isNotEmpty) {
                 for (var categoryDoc in categorySnapshot.docs) {
@@ -161,6 +151,7 @@ class OrderProvider with ChangeNotifier {
     }
     return null;
   }
+
   void _updateDeliveryCharge() async {
     bool isDeliveryFree = await _fetchDeliveryChargeStatus();
     // delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : 29;
@@ -217,7 +208,7 @@ class OrderProvider with ChangeNotifier {
             'productImage': order.productImage,
             'quantity': order.quantity,
             'price': order.price,
-            'unit':order.unit,
+            'unit': order.unit,
           };
         }).toList(),
       };
@@ -240,7 +231,7 @@ class OrderProvider with ChangeNotifier {
             'productImage': order.productImage,
             'quantity': order.quantity,
             'price': order.price,
-            'unit':order.unit,
+            'unit': order.unit,
           };
         }).toList(),
       };
@@ -260,22 +251,24 @@ class OrderProvider with ChangeNotifier {
       _orders = snapshot.docs.expand((doc) {
         final data = doc.data();
         List<dynamic> ordersData = data['orders'];
-        return ordersData.map((orderData) => Order(
-          orderId: data['orderId'] ?? '',
-          productName: orderData['productName'] ?? '',
-          productImage: orderData['productImage'] ?? '',
-          quantity: orderData['quantity'] ?? 0,
-          unit: orderData['unit'] ?? 'N/A', // Provide a default value
-          price: orderData['price'] ?? 0.0,
-          paymentMode: data['paymentMode'] ?? '',
-          address: data['address'] ?? '',
-          phone: data['phone'] ?? '',
-          status: data['status'] ?? 6,
-          overallTotal: data['overallTotal'] ?? 0.0,
-          timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
-          valetName: data['valetName'] ?? '',
-          valetPhone: data['valetPhone'] ?? '',
-        )).toList();
+        return ordersData
+            .map((orderData) => Order(
+                  orderId: data['orderId'] ?? '',
+                  productName: orderData['productName'] ?? '',
+                  productImage: orderData['productImage'] ?? '',
+                  quantity: orderData['quantity'] ?? 0,
+                  unit: orderData['unit'] ?? 'N/A', // Provide a default value
+                  price: orderData['price'] ?? 0.0,
+                  paymentMode: data['paymentMode'] ?? '',
+                  address: data['address'] ?? '',
+                  phone: data['phone'] ?? '',
+                  status: data['status'] ?? 6,
+                  overallTotal: data['overallTotal'] ?? 0.0,
+                  timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
+                  valetName: data['valetName'] ?? '',
+                  valetPhone: data['valetPhone'] ?? '',
+                ))
+            .toList();
       }).toList();
     }
 
@@ -289,24 +282,25 @@ class OrderProvider with ChangeNotifier {
       return snapshot.docs.expand((doc) {
         final data = doc.data();
         List<dynamic> ordersData = data['orders'];
-        return ordersData.map((orderData) => Order(
-          orderId: data['orderId'] ?? '',
-          productName: orderData['productName'] ?? '',
-          productImage: orderData['productImage'] ?? '',
-          quantity: orderData['quantity'] ?? 0,
-          unit: orderData['unit'] ?? 'N/A', // Provide a default value
-          price: orderData['price'] ?? 0.0,
-          paymentMode: data['paymentMode'] ?? '',
-          address: data['address'] ?? '',
-          phone: data['phone'] ?? '',
-          status: data['status'] ?? 6,
-          overallTotal: data['overallTotal'] ?? 0.0,
-          timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
-          valetName: data['valetName'] ?? '',
-          valetPhone: data['valetPhone'] ?? '',
-        )).toList();
+        return ordersData
+            .map((orderData) => Order(
+                  orderId: data['orderId'] ?? '',
+                  productName: orderData['productName'] ?? '',
+                  productImage: orderData['productImage'] ?? '',
+                  quantity: orderData['quantity'] ?? 0,
+                  unit: orderData['unit'] ?? 'N/A', // Provide a default value
+                  price: orderData['price'] ?? 0.0,
+                  paymentMode: data['paymentMode'] ?? '',
+                  address: data['address'] ?? '',
+                  phone: data['phone'] ?? '',
+                  status: data['status'] ?? 6,
+                  overallTotal: data['overallTotal'] ?? 0.0,
+                  timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
+                  valetName: data['valetName'] ?? '',
+                  valetPhone: data['valetPhone'] ?? '',
+                ))
+            .toList();
       }).toList();
-
     });
   }
 

@@ -148,7 +148,7 @@ class CheckUserProvider with ChangeNotifier {
   String? get userToken => _userToken;
 
   // Check if User Exists
-  Future<void> doesUserExists(String phone,BuildContext context) async {
+  Future<void> doesUserExists(String phone, BuildContext context) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
 
@@ -165,7 +165,7 @@ class CheckUserProvider with ChangeNotifier {
   }
 
   // Store or Update User Details
-  Future<void> storeDetail(BuildContext context, String field, String value,{String email =''}) async {
+  Future<void> storeDetail(BuildContext context, String field, String value, {String email = ''}) async {
     final authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     final checkUserProvider = Provider.of<CheckUserProvider>(context, listen: false);
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -175,37 +175,26 @@ class CheckUserProvider with ChangeNotifier {
       // Get today's date
       String todayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
       // Check if the user exists
-      await checkUserProvider.doesUserExists(authProvider.phone,context);
+      await checkUserProvider.doesUserExists(authProvider.phone, context);
       final token = await FirebaseMessaging.instance.getToken();
       //final token = await FirebaseMessaging.instance.getToken().then((token) async {});
       if (!checkUserProvider._isUserExist) {
         // Add new user data if user does not exist
-        await firestore.collection('users').add({
-          'id': const Uuid().v4(),
-          'phone': authProvider.phone,
-          field: value,
-          'fcmToken': token,
-          'date': todayDate,
-          'status': 1,
-          'name': '',
-          'type': 0,
-          'email': authProvider.email
-        });
+        await firestore.collection('users').add({'id': const Uuid().v4(), 'phone': authProvider.phone, field: value, 'fcmToken': token, 'date': todayDate, 'status': 1, 'name': '', 'type': 0, 'email': authProvider.email});
         log("New user added successfully");
       } else {
+        QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: authProvider.phone).get();
 
-          QuerySnapshot querySnapshot = await firestore.collection('users').where('phone', isEqualTo: authProvider.phone).get();
+        if (querySnapshot.docs.isNotEmpty) {
+          // Get the document ID of the user
+          String userDocId = querySnapshot.docs.first.id;
 
-          if (querySnapshot.docs.isNotEmpty) {
-            // Get the document ID of the user
-            String userDocId = querySnapshot.docs.first.id;
-
-            // Update the user details directly
-            await firestore.collection('users').doc(userDocId).update({
-              field: value,
-              'email': authProvider.email,
-            });
-          }
+          // Update the user details directly
+          await firestore.collection('users').doc(userDocId).update({
+            field: value,
+            'email': authProvider.email,
+          });
+        }
       }
     } catch (e) {
       log("Error: $e");

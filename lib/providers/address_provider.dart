@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/address_model.dart';
@@ -18,24 +17,10 @@ class AddressProvider with ChangeNotifier {
   }
 
   void addAddress(Address userAdd) async {
-    bool addressExists = _addressList.any((address) =>
-    address.flat == userAdd.flat &&
-        address.floor == userAdd.floor &&
-        address.building == userAdd.building &&
-        address.mylandmark == userAdd.mylandmark &&
-        address.phoneNumber == userAdd.phoneNumber &&
-        address.pincode == userAdd.pincode &&
-        address.area == userAdd.area); // Check for existing address
+    bool addressExists = _addressList.any((address) => address.flat == userAdd.flat && address.floor == userAdd.floor && address.building == userAdd.building && address.mylandmark == userAdd.mylandmark && address.phoneNumber == userAdd.phoneNumber && address.pincode == userAdd.pincode && address.area == userAdd.area); // Check for existing address
 
     if (addressExists) {
-      final index = _addressList.indexWhere((address) =>
-      address.flat == userAdd.flat &&
-          address.floor == userAdd.floor &&
-          address.building == userAdd.building &&
-          address.mylandmark == userAdd.mylandmark &&
-          address.phoneNumber == userAdd.phoneNumber &&
-          address.pincode == userAdd.pincode &&
-          address.area == userAdd.area);
+      final index = _addressList.indexWhere((address) => address.flat == userAdd.flat && address.floor == userAdd.floor && address.building == userAdd.building && address.mylandmark == userAdd.mylandmark && address.phoneNumber == userAdd.phoneNumber && address.pincode == userAdd.pincode && address.area == userAdd.area);
 
       _addressList[index] = userAdd;
       showMessage("Address Updated!");
@@ -47,13 +32,10 @@ class AddressProvider with ChangeNotifier {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('address_${userAdd.flat}', jsonAddress);
 
-      setSelectedAddress(
-          "${userAdd.flat}, ${userAdd.building}, ${userAdd.mylandmark},${userAdd.area}");
+      setSelectedAddress("${userAdd.flat}, ${userAdd.building}, ${userAdd.mylandmark},${userAdd.area}");
 
       showMessage("Address Saved!");
-      log("Address: ${_addressList.map((add) => {
-        "Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark} | Phone: ${add.phoneNumber} | Pincode: ${add.pincode} | Area: ${add.area}"
-      })}");
+      log("Address: ${_addressList.map((add) => {"Flat: ${add.flat}  | Floor: ${add.floor} | Landmark: ${add.mylandmark} | Phone: ${add.phoneNumber} | Pincode: ${add.pincode} | Area: ${add.area}"})}");
     }
     notifyListeners();
   }

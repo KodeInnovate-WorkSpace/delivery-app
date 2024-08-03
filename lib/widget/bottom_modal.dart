@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
@@ -22,8 +21,7 @@ class _BottomModalState extends State<BottomModal> {
 
     // default address
     if (addressProvider.address.isNotEmpty) {
-      _defaultAdd =
-          "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
+      _defaultAdd = "${addressProvider.address[0].flat}, ${addressProvider.address[0].building}, ${addressProvider.address[0].mylandmark}";
     }
 
     return Container(
@@ -59,12 +57,10 @@ class _BottomModalState extends State<BottomModal> {
                       return;
                     }
 
-                    Address? newAddress = await _showAddressSelectionDialog(
-                        context, addressProvider.address);
+                    Address? newAddress = await _showAddressSelectionDialog(context, addressProvider.address);
                     if (newAddress != null) {
                       setState(() {
-                        _defaultAdd =
-                            "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark}";
+                        _defaultAdd = "${newAddress.flat}, ${newAddress.building}, ${newAddress.mylandmark}";
                       });
                     }
                   },
@@ -103,7 +99,6 @@ class _BottomModalState extends State<BottomModal> {
                     Text("Bank Name")
                   ],
                 ),
-                Text("Button - Big one here!!!!!!!!!!!!!!!!!!!!! ")
               ],
             )
           ],
@@ -112,8 +107,7 @@ class _BottomModalState extends State<BottomModal> {
     );
   }
 
-  Future<Address?> _showAddressSelectionDialog(
-      BuildContext context, List<Address> addresses) async {
+  Future<Address?> _showAddressSelectionDialog(BuildContext context, List<Address> addresses) async {
     return showDialog<Address>(
       context: context,
       builder: (BuildContext context) {
@@ -128,8 +122,7 @@ class _BottomModalState extends State<BottomModal> {
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                        "${address.flat}, ${address.floor}, ${address.mylandmark}"),
+                    child: Text("${address.flat}, ${address.floor}, ${address.mylandmark}"),
                   ),
                 );
               }).toList(),

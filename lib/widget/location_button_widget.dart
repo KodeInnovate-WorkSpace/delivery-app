@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -124,11 +123,7 @@ class _LocationButtonState extends State<LocationButton> {
       String? postalCode = completeAddress!.split('-').last.trim();
 
       // Query Firestore to check for the postal code and status
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('location')
-          .where('postal_code', isEqualTo: int.tryParse(postalCode))
-          .where('status', isEqualTo: 1)
-          .get();
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('location').where('postal_code', isEqualTo: int.tryParse(postalCode)).where('status', isEqualTo: 1).get();
 
       if (snapshot.docs.isEmpty) {
         Navigator.push(
@@ -136,7 +131,7 @@ class _LocationButtonState extends State<LocationButton> {
           MaterialPageRoute(builder: (context) => const NotInLocationScreen()),
         );
       }
-        } catch (e) {
+    } catch (e) {
       log("$e");
       _showLocationErrorDialog(context);
     }

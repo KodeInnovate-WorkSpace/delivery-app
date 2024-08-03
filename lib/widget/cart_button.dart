@@ -24,7 +24,7 @@ class _CartButtonState extends State<CartButton> {
       right: 20,
       child: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
-          int itemCount = cartProvider.totalItemsCount(); // Assuming this method exists in CartProvider
+          int itemCount = cartProvider.totalItemsCount();
 
           return Stack(
             alignment: Alignment.topRight,
