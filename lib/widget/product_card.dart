@@ -165,8 +165,8 @@ class _ProductCardState extends State<ProductCard> {
                                   child: AddToCartButton(
                                     productName: product.name,
                                     // productPrice: selectedUnit != null ? product.items!.firstWhere((item) => item.unit == selectedUnit).price : product.mrp,
-                                    productPrice: product.items!.firstWhere((item) => item.unit == selectedUnit).price,
-                                    // productPrice: 20,
+                                    // productPrice: product.items!.firstWhere((item) => item.unit == selectedUnit).price,
+                                    productPrice: 20,
                                     productImage: product.image,
                                     productUnit: selectedUnit ?? "default",
                                   ),

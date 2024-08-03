@@ -346,7 +346,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                         ),
                       ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           return Colors.black;
                         },
                       ),
@@ -367,7 +367,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                         ),
                       ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           return Colors.black;
                         },
                       ),
@@ -380,9 +380,7 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                 ],
               ),
               // if (!isFood)
-              _image != null
-                  ? Image.file(_image!, height: 100, width: 100)
-                  : const Text("No image selected"),
+              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
               const SizedBox(height: 20),
 
               // Status
@@ -475,29 +473,29 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   onPressed: isLoading
                       ? null
                       : () async {
-                    if (nameController.text.isEmpty || (!isFood && _image == null) || selectedSubCategoryName == null) {
-                      showMessage("Please fill necessary details");
-                      log("Please fill all the fields");
+                          if (nameController.text.isEmpty || (!isFood && _image == null) || selectedSubCategoryName == null) {
+                            showMessage("Please fill necessary details");
+                            log("Please fill all the fields");
 
-                      setState(() {
-                        isLoading = false;
-                      });
+                            setState(() {
+                              isLoading = false;
+                            });
 
-                      return;
-                    }
+                            return;
+                          }
 
-                    setState(() {
-                      isLoading = true;
-                    });
+                          setState(() {
+                            isLoading = true;
+                          });
 
-                    await addNewProduct(context);
+                          await addNewProduct(context);
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    Navigator.pop(context, true);
-                  },
+                          Navigator.pop(context, true);
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -512,16 +510,16 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ),
                   child: isLoading
                       ? const CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  )
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        )
                       : const Text(
-                    "Add",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Gilroy-Bold',
-                    ),
-                  ),
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Gilroy-Bold',
+                          ),
+                        ),
                 ),
               ),
             ],

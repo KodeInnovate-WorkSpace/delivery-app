@@ -143,7 +143,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
                                 await userProvider.checkUserStatus(authProvider.textController.text);
                                 await userProvider.checkUserType(authProvider.phone);
-                                await userProvider.doesUserExists(authProvider.phone!, context);
+                                await userProvider.doesUserExists(authProvider.phone, context);
 
                                 if (userProvider.isUserExist) {
                                   _onVerifyPressed();

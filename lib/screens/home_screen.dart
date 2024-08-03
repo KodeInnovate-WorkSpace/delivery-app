@@ -162,27 +162,27 @@ class HomeScreenState extends State<HomeScreen> {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.getNotificationSettings();
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-       log('Notification permission already granted');
-     } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-       log('Provisional notification permission already granted');
-     } else {
-       // Request notification permission if not already granted
-       settings = await messaging.requestPermission(
-         alert: true,
-         badge: true,
-         sound: true,
-         provisional: false,
-       );
+      log('Notification permission already granted');
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      log('Provisional notification permission already granted');
+    } else {
+      // Request notification permission if not already granted
+      settings = await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        provisional: false,
+      );
 
-       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-         log('User granted permission');
-       } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-         log('User granted provisional permission');
-       } else {
-         log('User declined or has not accepted permission');
-       }
-     }
-   }
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        log('User granted permission');
+      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+        log('User granted provisional permission');
+      } else {
+        log('User declined or has not accepted permission');
+      }
+    }
+  }
 
   void showLocationDialog() {
     showDialog(
@@ -274,31 +274,43 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<bool> showExitDialog() async {
-    final initiateCartProvider = Provider.of<CartProvider>(
-        context, listen: false);
+    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
     return await showDialog(
-      context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: const Text("Exit App"),
-            content: const Text("Do you want to exit the app?"),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text(
+              "Exit App",
+              style: TextStyle(color: Colors.black, fontFamily: "Gilroy-Black"),
+            ),
+            content: const Text(
+              "Do you want to exit the app?",
+              style: TextStyle(color: Colors.black, fontFamily: "Gilroy-SemiBold"),
+            ),
+            backgroundColor: Colors.white,
             actions: <Widget>[
               TextButton(
-                child: const Text("No"),
-                onPressed: () {
-                  Navigator.of(context).pop(false); // Stay in the app
-                },
-              ),
+                  onPressed: () => Navigator.of(context).pop(false),
+                  style: ButtonStyle(
+                    overlayColor: WidgetStateProperty.all(Colors.red[900]),
+                  ),
+                  child: const Text(
+                    "No",
+                    style: TextStyle(color: Color(0xffEF4B4B), fontFamily: "Gilroy-Black"),
+                  )),
               TextButton(
-                child: const Text("Yes"),
+                child: const Text(
+                  "Yes",
+                  style: TextStyle(color: Colors.black, fontFamily: "Gilroy-Black"),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(true);
-                  initiateCartProvider.clearCart();// Exit the app
+                  initiateCartProvider.clearCart(); // Exit the app
                 },
               ),
             ],
           ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   @override
