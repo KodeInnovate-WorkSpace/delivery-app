@@ -4,12 +4,9 @@ import '../models/product_model2.dart';
 import 'add_to_cart_button.dart';
 
 class ProductCard extends StatefulWidget {
-  late List<Product2> productList = [];
+  final List<Product2> productList;
 
-  ProductCard({
-    super.key,
-    required this.productList,
-  });
+  ProductCard({super.key, required this.productList});
 
   @override
   State<ProductCard> createState() => _ProductCardState();
@@ -90,6 +87,8 @@ class _ProductCardState extends State<ProductCard> {
                 ),
                 itemBuilder: (context, index) {
                   final product = widget.productList[index];
+                  final defaultItem = product.items?.first;
+
                   return GestureDetector(
                     onTap: () {},
                     child: Card(
@@ -134,39 +133,22 @@ class _ProductCardState extends State<ProductCard> {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                if (product.isCustom && product.items != null) ...[
-                                  DropdownButton<String>(
-                                    value: selectedUnit,
-                                    hint: const Text("Select Variant"),
-                                    items: product.items!.map((item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item.unit,
-                                        child: Text(item.unit),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedUnit = newValue!;
-                                      });
-                                    },
+                                // Display default item details
+                                if (defaultItem != null) ...[
+                                  Text("MRP: ${defaultItem.mrp}"),
+                                  Text("Price: ${defaultItem.price}"),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height / 22,
+                                    child: AddToCartButton(
+                                      productName: product.name,
+                                      productPrice: defaultItem.price,
+                                      productImage: product.image,
+                                      productUnit: defaultItem.unit,
+                                      productItems: product.items,
+                                    ),
                                   ),
-                                  if (selectedUnit != null) ...[
-                                    Text("MRP: ${product.items!.firstWhere((item) => item.unit == selectedUnit).mrp}"),
-                                    Text("Price: ${product.items!.firstWhere((item) => item.unit == selectedUnit).price}"),
-                                  ],
-                                ] else ...[
-                                  Text("MRP: ${product.items?.map((item) => item.mrp)}"),
                                 ],
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height / 22,
-                                  child: AddToCartButton(
-                                    productName: product.name,
-                                    productPrice: selectedUnit != null ? product.items!.firstWhere((item) => item.unit == selectedUnit).price : product.items!.first.price,
-                                    productImage: product.image,
-                                    productUnit: selectedUnit ?? product.items!.first.unit,
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -183,7 +165,7 @@ class _ProductCardState extends State<ProductCard> {
                                 child: const Icon(
                                   Icons.circle,
                                   color: Colors.green,
-                                  size: 16,
+                                  size: 5,
                                 ),
                               ),
                             ),

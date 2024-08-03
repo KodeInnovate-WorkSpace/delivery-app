@@ -43,10 +43,6 @@ class HomeScreenState extends State<HomeScreen> {
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
-    // final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
-    //
-    // // initiateCartProvider.loadCart();
-
     fetchDataFuture = fetchData();
     requestNotificationPermission();
   }
@@ -407,16 +403,6 @@ class HomeScreenState extends State<HomeScreen> {
                                       color: Colors.black,
                                     ),
                                   );
-                                  // return Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   children: List.generate(
-                                  //     4,
-                                  //     (index) => Padding(
-                                  //       padding: const EdgeInsets.symmetric(horizontal: 5),
-                                  //       child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                                  //     ),
-                                  //   ),
-                                  // );
                                 } else if (snapshot.hasError) {
                                   return const Center(child: Text("Error"));
                                 } else {
