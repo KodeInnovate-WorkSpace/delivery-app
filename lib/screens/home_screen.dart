@@ -427,7 +427,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       return Stack(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Reduced vertical padding
+                                            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0), // Reduced vertical padding
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
