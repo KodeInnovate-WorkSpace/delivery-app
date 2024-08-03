@@ -44,10 +44,6 @@ class HomeScreenState extends State<HomeScreen> {
     if (!widget.temporaryAccess) {
       checkLocationService();
     }
-    // final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
-    //
-    // // initiateCartProvider.loadCart();
-
     fetchDataFuture = fetchData();
     requestNotificationPermission();
   }
@@ -162,27 +158,27 @@ class HomeScreenState extends State<HomeScreen> {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.getNotificationSettings();
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-       log('Notification permission already granted');
-     } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-       log('Provisional notification permission already granted');
-     } else {
-       // Request notification permission if not already granted
-       settings = await messaging.requestPermission(
-         alert: true,
-         badge: true,
-         sound: true,
-         provisional: false,
-       );
+      log('Notification permission already granted');
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      log('Provisional notification permission already granted');
+    } else {
+      // Request notification permission if not already granted
+      settings = await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        provisional: false,
+      );
 
-       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-         log('User granted permission');
-       } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-         log('User granted provisional permission');
-       } else {
-         log('User declined or has not accepted permission');
-       }
-     }
-   }
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        log('User granted permission');
+      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+        log('User granted provisional permission');
+      } else {
+        log('User declined or has not accepted permission');
+      }
+    }
+  }
 
   void showLocationDialog() {
     showDialog(
@@ -274,31 +270,43 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<bool> showExitDialog() async {
-    final initiateCartProvider = Provider.of<CartProvider>(
-        context, listen: false);
+    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
     return await showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: const Text("Exit App"),
-            content: const Text("Do you want to exit the app?"),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("No"),
-                onPressed: () {
-                  Navigator.of(context).pop(false); // Stay in the app
-                },
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Exit App",
+          style: TextStyle(color: Colors.black, fontFamily: "Gilroy-Black"),
+        ),
+        content: const Text(
+          "Do you want to exit the app?",
+          style: TextStyle(color: Colors.black, fontFamily: "Gilroy-SemiBold"),
+        ),
+        backgroundColor: Colors.white,
+        actions: <Widget>[
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              style: ButtonStyle(
+                overlayColor: WidgetStateProperty.all(Colors.red[900]),
               ),
-              TextButton(
-                child: const Text("Yes"),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                  initiateCartProvider.clearCart();// Exit the app
-                },
-              ),
-            ],
+              child: const Text(
+                "No",
+                style: TextStyle(color: Color(0xffEF4B4B), fontFamily: "Gilroy-Black"),
+              )),
+          TextButton(
+            child: const Text(
+              "Yes",
+              style: TextStyle(color: Colors.black, fontFamily: "Gilroy-Black"),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+              initiateCartProvider.clearCart(); // Exit the app
+            },
           ),
-    ) ?? false;
+        ],
+      ),
+    ) ??
+        false;
   }
 
   @override
@@ -338,10 +346,10 @@ class HomeScreenState extends State<HomeScreen> {
                         final alerts = snapshot.data!.docs
                             .where((doc) => doc['status'] == 1)
                             .map((doc) => {
-                                  'message': doc['message'],
-                                  'color': doc['color'],
-                                  'textcolor': doc['textcolor'],
-                                })
+                          'message': doc['message'],
+                          'color': doc['color'],
+                          'textcolor': doc['textcolor'],
+                        })
                             .toList();
 
                         if (alerts.isEmpty) {
@@ -349,7 +357,7 @@ class HomeScreenState extends State<HomeScreen> {
                         }
                         return SliverList(
                           delegate: SliverChildBuilderDelegate(
-                            (context, index) {
+                                (context, index) {
                               final alert = alerts[index];
                               return Container(
                                 color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
@@ -384,7 +392,7 @@ class HomeScreenState extends State<HomeScreen> {
                     // Displaying categories
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
+                            (BuildContext context, int index) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
                             child: FutureBuilder<void>(
@@ -396,16 +404,6 @@ class HomeScreenState extends State<HomeScreen> {
                                       color: Colors.black,
                                     ),
                                   );
-                                  // return Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   children: List.generate(
-                                  //     4,
-                                  //     (index) => Padding(
-                                  //       padding: const EdgeInsets.symmetric(horizontal: 5),
-                                  //       child: _buildShimmerContainer(width: 72, height: 72, borderRadius: 14),
-                                  //     ),
-                                  //   ),
-                                  // );
                                 } else if (snapshot.hasError) {
                                   return const Center(child: Text("Error"));
                                 } else {
@@ -416,7 +414,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       return Stack(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Reduced vertical padding
+                                            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0), // Reduced vertical padding
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
@@ -463,13 +461,10 @@ class HomeScreenState extends State<HomeScreen> {
                                                           borderRadius: BorderRadius.all(Radius.circular(10)),
                                                         ),
                                                         child: Padding(
-                                                          padding: const EdgeInsets.all(8.0),
+                                                          padding: const EdgeInsets.all(4.0),
                                                           child: CachedNetworkImage(
-                                                            // height: 60,
                                                             height: 80,
-                                                            // fit: BoxFit.fill,
                                                             imageUrl: subCategory.img,
-                                                            // placeholder: (context, url) => const CircularProgressIndicator(color: Colors.amberAccent),
                                                             errorWidget: (context, url, error) => const Icon(Icons.error),
                                                           ),
                                                         ),
@@ -502,7 +497,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           //See all button
                                           Positioned(
                                               left: 0,
-                                              right: -265,
+                                              right: -285,
                                               top: -10,
                                               child: TextButton(
                                                 onPressed: () {
@@ -548,19 +543,4 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // Widget _buildShimmerContainer({required double width, required double height, double borderRadius = 5}) {
-  //   return Shimmer.fromColors(
-  //     baseColor: Colors.grey[300]!,
-  //     highlightColor: Colors.grey[100]!,
-  //     child: Container(
-  //       width: width,
-  //       height: height,
-  //       decoration: BoxDecoration(
-  //         color: Colors.grey[300],
-  //         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
