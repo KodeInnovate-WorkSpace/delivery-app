@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/services/sendPushNotification.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
 import 'package:speedy_delivery/widget/address_selection.dart';
@@ -454,6 +455,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   );
                                                 },
                                               );
+
+                                              NotificationService.sendNotifications(title: "Goods Bought", body: "Thank you from buying from us!", token: "eG9fUJ04SMyQgoptA7UHNi:APA91bHMAQeAEfEXpLjSCPBJVLIeHeGO3p58Tf3Xaie5Es2KCtLHYPrKaE5uQc5u90p0Qw_z6bFeZ6spzvfvr6wOblteQMogiOFg6FqkECU7vShbJgpqWlqTL314IT7i4HNI1Vhq9tq3");
                                             } else if (orderProvider.selectedPaymentMethod == 'Online') {
                                               showDialog(
                                                 context: context,
@@ -512,7 +515,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 },
                                               );
                                             }
-
                                           },
                                           style: ButtonStyle(
                                             shape: WidgetStateProperty.all<RoundedRectangleBorder>(

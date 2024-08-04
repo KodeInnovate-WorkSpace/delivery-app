@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class NotificationService {
   const NotificationService._();
@@ -72,6 +74,32 @@ class NotificationService {
                   ),
                 ),
               ));
+    }
+  }
+
+  static Future<bool> sendNotifications({
+    required String title,
+    required String body,
+    required String token,
+    String? image,
+  }) async {
+    try {
+      HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendNotification');
+
+      final res = await callable.call(<String, dynamic>{
+        'title': title,
+        'body': body,
+        'image': image,
+        'token': token,
+      });
+
+      log("Response: ${res.data}");
+      if (res.data == null) return false;
+
+      return true;
+    } catch (e) {
+      log("Error sending notification: $e");
+      rethrow;
     }
   }
 }
