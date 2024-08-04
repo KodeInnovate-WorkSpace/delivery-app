@@ -175,7 +175,7 @@ class CheckUserProvider with ChangeNotifier {
       // Get today's date
       String todayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
       // Check if the user exists
-      await checkUserProvider.doesUserExists(authProvider.phone!,context);
+      await checkUserProvider.doesUserExists(authProvider.phone,context);
       final token = await FirebaseMessaging.instance.getToken();
       //final token = await FirebaseMessaging.instance.getToken().then((token) async {});
       if (!checkUserProvider._isUserExist) {

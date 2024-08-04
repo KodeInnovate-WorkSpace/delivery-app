@@ -70,7 +70,7 @@ class _EditAppMaintenanceScreenState extends State<EditAppMaintenanceScreen> {
               children: [
                 const Text(
                   "Status: ",
-                  style: const TextStyle(color: Color(0xffb3b3b3)),
+                  style: TextStyle(color: Color(0xffb3b3b3)),
                 ),
                 DropdownButton<int>(
                   value: _isAppEnabled,

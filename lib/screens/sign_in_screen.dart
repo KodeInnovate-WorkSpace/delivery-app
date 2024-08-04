@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
-import 'package:speedy_delivery/screens/account_disabled.dart';
 import 'package:speedy_delivery/screens/email_screen.dart';
 import 'package:speedy_delivery/widget/terms_privacy_line.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
@@ -143,7 +142,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
                                 await userProvider.checkUserStatus(authProvider.textController.text);
                                 await userProvider.checkUserType(authProvider.phone);
-                                await userProvider.doesUserExists(authProvider.phone!, context);
+                                await userProvider.doesUserExists(authProvider.phone, context);
 
                                 if (userProvider.isUserExist) {
                                   _onVerifyPressed();

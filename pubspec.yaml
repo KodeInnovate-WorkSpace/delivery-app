@@ -14,7 +14,7 @@ dependencies:
   crypto: ^3.0.3
   firebase_auth: ^5.1.2
   firebase_core: ^3.0.0
-  firebase_storage: ^12.0.0
+  firebase_storage: ^12.1.2
   flutter:
     sdk: flutter
   flutter_cashfree_pg_sdk: ^2.1.2+32
@@ -44,14 +44,15 @@ dependencies:
   firebase_app_check: ^0.3.0+2
   dotted_line: ^3.2.2
   flutter_native_splash: ^2.4.0
-  firebase_messaging: ^15.0.2
+  firebase_messaging: ^15.0.4
   shimmer: ^3.0.0
-  flutter_local_notifications: ^17.2.1+1
+  flutter_local_notifications: ^17.2.1+2
   in_app_update: ^4.2.3
   googleapis: ^13.2.0
   googleapis_auth: ^1.6.0
   onesignal_flutter: ^5.2.2
   mailer: ^6.1.1
+  cloud_functions: ^5.0.4
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

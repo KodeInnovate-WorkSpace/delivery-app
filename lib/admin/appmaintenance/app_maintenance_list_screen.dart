@@ -43,7 +43,7 @@ class AppMaintenanceListScreen extends StatelessWidget {
               return ListTile(
                 title: Text(
                   'ID: ${data['id']}',
-                  style: TextStyle(color: Color(0xffb3b3b3)),
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
                 ),
                 subtitle: Text(
                   'isAppEnabled: ${data['isAppEnabled']}',

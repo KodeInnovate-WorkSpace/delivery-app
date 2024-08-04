@@ -83,7 +83,7 @@ class _EditLocationScreenState extends State<EditLocationScreen> {
               children: [
                 const Text(
                   "Status: ",
-                  style: const TextStyle(color: Color(0xffb3b3b3)),
+                  style: TextStyle(color: Color(0xffb3b3b3)),
                 ),
                 DropdownButton<int>(
                   value: _status,

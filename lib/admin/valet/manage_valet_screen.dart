@@ -406,14 +406,14 @@ class _ManageValetScreenState extends State<ManageValetScreen> {
                 }
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: Text(
                   selectedDate == null ? 'Select Date' : DateFormat('dd MMM yyyy').format(selectedDate!),
-                  style: TextStyle(color: Color(0xffb3b3b3)),
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
                 ),
               ),
             ),

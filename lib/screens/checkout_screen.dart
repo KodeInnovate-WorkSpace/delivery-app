@@ -8,7 +8,7 @@ import 'package:speedy_delivery/widget/apply_coupon_widget.dart';
 import 'package:speedy_delivery/widget/bill_details_widget.dart';
 import 'package:speedy_delivery/widget/display_cartItems.dart';
 import '../providers/order_provider.dart';
-import '../services/push_notification.dart';
+import '../services/sendEmail.dart';
 import '../widget/network_handler.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';

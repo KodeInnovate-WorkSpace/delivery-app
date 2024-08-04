@@ -16,6 +16,7 @@ import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/providers/address_provider.dart';
 import 'package:speedy_delivery/providers/order_provider.dart';
 import 'package:speedy_delivery/providers/valet_provider.dart';
+import 'package:speedy_delivery/services/sendPushNotification.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/network_handler.dart';
 import 'deliveryPartner/provider/delivery_order_provider.dart';
@@ -31,6 +32,9 @@ void main() async {
   final fcmToken = await FirebaseMessaging.instance.getToken(
     vapidKey: "dEfbk9IZT3qlnpTwEaV-Uz:APA91bHLHxsF7f77TrQHCGTylgbWGp6P4GOdRKQYxFXICoBn16phq_mBuluj9IW8z1v-GW9NWBZUlwr-wxA-cmbmKmoPfOsLbYe5toOOscBXlHIw8nYWM1r86-SZzNmdxRjUjW7VvAwf",
   );
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+  await NotificationService.initializeNotification();
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     log('Got a message whilst in the foreground!');
