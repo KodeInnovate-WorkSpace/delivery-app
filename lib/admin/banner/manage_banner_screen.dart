@@ -140,11 +140,11 @@ class TableData extends DataTableSource {
           onChanged: (int? newValue) {
             banner
                 .updateBanner(
-                  'status',
-                  newValue,
-                  bannerField: 'image',
-                  bannerValue: data['image'],
-                )
+              'status',
+              newValue,
+              bannerField: 'image',
+              bannerValue: data['image'],
+            )
                 .then((_) => __loadBannerData());
           },
           items: statusOptions.map<DropdownMenuItem<int>>((int status) {

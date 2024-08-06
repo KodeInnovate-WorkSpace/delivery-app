@@ -2,13 +2,15 @@ class Category {
   final int id;
   final String name;
   final int status;
-  final int priority; // Add priority field to the Category model
+  final int priority;
+  final String? logoUrl; // Make logoUrl optional
 
   Category({
     required this.id,
     required this.name,
     required this.status,
-    required this.priority, // Include priority in the constructor
+    required this.priority,
+    this.logoUrl,
   });
 }
 
