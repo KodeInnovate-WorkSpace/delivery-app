@@ -433,8 +433,7 @@
         delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
             return Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 15.0, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
               child: FutureBuilder<void>(
                 future: fetchDataFuture,
                 builder: (context, snapshot) {
@@ -467,8 +466,7 @@
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5.0, vertical: 0.0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(
                                             children: [
@@ -476,8 +474,7 @@
                                                 imageUrl: category.logoUrl!,
                                                 width: 50,
                                                 height: 50,
-                                                errorWidget: (context, url,
-                                                    error) =>
+                                                errorWidget: (context, url, error) =>
                                                 const Icon(Icons.error),
                                               ),
                                               const SizedBox(width: 8),
@@ -497,21 +494,19 @@
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5.0, vertical: 0.0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             category.name,
-                                            style: const TextStyle(fontSize: 18,
-                                                fontFamily: "Gilroy-Bold"),
+                                            style: const TextStyle(
+                                                fontSize: 18, fontFamily: "Gilroy-Bold"),
                                           ),
                                         ],
                                       ),
                                     ),
                                   Padding(
                                     padding: category.logoUrl != null
-                                        ? const EdgeInsets.only(
-                                        top: 25.0) // Add space only for categories with logo
+                                        ? const EdgeInsets.only(top: 25.0) // Add space only for categories with logo
                                         : EdgeInsets.zero,
                                     child: GridView.builder(
                                       shrinkWrap: true,
@@ -522,8 +517,7 @@
                                         childAspectRatio: 0.56,
                                       ),
                                       itemBuilder: (context, subIndex) {
-                                        if (subIndex <
-                                            filteredSubCategories.length) {
+                                        if (subIndex < filteredSubCategories.length) {
                                           final subCategory = filteredSubCategories[subIndex];
                                           return Column(
                                             children: [
@@ -534,34 +528,28 @@
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           CategoryScreen(
-                                                            categoryTitle: category
-                                                                .name,
+                                                            categoryTitle: category.name,
                                                             subCategories: filteredSubCategories,
-                                                            selectedSubCategoryId: subCategory
-                                                                .id,
+                                                            selectedSubCategoryId: subCategory.id,
                                                           ),
                                                     ),
                                                   );
                                                 },
                                                 child: Container(
                                                   width: 150,
-                                                  margin: const EdgeInsets
-                                                      .symmetric(horizontal: 4,
-                                                      vertical: 0),
+                                                  margin: const EdgeInsets.symmetric(
+                                                      horizontal: 4, vertical: 0),
                                                   decoration: const BoxDecoration(
                                                     color: Color(0xffeaf1fc),
-                                                    borderRadius: BorderRadius
-                                                        .all(
+                                                    borderRadius: BorderRadius.all(
                                                         Radius.circular(10)),
                                                   ),
                                                   child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .all(2.0),
+                                                    padding: const EdgeInsets.all(2.0),
                                                     child: CachedNetworkImage(
                                                       height: 80,
                                                       imageUrl: subCategory.img,
-                                                      errorWidget: (context,
-                                                          url, error) =>
+                                                      errorWidget: (context, url, error) =>
                                                       const Icon(Icons.error),
                                                     ),
                                                   ),
@@ -595,34 +583,36 @@
                                   // See all button
                                   Positioned(
                                     left: 0,
-                                    right: -285,
-                                    top: -10,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                CategoryScreen(
-                                                  categoryTitle: category.name,
-                                                  subCategories: filteredSubCategories,
-                                                  selectedSubCategoryId: filteredSubCategories[0]
-                                                      .id,
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      style: ButtonStyle(
-                                        overlayColor: MaterialStateProperty.all(
-                                            Colors.transparent),
-                                        backgroundColor: MaterialStateProperty
-                                            .all(Colors.transparent),
-                                      ),
-                                      child: const Text(
-                                        "see all",
-                                        style: TextStyle(fontSize: 12,
-                                            fontFamily: "Gilroy-ExtraBold",
-                                            color: Colors.green),
+                                    right: 0,
+                                    top: category.logoUrl != null ? 0: -10, // Adjust based on logo presence
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CategoryScreen(
+                                                categoryTitle: category.name,
+                                                subCategories: filteredSubCategories,
+                                                selectedSubCategoryId: filteredSubCategories[0].id,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        style: ButtonStyle(
+                                          overlayColor: MaterialStateProperty.all(
+                                              Colors.transparent),
+                                          backgroundColor: MaterialStateProperty.all(
+                                              Colors.transparent),
+                                        ),
+                                        child: const Text(
+                                          "see all",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: "Gilroy-ExtraBold",
+                                              color: Colors.green),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -642,5 +632,6 @@
         ),
       );
     }
+
 
     }
