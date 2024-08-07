@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy_delivery/widget/cart_button.dart';
 import '../models/product_model.dart';
-import '../providers/auth_provider.dart';
 import '../widget/add_to_cart_button.dart'; // Import your cart screen
 
 class SearchPage extends StatefulWidget {

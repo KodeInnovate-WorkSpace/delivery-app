@@ -340,13 +340,13 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ElevatedButton(
                     onPressed: openCamera,
                     style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
                           return Colors.black;
                         },
                       ),
@@ -361,13 +361,13 @@ class _EditProductState extends State<EditProduct> with ChangeNotifier {
                   ElevatedButton(
                     onPressed: pickImage,
                     style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
                           return Colors.black;
                         },
                       ),

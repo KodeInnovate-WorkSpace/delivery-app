@@ -13,6 +13,7 @@ import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
 import '../providers/cart_provider.dart';
+import '../services/push_notification.dart';
 import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
@@ -446,18 +447,19 @@ class HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Row(
                                           children: [
-                                            // CachedNetworkImage(
-                                            //   imageUrl: category.logoUrl!,
-                                            //   width: 40,
-                                            //   height: 40,
-                                            //   errorWidget: (context, url, error) => const Icon(Icons.error),
-                                            // ),
                                             Container(
-                                              width: 35,
-                                              height: 35,
-                                              decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(50)), image: DecorationImage(image: CachedNetworkImageProvider(category.logoUrl!))),
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: const BorderRadius.all(
+                                                    Radius.circular(50),
+                                                  ),
+                                                  image: DecorationImage(
+                                                      image: CachedNetworkImageProvider(
+                                                    category.logoUrl!,
+                                                  ))),
                                             ),
-                                            const SizedBox(width: 4),
+                                            const SizedBox(width: 8),
                                             Text(
                                               category.name,
                                               style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
@@ -482,8 +484,8 @@ class HomeScreenState extends State<HomeScreen> {
                                   ),
                                 Padding(
                                   padding: category.logoUrl != null
-                                      ? const EdgeInsets.only(top: 0)
-                                      : const EdgeInsets.only(top: 0, bottom: 0),
+                                      ? const EdgeInsets.only(top: 25.0) // Add space only for categories with logo
+                                      : EdgeInsets.zero,
                                   child: GridView.builder(
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics(),
@@ -553,7 +555,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 Positioned(
                                   left: 0,
                                   right: 0,
-                                  top: category.logoUrl != null ? 0 : -10, // Adjust based on logo presence
+                                  top: category.logoUrl != null ? 0 : -10,
                                   child: Align(
                                     alignment: Alignment.topRight,
                                     child: TextButton(

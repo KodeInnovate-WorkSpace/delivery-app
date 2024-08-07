@@ -73,7 +73,7 @@ class LocalNotificationService {
                               color: #666666;
                             "
                           >
-                           Amount: ${amount}
+                           Amount: $amount
                           </td>
                         </tr>
                         <tr>
@@ -86,7 +86,7 @@ class LocalNotificationService {
                               padding-bottom: 10px;
                             "
                           >
-                           Address: ${address}
+                           Address: $address
                           </td>
                         </tr>
                       </tbody>

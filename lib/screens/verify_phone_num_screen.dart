@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:speedy_delivery/providers/check_user_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
-import 'package:speedy_delivery/shared/show_msg.dart';
 import '../providers/auth_provider.dart';
 import '../widget/terms_privacy_line.dart';
 
@@ -44,7 +42,7 @@ class _VerifyPhoneNumScreenState extends State<VerifyPhoneNumScreen> {
           backgroundColor: const Color(0xfff7f7f7),
           surfaceTintColor: Colors.transparent,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Restart.restartApp();
             },

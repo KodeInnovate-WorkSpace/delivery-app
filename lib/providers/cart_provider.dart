@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../models/cart_model.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert' as convert;
 import '../shared/constants.dart';
 import 'dart:math';
 

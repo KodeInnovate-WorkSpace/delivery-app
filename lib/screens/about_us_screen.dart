@@ -1,6 +1,4 @@
-import 'package:accordion/accordion.dart';
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/screens/policy_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsPage extends StatelessWidget {
