@@ -58,6 +58,26 @@ Future<bool> fetchIsDeliveryFree() async {
   }
 }
 
+Future<String> fetchAppVersion() async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  try {
+    DocumentSnapshot constantDoc = await firestore.collection('constants').doc("0xK0fWb6SCtRls6k3uwb").get();
+
+    if (constantDoc.exists) {
+      return constantDoc.get('app_version');
+    } else {
+      log('Document does not exist');
+
+      return "Doc not found";
+    }
+  } catch (e) {
+    log('Error fetching app version: $e');
+
+    return "Error fetching app version";
+  }
+}
+
 Stream<DocumentSnapshot> get constantDocumentStream {
   return FirebaseFirestore.instance.collection('constants').doc('0xK0fWb6SCtRls6k3uwb').snapshots();
 }

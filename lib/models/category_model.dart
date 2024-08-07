@@ -3,7 +3,8 @@ class Category {
   final String name;
   final int status;
   final int priority;
-  final String? logoUrl; // Make logoUrl optional
+  final String? logoUrl;
+  final bool? isOffer;
 
   Category({
     required this.id,
@@ -11,6 +12,7 @@ class Category {
     required this.status,
     required this.priority,
     this.logoUrl,
+    this.isOffer,
   });
 }
 
