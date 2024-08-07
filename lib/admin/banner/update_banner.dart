@@ -109,8 +109,24 @@ class _UpdateBannerState extends State<UpdateBanner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Category'),
+        title: const Text(
+          'Update Banner',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -118,7 +134,12 @@ class _UpdateBannerState extends State<UpdateBanner> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Image
-              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+              _image != null
+                  ? Image.file(_image!, height: 100, width: 100)
+                  : const Text(
+                "No image selected",
+                style: TextStyle(color: Color(0xffb3b3b3)),
+              ),
 
               // Open Camera
               ElevatedButton(
@@ -130,14 +151,14 @@ class _UpdateBannerState extends State<UpdateBanner> {
                     ),
                   ),
                   backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
+                        (Set<WidgetState> states) {
                       return Colors.black;
                     },
                   ),
                 ),
                 child: const Text(
                   "Open Camera",
-                  style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                  style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
                 ),
               ),
               const SizedBox(width: 10),
@@ -152,14 +173,14 @@ class _UpdateBannerState extends State<UpdateBanner> {
                     ),
                   ),
                   backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
+                        (Set<WidgetState> states) {
                       return Colors.black;
                     },
                   ),
                 ),
                 child: const Text(
                   "Pick Image",
-                  style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                  style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
                 ),
               ),
               const SizedBox(height: 20),
@@ -176,7 +197,10 @@ class _UpdateBannerState extends State<UpdateBanner> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Status: "),
+                  const Text(
+                    "Status: ",
+                    style: TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                   DropdownButton<int>(
                     value: dropdownValue, // Use the state variable here
                     onChanged: (int? newValue) {
@@ -187,7 +211,10 @@ class _UpdateBannerState extends State<UpdateBanner> {
                     items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                       return DropdownMenuItem<int>(
                         value: status,
-                        child: Text(status == 0 ? 'Inactive' : 'Active'),
+                        child: Text(
+                          status == 0 ? 'Inactive' : 'Active',
+                          style: const TextStyle(color: Color(0xffb3b3b3)),
+                        ),
                       );
                     }).toList(),
                   ),
@@ -202,9 +229,9 @@ class _UpdateBannerState extends State<UpdateBanner> {
                   onPressed: isLoading
                       ? null
                       : () {
-                          updateBanner();
-                          Navigator.pop(context, true);
-                        },
+                    updateBanner();
+                    Navigator.pop(context, true);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -219,16 +246,16 @@ class _UpdateBannerState extends State<UpdateBanner> {
                   ),
                   child: isLoading
                       ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        )
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  )
                       : const Text(
-                          "Update",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Gilroy-Bold',
-                          ),
-                        ),
+                    "Update",
+                    style: TextStyle(
+                      color: Color(0xffb3b3b3),
+                      fontFamily: 'Gilroy-Bold',
+                    ),
+                  ),
                 ),
               ),
             ],

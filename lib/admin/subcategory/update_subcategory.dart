@@ -103,15 +103,36 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Sub-Category'),
+        title: const Text(
+          'Update Sub-Category',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Image
-            _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
+            _image != null
+                ? Image.file(_image!, height: 100, width: 100)
+                : const Text(
+              "No image selected",
+              style: TextStyle(color: Color(0xffb3b3b3)),
+            ),
 
             // Open Camera
             ElevatedButton(
@@ -123,14 +144,14 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
                   ),
                 ),
                 backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                  (Set<WidgetState> states) {
+                      (Set<WidgetState> states) {
                     return Colors.black;
                   },
                 ),
               ),
               child: const Text(
                 "Open Camera",
-                style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
               ),
             ),
             const SizedBox(width: 10),
@@ -145,14 +166,14 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
                   ),
                 ),
                 backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                  (Set<WidgetState> states) {
+                      (Set<WidgetState> states) {
                     return Colors.black;
                   },
                 ),
               ),
               child: const Text(
                 "Pick Image",
-                style: TextStyle(color: Colors.white, fontFamily: 'Gilroy-Bold'),
+                style: TextStyle(color: Color(0xffb3b3b3), fontFamily: 'Gilroy-Bold'),
               ),
             ),
             const SizedBox(height: 20),
@@ -166,7 +187,10 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
             const SizedBox(height: 40),
 
             // category dropdown
-            const Text("Change Category: "),
+            const Text(
+              "Change Category: ",
+              style: TextStyle(color: Color(0xffb3b3b3)),
+            ),
             DropdownButton<String>(
               value: selectedCategoryName,
               onChanged: (String? newValue) {
@@ -178,10 +202,16 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
               items: categoryMap.keys.map<DropdownMenuItem<String>>((String category) {
                 return DropdownMenuItem<String>(
                   value: category,
-                  child: Text(category),
+                  child: Text(
+                    category,
+                    style: const TextStyle(color: Color(0xffb3b3b3)),
+                  ),
                 );
               }).toList(),
-              hint: const Text("Select a category"),
+              hint: const Text(
+                "Select a category",
+                style: TextStyle(color: Color(0xffb3b3b3)),
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -189,7 +219,10 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: dropdownValue, // Use the state variable here
                   onChanged: (int? newValue) {
@@ -198,17 +231,20 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
                     });
                     subcatObj
                         .updateSubCategory(
-                          'status',
-                          newValue,
-                          categoryField: 'sub_category_id',
-                          categoryValue: widget.data['sub_category_id'],
-                        )
+                      'status',
+                      newValue,
+                      categoryField: 'sub_category_id',
+                      categoryValue: widget.data['sub_category_id'],
+                    )
                         .then((_) => subcatObj.manageSubCategories());
                   },
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                     return DropdownMenuItem<int>(
                       value: status,
-                      child: Text(status == 0 ? 'Inactive' : 'Active'),
+                      child: Text(
+                        status == 0 ? 'Inactive' : 'Active',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -222,28 +258,28 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
                 onPressed: isLoading
                     ? null
                     : () async {
-                        // If an image is selected, upload it and get the URL
-                        String? imageUrl;
-                        if (_image != null) {
-                          imageUrl = await uploadImage(_image!);
-                          // Update Image
-                          await subcatObj.updateSubCategory('sub_category_img', imageUrl, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
-                        }
+                  // If an image is selected, upload it and get the URL
+                  String? imageUrl;
+                  if (_image != null) {
+                    imageUrl = await uploadImage(_image!);
+                    // Update Image
+                    await subcatObj.updateSubCategory('sub_category_img', imageUrl, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
+                  }
 
-                        // Update name
-                        await subcatObj.updateSubCategory('sub_category_name', categoryController.text, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
+                  // Update name
+                  await subcatObj.updateSubCategory('sub_category_name', categoryController.text, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
 
-                        // Update category (if selected)
-                        if (selectedCategoryId != -1) {
-                          await subcatObj.updateSubCategory('category_id', selectedCategoryId, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
-                        }
+                  // Update category (if selected)
+                  if (selectedCategoryId != -1) {
+                    await subcatObj.updateSubCategory('category_id', selectedCategoryId, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
+                  }
 
-                        // Update status
-                        await subcatObj.updateSubCategory('status', dropdownValue, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
+                  // Update status
+                  await subcatObj.updateSubCategory('status', dropdownValue, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
 
-                        // After successful updates
-                        Navigator.pop(context, true);
-                      },
+                  // After successful updates
+                  Navigator.pop(context, true);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -258,54 +294,18 @@ class _UpdateSubCategoryState extends State<UpdateSubCategory> with ChangeNotifi
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
                     : const Text(
-                        "Update",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Gilroy-Bold',
-                        ),
-                      ),
+                  "Update",
+                  style: TextStyle(
+                    color: Color(0xffb3b3b3),
+                    fontFamily: 'Gilroy-Bold',
+                  ),
+                ),
               ),
             ),
-
-            // Container(
-            //   width: 200,
-            //   height: 50,
-            //   decoration: BoxDecoration(
-            //     color: Colors.black,
-            //     borderRadius: BorderRadius.circular(20),
-            //   ),
-            //   child: TextButton(
-            //     onPressed: () async {
-            //       // Update name
-            //       await subcatObj.updateSubCategory('sub_category_name', categoryController.text, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
-            //
-            //       // Update category (if selected)
-            //       if (selectedCategoryId != -1) {
-            //         await subcatObj.updateSubCategory('category_id', selectedCategoryId, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
-            //       }
-            //
-            //       // Update status
-            //       await subcatObj.updateSubCategory('status', dropdownValue, categoryField: 'sub_category_id', categoryValue: widget.data['sub_category_id']);
-            //
-            //       // After successful updates
-            //       Navigator.pop(context, true);
-            //     },
-            //     child: const Center(
-            //       child: Text(
-            //         "UPDATE",
-            //         style: TextStyle(
-            //           color: Colors.white,
-            //           fontFamily: 'Gilroy-ExtraBold',
-            //           fontSize: 16.0,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

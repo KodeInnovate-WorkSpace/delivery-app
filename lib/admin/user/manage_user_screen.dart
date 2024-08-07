@@ -40,10 +40,25 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Manage Users'),
+        title: const Text(
+          'Manage Users',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           RefreshIndicator(
@@ -56,6 +71,7 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                     controller: _searchController,
                     decoration: InputDecoration(
                       labelText: 'Search by phone number',
+                      border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
@@ -64,6 +80,8 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                         },
                       ),
                     ),
+                    style: const TextStyle(color:Colors.white),
+                    keyboardType: TextInputType.number,
                     onChanged: _searchUser,
                   ),
                 ),
@@ -86,6 +104,8 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
                         source: src,
                         columnSpacing: 15,
                         rowsPerPage: 5,
+                        showFirstLastButtons: true,
+                        arrowHeadColor: const Color(0xff1a1a1c),
                       ),
                     ],
                   ),
@@ -102,8 +122,8 @@ class _ManageUserScreenState extends State<ManageUserScreen> {
 class TableData extends DataTableSource {
   UserModel userModel = UserModel();
 
-  List<int> statusOptions = [0,1]; // 0 for active, 1 for inactive
-  List<int> typeOptions = [0,1,2]; // Different user types
+  List<int> statusOptions = [0, 1]; // 0 for active, 1 for inactive
+  List<int> typeOptions = [0, 1, 2]; // Different user types
 
   List<Map<String, dynamic>> userData = [];
   List<Map<String, dynamic>> filteredData = [];

@@ -10,7 +10,8 @@ class EditAlertLabelScreen extends StatefulWidget {
   final int currentStatus;
   final String currentTextColor;
 
-  const EditAlertLabelScreen({super.key,
+  const EditAlertLabelScreen({
+    super.key,
     required this.docId,
     required this.currentColor,
     required this.currentMessage,
@@ -63,15 +64,37 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Alert Label')),
+      appBar: AppBar(
+        title: const Text(
+          'Edit Alert Label',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('ID: ${widget.docId}'),
+            Text(
+              'ID: ${widget.docId}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
             const SizedBox(height: 16.0),
             TextField(
               controller: colorController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'Color',
                 border: OutlineInputBorder(),
@@ -80,6 +103,7 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
             const SizedBox(height: 20.0),
             TextField(
               controller: messageController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'Message',
                 border: OutlineInputBorder(),
@@ -89,7 +113,10 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: _status,
                   onChanged: (int? newValue) {
@@ -100,7 +127,10 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                     return DropdownMenuItem<int>(
                       value: status,
-                      child: Text(status == 0 ? 'Inactive' : 'Active'),
+                      child: Text(
+                        status == 0 ? 'Inactive' : 'Active',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -109,6 +139,7 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
             const SizedBox(height: 20.0),
             TextField(
               controller: textColorController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'Text Color',
                 border: OutlineInputBorder(),
@@ -133,7 +164,7 @@ class _EditAlertLabelScreenState extends State<EditAlertLabelScreen> {
                 child: const Text(
                   "Update",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xffb3b3b3),
                     fontFamily: 'Gilroy-Bold',
                   ),
                 ),

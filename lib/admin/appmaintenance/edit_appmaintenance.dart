@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../shared/show_msg.dart';
 
-
 class EditAppMaintenanceScreen extends StatefulWidget {
   final String docId;
   final int currentStatus;
@@ -38,17 +37,41 @@ class _EditAppMaintenanceScreenState extends State<EditAppMaintenanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit App Maintenance')),
+      appBar: AppBar(
+        title: const Text(
+          'Edit App Maintenance',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('ID: ${widget.docId}'),
+            Text(
+              'ID: ${widget.docId}',
+              style: const TextStyle(color: Color(0xffb3b3b3)),
+            ),
             const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: _isAppEnabled,
                   onChanged: (int? newValue) {
@@ -59,7 +82,10 @@ class _EditAppMaintenanceScreenState extends State<EditAppMaintenanceScreen> {
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                     return DropdownMenuItem<int>(
                       value: status,
-                      child: Text(status == 0 ? 'Inactive' : 'Active'),
+                      child: Text(
+                        status == 0 ? 'Inactive' : 'Active',
+                        style: const TextStyle(color: Color(0xffb3b3b3)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -84,7 +110,7 @@ class _EditAppMaintenanceScreenState extends State<EditAppMaintenanceScreen> {
                 child: const Text(
                   "Update",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xffb3b3b3),
                     fontFamily: 'Gilroy-Bold',
                   ),
                 ),

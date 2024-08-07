@@ -39,16 +39,18 @@ class _ManageProductState extends State<ManageProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Manage Products'),
+        title: const Text(
+          'Manage Products',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -69,7 +71,20 @@ class _ManageProductState extends State<ManageProduct> {
             ),
           )
         ],
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           Column(
@@ -81,6 +96,7 @@ class _ManageProductState extends State<ManageProduct> {
                   decoration: InputDecoration(
                     labelText: 'Search',
                     hintText: 'Search by product name',
+                    border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -90,6 +106,7 @@ class _ManageProductState extends State<ManageProduct> {
                       },
                     ),
                   ),
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
                   onChanged: (value) {
                     src.filterProducts(value);
                   },
@@ -106,20 +123,23 @@ class _ManageProductState extends State<ManageProduct> {
                           DataColumn(label: Text('ID')),
                           DataColumn(label: Text('Image')),
                           DataColumn(label: Text('Name')),
+                          DataColumn(label: Text('IsVeg')),
                           DataColumn(label: Text('Status')),
                           DataColumn(label: Text('Price')),
                           DataColumn(label: Text('MRP')),
                           DataColumn(label: Text('Stock')),
                           DataColumn(label: Text('Unit')),
                           DataColumn(label: Text('Sub-Category')),
-                          DataColumn(label: Text('IsVeg')),
                           DataColumn(label: Text('')),
                           DataColumn(label: Text('')),
                         ],
                         source: src,
                         columnSpacing: 10,
                         rowsPerPage: 8,
+                        showFirstLastButtons: true,
+                        arrowHeadColor: const Color(0xff1a1a1c),
                       ),
+
                     ],
                   ),
                 ),
@@ -226,6 +246,12 @@ class TableData extends DataTableSource {
         ),
       )),
 
+      // isVeg
+      //isVeg
+      DataCell(
+        Text(data['isVeg'] == true ? 'Yes' : ''),
+      ),
+
       //status
       DataCell(DropdownButton<int>(
         value: data['status'], // Use the status value from data
@@ -305,20 +331,6 @@ class TableData extends DataTableSource {
         }).toList(),
       )),
 
-      // isVeg
-      DataCell(
-        SizedBox(
-          width: 50,
-          child: data.containsKey('isVeg')
-              ? Text(
-            data['isVeg'] == true ? 'Vegetarian' : '',
-            softWrap: true,
-            overflow: TextOverflow.visible,
-          )
-              : const Text(''),
-        ),
-      ),
-
       //Delete
       DataCell(
         IconButton(
@@ -350,6 +362,7 @@ class TableData extends DataTableSource {
       ),
     ]);
   }
+
 
   @override
   bool get isRowCountApproximate => false;

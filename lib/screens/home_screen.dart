@@ -36,8 +36,10 @@ class HomeScreenState extends State<HomeScreen> {
   final List<SubCategory> subCategories = [];
   late Future<void> fetchDataFuture;
   bool _isLoading = true;
+
   // products
   List<Product> products = [];
+
   @override
   void initState() {
     super.initState();
@@ -64,9 +66,13 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> checkAppMaintenanceStatus(BuildContext context) async {
     try {
       // Get the specific number from MyAuthProvider
-      final specificNumber = Provider.of<MyAuthProvider>(context, listen: false).specificNumber;
+      final specificNumber =
+          Provider
+              .of<MyAuthProvider>(context, listen: false)
+              .specificNumber;
 
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('AppMaintenance').get();
+      final QuerySnapshot snapshot =
+      await FirebaseFirestore.instance.collection('AppMaintenance').get();
       for (var document in snapshot.docs) {
         var data = document.data() as Map<String, dynamic>;
         if (data['isAppEnabled'] == 0 && specificNumber != 9876543210) {
@@ -111,7 +117,8 @@ class HomeScreenState extends State<HomeScreen> {
     log("Current Position: ${position.latitude}, ${position.longitude}");
 
     // Get the placemarks from the coordinates
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks =
+    await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     String postalCode = place.postalCode ?? '';
 
@@ -123,7 +130,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> checkAccess(String postalCode) async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('location').get();
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('location').get();
 
       if (querySnapshot.docs.isNotEmpty) {
         for (DocumentSnapshot document in querySnapshot.docs) {
@@ -136,7 +144,8 @@ class HomeScreenState extends State<HomeScreen> {
           }
         }
 
-        log("No document with matching postal code and status 1 found in Firestore");
+        log(
+            "No document with matching postal code and status 1 found in Firestore");
       } else {
         log("No documents found in Firestore");
       }
@@ -159,7 +168,8 @@ class HomeScreenState extends State<HomeScreen> {
     NotificationSettings settings = await messaging.getNotificationSettings();
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       log('Notification permission already granted');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       log('Provisional notification permission already granted');
     } else {
       // Request notification permission if not already granted
@@ -172,7 +182,8 @@ class HomeScreenState extends State<HomeScreen> {
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         log('User granted permission');
-      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      } else if (settings.authorizationStatus ==
+          AuthorizationStatus.provisional) {
         log('User granted provisional permission');
       } else {
         log('User declined or has not accepted permission');
@@ -203,7 +214,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchCategory() async {
     try {
-      final snapshot = await FirebaseFirestore.instance.collection("category").get();
+      final snapshot =
+      await FirebaseFirestore.instance.collection("category").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -215,6 +227,9 @@ class HomeScreenState extends State<HomeScreen> {
               name: data['category_name'],
               status: data['status'],
               priority: data['priority'],
+              logoUrl: data.containsKey('logo_url')
+                  ? data['logo_url']
+                  : null, // Check if 'logo_url' exists
             );
 
             if (category.status == 1) {
@@ -234,7 +249,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchSubCategory() async {
     try {
-      final subSnapshot = await FirebaseFirestore.instance.collection("sub_category").get();
+      final subSnapshot =
+      await FirebaseFirestore.instance.collection("sub_category").get();
 
       if (subSnapshot.docs.isNotEmpty) {
         setState(() {
@@ -270,41 +286,46 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<bool> showExitDialog() async {
-    final initiateCartProvider = Provider.of<CartProvider>(context, listen: false);
+    final initiateCartProvider =
+    Provider.of<CartProvider>(context, listen: false);
     return await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(
-          "Exit App",
-          style: TextStyle(color: Colors.black, fontFamily: "Gilroy-Black"),
-        ),
-        content: const Text(
-          "Do you want to exit the app?",
-          style: TextStyle(color: Colors.black, fontFamily: "Gilroy-SemiBold"),
-        ),
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              style: ButtonStyle(
-                overlayColor: WidgetStateProperty.all(Colors.red[900]),
-              ),
-              child: const Text(
-                "No",
-                style: TextStyle(color: Color(0xffEF4B4B), fontFamily: "Gilroy-Black"),
-              )),
-          TextButton(
-            child: const Text(
-              "Yes",
+      builder: (context) =>
+          AlertDialog(
+            title: const Text(
+              "Exit App",
               style: TextStyle(color: Colors.black, fontFamily: "Gilroy-Black"),
             ),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-              initiateCartProvider.clearCart(); // Exit the app
-            },
+            content: const Text(
+              "Do you want to exit the app?",
+              style:
+              TextStyle(color: Colors.black, fontFamily: "Gilroy-SemiBold"),
+            ),
+            backgroundColor: Colors.white,
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  style: ButtonStyle(
+                    overlayColor: WidgetStateProperty.all(Colors.red[900]),
+                  ),
+                  child: const Text(
+                    "No",
+                    style: TextStyle(
+                        color: Color(0xffEF4B4B), fontFamily: "Gilroy-Black"),
+                  )),
+              TextButton(
+                child: const Text(
+                  "Yes",
+                  style: TextStyle(
+                      color: Colors.black, fontFamily: "Gilroy-Black"),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                  initiateCartProvider.clearCart(); // Exit the app
+                },
+              ),
+            ],
           ),
-        ],
-      ),
     ) ??
         false;
   }
@@ -313,7 +334,6 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return _isLoading ? const SkeletonScreen() : buildActualContent();
   }
-
   Widget buildActualContent() {
     return WillPopScope(
       onWillPop: () async {
@@ -333,206 +353,23 @@ class HomeScreenState extends State<HomeScreen> {
                   slivers: [
                     // Heading
                     HomeTop(scaffoldKey: scaffoldKey),
+
                     // Alerts
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance.collection('AlertLabel').snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return SliverToBoxAdapter(
-                            child: Container(),
-                          );
-                        }
+                    _buildAlertSection(),
 
-                        final alerts = snapshot.data!.docs
-                            .where((doc) => doc['status'] == 1)
-                            .map((doc) => {
-                          'message': doc['message'],
-                          'color': doc['color'],
-                          'textcolor': doc['textcolor'],
-                        })
-                            .toList();
-
-                        if (alerts.isEmpty) {
-                          return SliverToBoxAdapter(child: Container());
-                        }
-                        return SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                              final alert = alerts[index];
-                              return Container(
-                                color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                child: Center(
-                                  child: Text(
-                                    alert['message'],
-                                    style: TextStyle(
-                                      color: Color(int.parse(alert['textcolor'].replaceFirst('#', '0xff'))),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            childCount: alerts.length,
-                          ),
-                        );
-                      },
-                    ),
                     // Advertisement Widget
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                         child: SizedBox(
-                          height: MediaQuery.of(context).size.height / 4, // Adjust height as needed
+                          height: MediaQuery.of(context).size.height / 4,
                           child: const AdvertisementWidget(),
                         ),
                       ),
                     ),
-                    // Displaying categories
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-                            child: FutureBuilder<void>(
-                              future: fetchDataFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.black,
-                                    ),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return const Center(child: Text("Error"));
-                                } else {
-                                  return Column(
-                                    children: categories.map((category) {
-                                      final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
-                                      final itemCount = filteredSubCategories.length < 4 ? filteredSubCategories.length : 4;
-                                      return Stack(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0), // Reduced vertical padding
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  category.name,
-                                                  style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          GridView.builder(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: itemCount,
-                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 4,
-                                              // childAspectRatio: 0.62,
-                                              childAspectRatio: 0.56,
-                                            ),
-                                            itemBuilder: (context, subIndex) {
-                                              if (subIndex < filteredSubCategories.length) {
-                                                final subCategory = filteredSubCategories[subIndex];
-                                                return Column(
-                                                  children: [
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) => CategoryScreen(
-                                                              categoryTitle: category.name,
-                                                              subCategories: filteredSubCategories,
-                                                              selectedSubCategoryId: subCategory.id, // Pass the selected sub-category ID
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        // width: 100,
-                                                        width: 150,
-                                                        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                                                        decoration: const BoxDecoration(
-                                                          color: Color(0xffeaf1fc),
-                                                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                        ),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(4.0),
-                                                          child: CachedNetworkImage(
-                                                            height: 80,
-                                                            imageUrl: subCategory.img,
-                                                            errorWidget: (context, url, error) => const Icon(Icons.error),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    // sub-category name
-                                                    Text(
-                                                      subCategory.name,
-                                                      textAlign: TextAlign.center,
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.fade,
-                                                      style: const TextStyle(fontSize: 13, fontFamily: 'Gilroy-SemiBold'),
-                                                    ),
-                                                  ],
-                                                );
-                                              } else {
-                                                // Empty space
-                                                return Container(
-                                                  width: 100,
-                                                  margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0), // Reduced vertical margin
-                                                  decoration: const BoxDecoration(
-                                                    color: Colors.transparent,
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                          ),
 
-                                          //See all button
-                                          Positioned(
-                                              left: 0,
-                                              right: -285,
-                                              top: -10,
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => CategoryScreen(
-                                                        categoryTitle: category.name,
-                                                        subCategories: filteredSubCategories,
-                                                        selectedSubCategoryId: filteredSubCategories[0].id,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                                style: ButtonStyle(
-                                                  overlayColor: WidgetStateProperty.all(Colors.transparent), // Removes the hover effect
-                                                  backgroundColor: WidgetStateProperty.all(Colors.transparent), // Ensures no background color
-                                                ),
-                                                child: const Text(
-                                                  "see all",
-                                                  style: TextStyle(fontSize: 12, fontFamily: "Gilroy-ExtraBold", color: Colors.green),
-                                                ),
-                                              )),
-                                        ],
-                                      );
-                                    }).toList(),
-                                  );
-                                }
-                              },
-                            ),
-                          );
-                        },
-                        childCount: 1, // Adjust as per your needs
-                      ),
-                    ),
+                    // Displaying categories
+                    _buildCategorySection(),
                   ],
                 ),
                 const CartButton(),
@@ -540,6 +377,231 @@ class HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAlertSection() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('AlertLabel').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return SliverToBoxAdapter(child: Container());
+        }
+
+        final alerts = snapshot.data!.docs
+            .where((doc) => doc['status'] == 1)
+            .map((doc) => {
+          'message': doc['message'],
+          'color': doc['color'],
+          'textcolor': doc['textcolor'],
+        })
+            .toList();
+
+        if (alerts.isEmpty) {
+          return SliverToBoxAdapter(child: Container());
+        }
+
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (context, index) {
+              final alert = alerts[index];
+              return Container(
+                color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Center(
+                  child: Text(
+                    alert['message'],
+                    style: TextStyle(
+                      color: Color(int.parse(alert['textcolor'].replaceFirst('#', '0xff'))),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            },
+            childCount: alerts.length,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCategorySection() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+            child: FutureBuilder<void>(
+              future: fetchDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text("Error"));
+                } else {
+                  return Column(
+                    children: categories.map((category) {
+                      final filteredSubCategories = subCategories
+                          .where((subCategory) => subCategory.catId == category.id)
+                          .toList();
+                      final itemCount = filteredSubCategories.length < 8 ? filteredSubCategories.length : 8;
+                      return Column(
+                        children: [
+                          Stack(
+                            children: [
+                              if (category.logoUrl != null)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CachedNetworkImage(
+                                            imageUrl: category.logoUrl!,
+                                            width: 50,
+                                            height: 50,
+                                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            category.name,
+                                            style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        category.name,
+                                        style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              Padding(
+                                padding: category.logoUrl != null
+                                    ? const EdgeInsets.only(top: 26.0) // Add space only for categories with logo
+                                    : EdgeInsets.zero,
+                                child: GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: itemCount,
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    childAspectRatio: 0.56,
+                                  ),
+                                  itemBuilder: (context, subIndex) {
+                                    if (subIndex < filteredSubCategories.length) {
+                                      final subCategory = filteredSubCategories[subIndex];
+                                      return Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => CategoryScreen(
+                                                    categoryTitle: category.name,
+                                                    subCategories: filteredSubCategories,
+                                                    selectedSubCategoryId: subCategory.id,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 150,
+                                              margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xffeaf1fc),
+                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: CachedNetworkImage(
+                                                  height: 80,
+                                                  imageUrl: subCategory.img,
+                                                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            subCategory.name,
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.fade,
+                                            style: const TextStyle(fontSize: 13, fontFamily: 'Gilroy-SemiBold'),
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: 100,
+                                        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.transparent,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                              // See all button
+                              Positioned(
+                                left: 0,
+                                right: -285,
+                                top: -10,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CategoryScreen(
+                                          categoryTitle: category.name,
+                                          subCategories: filteredSubCategories,
+                                          selectedSubCategoryId: filteredSubCategories[0].id,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                    backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                                  ),
+                                  child: const Text(
+                                    "see all",
+                                    style: TextStyle(fontSize: 12, fontFamily: "Gilroy-ExtraBold", color: Colors.green),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  );
+                }
+              },
+            ),
+          );
+        },
+        childCount: 1,
       ),
     );
   }

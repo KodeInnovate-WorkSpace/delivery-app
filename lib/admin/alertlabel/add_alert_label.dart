@@ -39,7 +39,25 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Alert Label')),
+      appBar: AppBar(
+        title: const Text(
+          'Add Alert Label',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
+      ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -47,6 +65,7 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
             const SizedBox(height: 16.0),
             TextField(
               controller: idController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'ID',
                 border: OutlineInputBorder(),
@@ -56,6 +75,7 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
             const SizedBox(height: 20.0),
             TextField(
               controller: colorController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'Color',
                 border: OutlineInputBorder(),
@@ -64,6 +84,7 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
             const SizedBox(height: 20.0),
             TextField(
               controller: messageController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'Message',
                 border: OutlineInputBorder(),
@@ -73,7 +94,10 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Status: "),
+                const Text(
+                  "Status: ",
+                  style: TextStyle(color: Color(0xffb3b3b3)),
+                ),
                 DropdownButton<int>(
                   value: _status,
                   onChanged: (int? newValue) {
@@ -84,7 +108,10 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
                   items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                     return DropdownMenuItem<int>(
                       value: status,
-                      child: Text(status == 0 ? 'Inactive' : 'Active'),
+                      child: Text(
+                        status == 0 ? 'Inactive' : 'Active',
+                        style: const TextStyle(color: Color(0xff000000)),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -93,6 +120,7 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
             const SizedBox(height: 20.0),
             TextField(
               controller: textColorController,
+              style: const TextStyle(color: Color(0xffb3b3b3)),
               decoration: const InputDecoration(
                 labelText: 'Text Color',
                 border: OutlineInputBorder(),
@@ -117,7 +145,7 @@ class _AddAlertLabelScreenState extends State<AddAlertLabelScreen> {
                 child: const Text(
                   "Add",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xffb3b3b3),
                     fontFamily: 'Gilroy-Bold',
                   ),
                 ),

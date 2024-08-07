@@ -43,8 +43,24 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Category'),
+        title: const Text(
+          'Manage Category',
+          style: TextStyle(color: Color(0xffb3b3b3)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color(0xff1a1a1c),
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.keyboard_backspace,
+            color: Color(0xffb3b3b3),
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           Column(
@@ -53,6 +69,7 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: _searchController,
+                  style: const TextStyle(color: Color(0xffb3b3b3)),
                   decoration: InputDecoration(
                     labelText: 'Search Categories',
                     border: const OutlineInputBorder(),
@@ -85,6 +102,8 @@ class _ManageCategoryScreenState extends State<ManageCategoryScreen> {
                         source: src,
                         columnSpacing: 20,
                         rowsPerPage: 8,
+                        showFirstLastButtons: true,
+                        arrowHeadColor: const Color(0xff1a1a1c),
                       ),
                     ],
                   ),
@@ -152,10 +171,7 @@ class TableData extends DataTableSource {
     if (query.isEmpty) {
       filteredData = catData;
     } else {
-      filteredData = catData
-          .where((category) =>
-          category['category_name'].toString().toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      filteredData = catData.where((category) => category['category_name'].toString().toLowerCase().contains(query.toLowerCase())).toList();
     }
     notifyListeners();
   }
@@ -171,12 +187,14 @@ class TableData extends DataTableSource {
         DropdownButton<int>(
           value: data['status'], // Use the status value from data
           onChanged: (int? newValue) {
-            category.updateCategory(
+            category
+                .updateCategory(
               'status',
               newValue,
               categoryField: 'category_id',
               categoryValue: data['category_id'],
-            ).then((_) => _loadCatData());
+            )
+                .then((_) => _loadCatData());
           },
           items: statusOptions.map<DropdownMenuItem<int>>((int status) {
             return DropdownMenuItem<int>(
