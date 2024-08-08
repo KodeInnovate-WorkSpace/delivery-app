@@ -42,6 +42,11 @@ class HomeScreenState extends State<HomeScreen> {
   // products
   List<Product> products = [];
 
+  //define app version
+  String appVersion = "v0.2.2";
+  //variable to be compared with the  appVersion variable
+  String? fetchedAppVersion;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +60,13 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> fetchData() async {
     await fetchCategory();
     await fetchSubCategory();
+
+    //fetch app version and set into a variable
+    var fetchAppVer = await fetchAppVersion();
+    //use setstate to assign fetched app version
+    setState(() {
+      fetchedAppVersion = fetchAppVer;
+    });
   }
 
   Future<void> _handleRefresh() async {
@@ -353,9 +365,10 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
 
-                    buildOfferSection(),
+                    // buildOfferSection(),
                     // Displaying categories
-
+                    if (appVersion == fetchedAppVersion) buildOfferSection(),
+                    //display category
                     _buildCategorySection(),
                   ],
                 ),
