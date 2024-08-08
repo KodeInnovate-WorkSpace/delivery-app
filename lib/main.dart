@@ -94,11 +94,11 @@ class MyApp extends StatelessWidget {
       home: const MyAppState(),
       routes: {
         '/profile': (context) => const NetworkHandler(
-              child: ProfilePage(),
-            ),
+          child: ProfilePage(),
+        ),
         '/search': (context) => const NetworkHandler(
-              child: SearchPage(),
-            ),
+          child: SearchPage(),
+        ),
       },
     );
   }

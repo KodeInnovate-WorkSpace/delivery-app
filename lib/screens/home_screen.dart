@@ -433,159 +433,146 @@ class HomeScreenState extends State<HomeScreen> {
                     children: categories.map((category) {
                       final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
                       final itemCount = filteredSubCategories.length < 4 ? filteredSubCategories.length : 4;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 0),
-                        child: Column(
-                          children: [
-                            Stack(
-                              children: [
-                                if (category.logoUrl != null)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 40,
-                                              height: 40,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: const BorderRadius.all(
-                                                    Radius.circular(50),
-                                                  ),
-                                                  image: DecorationImage(
-                                                      image: CachedNetworkImageProvider(
-                                                    category.logoUrl!,
-                                                  ))),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              category.name,
-                                              style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                else
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          category.name,
-                                          style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
-                                        ),
-                                      ],
-                                    ),
+                      return Stack(
+                        children: [
+                          if (category.logoUrl != null)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                              child: Row(
+                                children: [
+                                  Row(
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: category.logoUrl!,
+                                        width: 50,
+                                        height: 50,
+                                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        category.name,
+                                        style: const TextStyle(fontSize: 17, fontFamily: "Gilroy-Bold"),
+                                      ),
+                                    ],
                                   ),
-                                Padding(
-                                  padding: category.logoUrl != null
-                                      ? const EdgeInsets.only(top: 25.0) // Add space only for categories with logo
-                                      : EdgeInsets.zero,
-                                  child: GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: itemCount,
-                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 4,
-                                      childAspectRatio: 0.56,
-                                    ),
-                                    itemBuilder: (context, subIndex) {
-                                      if (subIndex < filteredSubCategories.length) {
-                                        final subCategory = filteredSubCategories[subIndex];
-                                        return Column(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => CategoryScreen(
-                                                      categoryTitle: category.name,
-                                                      subCategories: filteredSubCategories,
-                                                      selectedSubCategoryId: subCategory.id,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: Container(
-                                                width: 150,
-                                                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                                                decoration: const BoxDecoration(
-                                                  color: Color(0xffeaf1fc),
-                                                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(2.0),
-                                                  child: CachedNetworkImage(
-                                                    height: 80,
-                                                    imageUrl: subCategory.img,
-                                                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                                                  ),
-                                                ),
+                                ],
+                              ),
+                            )
+                          else
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    category.name,
+                                    style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          Padding(
+                            padding: category.logoUrl != null
+                                ? const EdgeInsets.only(top: 25.0) // Add space only for categories with logo
+                                : EdgeInsets.zero,
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: itemCount,
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                childAspectRatio: 0.65, //imp line
+                              ),
+                              itemBuilder: (context, subIndex) {
+                                if (subIndex < filteredSubCategories.length) {
+                                  final subCategory = filteredSubCategories[subIndex];
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min, // Add this line
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CategoryScreen(
+                                                categoryTitle: category.name,
+                                                subCategories: filteredSubCategories,
+                                                selectedSubCategoryId: subCategory.id,
                                               ),
                                             ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              subCategory.name,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.fade,
-                                              style: const TextStyle(fontSize: 13, fontFamily: 'Gilroy-SemiBold'),
-                                            ),
-                                          ],
-                                        );
-                                      } else {
-                                        return Container(
-                                          width: 100,
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 150,
                                           margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                                           decoration: const BoxDecoration(
-                                            color: Colors.transparent,
+                                            color: Color(0xffeaf1fc),
+                                            borderRadius: BorderRadius.all(Radius.circular(10)),
                                           ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ),
-                                // See all button
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  top: category.logoUrl != null ? 0 : -10,
-                                  child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => CategoryScreen(
-                                              categoryTitle: category.name,
-                                              subCategories: filteredSubCategories,
-                                              selectedSubCategoryId: filteredSubCategories[0].id,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: CachedNetworkImage(
+                                              height: 80,
+                                              imageUrl: subCategory.img,
+                                              errorWidget: (context, url, error) => const Icon(Icons.error),
                                             ),
                                           ),
-                                        );
-                                      },
-                                      style: ButtonStyle(
-                                        overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                        backgroundColor: WidgetStateProperty.all(Colors.transparent),
+                                        ),
                                       ),
-                                      child: const Text(
-                                        "see all",
-                                        style: TextStyle(fontSize: 12, fontFamily: "Gilroy-ExtraBold", color: Colors.green),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        subCategory.name,
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.fade,
+                                        style: const TextStyle(fontSize: 13, fontFamily: 'Gilroy-SemiBold'),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Container(
+                                    width: 100,
+                                    margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                          // See all button
+                          Positioned(
+                            left: category.logoUrl != null ? 0 : 0,
+                            right: category.logoUrl != null ? -15 : 0,
+                            top: category.logoUrl != null ? 0 : -10, // Adjust based on logo presence
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CategoryScreen(
+                                        categoryTitle: category.name,
+                                        subCategories: filteredSubCategories,
+                                        selectedSubCategoryId: filteredSubCategories[0].id,
                                       ),
                                     ),
-                                  ),
+                                  );
+                                },
+                                style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                  backgroundColor: MaterialStateProperty.all(Colors.transparent),
                                 ),
-                              ],
+                                child: const Text(
+                                  "see all",
+                                  style: TextStyle(fontSize: 12, fontFamily: "Gilroy-ExtraBold", color: Colors.green),
+                                ),
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       );
                     }).toList(),
                   );
