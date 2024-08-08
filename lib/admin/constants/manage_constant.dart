@@ -51,7 +51,7 @@ class ConstantsListScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Delivery Charge: \$${data['deliveryCharge']}',
+                      'Delivery Charge: ₹${data['deliveryCharge']}',
                       style: const TextStyle(color: Color(0xffb3b3b3)),
                     ),
                     Text(
