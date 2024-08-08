@@ -2,9 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/add_to_cart_button.dart';
-import 'offer_cart_button.dart';
 
-Widget offerProductCard(int categoryId) {
+Widget offerProductCard(int categoryId, String categoryName) {
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance.collection("product2").where('categoryId', isEqualTo: categoryId).snapshots(),
     builder: (context, snapshot) {
@@ -60,6 +59,7 @@ Widget offerProductCard(int categoryId) {
                         productImage: data["image"],
                         productUnit: data["unit"],
                         isOfferProduct: data['isOfferProduct'],
+                        catName: categoryName,
                       ),
                     ],
                   ),

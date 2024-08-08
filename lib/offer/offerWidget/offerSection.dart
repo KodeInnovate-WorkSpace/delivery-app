@@ -51,7 +51,7 @@ Widget buildOfferSection() {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                offerProductCard(categoryId),
+                                offerProductCard(categoryId, name),
                               ],
                             ),
                           ),

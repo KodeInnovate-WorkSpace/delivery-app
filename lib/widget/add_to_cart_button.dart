@@ -10,7 +10,7 @@ class AddToCartButton extends StatefulWidget {
   final String productImage;
   final String productUnit;
   final bool? isOfferProduct;
-
+  final String? catName;
   const AddToCartButton({
     super.key,
     required this.productName,
@@ -18,6 +18,7 @@ class AddToCartButton extends StatefulWidget {
     required this.productImage,
     required this.productUnit,
     this.isOfferProduct,
+    this.catName,
   });
 
   @override
@@ -58,6 +59,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
       itemPrice: widget.productPrice,
       itemImage: widget.productImage,
       itemUnit: widget.productUnit,
+      categoryName: widget.catName,
     );
 
     // Update state based on provider
@@ -138,6 +140,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
                         if (widget.isOfferProduct == true) {
                           // Check if the product is already in the cart
                           bool isProductInCart = cartProvider.cartItems.any((item) => item.itemName == cartItem.itemName);
+                          bool isCategorySame = cartProvider.cartItems.any((item) => item.categoryName == cartItem.categoryName);
                           if (!isProductInCart) {
                             _count = 1;
                             cartProvider.addItem(cartItem);
@@ -163,10 +166,6 @@ class AddToCartButtonState extends State<AddToCartButton> {
                 cartProvider.addItem(cartItem);
                 _saveCartState();
               });
-              // Code for shared preference
-              // await cartProvider.saveCart();
-              // Show Snackbar
-              // showMessage('${widget.productName} added to cart');
             },
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
