@@ -3,6 +3,7 @@ class Cart {
   final int itemPrice;
   final String itemImage;
   final String itemUnit;
+  bool? isOfferProduct;
   int qnt;
 
   Cart({
@@ -10,6 +11,7 @@ class Cart {
     required this.itemName,
     required this.itemPrice,
     required this.itemUnit,
+    this.isOfferProduct,
     this.qnt = 1,
   });
 
@@ -21,6 +23,7 @@ class Cart {
         'itemName': itemName,
         'itemPrice': itemPrice,
         'itemUnit': itemUnit,
+        'isOfferProduct': isOfferProduct,
         'qnt': qnt,
       };
 
@@ -30,6 +33,7 @@ class Cart {
         itemName: json['itemName'] as String,
         itemPrice: json['itemPrice'] as int,
         itemUnit: json['itemUnit'] as String,
+        isOfferProduct: json['isOfferProduct'] as bool,
         qnt: json['qnt'] as int,
       );
 }

@@ -11,17 +11,17 @@ class OfferCartButton extends StatefulWidget {
   final String productUnit;
 
   const OfferCartButton({
-    Key? key,
+    super.key,
     required this.categoryId,
     required this.productId,
     required this.productName,
     required this.productPrice,
     required this.productImage,
     required this.productUnit,
-  }) : super(key: key);
+  });
 
   @override
-  _OfferCartButtonState createState() => _OfferCartButtonState();
+  State<OfferCartButton> createState() => _OfferCartButtonState();
 }
 
 class _OfferCartButtonState extends State<OfferCartButton> {

@@ -1,4 +1,3 @@
-//Code Updated Removed Shared Preference
 import 'package:flutter/cupertino.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 import '../models/cart_model.dart';
@@ -9,12 +8,12 @@ import 'dart:math';
 class CartProvider extends ChangeNotifier {
   final bool _isLoading = false;
   bool isCouponApplied = false;
-  final List<Cart> _cartItems = [];
+  final List<Cart> cartItems = [];
   double _discount = 0.0;
   String? _selectedCoupon;
   String? selectedPaymentMethod = "Online";
 
-  List<Cart> get cart => _cartItems;
+  List<Cart> get cart => cartItems;
   bool get isLoading => _isLoading;
   double get Discount => _discount;
 
@@ -24,7 +23,7 @@ class CartProvider extends ChangeNotifier {
 
   double calculateTotalPrice() {
     double total = 0.0;
-    for (var item in _cartItems) {
+    for (var item in cartItems) {
       total += item.itemPrice * item.qnt;
     }
     return total;
@@ -65,18 +64,18 @@ class CartProvider extends ChangeNotifier {
   }
 
   String itemCount(Cart item) {
-    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
-      return _cartItems[index].qnt.toString();
+      return cartItems[index].qnt.toString();
     } else {
       return "ADD";
     }
   }
 
   int getItemCount(Cart item) {
-    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
     if (index >= 0) {
-      return _cartItems[index].qnt;
+      return cartItems[index].qnt;
     } else {
       return 0;
     }
@@ -105,33 +104,33 @@ class CartProvider extends ChangeNotifier {
   }
 
   void clearCart() {
-    _cartItems.clear();
+    cartItems.clear();
     clearCoupon();
     notifyListeners();
   }
 
   void addItem(Cart item) {
-    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
-      _cartItems[index].qnt++;
+      cartItems[index].qnt++;
     } else {
-      _cartItems.add(item);
+      cartItems.add(item);
     }
     logCartContents();
     notifyListeners();
   }
 
   void removeItem(Cart item) {
-    final index = _cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
+    final index = cartItems.indexWhere((cartItem) => cartItem.itemName == item.itemName);
 
     if (index >= 0) {
-      if (_cartItems[index].qnt > 1) {
-        _cartItems[index].qnt--;
+      if (cartItems[index].qnt > 1) {
+        cartItems[index].qnt--;
       } else {
-        _cartItems.removeAt(index);
-        if (_cartItems.isEmpty) {
-          _cartItems.clear();
+        cartItems.removeAt(index);
+        if (cartItems.isEmpty) {
+          cartItems.clear();
         }
       }
 
@@ -153,7 +152,7 @@ class CartProvider extends ChangeNotifier {
 
   void logCartContents() {
     debugPrint("Current cart contents:");
-    for (var item in _cartItems) {
+    for (var item in cartItems) {
       debugPrint("Item: ${item.itemName}, Price: ${item.itemPrice}, Image: ${item.itemImage}, Unit: ${item.itemUnit}, Quantity: ${item.qnt}");
     }
   }
@@ -161,7 +160,7 @@ class CartProvider extends ChangeNotifier {
   int totalItemsCount() {
     Set<String> itemNames = {};
 
-    for (var item in _cartItems) {
+    for (var item in cartItems) {
       itemNames.add(item.itemName);
     }
 

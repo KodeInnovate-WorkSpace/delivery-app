@@ -9,6 +9,7 @@ class AddToCartButton extends StatefulWidget {
   final int productPrice;
   final String productImage;
   final String productUnit;
+  final bool? isOfferProduct;
 
   const AddToCartButton({
     super.key,
@@ -16,6 +17,7 @@ class AddToCartButton extends StatefulWidget {
     required this.productPrice,
     required this.productImage,
     required this.productUnit,
+    this.isOfferProduct,
   });
 
   @override
@@ -79,8 +81,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
                   child: IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    icon:
-                        const Icon(Icons.remove, size: 15, color: Colors.white),
+                    icon: const Icon(Icons.remove, size: 15, color: Colors.white),
                     onPressed: () async {
                       setState(() {
                         if (_count > 1) {
@@ -108,6 +109,25 @@ class AddToCartButtonState extends State<AddToCartButton> {
                   ),
                 ),
                 // Add button
+                // Expanded(
+                //   child: IconButton(
+                //     padding: EdgeInsets.zero,
+                //     constraints: const BoxConstraints(),
+                //     icon: const Icon(Icons.add, size: 15, color: Colors.white),
+                //     onPressed: () async {
+                //
+                //       setState(() {
+                //         if (widget.isOfferProduct! == true) {
+                //           _count = 1;
+                //           return;
+                //         }
+                //         _count++;
+                //         cartProvider.addItem(cartItem);
+                //         _saveCartState();
+                //       });
+                //     },
+                //   ),
+                // ),
                 Expanded(
                   child: IconButton(
                     padding: EdgeInsets.zero,
@@ -115,11 +135,21 @@ class AddToCartButtonState extends State<AddToCartButton> {
                     icon: const Icon(Icons.add, size: 15, color: Colors.white),
                     onPressed: () async {
                       setState(() {
-                        _count++;
-                        cartProvider.addItem(cartItem);
-                        _saveCartState();
-                      });
+                        if (widget.isOfferProduct == true) {
+                          // Check if the product is already in the cart
+                          bool isProductInCart = cartProvider.cartItems.any((item) => item.itemName == cartItem.itemName);
 
+                          if (!isProductInCart) {
+                            _count = 1;
+                            cartProvider.addItem(cartItem);
+                            _saveCartState();
+                          }
+                        } else {
+                          _count++;
+                          cartProvider.addItem(cartItem);
+                          _saveCartState();
+                        }
+                      });
                     },
                   ),
                 ),
@@ -140,8 +170,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
               // showMessage('${widget.productName} added to cart');
             },
             style: ButtonStyle(
-              backgroundColor:
-                  WidgetStateProperty.all<Color>(Colors.transparent),
+              backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
               overlayColor: WidgetStateProperty.resolveWith<Color>(
                 (Set<WidgetState> states) {
                   if (states.contains(WidgetState.hovered)) {
@@ -153,8 +182,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
                   return Colors.green.withOpacity(0.6);
                 },
               ),
-              side: WidgetStateProperty.all<BorderSide>(
-                  const BorderSide(color: Colors.green)),
+              side: WidgetStateProperty.all<BorderSide>(const BorderSide(color: Colors.green)),
               shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(4)),
