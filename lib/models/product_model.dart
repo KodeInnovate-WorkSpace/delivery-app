@@ -9,7 +9,8 @@ class Product {
   final int subCatId;
   final int status;
   final bool isVeg;
-  final bool isFood; // New field
+  final bool isFood;
+  bool? isOfferProduct;
 
   Product({
     required this.id,
@@ -22,7 +23,8 @@ class Product {
     required this.subCatId,
     required this.status,
     this.isVeg = false,
-    this.isFood = false, // Default value set to false
+    this.isFood = false,
+    this.isOfferProduct = false,
   });
 
   Map<String, dynamic> toJson() {
@@ -37,7 +39,8 @@ class Product {
       'sub_category_id': subCatId,
       'status': status,
       'isVeg': isVeg,
-      'isFood': isFood, // New field
+      'isFood': isFood,
+      'isOfferProduct': isOfferProduct,
     };
   }
 
@@ -53,7 +56,8 @@ class Product {
       subCatId: json['sub_category_id'],
       status: json['status'],
       isVeg: json['isVeg'] ?? false,
-      isFood: json['isFood'] ?? false, // Handle missing isFood field
+      isFood: json['isFood'] ?? false,
+      isOfferProduct: json['isOfferProduct'] ?? false,
     );
   }
 }
