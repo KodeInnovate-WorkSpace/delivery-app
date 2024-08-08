@@ -32,7 +32,13 @@ Widget offerProductCard(int categoryId, String categoryName) {
                 child: Container(
                   width: 140,
                   height: 220,
-                  color: const Color.fromRGBO(200, 0, 0, 0.2),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      border: Border.all(
+                        color: Colors.grey.shade100,
+                        width: 1,
+                      )),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,16 +60,24 @@ Widget offerProductCard(int categoryId, String categoryName) {
                           ),
                         ),
                       ),
-                      //Product Name
-                      Text(
-                        data["name"],
-                        style: const TextStyle(color: Colors.black, fontFamily: 'Gilroy-Bold'),
-                      ),
 
-                      //Product weight
-                      Text(
-                        data["unit"],
-                        style: const TextStyle(color: Colors.black),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //Product Name
+                            Text(
+                              data["name"],
+                              style: const TextStyle(color: Colors.black, fontFamily: 'Gilroy-Bold'),
+                            ),
+                            //Product weight
+                            Text(
+                              data["unit"],
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
                       ),
 
                       Row(

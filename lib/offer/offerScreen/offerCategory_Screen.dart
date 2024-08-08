@@ -86,15 +86,8 @@ class OfferCategoryScreenState extends State<OfferCategoryScreen> {
         ),
         body: Stack(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  // child: ProductCard(
-                  //   productList: products,
-                  // ),
-                  child: offerProductCard(widget.categoryID, widget.categoryTitle),
-                ),
-              ],
+            Expanded(
+              child: offerProductCard(widget.categoryID, widget.categoryTitle),
             ),
             const CartButton(),
           ],
