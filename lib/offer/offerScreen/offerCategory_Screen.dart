@@ -37,7 +37,7 @@ class OfferCategoryScreenState extends State<OfferCategoryScreen> {
 
   Future<void> fetchProducts() async {
     try {
-      final productSnap = await FirebaseFirestore.instance.collection("product2").where('categoryId', isEqualTo: widget.categoryID).get();
+      final productSnap = await FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: widget.categoryID).get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
