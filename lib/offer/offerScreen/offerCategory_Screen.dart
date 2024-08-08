@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
-import 'package:speedy_delivery/widget/product_card.dart';
 
 import '../../models/product_model.dart';
 import '../../widget/network_handler.dart';
