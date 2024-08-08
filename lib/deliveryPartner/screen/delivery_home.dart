@@ -28,7 +28,7 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
 
   Future<void> _refreshOrders() async {
     final orderProvider = Provider.of<AllOrderProvider>(context, listen: false);
-     orderProvider.fetchAllOrders();
+    orderProvider.fetchAllOrders();
   }
 
   @override
@@ -66,12 +66,15 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                               TextButton(
                                 onPressed: () async {
                                   await FirebaseAuth.instance.signOut();
-                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
                                   await prefs.remove('isLoggedIn');
                                   Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const SigninScreen()),
-                                        (route) => false,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SigninScreen()),
+                                    (route) => false,
                                   );
                                 },
                                 child: const Text(
@@ -97,7 +100,8 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
               indicatorColor: Colors.black,
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
-              labelStyle: TextStyle(fontSize: 17, fontFamily: 'Gilroy-SemiBold'),
+              labelStyle:
+                  TextStyle(fontSize: 17, fontFamily: 'Gilroy-SemiBold'),
               tabs: [
                 Tab(text: "Pending Orders"),
                 Tab(text: "Completed Orders"),
@@ -135,37 +139,46 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
     return RefreshIndicator(
       onRefresh: _refreshOrders,
       child: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('OrderHistory')
-            .where('valetPhone', isEqualTo: authProvider.phone).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('OrderHistory')
+            .where('valetPhone', isEqualTo: authProvider.phone)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator(color: Colors.black));
+            return const Center(
+                child: CircularProgressIndicator(color: Colors.black));
           }
 
           final orders = snapshot.data?.docs
               .map((doc) {
-            final data = doc.data();
-            final orderDetails = (data['orders'] as List<dynamic>).map((order) {
-              return OrderDetail(
-                price: order['price'],
-                productImage: order['productImage'],
-                productName: order['productName'],
-                quantity: order['quantity'],
-              );
-            }).toList();
+                final data = doc.data();
+                final orderDetails =
+                    (data['orders'] as List<dynamic>).map((order) {
+                  return OrderDetail(
+                    price: order['price'],
+                    productImage: order['productImage'],
+                    productName: order['productName'],
+                    quantity: order['quantity'],
+                   unit: order['unit']??"Unknown",
+                  );
+                }).toList();
 
-            return AllOrder(
-              orderId: data['orderId'],
-              address: data['address'],
-              orders: orderDetails,
-              overallTotal: data['overallTotal'],
-              paymentMode: data['paymentMode'],
-              status: data['status'],
-              phone: data['phone'],
-              time: data['timestamp'],
-            );
-          })
-              .where((order) => order.status == 0 || order.status == 1 || order.status == 2 || order.status == 3)
+                return AllOrder(
+                  orderId: data['orderId'],
+                  address: data['address'],
+                  orders: orderDetails,
+                  overallTotal: data['overallTotal'],
+                  paymentMode: data['paymentMode'],
+                  status: data['status'],
+                  phone: data['phone'],
+                  time: data['timestamp'],
+                );
+              })
+              .where((order) =>
+                  order.status == 0 ||
+                  order.status == 1 ||
+                  order.status == 2 ||
+                  order.status == 3)
               .toList()
               .reversed
               .toList();
@@ -201,11 +214,14 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                   },
                   child: ListTile(
                     title: Text(order?.orderId ?? ''),
-                    subtitle: Text('Order Date: ${formatTimestamp(DateTime.parse(order?.time ?? ''))}',),
+                    subtitle: Text(
+                      'Order Date: ${formatTimestamp(DateTime.parse(order?.time ?? ''))}',
+                    ),
                     trailing: GestureDetector(
                       onTap: () async {
                         if (order?.phone != null) {
-                          Uri dialNumber = Uri(scheme: 'tel', path: order?.phone);
+                          Uri dialNumber =
+                              Uri(scheme: 'tel', path: order?.phone);
                           await launchUrl(dialNumber);
                         }
                       },
@@ -239,36 +255,43 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
     return RefreshIndicator(
       onRefresh: _refreshOrders,
       child: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('OrderHistory')
-            .where('valetPhone', isEqualTo: authProvider.phone).snapshots(),        builder: (context, snapshot) {
+        stream: FirebaseFirestore.instance
+            .collection('OrderHistory')
+            .where('valetPhone', isEqualTo: authProvider.phone)
+            .snapshots(),
+        builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator(color: Colors.black));
+            return const Center(
+                child: CircularProgressIndicator(color: Colors.black));
           }
 
           final orders = snapshot.data?.docs
               .map((doc) {
-            final data = doc.data();
-            final orderDetails = (data['orders'] as List<dynamic>).map((order) {
-              return OrderDetail(
-                price: order['price'],
-                productImage: order['productImage'],
-                productName: order['productName'],
-                quantity: order['quantity'],
-              );
-            }).toList();
+                final data = doc.data();
+                final orderDetails =
+                    (data['orders'] as List<dynamic>).map((order) {
+                  return OrderDetail(
+                    price: order['price'],
+                    productImage: order['productImage'],
+                    productName: order['productName'],
+                    quantity: order['quantity'],
+                    unit: order['unit']??"Unknown",
+                  );
+                }).toList();
 
-            return AllOrder(
-              orderId: data['orderId'],
-              address: data['address'],
-              orders: orderDetails,
-              overallTotal: data['overallTotal'],
-              paymentMode: data['paymentMode'],
-              status: data['status'],
-              phone: data['phone'],
-              time: data['timestamp'],
-            );
-          })
-              .where((order) => order.status == 4 || order.status == 5 || order.status == 6 )
+                return AllOrder(
+                  orderId: data['orderId'],
+                  address: data['address'],
+                  orders: orderDetails,
+                  overallTotal: data['overallTotal'],
+                  paymentMode: data['paymentMode'],
+                  status: data['status'],
+                  phone: data['phone'],
+                  time: data['timestamp'],
+                );
+              })
+              .where((order) =>
+                  order.status == 4 || order.status == 5 || order.status == 6)
               .toList()
               .reversed
               .toList();
@@ -304,11 +327,14 @@ class _DeliveryHomeScreenState extends State<DeliveryHomeScreen> {
                   },
                   child: ListTile(
                     title: Text(order?.orderId ?? ''),
-                    subtitle: Text('Order Date: ${formatTimestamp(DateTime.parse(order?.time ?? ''))}',),
+                    subtitle: Text(
+                      'Order Date: ${formatTimestamp(DateTime.parse(order?.time ?? ''))}',
+                    ),
                     trailing: GestureDetector(
                       onTap: () async {
                         if (order?.phone != null) {
-                          Uri dialNumber = Uri(scheme: 'tel', path: order?.phone);
+                          Uri dialNumber =
+                              Uri(scheme: 'tel', path: order?.phone);
                           await launchUrl(dialNumber);
                         }
                       },

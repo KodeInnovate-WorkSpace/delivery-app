@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:googleapis/connectors/v1.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
+import '../../providers/order_provider.dart';
 import '../model/model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -185,43 +188,40 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     );
   }
 
+
   Widget _buildOrderDetailsTable() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Table(
           columnWidths: const {
-            0: FlexColumnWidth(),
-            1: FixedColumnWidth(80.0),
-            2: FixedColumnWidth(80.0),
+            0: FlexColumnWidth(2.5),
+            1: FixedColumnWidth(40.0),
+            2: FixedColumnWidth(60.0),
+            3: FixedColumnWidth(70.0),
           },
           border: TableBorder.all(color: Colors.grey[300]!),
           children: [
             TableRow(
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Colors.grey[100],
               ),
               children: const [
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Items",
-                      style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  child: Text("Items", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Qnt",
-                      style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.all(12.0),
+                  child: Text("Qnt", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Price",
-                      style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.all(12.0),
+                  child: Text("Unit", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text("Price", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
                 ),
               ],
             ),
@@ -229,45 +229,49 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               TableRow(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text(
-                      widget.order[index].productName,
+                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                    child: FutureBuilder<String?>(
+                      future: context.read<OrderProvider>().fetchCategoryName(widget.order[index].productName),
+                      builder: (context, snapshot) {
+                        final categoryName = snapshot.data ?? 'Unknown';
+                        return Text(
+                          "${widget.order[index].productName}\nCategory: $categoryName",
+                          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                        );
+                      },
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text("x ${widget.order[index].quantity.toString()}"),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text("x ${widget.order[index].quantity}", textAlign: TextAlign.center),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text(widget.order[index].price.toStringAsFixed(2)),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text("${widget.order[index].unit}", textAlign: TextAlign.center),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text("₹${widget.order[index].price.toStringAsFixed(2)}", textAlign: TextAlign.right),
                   ),
                 ],
               ),
           ],
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Total Price",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              const Text("Total Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("₹${widget.orderTotalPrice.toStringAsFixed(2)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
       ],
     );
   }
+
+
 
   Widget _buildOrderDetailsTableFailed() {
     return Column(
@@ -287,20 +291,17 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               ),
               children: const [
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Items",
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Qnt",
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Text("Price",
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
@@ -312,8 +313,18 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 8.0, horizontal: 16.0),
-                    child: Text(
-                      widget.order[index].productName,
+                    child: FutureBuilder<String?>(
+                      future: context.read<OrderProvider>().fetchCategoryName(widget.order[index].productName),
+                      builder: (context, snapshot) {
+                        final categoryName = snapshot.data ?? 'Unknown';
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(widget.order[index].productName),
+                            Text('Category: $categoryName'),
+                          ],
+                        );
+                      },
                     ),
                   ),
                   Padding(
@@ -349,7 +360,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       ],
     );
   }
-
 
   // // Future<void> uploadAllImages(String productName) async {
   // //   if (itemImages.length != widget.order.length) {
@@ -648,4 +658,4 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       ),
     );
   }
-}
+}//category update
