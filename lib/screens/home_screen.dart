@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy_delivery/offer/offerScreen/offerCategory_Screen.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/skeleton.dart';
@@ -15,7 +14,6 @@ import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
 import '../offer/offerWidget/offerSection.dart';
 import '../providers/cart_provider.dart';
-import '../services/push_notification.dart';
 import '../widget/advertisement_widget.dart';
 import '../widget/network_handler.dart';
 import '../models/category_model.dart';
@@ -365,7 +363,6 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
 
-                    // buildOfferSection(),
                     // Displaying categories
                     if (appVersion == fetchedAppVersion) buildOfferSection(),
                     //display category

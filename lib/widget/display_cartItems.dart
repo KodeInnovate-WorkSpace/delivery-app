@@ -25,7 +25,7 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
 
   Future<void> _fetchProductData() async {
     final firestore = FirebaseFirestore.instance;
-    final productsSnapshot = await firestore.collection('product2').get();
+    final productsSnapshot = await firestore.collection('offerProduct').get();
 
     final isVegMap = <String, bool>{};
     final isOfferProductMap = <String, bool>{}; // Initialize this map
