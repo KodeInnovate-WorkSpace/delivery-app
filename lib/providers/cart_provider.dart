@@ -21,6 +21,10 @@ class CartProvider extends ChangeNotifier {
     // Load cart can be removed if we are not storing the cart persistently
   }
 
+  void removeItemByCategory(String categoryName) {
+    cartItems.removeWhere((item) => item.categoryName == categoryName);
+  }
+
   double calculateTotalPrice() {
     double total = 0.0;
     for (var item in cartItems) {

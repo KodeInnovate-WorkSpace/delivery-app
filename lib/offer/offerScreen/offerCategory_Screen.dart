@@ -6,6 +6,7 @@ import 'package:speedy_delivery/widget/product_card.dart';
 
 import '../../models/product_model.dart';
 import '../../widget/network_handler.dart';
+import '../offerWidget/offerProductCard.dart';
 
 class OfferCategoryScreen extends StatefulWidget {
   final double imageWidth;
@@ -89,9 +90,10 @@ class OfferCategoryScreenState extends State<OfferCategoryScreen> {
             Row(
               children: [
                 Expanded(
-                  child: ProductCard(
-                    productList: products,
-                  ),
+                  // child: ProductCard(
+                  //   productList: products,
+                  // ),
+                  child: offerProductCard(widget.categoryID, widget.categoryTitle),
                 ),
               ],
             ),

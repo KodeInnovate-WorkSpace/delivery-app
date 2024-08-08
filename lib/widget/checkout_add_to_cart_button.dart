@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/providers/cart_provider.dart';
-
 import '../models/cart_model.dart';
 
 class CheckoutAddToCartButton extends StatefulWidget {
@@ -10,6 +9,8 @@ class CheckoutAddToCartButton extends StatefulWidget {
   final int productPrice;
   final String productImage;
   final String productUnit;
+  final bool? isOfferProduct;
+  final String? catName;
 
   const CheckoutAddToCartButton({
     super.key,
@@ -17,6 +18,8 @@ class CheckoutAddToCartButton extends StatefulWidget {
     required this.productPrice,
     required this.productImage,
     required this.productUnit,
+    this.isOfferProduct,
+    this.catName,
   });
 
   @override
@@ -55,6 +58,7 @@ class CheckoutAddToCartButtonState extends State<CheckoutAddToCartButton> {
       itemPrice: widget.productPrice,
       itemImage: widget.productImage,
       itemUnit: widget.productUnit,
+      categoryName: widget.catName,
     );
 
     return Container(
@@ -95,10 +99,32 @@ class CheckoutAddToCartButtonState extends State<CheckoutAddToCartButton> {
               constraints: const BoxConstraints(),
               icon: const Icon(Icons.add, size: 15, color: Colors.white),
               onPressed: () {
+                // setState(() {
+                //   _count++;
+                //   cartProvider.addItem(cartItem);
+                //   _saveCartState();
+                // });
+
                 setState(() {
-                  _count++;
-                  cartProvider.addItem(cartItem);
-                  _saveCartState();
+                  if (widget.isOfferProduct == true) {
+                    // Handle offer products
+                    bool isCategorySame = cartProvider.cartItems.any((item) => item.categoryName == cartItem.categoryName);
+
+                    if (isCategorySame) {
+                      // Remove the existing item in the same category
+                      cartProvider.removeItemByCategory(cartItem.categoryName!);
+                    }
+
+                    // Add the new item
+                    _count = 1; // Ensure count is set to 1 for offer products
+                    cartProvider.addItem(cartItem);
+                    _saveCartState();
+                  } else {
+                    // Handle non-offer products
+                    _count++;
+                    cartProvider.addItem(cartItem);
+                    _saveCartState();
+                  }
                 });
               },
             ),

@@ -15,6 +15,7 @@ class DisplayCartItems extends StatefulWidget {
 
 class _DisplayCartItemsState extends State<DisplayCartItems> {
   Map<String, bool> _isVegMap = {};
+  Map<String, bool> _isOfferProductMap = {}; // Add this to store offer product info
 
   @override
   void initState() {
@@ -24,18 +25,24 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
 
   Future<void> _fetchProductData() async {
     final firestore = FirebaseFirestore.instance;
-    final productsSnapshot = await firestore.collection('products').get();
+    final productsSnapshot = await firestore.collection('product2').get();
 
     final isVegMap = <String, bool>{};
+    final isOfferProductMap = <String, bool>{}; // Initialize this map
+
     for (var doc in productsSnapshot.docs) {
       final data = doc.data();
-      final isVeg = data['isVeg'] ?? false; // Default to false if not present
-      final name = data['name']; // Assuming you have a 'name' field for products
+      final isVeg = data['isVeg'] ?? false;
+      final name = data['name'];
+      final isOfferProduct = data['isOfferProduct'] ?? false; // Ensure default value is provided
+
       isVegMap[name] = isVeg;
+      isOfferProductMap[name] = isOfferProduct; // Store offer product info
     }
 
     setState(() {
       _isVegMap = isVegMap;
+      _isOfferProductMap = isOfferProductMap; // Update the state with offer product info
     });
   }
 
@@ -81,6 +88,7 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
         return Column(
           children: cartProvider.cart.map((item) {
             final isVeg = _isVegMap[item.itemName] ?? false;
+            final isOfferProduct = _isOfferProductMap[item.itemName] ?? false; // Get offer product info
 
             return Stack(
               children: [
@@ -134,6 +142,8 @@ class _DisplayCartItemsState extends State<DisplayCartItems> {
                               productPrice: item.itemPrice,
                               productImage: item.itemImage,
                               productUnit: item.itemUnit,
+                              isOfferProduct: isOfferProduct,
+                              catName: item.categoryName,
                             ),
                           ],
                         ),

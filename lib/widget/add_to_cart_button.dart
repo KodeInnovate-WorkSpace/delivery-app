@@ -11,6 +11,7 @@ class AddToCartButton extends StatefulWidget {
   final String productUnit;
   final bool? isOfferProduct;
   final String? catName;
+
   const AddToCartButton({
     super.key,
     required this.productName,
@@ -140,7 +141,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
                         if (widget.isOfferProduct == true) {
                           // Check if the product is already in the cart
                           bool isProductInCart = cartProvider.cartItems.any((item) => item.itemName == cartItem.itemName);
-                          bool isCategorySame = cartProvider.cartItems.any((item) => item.categoryName == cartItem.categoryName);
+
                           if (!isProductInCart) {
                             _count = 1;
                             cartProvider.addItem(cartItem);
@@ -161,6 +162,13 @@ class AddToCartButtonState extends State<AddToCartButton> {
         : OutlinedButton(
             onPressed: () async {
               setState(() {
+                // Check if there is an item in the same category in the cart
+                bool isCategorySame = cartProvider.cartItems.any((item) => item.categoryName == cartItem.categoryName);
+
+                if (isCategorySame) {
+                  // Remove the existing item in the same category
+                  cartProvider.removeItemByCategory(cartItem.categoryName!);
+                }
                 _isClicked = true;
                 _count = 1;
                 cartProvider.addItem(cartItem);
