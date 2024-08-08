@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speedy_delivery/offer/offerProvider/offerCartProvider.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import 'package:speedy_delivery/screens/profile_screen.dart';
@@ -56,6 +57,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => MyAuthProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
+        ChangeNotifierProvider(create: (context) => OfferCartProvider()),
         ChangeNotifierProvider(create: (_) => CheckUserProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),

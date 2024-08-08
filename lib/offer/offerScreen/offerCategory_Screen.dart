@@ -35,7 +35,7 @@ class OfferCategoryScreenState extends State<OfferCategoryScreen> {
 
   Future<void> fetchProducts() async {
     try {
-      final productSnap = await FirebaseFirestore.instance.collection("products").get();
+      final productSnap = await FirebaseFirestore.instance.collection("product2").get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
@@ -52,7 +52,7 @@ class OfferCategoryScreenState extends State<OfferCategoryScreen> {
               stock: data['stock'] ?? 0,
               subCatId: data['sub_category_id'] ?? 0,
               status: data['status'],
-              isVeg: data['isVeg'] ?? false, // Handle the new field
+              isVeg: data['isVeg'] ?? false,
             );
 
             if (product.status == 1) {

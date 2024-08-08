@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
+import 'package:speedy_delivery/offer/offerScreen/offerCategory_Screen.dart';
 import 'package:speedy_delivery/providers/auth_provider.dart';
 import 'package:speedy_delivery/screens/not_in_location_screen.dart';
 import 'package:speedy_delivery/screens/skeleton.dart';
 import 'package:speedy_delivery/shared/constants.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import 'package:speedy_delivery/widget/home_top_widget.dart';
+import '../offer/offerWidget/offerSection.dart';
 import '../providers/cart_provider.dart';
 import '../services/push_notification.dart';
 import '../widget/advertisement_widget.dart';
@@ -351,7 +353,9 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
 
+                    buildOfferSection(),
                     // Displaying categories
+
                     _buildCategorySection(),
                   ],
                 ),
@@ -433,6 +437,8 @@ class HomeScreenState extends State<HomeScreen> {
                     children: categories.map((category) {
                       final filteredSubCategories = subCategories.where((subCategory) => subCategory.catId == category.id).toList();
                       final itemCount = filteredSubCategories.length < 4 ? filteredSubCategories.length : 4;
+                      // return Paddi
+                      //   padding: const EdgeInsets.only(bottom: 0), // Decrease bottom padding
                       return Stack(
                         children: [
                           if (category.logoUrl != null)
@@ -562,8 +568,8 @@ class HomeScreenState extends State<HomeScreen> {
                                   );
                                 },
                                 style: ButtonStyle(
-                                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                                  backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                  backgroundColor: WidgetStateProperty.all(Colors.transparent),
                                 ),
                                 child: const Text(
                                   "see all",
