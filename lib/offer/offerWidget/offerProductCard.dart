@@ -33,7 +33,7 @@ Widget offerProductCard(int categoryId) {
                 child: Container(
                   width: 140,
                   height: 180,
-                  color: const Color.fromRGBO(200, 0, 0, 0.6),
+                  color: const Color.fromRGBO(200, 0, 0, 0.2),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
