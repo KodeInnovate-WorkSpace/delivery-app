@@ -564,7 +564,7 @@ class HomeScreenState extends State<HomeScreen> {
                           Positioned(
                             left: category.logoUrl != null ? 0 : 0,
                             right: category.logoUrl != null ? -15 : 0,
-                            top: category.logoUrl != null ? 0 : -10, // Adjust based on logo presence
+                            top: category.logoUrl != null ? 0 : -10,
                             child: Align(
                               alignment: Alignment.topRight,
                               child: TextButton(
