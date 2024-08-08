@@ -9,24 +9,25 @@ import 'package:speedy_delivery/admin/constants/manage_constant.dart';
 import 'package:speedy_delivery/admin/deliveredshopname/manage_shop_name.dart';
 import 'package:speedy_delivery/admin/discountcoupon/manage_coupon.dart';
 import 'package:speedy_delivery/admin/location/manage_location.dart';
-import 'package:speedy_delivery/admin/offers/offer_screen.dart';
+import 'package:speedy_delivery/admin/offers/product_offer/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
 import 'package:speedy_delivery/admin/valet/manage_valet_screen.dart';
-import '../screens/sign_in_screen.dart';
-import 'category/manage_category_screen.dart';
+import '../../screens/sign_in_screen.dart';
+import '../category/manage_category_screen.dart';
+import 'category_offer/manage_category_screen.dart';
 
-class AdminScreen extends StatelessWidget {
-  const AdminScreen({super.key});
+class OfferScreen extends StatelessWidget {
+  const OfferScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<String> pages = ["Users", "Categories", "Sub-Categories", "Products", "Banner", "Orders", "App Status", "Location", "Alert", "Coupon", "Constants", "Shop Name","Offers"];
+    List<String> pages = ["Offer", "Offer Product"];
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Admin Panel",
+          "Offer Panel",
           style: TextStyle(color: Color(0xffb3b3b3)),
         ),
         actions: [
@@ -133,20 +134,8 @@ class AdminScreen extends StatelessWidget {
 
   Widget customContainer(BuildContext context, String pageName, String routeName) {
     final Map<String, WidgetBuilder> pageRoutes = {
-      'p1': (context) => const ManageUserScreen(),
-      'p2': (context) => const ManageCategoryScreen(),
-      'p3': (context) => const ManageSubCategoryScreen(),
-      'p4': (context) => const ManageProduct(),
-      'p5': (context) => const ManageBannerScreen(),
-      'p6': (context) => const ManageValetScreen(),
-      'p7': (context) => AppMaintenanceListScreen(),
-      'p8': (context) => LocationListScreen(),
-      'p9': (context) => AlertLabelListScreen(),
-      'p10': (context) => MainDisplayScreen(),
-      'p11': (context) => ConstantsListScreen(),
-      'p12': (context) => const ManageDeliveredShopScreen(),
-      'p13': (context) => const OfferScreen(),
-
+      'p1': (context) => const ManageOfferCategoryScreen(),
+      'p2': (context) => const ManageOfferProduct(),
     };
 
     return GestureDetector(
