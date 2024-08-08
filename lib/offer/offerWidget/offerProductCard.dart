@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../offerProvider/offerCartProvider.dart';
+import 'offer_cart_button.dart';
 
 Widget offerProductCard(int categoryId) {
   return StreamBuilder<QuerySnapshot>(
@@ -50,13 +51,17 @@ Widget offerProductCard(int categoryId) {
                       //mrp
                       Text("Mrp: ${(data["mrp"] ?? 00).toString()}"),
                       //unit
-                      ElevatedButton(
-                        onPressed: () {
-                          // Add the product to the cart
-                          final offerCartProvider = Provider.of<OfferCartProvider>(context, listen: false);
-                          offerCartProvider.addToCart(categoryId.toString(), productId);
-                        },
-                        child: const Text("Add"),
+
+                      // Text(data["unit"]),
+
+                      // Add button
+                      OfferCartButton(
+                        categoryId: categoryId.toString(),
+                        productId: productId,
+                        productName: data["name"],
+                        productPrice: data["price"].toString(),
+                        productImage: data["image"],
+                        productUnit: data["unit"],
                       ),
                     ],
                   ),
