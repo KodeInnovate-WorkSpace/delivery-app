@@ -29,6 +29,7 @@ Widget buildOfferSection() {
                     children: offerCategories.map((offerCat) {
                       final data = offerCat.data() as Map<String, dynamic>;
                       final name = data['name'] ?? '';
+                      int categoryId = data['id'];
                       return Stack(
                         children: [
                           //Display category name
@@ -50,11 +51,7 @@ Widget buildOfferSection() {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                offerProductCard(),
-                                offerProductCard(),
-                                offerProductCard(),
-                                offerProductCard(),
-                                offerProductCard(),
+                                offerProductCard(categoryId),
                               ],
                             ),
                           ),
@@ -71,7 +68,10 @@ Widget buildOfferSection() {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => OfferCategoryScreen(categoryTitle: name),
+                                      builder: (context) => OfferCategoryScreen(
+                                        categoryTitle: name,
+                                        categoryID: categoryId,
+                                      ),
                                     ),
                                   );
                                 },

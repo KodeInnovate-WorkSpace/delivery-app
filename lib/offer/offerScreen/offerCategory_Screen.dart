@@ -11,12 +11,14 @@ class OfferCategoryScreen extends StatefulWidget {
   final double imageWidth;
   final double imageHeight;
   final String categoryTitle;
+  final int categoryID;
 
   const OfferCategoryScreen({
     super.key,
     required this.categoryTitle,
     this.imageWidth = 90.0,
     this.imageHeight = 90.0,
+    required this.categoryID,
   });
 
   @override
@@ -35,7 +37,7 @@ class OfferCategoryScreenState extends State<OfferCategoryScreen> {
 
   Future<void> fetchProducts() async {
     try {
-      final productSnap = await FirebaseFirestore.instance.collection("product2").get();
+      final productSnap = await FirebaseFirestore.instance.collection("product2").where('categoryId', isEqualTo: widget.categoryID).get();
 
       if (productSnap.docs.isNotEmpty) {
         setState(() {
