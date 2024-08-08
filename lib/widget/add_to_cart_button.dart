@@ -138,7 +138,6 @@ class AddToCartButtonState extends State<AddToCartButton> {
                         if (widget.isOfferProduct == true) {
                           // Check if the product is already in the cart
                           bool isProductInCart = cartProvider.cartItems.any((item) => item.itemName == cartItem.itemName);
-
                           if (!isProductInCart) {
                             _count = 1;
                             cartProvider.addItem(cartItem);

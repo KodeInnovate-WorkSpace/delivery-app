@@ -59,7 +59,7 @@ Widget offerProductCard(int categoryId) {
                         productPrice: data["price"],
                         productImage: data["image"],
                         productUnit: data["unit"],
-                        isOfferProduct: data['OfferCartButton'],
+                        isOfferProduct: data['isOfferProduct'],
                       ),
                     ],
                   ),
