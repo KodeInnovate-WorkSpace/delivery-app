@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../models/category_model.dart';
 import '../../../shared/show_msg.dart';
-import '../../admin_model.dart';
 import '../offer_model.dart';
 
 class EditOfferProduct extends StatefulWidget {

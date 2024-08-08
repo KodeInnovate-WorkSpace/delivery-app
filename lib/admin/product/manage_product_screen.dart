@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/admin/offers/offer_model.dart';
 import 'package:speedy_delivery/admin/product/update_product.dart';
 import '../admin_model.dart';
 import 'edit_product.dart';
@@ -139,7 +140,6 @@ class _ManageProductState extends State<ManageProduct> {
                         showFirstLastButtons: true,
                         arrowHeadColor: const Color(0xff1a1a1c),
                       ),
-
                     ],
                   ),
                 ),
@@ -155,22 +155,22 @@ class _ManageProductState extends State<ManageProduct> {
 class TableData extends DataTableSource {
   final BuildContext context;
 
-  final ProductModel productObj = ProductModel();
+  final OfferProductModel offerProductObj = OfferProductModel();
   List<int> statusOptions = [0, 1];
   // Storing product data in a list
   List<Map<String, dynamic>> productData = [];
   List<Map<String, dynamic>> filteredProductData = [];
 
-  SubCatModel subCatObj = SubCatModel();
-  Map<int, String> subCatData = {};
+  OfferCatModel OfferCatObj = OfferCatModel();
+  Map<int, String> OfferCatData = {};
 
   TableData(this.context) {
     _loadProductData();
   }
 
   Future<void> _loadProductData() async {
-    await _loadSubCategoryData();
-    productData = await productObj.manageProducts();
+    await _loadOfferCategoryData();
+    productData = await offerProductObj.manageOfferProducts();
     debugPrint('Product Data: $productData');
 
     productData.sort((a, b) => a['id'].compareTo(b['id']));
@@ -179,19 +179,19 @@ class TableData extends DataTableSource {
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  Future<void> _loadSubCategoryData() async {
-    final categories = await subCatObj.manageSubCategories();
-    subCatData = {for (var cat in categories) cat['sub_category_id']: cat['sub_category_name']};
+  Future<void> _loadOfferCategoryData() async {
+    final categories = await OfferCatObj.manageOfferCategories();
+    OfferCatData = {for (var cat in categories) cat['categoryId']: cat['categoryId']};
     notifyListeners();
   }
 
   Future<void> _updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
-    await productObj.updateProduct(field, newValue, productField: categoryField, productValue: categoryValue);
+    await offerProductObj.updateOfferProduct(field, newValue, productField: categoryField, productValue: categoryValue);
     _loadProductData(); // Reload data after update
   }
 
   Future<void> _deleteProduct(dynamic categoryValue) async {
-    await productObj.deleteProduct(categoryValue);
+    await offerProductObj.deleteOfferProduct(categoryValue);
     await _loadProductData(); // Refresh data after deletion
   }
 
@@ -220,7 +220,7 @@ class TableData extends DataTableSource {
 
     // Storing each index of productData list in data variable to iterate over each list
     final data = filteredProductData[index];
-    final subCatName = subCatData[data['sub_category_id']] ?? 'Unknown';
+    final subCatName = OfferCatData[data['sub_category_id']] ?? 'Unknown';
 
     return DataRow(cells: [
       //id
@@ -315,7 +315,7 @@ class TableData extends DataTableSource {
       DataCell(DropdownButton<String>(
         value: subCatName,
         onChanged: (String? newValue) {
-          final newSubCatId = subCatData.entries.firstWhere((entry) => entry.value == newValue).key;
+          final newSubCatId = OfferCatData.entries.firstWhere((entry) => entry.value == newValue).key;
           _updateProduct(
             'sub_category_id',
             newSubCatId,
@@ -323,7 +323,7 @@ class TableData extends DataTableSource {
             categoryValue: data['id'],
           );
         },
-        items: subCatData.entries.map<DropdownMenuItem<String>>((entry) {
+        items: OfferCatData.entries.map<DropdownMenuItem<String>>((entry) {
           return DropdownMenuItem<String>(
             value: entry.value,
             child: Text(entry.value),
@@ -362,7 +362,6 @@ class TableData extends DataTableSource {
       ),
     ]);
   }
-
 
   @override
   bool get isRowCountApproximate => false;

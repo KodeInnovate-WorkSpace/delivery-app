@@ -4,9 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
 
-
 class OfferCatModel extends ChangeNotifier {
-  Future<List<Map<String, dynamic>>> manageCategories() async {
+  Future<List<Map<String, dynamic>>> manageOfferCategories() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance.collection('offerCategory').get();
       return querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -16,7 +15,7 @@ class OfferCatModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updateCategory(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
+  Future<void> updateOfferCategory(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
     try {
       Query query = FirebaseFirestore.instance.collection('offerCategory');
 
@@ -35,7 +34,7 @@ class OfferCatModel extends ChangeNotifier {
     }
   }
 
-  Future<void> newupdateCategory(String field, dynamic newValue, {required String id}) async {
+  Future<void> newUpdateOfferCategory(String field, dynamic newValue, {required String id}) async {
     try {
       // Query the collection for the specific category ID
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('offerCategory').where('id', isEqualTo: int.parse(id)).get();
@@ -49,7 +48,7 @@ class OfferCatModel extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteCategory(dynamic categoryValue) async {
+  Future<void> deleteOfferCategory(dynamic categoryValue) async {
     try {
       Query query = FirebaseFirestore.instance.collection('offerCategory');
 
@@ -74,7 +73,7 @@ class OfferCatModel extends ChangeNotifier {
 }
 
 class OfferProductModel extends ChangeNotifier {
-  Future<List<Map<String, dynamic>>> manageProducts() async {
+  Future<List<Map<String, dynamic>>> manageOfferProducts() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance.collection('offerProduct').get();
       return querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -84,7 +83,7 @@ class OfferProductModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updateProduct(String field, dynamic newValue, {String? productField, dynamic productValue}) async {
+  Future<void> updateOfferProduct(String field, dynamic newValue, {String? productField, dynamic productValue}) async {
     try {
       Query query = FirebaseFirestore.instance.collection('offerProduct');
 
@@ -103,7 +102,7 @@ class OfferProductModel extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct(dynamic categoryValue) async {
+  Future<void> deleteOfferProduct(dynamic categoryValue) async {
     try {
       Query query = FirebaseFirestore.instance.collection('offerProduct');
 

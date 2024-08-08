@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import '../../../widget/input_box.dart';
-import '../../admin_model.dart';
 import '../offer_model.dart';
 
 class UpdateOfferProduct extends StatefulWidget {
@@ -27,17 +26,17 @@ class _UpdateOfferProductState extends State<UpdateOfferProduct> with ChangeNoti
   List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
 
   // product model object
-  final OfferProductModel productObj = OfferProductModel();
+  final OfferProductModel offerProductObj = OfferProductModel();
 
   // sub-cat variables
-  final SubCatModel subcatObj = SubCatModel();
+  final OfferCatModel offerCatObj = OfferCatModel();
 
-  List<Map<String, dynamic>> subcatOptions = [];
+  List<Map<String, dynamic>> offerCatOptions = [];
 
-  String? selectedSubCategoryName;
-  late int selectedSubCategoryId; // Default value
+  String? selectedOfferCategoryName;
+  late int selectedOfferCategoryId; // Default value
 
-  Map<String, int> subcategoryMap = {};
+  Map<String, int> offerCategoryMap = {};
 
   // isVeg state
   bool isVeg = false;
@@ -59,19 +58,19 @@ class _UpdateOfferProductState extends State<UpdateOfferProduct> with ChangeNoti
   }
 
   Future<void> _loadSubCatData() async {
-    subcatOptions = await subcatObj.manageSubCategories();
+    offerCatOptions = await offerCatObj.manageOfferCategories();
 
     // Populate the categoryNames and categoryMap
-    for (var cat in subcatOptions) {
-      subcategoryMap[cat['sub_category_name']] = cat['sub_category_id'];
+    for (var cat in offerCatOptions) {
+      offerCategoryMap[cat['categoryId']] = cat['categoryId'];
     }
 
     // Set the initial selected category if available
     if (widget.data['id'] != null) {
       try {
-        selectedSubCategoryId = widget.data['sub_category_id'];
-        if (subcategoryMap.isNotEmpty) {
-          selectedSubCategoryName = subcategoryMap.entries.firstWhere((entry) => entry.value == selectedSubCategoryId, orElse: () => subcategoryMap.entries.first).key;
+        selectedOfferCategoryId = widget.data['categoryId'];
+        if (offerCategoryMap.isNotEmpty) {
+          selectedOfferCategoryName = offerCategoryMap.entries.firstWhere((entry) => entry.value == selectedOfferCategoryId, orElse: () => offerCategoryMap.entries.first).key;
         }
       } catch (e) {
         log("Error setting selected sub-category: $e");
@@ -189,37 +188,55 @@ class _UpdateOfferProductState extends State<UpdateOfferProduct> with ChangeNoti
                 onPressed: () async {
                   try {
                     // Update name
-                    await productObj.updateProduct('name', nameController.text, productField: 'id', productValue: widget.data['id']);
+                    await offerCatObj.updateOfferCategory('name', nameController.text);
                     log("Name = ${nameController.text}");
 
                     // Update mrp
-                    await productObj.updateProduct('mrp', int.parse(mrpController.text), productField: 'id', productValue: widget.data['id']);
+                    await offerCatObj.updateOfferCategory(
+                      'mrp',
+                      int.parse(mrpController.text),
+                    );
                     log("Mrp = ${mrpController.text}");
 
                     // Update price
-                    await productObj.updateProduct('price', int.parse(priceController.text), productField: 'id', productValue: widget.data['id']);
+                    await offerCatObj.updateOfferCategory(
+                      'price',
+                      int.parse(priceController.text),
+                    );
                     log("Price = ${priceController.text}");
 
                     // Update stock
-                    await productObj.updateProduct('stock', int.parse(stockController.text), productField: 'id', productValue: widget.data['id']);
+                    await offerCatObj.updateOfferCategory(
+                      'stock',
+                      int.parse(stockController.text),
+                    );
                     log("Stock = ${stockController.text}");
 
                     // Update unit
-                    await productObj.updateProduct('unit', unitController.text, productField: 'id', productValue: widget.data['id']);
+                    await offerCatObj.updateOfferCategory(
+                      'unit',
+                      unitController.text,
+                    );
                     log("Unit = ${unitController.text}");
 
                     // Update isVeg
-                    await productObj.updateProduct('isVeg', isVeg, productField: 'id', productValue: widget.data['id']);
+                    await offerCatObj.updateOfferCategory(
+                      'isVeg',
+                      isVeg,
+                    );
                     log("isVeg = $isVeg");
 
                     // Update sub-category (if selected)
-                    if (selectedSubCategoryId != -1) {
-                      await productObj.updateProduct('sub_category_id', selectedSubCategoryId, productField: 'id', productValue: widget.data['id']);
-                      log("Sub-category ID = $selectedSubCategoryId");
+                    if (selectedOfferCategoryId != -1) {
+                      await offerCatObj.updateOfferCategory(
+                        'categoryId',
+                        selectedOfferCategoryId,
+                      );
+                      log("Category ID = $selectedOfferCategoryId");
                     }
 
                     // Update status
-                    await productObj.updateProduct('status', dropdownValue, productField: 'id', productValue: widget.data['id']);
+                    await offerProductObj.updateOfferProduct('status', dropdownValue, productField: 'id', productValue: widget.data['id']);
                     log("Status = $dropdownValue");
 
                     // After successful updates
