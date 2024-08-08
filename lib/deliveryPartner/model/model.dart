@@ -25,13 +25,23 @@ class OrderDetail {
   final String productImage;
   final String productName;
   final int quantity;
-  // final double totalPrice;
+  final String unit;
 
   OrderDetail({
     required this.price,
     required this.productImage,
     required this.productName,
     required this.quantity,
-    // required this.totalPrice,
+    required this.unit,
   });
+
+  factory OrderDetail.fromMap(Map<String, dynamic> data) {
+    return OrderDetail(
+      price: data['price'] != null ? data['price'].toDouble() : 0.0,
+      productImage: data['productImage'] ?? '',
+      productName: data['productName'] ?? 'Unknown',
+      quantity: data['quantity'] != null ? data['quantity'].toInt() : 0,
+      unit: data['unit'] ?? 'Unknown',
+    );
+  }
 }

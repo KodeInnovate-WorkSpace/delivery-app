@@ -9,6 +9,7 @@ import 'package:speedy_delivery/admin/constants/manage_constant.dart';
 import 'package:speedy_delivery/admin/deliveredshopname/manage_shop_name.dart';
 import 'package:speedy_delivery/admin/discountcoupon/manage_coupon.dart';
 import 'package:speedy_delivery/admin/location/manage_location.dart';
+import 'package:speedy_delivery/admin/offers/offer_screen.dart';
 import 'package:speedy_delivery/admin/product/manage_product_screen.dart';
 import 'package:speedy_delivery/admin/subcategory/manage_sub_category_screen.dart';
 import 'package:speedy_delivery/admin/user/manage_user_screen.dart';
@@ -21,7 +22,7 @@ class AdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> pages = ["Users", "Categories", "Sub-Categories", "Products", "Banner", "Orders", "App Status", "Location", "Alert", "Coupon", "Constants", "Shop Name"];
+    List<String> pages = ["Users", "Categories", "Sub-Categories", "Products", "Banner", "Orders", "App Status", "Location", "Alert", "Coupon", "Constants", "Shop Name","Offers"];
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -36,51 +37,67 @@ class AdminScreen extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          backgroundColor: const Color(0xff1a1a1c),
-                          title: const Text(
-                            "Logout",
-                            style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Color(0xffb3b3b3)),
-                          ),
-                          content: const Text(
-                            "Are you sure you want to logout?",
-                            style: TextStyle(color: Color(0xffb3b3b3)),
-                          ),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
-                                    style: ButtonStyle(
-                                      overlayColor: WidgetStateProperty.all(Colors.red[900]),
-                                    ),
-                                    child: const Text(
-                                      "No",
-                                      style: TextStyle(color: Color(0xffEF4B4B), fontFamily: "Gilroy-Black"),
-                                    )),
-                                TextButton(
-                                    onPressed: () async {
-                                      await FirebaseAuth.instance.signOut();
-                                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                                      await prefs.remove('isLoggedIn');
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const SigninScreen()),
+                      backgroundColor: const Color(0xff1a1a1c),
+                      title: const Text(
+                        "Logout",
+                        style: TextStyle(fontFamily: 'Gilroy-ExtraBold', color: Color(0xffb3b3b3)),
+                      ),
+                      content: const Text(
+                        "Are you sure you want to logout?",
+                        style: TextStyle(color: Color(0xffb3b3b3)),
+                      ),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                style: ButtonStyle(
+                                  overlayColor: WidgetStateProperty.all(Colors.red[900]),
+                                ),
+                                child: const Text(
+                                  "No",
+                                  style: TextStyle(color: Color(0xffEF4B4B), fontFamily: "Gilroy-Black"),
+                                )),
+                            TextButton(
+                                onPressed: () async {
+                                  await FirebaseAuth.instance.signOut();
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  await prefs.remove('isLoggedIn');
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const SigninScreen()),
                                         (route) => false,
-                                      );
-                                    },
-                                    style: ButtonStyle(
-                                      overlayColor: WidgetStateProperty.all(Colors.grey[700]),
-                                    ),
-                                    child: const Text(
-                                      "Yes",
-                                      style: TextStyle(color: Color(0xffb3b3b3), fontFamily: "Gilroy-Black"),
-                                    )),
-                              ],
-                            )
+                                  );
+                                },
+                                style: ButtonStyle(
+                                  overlayColor: WidgetStateProperty.all(Colors.grey[700]),
+                                ),
+                                child: const Text(
+                                  "Yes",
+                                  style: TextStyle(color: Color(0xffb3b3b3), fontFamily: "Gilroy-Black"),
+                                )),
                           ],
-                        ));
+                        )
+                      ],
+                    ));
               },
+              // style: ButtonStyle(
+              //   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+              //     RoundedRectangleBorder(
+              //       // borderRadius: BorderRadius.circular(20.0),
+              //       borderRadius: BorderRadius.circular(2.0),
+              //     ),
+              //   ),
+              //   backgroundColor: WidgetStateProperty.resolveWith<Color>(
+              //     (Set<WidgetState> states) {
+              //       if (states.contains(WidgetState.disabled)) {
+              //         return Colors.black.withOpacity(0.3);
+              //       }
+              //       return const Color(0xffEF4B4B);
+              //     },
+              //   ),
+              // ),
               icon: const Icon(
                 Icons.logout,
                 color: Color(0xffEF4B4B),
@@ -128,6 +145,8 @@ class AdminScreen extends StatelessWidget {
       'p10': (context) => MainDisplayScreen(),
       'p11': (context) => ConstantsListScreen(),
       'p12': (context) => const ManageDeliveredShopScreen(),
+      'p13': (context) => const OfferScreen(),
+
     };
 
     return GestureDetector(

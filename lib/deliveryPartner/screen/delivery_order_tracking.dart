@@ -3,10 +3,16 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:googleapis/connectors/v1.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speedy_delivery/shared/show_msg.dart';
+import '../../providers/order_provider.dart';
 import '../model/model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:path/path.dart' as path;
 
 class DeliveryTrackingScreen extends StatefulWidget {
   final String orderId;
@@ -44,10 +50,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   @override
   void initState() {
     super.initState();
-    _orderStatusStream = FirebaseFirestore.instance
-        .collection('OrderHistory')
-        .doc(widget.orderId)
-        .snapshots();
+    _orderStatusStream = FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).snapshots();
     // imageTaken = List<bool>.filled(widget.order.length, false);
     // _loadImagePaths();
     _orderStatusStream.listen((snapshot) {
@@ -63,8 +66,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.orderId,
-            style: const TextStyle(fontSize: 20, color: Colors.black)),
+        title: Text(widget.orderId, style: const TextStyle(fontSize: 20, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -98,20 +100,13 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Order Tracking",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    const Text("Order Tracking", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
                     _buildCustomerDetailsTable(),
                     const SizedBox(height: 20),
                     _buildOrderDetailsTableFailed(),
                     const SizedBox(height: 20),
-                    _buildOrderFailedCard(
-                        'Order Failed',
-                        'Your order has failed due to a transaction issue.',
-                        true,
-                        Colors.red,
-                        Icons.error),
+                    _buildOrderFailedCard('Order Failed', 'Your order has failed due to a transaction issue.', true, Colors.red, Icons.error),
                   ],
                 ),
               );
@@ -121,41 +116,23 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Order Tracking",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    const Text("Order Tracking", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
                     _buildCustomerDetailsTable(),
                     const SizedBox(height: 20),
                     _buildOrderDetailsTableFailed(),
                     const SizedBox(height: 20),
-                    _buildOrderStatusCard(
-                        'Order Cancelled',
-                        'Unfortunately, your order has been cancelled.',
-                        true,
-                        Colors.red,
-                        Icons.cancel),
+                    _buildOrderStatusCard('Order Cancelled', 'Unfortunately, your order has been cancelled.', true, Colors.red, Icons.cancel),
                   ],
                 ),
               );
             } else {
               var statusCards = <Widget>[
-                _buildOrderStatusCard('Order Received',
-                    'Your order has been received.', status >= 0, Colors.green),
-                _buildOrderStatusCard(
-                    'Order Confirmed',
-                    'Your order has been confirmed.',
-                    status >= 1,
-                    Colors.green),
-                _buildOrderStatusCard('Order In Process',
-                    'Your order is in process.', status >= 2, Colors.green),
-                _buildOrderStatusCard(
-                    'Order Pickup',
-                    'Your order is ready for pickup.',
-                    status >= 3,
-                    Colors.green),
-                _buildOrderStatusCard('Order Delivered',
-                    'Your order has been delivered', status >= 4, Colors.green),
+                _buildOrderStatusCard('Order Received', 'Your order has been received.', status >= 0, Colors.green),
+                _buildOrderStatusCard('Order Confirmed', 'Your order has been confirmed.', status >= 1, Colors.green),
+                _buildOrderStatusCard('Order In Process', 'Your order is in process.', status >= 2, Colors.green),
+                _buildOrderStatusCard('Order Pickup', 'Your order is ready for pickup.', status >= 3, Colors.green),
+                _buildOrderStatusCard('Order Delivered', 'Your order has been delivered', status >= 4, Colors.green),
               ];
 
               return Padding(
@@ -188,37 +165,33 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       children: [
         Table(
           columnWidths: const {
-            0: FlexColumnWidth(),
-            1: FixedColumnWidth(80.0),
-            2: FixedColumnWidth(80.0),
+            0: FlexColumnWidth(3.2),
+            1: FixedColumnWidth(30.0),
+            2: FixedColumnWidth(50.0),
+            3: FixedColumnWidth(60.0),
           },
           border: TableBorder.all(color: Colors.grey[300]!),
           children: [
             TableRow(
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Colors.grey[100],
               ),
               children: const [
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Items",
-                      style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                  child: Text("Items", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Qnt",
-                      style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text("Qty", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Price",
-                      style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text("Unit", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text("Price", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
               ],
             ),
@@ -226,39 +199,41 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               TableRow(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text(
-                      widget.order[index].productName,
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: FutureBuilder<String?>(
+                      future: context.read<OrderProvider>().fetchCategoryName(widget.order[index].productName),
+                      builder: (context, snapshot) {
+                        final categoryName = snapshot.data ?? 'Unknown';
+                        return Text(
+                          "${widget.order[index].productName}\nCategory: $categoryName",
+                          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                        );
+                      },
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text("x ${widget.order[index].quantity.toString()}"),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("${widget.order[index].quantity}", textAlign: TextAlign.center),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text(widget.order[index].price.toStringAsFixed(2)),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(widget.order[index].unit, textAlign: TextAlign.center),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("₹${widget.order[index].price.toStringAsFixed(2)}", textAlign: TextAlign.center),
                   ),
                 ],
               ),
           ],
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Total Price",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              const Text("Total Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("₹${widget.orderTotalPrice.toStringAsFixed(2)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -272,34 +247,33 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       children: [
         Table(
           columnWidths: const {
-            0: FlexColumnWidth(),
-            1: FixedColumnWidth(80.0),
-            2: FixedColumnWidth(80.0),
+            0: FlexColumnWidth(3.2),
+            1: FixedColumnWidth(30.0),
+            2: FixedColumnWidth(50.0),
+            3: FixedColumnWidth(60.0),
           },
           border: TableBorder.all(color: Colors.grey[300]!),
           children: [
             TableRow(
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Colors.grey[100],
               ),
               children: const [
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Items",
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                  child: Text("Items", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Qnt",
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text("Qty", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text("Price",
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text("Unit", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text("Price", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
                 ),
               ],
             ),
@@ -307,46 +281,47 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
               TableRow(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text(
-                      widget.order[index].productName,
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: FutureBuilder<String?>(
+                      future: context.read<OrderProvider>().fetchCategoryName(widget.order[index].productName),
+                      builder: (context, snapshot) {
+                        final categoryName = snapshot.data ?? 'Unknown';
+                        return Text(
+                          "${widget.order[index].productName}\nCategory: $categoryName",
+                          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                        );
+                      },
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text("x ${widget.order[index].quantity.toString()}"),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("${widget.order[index].quantity}", textAlign: TextAlign.center),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Text(widget.order[index].price.toStringAsFixed(2)),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(widget.order[index].unit, textAlign: TextAlign.center),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("₹${widget.order[index].price.toStringAsFixed(2)}", textAlign: TextAlign.right),
                   ),
                 ],
               ),
           ],
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Total Price",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Rs. ${widget.orderTotalPrice.toStringAsFixed(2)}",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              const Text("Total Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("₹${widget.orderTotalPrice.toStringAsFixed(2)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
       ],
     );
   }
-
 
   // // Future<void> uploadAllImages(String productName) async {
   // //   if (itemImages.length != widget.order.length) {
@@ -398,7 +373,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
   //   }
   // }
 
-
   Widget _buildCustomerDetailsTable() {
     DateTime orderDateTime;
 
@@ -423,8 +397,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Customer Details",
-              style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
+          const Text("Customer Details", style: TextStyle(fontSize: 20, fontFamily: 'Gilroy-ExtraBold')),
           const SizedBox(height: 8.0),
           Text("Payment Mode: ${widget.paymentMode}",
               style: const TextStyle(
@@ -459,7 +432,6 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
       ),
     );
   }
-
 
   Future<bool> _showShopNameDialog() async {
     bool confirmed = false;
@@ -507,13 +479,9 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     return confirmed;
   }
 
-
   Future<void> _savePickupDetails() async {
     // Upload images functionality is removed
-    await FirebaseFirestore.instance
-        .collection('DeliveredShopName')
-        .doc(widget.orderId)
-        .set({
+    await FirebaseFirestore.instance.collection('DeliveredShopName').doc(widget.orderId).set({
       'orderId': widget.orderId,
       'phoneNumber': widget.customerPhone,
       'timeOfPickup': DateTime.now(),
@@ -525,9 +493,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
     await prefs.remove('imagePaths_${widget.orderId}');
   }
 
-
-  Widget _buildOrderStatusCard(String title, String description, bool done,
-      [Color color = Colors.green, IconData icon = Icons.check_circle]) {
+  Widget _buildOrderStatusCard(String title, String description, bool done, [Color color = Colors.green, IconData icon = Icons.check_circle]) {
     return GestureDetector(
       onTap: () async {
         int? newStatus;
@@ -537,17 +503,13 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
         });
 
         // Fetch the current status from Firebase
-        DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance
-            .collection('OrderHistory')
-            .doc(widget.orderId)
-            .get();
+        DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).get();
 
         int currentStatus = orderSnapshot['status'];
 
         // Check if 'Order Pickup' needs to be completed before proceeding with 'Order Delivered'
         if (title == 'Order Delivered' && currentStatus != 3) {
-          showMessage(
-              "Complete the 'Order Pickup' step before marking the order as delivered.");
+          showMessage("Complete the 'Order Pickup' step before marking the order as delivered.");
           setState(() {
             _isCardLoading = false;
           });
@@ -592,10 +554,7 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           }
 
           try {
-            await FirebaseFirestore.instance
-                .collection('OrderHistory')
-                .doc(widget.orderId)
-                .update({'status': newStatus});
+            await FirebaseFirestore.instance.collection('OrderHistory').doc(widget.orderId).update({'status': newStatus});
             setState(() {
               _isCardLoading = false;
             });
@@ -617,32 +576,25 @@ class _DeliveryTrackingScreenState extends State<DeliveryTrackingScreen> {
           leading: Icon(icon, color: done ? Colors.white : Colors.grey),
           title: _isCardLoading
               ? const CupertinoActivityIndicator(
-            radius: 10,
-            animating: true,
-            color: Colors.white,
-          )
-              : Text(title,
-              style: TextStyle(color: done ? Colors.white : Colors.grey)),
-          subtitle: Text(description,
-              style: TextStyle(color: done ? Colors.white : Colors.grey)),
+                  radius: 10,
+                  animating: true,
+                  color: Colors.white,
+                )
+              : Text(title, style: TextStyle(color: done ? Colors.white : Colors.grey)),
+          subtitle: Text(description, style: TextStyle(color: done ? Colors.white : Colors.grey)),
         ),
       ),
     );
   }
 
-
-
-  Widget _buildOrderFailedCard(String title, String description, bool done,
-      [Color color = Colors.red, IconData icon = Icons.error]) {
+  Widget _buildOrderFailedCard(String title, String description, bool done, [Color color = Colors.red, IconData icon = Icons.error]) {
     return Card(
       color: done ? color : Colors.grey[300],
       child: ListTile(
         leading: Icon(icon, color: done ? Colors.white : Colors.grey),
-        title: Text(title,
-            style: TextStyle(color: done ? Colors.white : Colors.grey)),
-        subtitle: Text(description,
-            style: TextStyle(color: done ? Colors.white : Colors.grey)),
+        title: Text(title, style: TextStyle(color: done ? Colors.white : Colors.grey)),
+        subtitle: Text(description, style: TextStyle(color: done ? Colors.white : Colors.grey)),
       ),
     );
   }
-}
+} //category update
