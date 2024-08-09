@@ -168,6 +168,14 @@ class AddToCartButtonState extends State<AddToCartButton> {
                 if (isCategorySame) {
                   // Remove the existing item in the same category
                   cartProvider.removeItemByCategory(cartItem.categoryName!);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Product switched"),
+                      duration: Duration(milliseconds: 600),
+                      // backgroundColor: color,
+                    ),
+                  );
                 }
                 _isClicked = true;
                 _count = 1;

@@ -71,8 +71,8 @@ class OfferCategoryScreen extends StatelessWidget {
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.75, // Adjust aspect ratio as needed
-                    mainAxisSpacing: 10, // Spacing between rows
-                    crossAxisSpacing: 10, // Spacing between columns
+                    mainAxisSpacing: 0, // Spacing between rows
+                    crossAxisSpacing: 0, // Spacing between columns
                   ),
                   itemCount: products.length,
                   itemBuilder: (context, index) {
@@ -103,12 +103,13 @@ class OfferCategoryScreen extends StatelessWidget {
                                     topLeft: Radius.circular(10),
                                     topRight: Radius.circular(10),
                                   ),
+                                  // color: Colors.blue,
                                 ),
                                 width: double.infinity,
                                 height: 100,
                                 child: CachedNetworkImage(
                                   imageUrl: product.image,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),
@@ -130,7 +131,7 @@ class OfferCategoryScreen extends StatelessWidget {
                                     product.unit,
                                     style: TextStyle(
                                       color: Colors.grey.shade400,
-                                      fontSize: 12,
+                                      fontSize: 15,
                                       fontFamily: 'Gilroy-Bold',
                                     ),
                                   ),
@@ -142,28 +143,13 @@ class OfferCategoryScreen extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // Product price
-                                      Text(
-                                        "Rs. ${product.price.toString()}",
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: "Gilroy-ExtraBold",
-                                        ),
-                                      ),
-                                      // Product MRP
-                                      Text(
-                                        "Rs. ${product.mrp.toString()}",
-                                        style: TextStyle(
-                                          color: Colors.grey.shade400,
-                                          fontSize: 12,
-                                          fontFamily: 'Gilroy-Bold',
-                                          decoration: TextDecoration.lineThrough,
-                                        ),
-                                      ),
-                                    ],
+                                  // Product price
+                                  Text(
+                                    "Rs. ${product.price.toString()}",
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Gilroy-ExtraBold",
+                                    ),
                                   ),
                                   // Add button
                                   AddToCartButton(
