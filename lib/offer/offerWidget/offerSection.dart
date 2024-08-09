@@ -8,91 +8,81 @@ Widget buildOfferSection() {
     delegate: SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection("offerCategory").where('status', isEqualTo: 1).snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return const SizedBox.shrink();
-                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const SizedBox.shrink();
-                } else {
-                  final offerCategories = snapshot.data!.docs;
+          padding: const EdgeInsets.only(left: 15.0, right: 15, bottom: 20),
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection("offerCategory").where('status', isEqualTo: 1).snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return const SizedBox.shrink();
+              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const SizedBox.shrink();
+              } else {
+                final offerCategories = snapshot.data!.docs;
 
-                  return Column(
-                    children: offerCategories.map((offerCat) {
-                      final data = offerCat.data() as Map<String, dynamic>;
-                      final name = data['name'] ?? '';
-                      int categoryId = data['id'];
-                      return Stack(
-                        children: [
-                          //Display category name
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  name,
-                                  style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
-                                ),
-                              ],
+                return Column(
+                  children: offerCategories.map((offerCat) {
+                    final data = offerCat.data() as Map<String, dynamic>;
+                    final name = data['name'] ?? '';
+                    int categoryId = data['id'];
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OfferCategoryScreen(
+                              categoryTitle: name,
+                              categoryID: categoryId,
                             ),
                           ),
-                          // Display Product
-
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                offerProductCard(categoryId, name),
-                              ],
-                            ),
-                          ),
-
-                          // See all button
-                          Positioned(
-                            left: 0,
-                            right: -15,
-                            top: -10,
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => OfferCategoryScreen(
-                                        categoryTitle: name,
-                                        categoryID: categoryId,
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          // image: const DecorationImage(
+                          //   image: AssetImage('assets/background_image.png'), // Add your background image path here
+                          //   fit: BoxFit.cover,
+                          // ),
+                          color: const Color.fromRGBO(255, 252, 127, 0.8),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              name != ""
+                                  ? Center(
+                                      child: Text(
+                                        name,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontSize: 18, fontFamily: "Gilroy-Bold"),
                                       ),
+                                    )
+                                  : const SizedBox(
+                                      height: 25,
                                     ),
-                                  );
-                                },
-                                style: ButtonStyle(
-                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                  backgroundColor: WidgetStateProperty.all(Colors.transparent),
-                                ),
-                                child: const Text(
-                                  "see all",
-                                  style: TextStyle(fontSize: 12, fontFamily: "Gilroy-ExtraBold", color: Colors.green),
-                                ),
+                              SizedBox(
+                                height: 300, // Adjust height as needed
+                                child: offerProductCard(categoryId, name),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      );
-                    }).toList(),
-                  );
-                }
-              },
-            ));
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              }
+            },
+          ),
+        );
       },
       childCount: 1,
     ),

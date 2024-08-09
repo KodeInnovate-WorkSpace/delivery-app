@@ -365,6 +365,7 @@ class HomeScreenState extends State<HomeScreen> {
 
                     // Displaying categories
                     if (appVersion == fetchedAppVersion) buildOfferSection(),
+
                     //display category
                     _buildCategorySection(),
                   ],
@@ -405,10 +406,11 @@ class HomeScreenState extends State<HomeScreen> {
               final alert = alerts[index];
               return Container(
                 color: Color(int.parse(alert['color'].replaceFirst('#', '0xff'))),
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Center(
                   child: Text(
                     alert['message'],
+                    textAlign: TextAlign.justify,
                     style: TextStyle(
                       color: Color(int.parse(alert['textcolor'].replaceFirst('#', '0xff'))),
                       fontSize: 14,
