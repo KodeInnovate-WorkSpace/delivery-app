@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../offerScreen/offerCategory_Screen.dart';
@@ -28,7 +29,7 @@ Widget buildOfferSection() {
                 return Column(
                   children: offerCategories.map((offerCat) {
                     final data = offerCat.data() as Map<String, dynamic>;
-                    final name = data['name'] ?? '';
+                    final name = data['name'] ?? "Buy 1 Get 1 Free";
                     int categoryId = data['id'];
 
                     return GestureDetector(
@@ -45,15 +46,14 @@ Widget buildOfferSection() {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          // image: const DecorationImage(
-                          //   image: AssetImage('assets/background_image.png'), // Add your background image path here
-                          //   fit: BoxFit.cover,
-                          // ),
-                          color: const Color.fromRGBO(255, 252, 127, 0.8),
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(data['categoryImage']),
+                            fit: BoxFit.cover,
+                          ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 0),
+                          padding: const EdgeInsets.only(left: 5, right: 5, top: 50, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

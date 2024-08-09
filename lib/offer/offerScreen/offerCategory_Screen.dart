@@ -34,8 +34,8 @@ class OfferCategoryScreen extends StatelessWidget {
               backgroundColor: const Color(0xfff7f7f7),
               surfaceTintColor: Colors.transparent,
             ),
-            body: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: categoryID).snapshots(),
+            body: FutureBuilder<List<DocumentSnapshot>>(
+              future: _fetchProducts(categoryID),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -43,11 +43,11 @@ class OfferCategoryScreen extends StatelessWidget {
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No Products Found!'));
                 }
 
-                final products = snapshot.data!.docs
+                final products = snapshot.data!
                     .map((doc) {
                       final data = doc.data() as Map<String, dynamic>;
                       return Product(
@@ -194,5 +194,10 @@ class OfferCategoryScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<List<DocumentSnapshot>> _fetchProducts(int categoryId) async {
+    final snapshot = await FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: categoryId).where('status', isEqualTo: 1).where('isOfferProduct', isEqualTo: true).get();
+    return snapshot.docs;
   }
 }
