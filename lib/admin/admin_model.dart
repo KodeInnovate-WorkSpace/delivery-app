@@ -365,7 +365,6 @@ class ValetModel extends ChangeNotifier {
     }
   }
 
-
   Future<List<Map<String, dynamic>>> manageValet() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance

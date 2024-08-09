@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/admin/offers/product_offer/update_offer_product.dart';
 import 'package:speedy_delivery/admin/product/update_product.dart';
 import '../offer_model.dart';
 import 'edit_offer_product.dart';
@@ -330,7 +331,7 @@ class TableData extends DataTableSource {
             final result = await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UpdateProduct(data: data),
+                builder: (context) => UpdateOfferProduct(data: data),
               ),
             );
 

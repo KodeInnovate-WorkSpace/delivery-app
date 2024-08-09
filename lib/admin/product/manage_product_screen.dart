@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:speedy_delivery/admin/offers/offer_model.dart';
 import 'package:speedy_delivery/admin/product/update_product.dart';
 import '../admin_model.dart';
 import 'edit_product.dart';
@@ -40,11 +39,9 @@ class _ManageProductState extends State<ManageProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Manage Products',
-          style: TextStyle(color: Color(0xffb3b3b3)),
-        ),
+        title: const Text('Manage Products'),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -72,20 +69,7 @@ class _ManageProductState extends State<ManageProduct> {
             ),
           )
         ],
-        elevation: 0,
-        backgroundColor: const Color(0xff1a1a1c),
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.keyboard_backspace,
-            color: Color(0xffb3b3b3),
-          ),
-        ),
       ),
-      backgroundColor: const Color(0xff1a1a1c),
       body: Stack(
         children: [
           Column(
@@ -97,7 +81,6 @@ class _ManageProductState extends State<ManageProduct> {
                   decoration: InputDecoration(
                     labelText: 'Search',
                     hintText: 'Search by product name',
-                    border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -107,7 +90,6 @@ class _ManageProductState extends State<ManageProduct> {
                       },
                     ),
                   ),
-                  style: const TextStyle(color: Color(0xffb3b3b3)),
                   onChanged: (value) {
                     src.filterProducts(value);
                   },
@@ -124,21 +106,19 @@ class _ManageProductState extends State<ManageProduct> {
                           DataColumn(label: Text('ID')),
                           DataColumn(label: Text('Image')),
                           DataColumn(label: Text('Name')),
-                          DataColumn(label: Text('IsVeg')),
                           DataColumn(label: Text('Status')),
                           DataColumn(label: Text('Price')),
                           DataColumn(label: Text('MRP')),
                           DataColumn(label: Text('Stock')),
                           DataColumn(label: Text('Unit')),
                           DataColumn(label: Text('Sub-Category')),
+                          DataColumn(label: Text('IsVeg')),
                           DataColumn(label: Text('')),
                           DataColumn(label: Text('')),
                         ],
                         source: src,
                         columnSpacing: 10,
                         rowsPerPage: 8,
-                        showFirstLastButtons: true,
-                        arrowHeadColor: const Color(0xff1a1a1c),
                       ),
                     ],
                   ),
@@ -155,22 +135,22 @@ class _ManageProductState extends State<ManageProduct> {
 class TableData extends DataTableSource {
   final BuildContext context;
 
-  final OfferProductModel offerProductObj = OfferProductModel();
+  final ProductModel productObj = ProductModel();
   List<int> statusOptions = [0, 1];
   // Storing product data in a list
   List<Map<String, dynamic>> productData = [];
   List<Map<String, dynamic>> filteredProductData = [];
 
-  OfferCatModel OfferCatObj = OfferCatModel();
-  Map<int, String> OfferCatData = {};
+  SubCatModel subCatObj = SubCatModel();
+  Map<int, String> subCatData = {};
 
   TableData(this.context) {
     _loadProductData();
   }
 
   Future<void> _loadProductData() async {
-    await _loadOfferCategoryData();
-    productData = await offerProductObj.manageOfferProducts();
+    await _loadSubCategoryData();
+    productData = await productObj.manageProducts();
     debugPrint('Product Data: $productData');
 
     productData.sort((a, b) => a['id'].compareTo(b['id']));
@@ -179,19 +159,19 @@ class TableData extends DataTableSource {
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  Future<void> _loadOfferCategoryData() async {
-    final categories = await OfferCatObj.manageOfferCategories();
-    OfferCatData = {for (var cat in categories) cat['categoryId']: cat['categoryId']};
+  Future<void> _loadSubCategoryData() async {
+    final categories = await subCatObj.manageSubCategories();
+    subCatData = {for (var cat in categories) cat['sub_category_id']: cat['sub_category_name']};
     notifyListeners();
   }
 
   Future<void> _updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
-    await offerProductObj.updateOfferProduct(field, newValue, productField: categoryField, productValue: categoryValue);
+    await productObj.updateProduct(field, newValue, productField: categoryField, productValue: categoryValue);
     _loadProductData(); // Reload data after update
   }
 
   Future<void> _deleteProduct(dynamic categoryValue) async {
-    await offerProductObj.deleteOfferProduct(categoryValue);
+    await productObj.deleteProduct(categoryValue);
     await _loadProductData(); // Refresh data after deletion
   }
 
@@ -220,7 +200,7 @@ class TableData extends DataTableSource {
 
     // Storing each index of productData list in data variable to iterate over each list
     final data = filteredProductData[index];
-    final subCatName = OfferCatData[data['sub_category_id']] ?? 'Unknown';
+    final subCatName = subCatData[data['sub_category_id']] ?? 'Unknown';
 
     return DataRow(cells: [
       //id
@@ -245,12 +225,6 @@ class TableData extends DataTableSource {
           overflow: TextOverflow.visible,
         ),
       )),
-
-      // isVeg
-      //isVeg
-      DataCell(
-        Text(data['isVeg'] == true ? 'Yes' : ''),
-      ),
 
       //status
       DataCell(DropdownButton<int>(
@@ -315,7 +289,7 @@ class TableData extends DataTableSource {
       DataCell(DropdownButton<String>(
         value: subCatName,
         onChanged: (String? newValue) {
-          final newSubCatId = OfferCatData.entries.firstWhere((entry) => entry.value == newValue).key;
+          final newSubCatId = subCatData.entries.firstWhere((entry) => entry.value == newValue).key;
           _updateProduct(
             'sub_category_id',
             newSubCatId,
@@ -323,13 +297,27 @@ class TableData extends DataTableSource {
             categoryValue: data['id'],
           );
         },
-        items: OfferCatData.entries.map<DropdownMenuItem<String>>((entry) {
+        items: subCatData.entries.map<DropdownMenuItem<String>>((entry) {
           return DropdownMenuItem<String>(
             value: entry.value,
             child: Text(entry.value),
           );
         }).toList(),
       )),
+
+      // isVeg
+      DataCell(
+        SizedBox(
+          width: 50,
+          child: data.containsKey('isVeg')
+              ? Text(
+            data['isVeg'] == true ? 'Vegetarian' : '',
+            softWrap: true,
+            overflow: TextOverflow.visible,
+          )
+              : const Text(''),
+        ),
+      ),
 
       //Delete
       DataCell(

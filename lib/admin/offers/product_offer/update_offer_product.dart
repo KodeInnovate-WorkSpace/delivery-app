@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import '../../../widget/input_box.dart';
-import '../offer_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UpdateOfferProduct extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -12,72 +10,72 @@ class UpdateOfferProduct extends StatefulWidget {
   State<UpdateOfferProduct> createState() => _UpdateOfferProductState();
 }
 
-class _UpdateOfferProductState extends State<UpdateOfferProduct> with ChangeNotifier {
-  // text controllers
-  TextEditingController nameController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController mrpController = TextEditingController();
-  final TextEditingController stockController = TextEditingController();
-  final TextEditingController imageController = TextEditingController();
-  final TextEditingController unitController = TextEditingController();
-
-  // status variables
-  int? dropdownValue = 1;
-  List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
-
-  // product model object
-  final OfferProductModel offerProductObj = OfferProductModel();
-
-  // sub-cat variables
-  final OfferCatModel offerCatObj = OfferCatModel();
-
-  List<Map<String, dynamic>> offerCatOptions = [];
-
-  String? selectedOfferCategoryName;
-  late int selectedOfferCategoryId; // Default value
-
-  Map<String, int> offerCategoryMap = {};
-
-  // isVeg state
-  bool isVeg = false;
+class _UpdateOfferProductState extends State<UpdateOfferProduct> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _nameController;
+  late TextEditingController _priceController;
+  late TextEditingController _mrpController;
+  late TextEditingController _stockController;
+  late TextEditingController _unitController;
+  late int _status;
 
   @override
   void initState() {
     super.initState();
-    _loadSubCatData().then((_) {
-      notifyListeners();
-    });
-    nameController.text = widget.data['name'];
-    mrpController.text = widget.data['mrp'].toString();
-    priceController.text = widget.data['price'].toString();
-    stockController.text = widget.data['stock'].toString();
-    unitController.text = widget.data['unit'];
-
-    // Initialize isVeg state
-    isVeg = widget.data['isVeg'] ?? false;
+    _nameController = TextEditingController(text: widget.data['name']);
+    _priceController = TextEditingController(text: widget.data['price'].toString());
+    _mrpController = TextEditingController(text: widget.data['mrp'].toString());
+    _stockController = TextEditingController(text: widget.data['stock'].toString());
+    _unitController = TextEditingController(text: widget.data['unit']);
+    _status = widget.data['status'] ?? 0;
   }
 
-  Future<void> _loadSubCatData() async {
-    offerCatOptions = await offerCatObj.manageOfferCategories();
+  Future<void> _updateProduct() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      final updatedProduct = {
+        'name': _nameController.text,
+        'price': double.tryParse(_priceController.text) ?? 0.0,
+        'mrp': double.tryParse(_mrpController.text) ?? 0.0,
+        'stock': int.tryParse(_stockController.text) ?? 0,
+        'unit': _unitController.text,
+        'status': _status,
+      };
 
-    // Populate the categoryNames and categoryMap
-    for (var cat in offerCatOptions) {
-      offerCategoryMap[cat['categoryId']] = cat['categoryId'];
-    }
-
-    // Set the initial selected category if available
-    if (widget.data['id'] != null) {
       try {
-        selectedOfferCategoryId = widget.data['categoryId'];
-        if (offerCategoryMap.isNotEmpty) {
-          selectedOfferCategoryName = offerCategoryMap.entries.firstWhere((entry) => entry.value == selectedOfferCategoryId, orElse: () => offerCategoryMap.entries.first).key;
+        // Query for the document
+        final querySnapshot = await FirebaseFirestore.instance.collection('offerProduct').where('id', isEqualTo: widget.data['id']).get();
+
+        if (querySnapshot.docs.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No product found with the given ID')),
+          );
+          return;
         }
+
+        // Assuming there is only one document with this ID
+        final documentId = querySnapshot.docs.first.id;
+
+        // Update the document
+        await FirebaseFirestore.instance.collection('offerProduct').doc(documentId).update(updatedProduct);
+
+        Navigator.pop(context, true);
       } catch (e) {
-        log("Error setting selected sub-category: $e");
+        // Handle any errors here
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update product: $e')),
+        );
       }
     }
+  }
 
-    notifyListeners();
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    _mrpController.dispose();
+    _stockController.dispose();
+    _unitController.dispose();
+    super.dispose();
   }
 
   @override
@@ -88,176 +86,55 @@ class _UpdateOfferProductState extends State<UpdateOfferProduct> with ChangeNoti
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // name
-            InputBox(
-              hintText: "Update product name",
-              myIcon: Icons.shopping_bag,
-              myController: nameController,
-              keyboardType: TextInputType.text,
-            ),
-            const SizedBox(height: 20),
-
-            // mrp
-            InputBox(
-              hintText: "Update product mrp",
-              myIcon: Icons.currency_rupee,
-              myController: mrpController,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-
-            // price
-            InputBox(
-              hintText: "Update product price",
-              myIcon: Icons.currency_rupee,
-              myController: priceController,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-
-            // stock
-            InputBox(
-              hintText: "Update product stock",
-              myIcon: Icons.warehouse,
-              myController: stockController,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-
-            // unit
-            InputBox(
-              hintText: "Update product unit",
-              myIcon: Icons.production_quantity_limits,
-              myController: unitController,
-              keyboardType: TextInputType.text,
-            ),
-            const SizedBox(height: 20),
-
-            // isVeg checkbox
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Vegetarian: "),
-                Checkbox(
-                  value: isVeg,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      isVeg = newValue ?? false;
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // status dropdown
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Status: "),
-                DropdownButton<int>(
-                  value: dropdownValue, // Use the state variable here
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!; // Update state on change
-                    });
-                  },
-                  items: statusOptions.map<DropdownMenuItem<int>>((int status) {
-                    return DropdownMenuItem<int>(
-                      value: status,
-                      child: Text(status == 0 ? 'Inactive' : 'Active'),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Update button
-            Container(
-              width: 200,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(20),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+                validator: (value) => value?.isEmpty ?? true ? 'Please enter a name' : null,
               ),
-              child: TextButton(
-                onPressed: () async {
-                  try {
-                    // Update name
-                    await offerCatObj.updateOfferCategory('name', nameController.text);
-                    log("Name = ${nameController.text}");
-
-                    // Update mrp
-                    await offerCatObj.updateOfferCategory(
-                      'mrp',
-                      int.parse(mrpController.text),
-                    );
-                    log("Mrp = ${mrpController.text}");
-
-                    // Update price
-                    await offerCatObj.updateOfferCategory(
-                      'price',
-                      int.parse(priceController.text),
-                    );
-                    log("Price = ${priceController.text}");
-
-                    // Update stock
-                    await offerCatObj.updateOfferCategory(
-                      'stock',
-                      int.parse(stockController.text),
-                    );
-                    log("Stock = ${stockController.text}");
-
-                    // Update unit
-                    await offerCatObj.updateOfferCategory(
-                      'unit',
-                      unitController.text,
-                    );
-                    log("Unit = ${unitController.text}");
-
-                    // Update isVeg
-                    await offerCatObj.updateOfferCategory(
-                      'isVeg',
-                      isVeg,
-                    );
-                    log("isVeg = $isVeg");
-
-                    // Update sub-category (if selected)
-                    if (selectedOfferCategoryId != -1) {
-                      await offerCatObj.updateOfferCategory(
-                        'categoryId',
-                        selectedOfferCategoryId,
-                      );
-                      log("Category ID = $selectedOfferCategoryId");
-                    }
-
-                    // Update status
-                    await offerProductObj.updateOfferProduct('status', dropdownValue, productField: 'id', productValue: widget.data['id']);
-                    log("Status = $dropdownValue");
-
-                    // After successful updates
-                    Navigator.pop(context, true);
-                  } catch (e) {
-                    log("Error: $e");
-                  }
-                },
-                child: const Center(
-                  child: Text(
-                    "UPDATE",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Gilroy-ExtraBold',
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
+              TextFormField(
+                controller: _priceController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Price'),
+                validator: (value) => double.tryParse(value ?? '') == null ? 'Invalid price' : null,
               ),
-            ),
-          ],
+              TextFormField(
+                controller: _mrpController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'MRP'),
+                validator: (value) => double.tryParse(value ?? '') == null ? 'Invalid MRP' : null,
+              ),
+              TextFormField(
+                controller: _stockController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Stock'),
+                validator: (value) => int.tryParse(value ?? '') == null ? 'Invalid stock' : null,
+              ),
+              TextFormField(
+                controller: _unitController,
+                decoration: const InputDecoration(labelText: 'Unit'),
+                validator: (value) => value?.isEmpty ?? true ? 'Please enter a unit' : null,
+              ),
+              DropdownButtonFormField<int>(
+                value: _status,
+                decoration: const InputDecoration(labelText: 'Status'),
+                items: const [
+                  DropdownMenuItem(value: 0, child: Text('Inactive')),
+                  DropdownMenuItem(value: 1, child: Text('Active')),
+                ],
+                onChanged: (value) => setState(() => _status = value ?? 0),
+                validator: (value) => value == null ? 'Please select a status' : null,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _updateProduct,
+                child: const Text('Update Product'),
+              ),
+            ],
+          ),
         ),
       ),
     );
