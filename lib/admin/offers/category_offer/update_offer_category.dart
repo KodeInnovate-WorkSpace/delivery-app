@@ -1,13 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speedy_delivery/admin/offers/offer_model.dart';
 import 'package:speedy_delivery/widget/input_box.dart';
-
-import '../../../shared/show_msg.dart';
 
 class UpdateOfferCategory extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -74,7 +71,6 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
   //   }
   // }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,13 +108,13 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
                         dropdownValue = newValue;
                       });
                       categoryModel
-                          .updateCategory(
-                        'status',
-                        newValue,
-                        categoryField: 'id',
-                        categoryValue: widget.data['id'],
-                      )
-                          .then((_) => categoryModel.manageCategories());
+                          .updateOfferCategory(
+                            'status',
+                            newValue,
+                            categoryField: 'id',
+                            categoryValue: widget.data['id'],
+                          )
+                          .then((_) => categoryModel.manageOfferCategories());
                     },
                     items: statusOptions.map<DropdownMenuItem<int>>((int status) {
                       return DropdownMenuItem<int>(
@@ -199,13 +195,13 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
                     // }
 
                     categoryModel
-                        .newupdateCategory(
+                        .newUpdateOfferCategory(
                       'name',
                       categoryController.text,
                       id: widget.data['id'].toString(),
                     )
                         .then((_) {
-                      categoryModel.newupdateCategory(
+                      categoryModel.newUpdateOfferCategory(
                         'priority',
                         int.parse(priorityController.text),
                         id: widget.data['id'].toString(),

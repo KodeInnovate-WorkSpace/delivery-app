@@ -22,53 +22,53 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
   final TextEditingController stockController = TextEditingController();
   final TextEditingController unitController = TextEditingController();
   File? _image;
-  bool isVeg = false; // New field
-  bool isFood = false; // New field
+  bool isVeg = false;
+  bool isFood = false;
 
   int? dropdownValue = 1;
-  final List<String> subCategoryNames = [];
-  final Map<String, int> subCategoryMap = {};
-  String? selectedSubCategoryName;
-  int? selectedSubCategoryId;
+  final List<String> offerCategoryNames = [];
+  final Map<String, int> offerCategoryMap = {};
+  String? selectedOfferCatName;
+  int? selectedOfferCatId;
 
-  OfferProductModel product = OfferProductModel();
-  List<Map<String, dynamic>> productData = [];
+  OfferProductModel offerProductObj = OfferProductModel();
+  List<Map<String, dynamic>> offerProductData = [];
 
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    fetchSubCategory();
+    fetchOfferCategory();
   }
 
-  Future<void> fetchSubCategory() async {
+  Future<void> fetchOfferCategory() async {
     try {
-      final snapshot = await FirebaseFirestore.instance.collection("sub_category").get();
+      final snapshot = await FirebaseFirestore.instance.collection("offerCategory").get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
-          subCategoryNames.clear();
-          subCategoryMap.clear();
+          offerCategoryNames.clear();
+          offerCategoryMap.clear();
           for (var doc in snapshot.docs) {
             final data = doc.data();
-            final category = SubCategory(
-              id: data['sub_category_id'],
-              name: data['sub_category_name'],
+            final category = Category(
+              id: data['id'],
+              name: data['name'],
               status: data['status'],
-              img: '',
-              catId: data['category_id'],
+              priority: data['priority'],
+              isOffer: data['isOffer'],
             );
 
             if (category.status == 1) {
-              subCategoryNames.add(category.name);
-              subCategoryMap[category.name] = category.id;
+              offerCategoryNames.add(category.name);
+              offerCategoryMap[category.name] = category.id;
             }
           }
 
-          if (subCategoryNames.isNotEmpty) {
-            selectedSubCategoryName = subCategoryNames.first;
-            selectedSubCategoryId = subCategoryMap[selectedSubCategoryName!];
+          if (offerCategoryNames.isNotEmpty) {
+            selectedOfferCatName = offerCategoryNames.first;
+            selectedOfferCatId = offerCategoryMap[selectedOfferCatName!];
           }
         });
       } else {
@@ -81,11 +81,11 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
 
   Future<void> addNewProduct(BuildContext context) async {
     try {
-      // Fetch productData from Firestore
-      productData = await product.manageProducts();
+      // Fetch offerProductData from Firestore
+      offerProductData = await offerProductObj.manageOfferProducts();
       notifyListeners();
 
-      // Check if product already exists
+      // Check if offerProductObj already exists
       final querySnapshot = await FirebaseFirestore.instance.collection('offerProduct').where('name', isEqualTo: nameController.text).get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -94,8 +94,8 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
         return;
       }
 
-      // Calculate the new product ID
-      int newProductId = productData.length + 1;
+      // Calculate the new offerProductObj ID
+      int newProductId = offerProductData.length + 1;
 
       // Check if the ID is already used
       bool isIdUsed = true;
@@ -109,15 +109,15 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
         }
       }
 
-      // Upload image and add product to Firestore
+      // Upload image and add offerProductObj to Firestore
       String imageUrl = '';
       // if (!isFood) {
       imageUrl = await uploadImage(_image!);
       // }
 
-      final productDoc = FirebaseFirestore.instance.collection('offerProduct').doc();
+      final offerProductObjDoc = FirebaseFirestore.instance.collection('offerProduct').doc();
 
-      await productDoc.set({
+      await offerProductObjDoc.set({
         'id': newProductId,
         'image': imageUrl,
         'name': nameController.text,
@@ -125,7 +125,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
         'mrp': int.parse(mrpController.text),
         'status': dropdownValue,
         'stock': int.parse(stockController.text),
-        'sub_category_id': selectedSubCategoryId,
+        'categoryId': selectedOfferCatId,
         'unit': unitController.text,
         'isVeg': isVeg, // New field
         'isFood': isFood, // New field
@@ -141,7 +141,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
 
   Future<String> uploadImage(File image) async {
     try {
-      final storageRef = FirebaseStorage.instance.ref().child('image/${DateTime.now().millisecondsSinceEpoch}');
+      final storageRef = FirebaseStorage.instance.ref().child('offerImage/${DateTime.now().millisecondsSinceEpoch}');
       final uploadTask = storageRef.putFile(image);
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();
@@ -175,7 +175,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add new Offer product"),
+        title: const Text("Add new Offer offerProductObj"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -183,7 +183,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Enter name of product
+              // Enter name of offerProductObj
               SizedBox(
                 width: 250,
                 child: TextFormField(
@@ -250,7 +250,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
                   controller: mrpController,
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
-                    hintText: 'Enter product mrp',
+                    hintText: 'Enter product MRP',
                     hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14.0),
@@ -302,7 +302,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
               ),
               const SizedBox(height: 20),
 
-              // Enter unit of a product
+              // Enter unit of a offerProductObj
               SizedBox(
                 width: 250,
                 child: TextFormField(
@@ -346,7 +346,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
                         ),
                       ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           return Colors.black;
                         },
                       ),
@@ -367,7 +367,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
                         ),
                       ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           return Colors.black;
                         },
                       ),
@@ -380,9 +380,7 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
                 ],
               ),
               // if (!isFood)
-              _image != null
-                  ? Image.file(_image!, height: 100, width: 100)
-                  : const Text("No image selected"),
+              _image != null ? Image.file(_image!, height: 100, width: 100) : const Text("No image selected"),
               const SizedBox(height: 20),
 
               // Status
@@ -412,14 +410,14 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
               // Select Sub-Category
               const Text("Sub-Category: "),
               DropdownButton<String>(
-                value: selectedSubCategoryName,
+                value: selectedOfferCatName,
                 onChanged: (String? newValue) {
                   setState(() {
-                    selectedSubCategoryName = newValue!;
-                    selectedSubCategoryId = subCategoryMap[selectedSubCategoryName]!;
+                    selectedOfferCatName = newValue!;
+                    selectedOfferCatId = offerCategoryMap[selectedOfferCatName]!;
                   });
                 },
-                items: subCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
+                items: offerCategoryNames.map<DropdownMenuItem<String>>((String subcat) {
                   return DropdownMenuItem<String>(
                     value: subcat,
                     child: Text(subcat.toString()),
@@ -475,29 +473,29 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
                   onPressed: isLoading
                       ? null
                       : () async {
-                    if (nameController.text.isEmpty || (!isFood && _image == null) || selectedSubCategoryName == null) {
-                      showMessage("Please fill necessary details");
-                      log("Please fill all the fields");
+                          if (nameController.text.isEmpty || (!isFood && _image == null) || selectedOfferCatName == null) {
+                            showMessage("Please fill necessary details");
+                            log("Please fill all the fields");
 
-                      setState(() {
-                        isLoading = false;
-                      });
+                            setState(() {
+                              isLoading = false;
+                            });
 
-                      return;
-                    }
+                            return;
+                          }
 
-                    setState(() {
-                      isLoading = true;
-                    });
+                          setState(() {
+                            isLoading = true;
+                          });
 
-                    await addNewProduct(context);
+                          await addNewProduct(context);
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    Navigator.pop(context, true);
-                  },
+                          Navigator.pop(context, true);
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -512,16 +510,16 @@ class _EditOfferProductState extends State<EditOfferProduct> with ChangeNotifier
                   ),
                   child: isLoading
                       ? const CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  )
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        )
                       : const Text(
-                    "Add",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Gilroy-Bold',
-                    ),
-                  ),
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Gilroy-Bold',
+                          ),
+                        ),
                 ),
               ),
             ],

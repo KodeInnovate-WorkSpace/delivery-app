@@ -75,11 +75,11 @@ class _ManageOfferCategoryScreenState extends State<ManageOfferCategoryScreen> {
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _searchController.clear();
-                      },
-                    )
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                            },
+                          )
                         : null,
                   ),
                 ),
@@ -154,7 +154,7 @@ class TableData extends DataTableSource {
   }
 
   Future<void> _loadCatData() async {
-    catData = await Offercategory.manageCategories();
+    catData = await Offercategory.manageOfferCategories();
     // Sort categories by priority (ascending)
     catData.sort((a, b) => (a['priority'] as int).compareTo(b['priority'] as int));
     filteredData = catData;
@@ -186,14 +186,12 @@ class TableData extends DataTableSource {
         DropdownButton<int>(
           value: data['status'], // Use the status value from data
           onChanged: (int? newValue) {
-            Offercategory
-                .updateCategory(
+            Offercategory.updateOfferCategory(
               'status',
               newValue,
               categoryField: 'id',
               categoryValue: data['id'],
-            )
-                .then((_) => _loadCatData());
+            ).then((_) => _loadCatData());
           },
           items: statusOptions.map<DropdownMenuItem<int>>((int status) {
             return DropdownMenuItem<int>(
@@ -208,7 +206,7 @@ class TableData extends DataTableSource {
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            Offercategory.deleteCategory(data['id']).then((_) => _loadCatData());
+            Offercategory.deleteOfferCategory(data['id']).then((_) => _loadCatData());
           },
         ),
       ),

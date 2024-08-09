@@ -130,7 +130,7 @@ class _ManageOfferProductState extends State<ManageOfferProduct> {
                           DataColumn(label: Text('MRP')),
                           DataColumn(label: Text('Stock')),
                           DataColumn(label: Text('Unit')),
-                          DataColumn(label: Text('Sub-Category')),
+                          DataColumn(label: Text('Category')),
                           DataColumn(label: Text('')),
                           DataColumn(label: Text('')),
                         ],
@@ -140,7 +140,6 @@ class _ManageOfferProductState extends State<ManageOfferProduct> {
                         showFirstLastButtons: true,
                         arrowHeadColor: const Color(0xff1a1a1c),
                       ),
-
                     ],
                   ),
                 ),
@@ -162,16 +161,16 @@ class TableData extends DataTableSource {
   List<Map<String, dynamic>> productData = [];
   List<Map<String, dynamic>> filteredProductData = [];
 
-  SubCatModel subCatObj = SubCatModel();
-  Map<int, String> subCatData = {};
+  OfferCatModel offerCatObj = OfferCatModel();
+  Map<int, String> offerCatData = {};
 
   TableData(this.context) {
     _loadProductData();
   }
 
   Future<void> _loadProductData() async {
-    await _loadSubCategoryData();
-    productData = await productObj.manageProducts();
+    await _loadOfferCategoryData();
+    productData = await productObj.manageOfferProducts();
     debugPrint('Product Data: $productData');
 
     productData.sort((a, b) => a['id'].compareTo(b['id']));
@@ -180,19 +179,19 @@ class TableData extends DataTableSource {
     notifyListeners(); // Notify the listeners that data has changed
   }
 
-  Future<void> _loadSubCategoryData() async {
-    final categories = await subCatObj.manageSubCategories();
-    subCatData = {for (var cat in categories) cat['sub_category_id']: cat['sub_category_name']};
+  Future<void> _loadOfferCategoryData() async {
+    final categories = await offerCatObj.manageOfferCategories();
+    offerCatData = {for (var cat in categories) cat['id']: cat['id']};
     notifyListeners();
   }
 
   Future<void> _updateProduct(String field, dynamic newValue, {String? categoryField, dynamic categoryValue}) async {
-    await productObj.updateProduct(field, newValue, productField: categoryField, productValue: categoryValue);
+    await productObj.updateOfferProduct(field, newValue, productField: categoryField, productValue: categoryValue);
     _loadProductData(); // Reload data after update
   }
 
   Future<void> _deleteProduct(dynamic categoryValue) async {
-    await productObj.deleteProduct(categoryValue);
+    await productObj.deleteOfferProduct(categoryValue);
     await _loadProductData(); // Refresh data after deletion
   }
 
@@ -221,7 +220,7 @@ class TableData extends DataTableSource {
 
     // Storing each index of productData list in data variable to iterate over each list
     final data = filteredProductData[index];
-    final subCatName = subCatData[data['sub_category_id']] ?? 'Unknown';
+    final subCatName = offerCatData[data['id']] ?? 'Unknown';
 
     return DataRow(cells: [
       //id
@@ -267,7 +266,7 @@ class TableData extends DataTableSource {
         items: statusOptions.map<DropdownMenuItem<int>>((int status) {
           return DropdownMenuItem<int>(
             value: status,
-            child: Text(status == 0 ? 'Inactive' : 'Active'), // Display 'Active' or 'Inactive'
+            child: Text(status == 0 ? 'Inactive' : 'Active'),
           );
         }).toList(),
       )),
@@ -316,15 +315,15 @@ class TableData extends DataTableSource {
       DataCell(DropdownButton<String>(
         value: subCatName,
         onChanged: (String? newValue) {
-          final newSubCatId = subCatData.entries.firstWhere((entry) => entry.value == newValue).key;
+          final newSubCatId = offerCatData.entries.firstWhere((entry) => entry.value == newValue).key;
           _updateProduct(
-            'sub_category_id',
+            'id',
             newSubCatId,
             categoryField: 'id',
             categoryValue: data['id'],
           );
         },
-        items: subCatData.entries.map<DropdownMenuItem<String>>((entry) {
+        items: offerCatData.entries.map<DropdownMenuItem<String>>((entry) {
           return DropdownMenuItem<String>(
             value: entry.value,
             child: Text(entry.value),
@@ -354,16 +353,14 @@ class TableData extends DataTableSource {
               ),
             );
 
-            // Check if result is true (indicating update)
             if (result != null && result as bool) {
-              _refreshProductList(); // Call refresh function here
+              _refreshProductList();
             }
           },
         ),
       ),
     ]);
   }
-
 
   @override
   bool get isRowCountApproximate => false;
