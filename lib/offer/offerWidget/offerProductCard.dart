@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/add_to_cart_button.dart';
 
+import '../../shared/showProductImage.dart';
+
 Widget offerProductCard(int categoryId, String categoryName) {
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: categoryId).snapshots(),
@@ -131,45 +133,3 @@ Widget offerProductCard(int categoryId, String categoryName) {
   );
 }
 
-void showProductImage(BuildContext context, String imageUrl) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        child: Stack(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.6,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.0),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.contain,
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-                right: 0,
-                child: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.close)))
-          ],
-        ),
-      );
-    },
-  );
-}

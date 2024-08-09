@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/screens/home_screen.dart';
 import '../models/product_model.dart';
+import '../shared/showProductImage.dart';
 import 'add_to_cart_button.dart';
 
 class ProductCard extends StatefulWidget {
@@ -25,43 +26,6 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  void showProductImage(BuildContext context, String imageUrl) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.6,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
-              color: Colors.white,
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    fit: BoxFit.contain,
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
