@@ -240,7 +240,7 @@ class _SearchPageState extends State<SearchPage> {
       controller: _controller,
       cursorColor: Colors.black,
       decoration: InputDecoration(
-        hintText: 'Search for \'product\'',
+        hintText: 'Search...',
         hintStyle: const TextStyle(color: Colors.grey),
         filled: true,
         fillColor: Colors.white,

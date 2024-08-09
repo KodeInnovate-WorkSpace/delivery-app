@@ -107,23 +107,7 @@ class CheckoutAddToCartButtonState extends State<CheckoutAddToCartButton> {
                     if (isCategorySame) {
                       // Remove the existing item in the same category
                       cartProvider.removeItemByCategory(cartItem.categoryName!);
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("You can avail the offer on only one product"),
-                          duration: Duration(milliseconds: 600),
-                          // backgroundColor: color,
-                        ),
-                      );
                     }
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("You can only add one product at a time"),
-                        duration: Duration(milliseconds: 600),
-                        // backgroundColor: color,
-                      ),
-                    );
 
                     // Add the new item
                     _count = 1; // Ensure count is set to 1 for offer products

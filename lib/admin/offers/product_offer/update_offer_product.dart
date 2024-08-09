@@ -34,9 +34,9 @@ class _UpdateOfferProductState extends State<UpdateOfferProduct> {
     if (_formKey.currentState?.validate() ?? false) {
       final updatedProduct = {
         'name': _nameController.text,
-        'price': double.tryParse(_priceController.text) ?? 0.0,
-        'mrp': double.tryParse(_mrpController.text) ?? 0.0,
-        'stock': int.tryParse(_stockController.text) ?? 0,
+        'price': int.parse(_priceController.text) ?? 0.0,
+        'mrp': int.parse(_mrpController.text) ?? 0.0,
+        'stock': int.parse(_stockController.text) ?? 0,
         'unit': _unitController.text,
         'status': _status,
       };
