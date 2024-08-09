@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
+import 'package:speedy_delivery/widget/product_card.dart';
 import '../../models/product_model.dart';
 import '../../shared/showProductImage.dart';
 import '../../widget/add_to_cart_button.dart';
@@ -77,6 +78,34 @@ class OfferCategoryScreen extends StatelessWidget {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final product = products[index];
+
+                    // return Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Container(
+                    //     decoration: const BoxDecoration(color: Colors.red),
+                    //     child: Column(
+                    //       children: [
+                    //         //name
+                    //         Text(product.name),
+                    //         //price
+                    //         Text(product.price.toString()),
+                    //         //unit
+                    //         Text(product.unit),
+                    //
+                    //         //Add to cart
+                    //         AddToCartButton(
+                    //           productName: product.name,
+                    //           productPrice: product.price,
+                    //           productImage: product.image,
+                    //           productUnit: product.unit,
+                    //           isOfferProduct: product.isOfferProduct,
+                    //           catName: categoryTitle,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // );
+
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(

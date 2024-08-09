@@ -112,25 +112,6 @@ class AddToCartButtonState extends State<AddToCartButton> {
                   ),
                 ),
                 // Add button
-                // Expanded(
-                //   child: IconButton(
-                //     padding: EdgeInsets.zero,
-                //     constraints: const BoxConstraints(),
-                //     icon: const Icon(Icons.add, size: 15, color: Colors.white),
-                //     onPressed: () async {
-                //
-                //       setState(() {
-                //         if (widget.isOfferProduct! == true) {
-                //           _count = 1;
-                //           return;
-                //         }
-                //         _count++;
-                //         cartProvider.addItem(cartItem);
-                //         _saveCartState();
-                //       });
-                //     },
-                //   ),
-                // ),
                 Expanded(
                   child: IconButton(
                     padding: EdgeInsets.zero,
@@ -147,6 +128,13 @@ class AddToCartButtonState extends State<AddToCartButton> {
                             cartProvider.addItem(cartItem);
                             _saveCartState();
                           }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("You can only add one product at a time"),
+                              duration: Duration(milliseconds: 600),
+                              // backgroundColor: color,
+                            ),
+                          );
                         } else {
                           _count++;
                           cartProvider.addItem(cartItem);
@@ -171,7 +159,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Product switched"),
+                      content: Text("Product has been changed"),
                       duration: Duration(milliseconds: 600),
                       // backgroundColor: color,
                     ),
