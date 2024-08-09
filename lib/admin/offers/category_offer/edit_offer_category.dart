@@ -16,6 +16,8 @@ class EditOfferCategory extends StatefulWidget {
 class _EditOfferCategoryState extends State<EditOfferCategory> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priorityController = TextEditingController();
+  final TextEditingController textColorController = TextEditingController();
+  final TextEditingController buttonColorController = TextEditingController();
   int? dropdownValue = 1;
   List<Map<String, dynamic>> catData = [];
   bool isLoading = false;
@@ -63,6 +65,8 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
       Map<String, dynamic> categoryData = {
         'id': newCategoryId,
         'name': nameController.text,
+        'buttonColor': buttonColorController.text,
+        'textColor': textColorController.text,
         'status': dropdownValue,
         'priority': int.parse(priorityController.text),
       };
@@ -182,6 +186,64 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
             ),
             const SizedBox(height: 20),
 
+            // Text Color
+            SizedBox(
+              width: 250,
+              child: TextFormField(
+                controller: textColorController,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Enter Text Color',
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons.color_lens_outlined),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Button Color
+            SizedBox(
+              width: 250,
+              child: TextFormField(
+                controller: buttonColorController,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Enter Button Color',
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: const Icon(Icons.color_lens_rounded),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
             // Status
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -209,21 +271,16 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
             // Image Picker Buttons
 
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: _pickImage,
-                  icon: const Icon(Icons.image),
-                  label: const Text("Select Image"),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton.icon(
-                  onPressed: _captureImage,
-                  icon: const Icon(Icons.camera_alt),
-                  label: const Text("Capture Image"),
-                ),
-              ],
+            ElevatedButton.icon(
+              onPressed: _pickImage,
+              icon: const Icon(Icons.image),
+              label: const Text("Select Image"),
+            ),
+            const SizedBox(width: 10),
+            ElevatedButton.icon(
+              onPressed: _captureImage,
+              icon: const Icon(Icons.camera_alt),
+              label: const Text("Capture Image"),
             ),
             if (_image != null)
               Padding(

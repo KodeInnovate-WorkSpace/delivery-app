@@ -21,6 +21,8 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
   int? selectedCategory;
   final TextEditingController categoryController = TextEditingController();
   final TextEditingController priorityController = TextEditingController();
+  final TextEditingController textColorController = TextEditingController();
+  final TextEditingController buttonColorController = TextEditingController();
   final OfferCatModel categoryModel = OfferCatModel();
   List<int> statusOptions = [0, 1]; // 0 for inactive, 1 for active
   File? _image; // To store the selected image
@@ -32,12 +34,9 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
     super.initState();
     categoryController.text = widget.data['name'];
     priorityController.text = widget.data['priority'].toString();
+    textColorController.text = widget.data['textColor'];
+    buttonColorController.text = widget.data['buttonColor'];
     dropdownValue = widget.data['status'];
-    // if (widget.data['logo_url'] != null) {
-    //   setState(() {
-    //     isLogoEnabled = true;
-    //   });
-    // }
   }
 
   //
@@ -97,6 +96,26 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 20),
+
+              //text color
+              InputBox(
+                hintText: "Update text color",
+                myIcon: Icons.color_lens_outlined,
+                myController: textColorController,
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 20),
+
+              //button color
+              InputBox(
+                hintText: "Update button color",
+                myIcon: Icons.color_lens_rounded,
+                myController: buttonColorController,
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 20),
+
+              //Status
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -125,60 +144,7 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
                   ),
                 ],
               ),
-              // const SizedBox(height: 20),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     const Text("Update Logo: "),
-              //     Switch(
-              //       value: isLogoEnabled,
-              //       onChanged: (value) {
-              //         setState(() {
-              //           isLogoEnabled = value;
-              //         });
-              //       },
-              //     ),
-              //   ],
-              // ),
-              // if (widget.data['logo_url'] != null)
-              //   Padding(
-              //     padding: const EdgeInsets.symmetric(vertical: 10),
-              //     child: Image.network(
-              //       widget.data['logo_url'],
-              //       width: 100,
-              //       height: 100,
-              //       fit: BoxFit.cover,
-              //     ),
-              //   ),
-              // if (isLogoEnabled) ...[
-              //   const SizedBox(height: 10),
-              //   Row(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     children: [
-              //       ElevatedButton.icon(
-              //         onPressed: _pickImage,
-              //         icon: const Icon(Icons.image),
-              //         label: const Text("Select Image"),
-              //       ),
-              //       const SizedBox(width: 10),
-              //       ElevatedButton.icon(
-              //         onPressed: _captureImage,
-              //         icon: const Icon(Icons.camera_alt),
-              //         label: const Text("Capture Image"),
-              //       ),
-              //     ],
-              //   ),
-              //   if (_image != null)
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(vertical: 10),
-              //       child: Image.file(
-              //         _image!,
-              //         width: 100,
-              //         height: 100,
-              //         fit: BoxFit.cover,
-              //       ),
-              //     ),
-              // ],
+
               const SizedBox(height: 20),
               Container(
                 width: 280,
@@ -189,11 +155,6 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
                 ),
                 child: TextButton(
                   onPressed: () async {
-                    // String? imageUrl;
-                    // if (isLogoEnabled && _image != null) {
-                    //   imageUrl = await _uploadImage(widget.data['id'].toString());
-                    // }
-
                     categoryModel
                         .newUpdateOfferCategory(
                       'name',
@@ -202,17 +163,23 @@ class _UpdateCategoryState extends State<UpdateOfferCategory> {
                     )
                         .then((_) {
                       categoryModel.newUpdateOfferCategory(
+                        'textColor',
+                        textColorController.text,
+                        id: widget.data['id'].toString(),
+                      );
+                    }).then((_) {
+                      categoryModel.newUpdateOfferCategory(
+                        'buttonColor',
+                        buttonColorController.text,
+                        id: widget.data['id'].toString(),
+                      );
+                    }).then((_) {
+                      categoryModel.newUpdateOfferCategory(
                         'priority',
                         int.parse(priorityController.text),
                         id: widget.data['id'].toString(),
                       );
-                      // if (imageUrl != null) {
-                      //   categoryModel.newupdateCategory(
-                      //     'logo_url',
-                      //     imageUrl,
-                      //     id: widget.data['id'].toString(),
-                      //   );
-                      // }
+
                       Navigator.pop(context, true);
                     });
                     log("Data of index: ${widget.data}");
