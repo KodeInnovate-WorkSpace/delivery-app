@@ -180,7 +180,7 @@ class TableData extends DataTableSource {
 
   Future<void> _loadOfferCategoryData() async {
     final categories = await offerCatObj.manageOfferCategories();
-    offerCatData = {for (var cat in categories) cat['id']: cat['id']};
+    // offerCatData = {for (var cat in categories) cat['id']: cat['id']};
     notifyListeners();
   }
 
@@ -217,7 +217,6 @@ class TableData extends DataTableSource {
   DataRow? getRow(int index) {
     if (index >= filteredProductData.length) return null; // Check index bounds
 
-    // Storing each index of productData list in data variable to iterate over each list
     final data = filteredProductData[index];
     final subCatName = offerCatData[data['id']] ?? 'Unknown';
 
@@ -237,7 +236,7 @@ class TableData extends DataTableSource {
 
       //name
       DataCell(SizedBox(
-        width: 130,
+        width: 100,
         child: Text(
           data['name'],
           softWrap: true,
@@ -310,25 +309,8 @@ class TableData extends DataTableSource {
         ),
       )),
 
-      // sub-category name column
-      DataCell(DropdownButton<String>(
-        value: subCatName,
-        onChanged: (String? newValue) {
-          final newSubCatId = offerCatData.entries.firstWhere((entry) => entry.value == newValue).key;
-          _updateProduct(
-            'id',
-            newSubCatId,
-            categoryField: 'id',
-            categoryValue: data['id'],
-          );
-        },
-        items: offerCatData.entries.map<DropdownMenuItem<String>>((entry) {
-          return DropdownMenuItem<String>(
-            value: entry.value,
-            child: Text(entry.value),
-          );
-        }).toList(),
-      )),
+      // Category Id
+      DataCell(Text(data['categoryId']?.toString() ?? 'N/A')),
 
       //Delete
       DataCell(

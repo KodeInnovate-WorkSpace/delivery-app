@@ -1,6 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../shared/show_msg.dart';
 
 class EditOfferCategory extends StatefulWidget {
@@ -16,22 +19,18 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
   int? dropdownValue = 1;
   List<Map<String, dynamic>> catData = [];
   bool isLoading = false;
-  // bool isLogoEnabled = false;
-  // File? _image; // To store the selected image
-  // final ImagePicker _picker = ImagePicker();
+
+  File? _image; // To store the selected image
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> addCategory(BuildContext context) async {
     try {
       // Fetch existing categories to determine the new category ID
-      final snapshot =
-      await FirebaseFirestore.instance.collection('offerCategory').get();
+      final snapshot = await FirebaseFirestore.instance.collection('offerCategory').get();
       catData = snapshot.docs.map((doc) => doc.data()).toList();
 
       // Check if category already exists
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('offerCategory')
-          .where('name', isEqualTo: nameController.text)
-          .get();
+      final querySnapshot = await FirebaseFirestore.instance.collection('offerCategory').where('name', isEqualTo: nameController.text).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         showMessage("Category already exists");
@@ -45,10 +44,7 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
       // Check if the ID is already used
       bool isIdUsed = true;
       while (isIdUsed) {
-        final idCheckSnapshot = await FirebaseFirestore.instance
-            .collection('offerCategory')
-            .where('id', isEqualTo: newCategoryId)
-            .get();
+        final idCheckSnapshot = await FirebaseFirestore.instance.collection('offerCategory').where('id', isEqualTo: newCategoryId).get();
 
         if (idCheckSnapshot.docs.isEmpty) {
           isIdUsed = false;
@@ -58,10 +54,10 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
       }
 
       // // Upload logo if it is enabled and an image is selected
-      // String? imageUrl;
-      // if (isLogoEnabled && _image != null) {
-      //   imageUrl = await _uploadImage(newCategoryId.toString());
-      // }
+      String? imageUrl;
+      if (_image != null) {
+        imageUrl = await _uploadImage(newCategoryId.toString());
+      }
 
       // Add new category to Firestore
       Map<String, dynamic> categoryData = {
@@ -72,14 +68,11 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
       };
 
       // Add the logo URL if available
-      // if (imageUrl != null) {
-      //   categoryData['logo_url'] = imageUrl;
-      // }
+      if (imageUrl != null) {
+        categoryData['categoryImage'] = imageUrl;
+      }
 
-      await FirebaseFirestore.instance
-          .collection('offerCategory')
-          .doc(newCategoryId.toString())
-          .set(categoryData);
+      await FirebaseFirestore.instance.collection('offerCategory').doc(newCategoryId.toString()).set(categoryData);
 
       showMessage("Category added successfully");
       log("Category added successfully");
@@ -89,38 +82,35 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
     }
   }
 
-  // Future<String?> _uploadImage(String categoryId) async {
-  //   try {
-  //     final ref = FirebaseStorage.instance
-  //         .ref()
-  //         .child('category_logos')
-  //         .child('$categoryId.jpg');
-  //     await ref.putFile(_image!);
-  //     return await ref.getDownloadURL();
-  //   } catch (e) {
-  //     log("Error uploading image: $e");
-  //     showMessage("Error uploading image: $e");
-  //     return null;
-  //   }
-  // }
-  //
-  // Future<void> _pickImage() async {
-  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _image = File(pickedFile.path);
-  //     });
-  //   }
-  // }
-  //
-  // Future<void> _captureImage() async {
-  //   final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _image = File(pickedFile.path);
-  //     });
-  //   }
-  // }
+  Future<String?> _uploadImage(String categoryId) async {
+    try {
+      final ref = FirebaseStorage.instance.ref().child('offerCategoryImages').child('$categoryId.jpg');
+      await ref.putFile(_image!);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      log("Error uploading image: $e");
+      showMessage("Error uploading image: $e");
+      return null;
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _captureImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,8 +131,7 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: 'Enter Category',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -172,8 +161,7 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: 'Enter Priority',
-                  hintStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.normal),
+                  hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.0),
                     borderSide: const BorderSide(color: Colors.black),
@@ -218,52 +206,36 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
             ),
             const SizedBox(height: 20),
 
-            // Logo Option
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     const Text("Add Logo: "),
-            //     Switch(
-            //       value: isLogoEnabled,
-            //       onChanged: (value) {
-            //         setState(() {
-            //           isLogoEnabled = value;
-            //         });
-            //       },
-            //     ),
-            //   ],
-            // ),
-
             // Image Picker Buttons
-            // if (isLogoEnabled) ...[
-            //   const SizedBox(height: 10),
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       ElevatedButton.icon(
-            //         onPressed: _pickImage,
-            //         icon: const Icon(Icons.image),
-            //         label: const Text("Select Image"),
-            //       ),
-            //       const SizedBox(width: 10),
-            //       ElevatedButton.icon(
-            //         onPressed: _captureImage,
-            //         icon: const Icon(Icons.camera_alt),
-            //         label: const Text("Capture Image"),
-            //       ),
-            //     ],
-            //   ),
-            //   if (_image != null)
-            //     Padding(
-            //       padding: const EdgeInsets.symmetric(vertical: 10),
-            //       child: Image.file(
-            //         _image!,
-            //         width: 100,
-            //         height: 100,
-            //         fit: BoxFit.cover,
-            //       ),
-            //     ),
-            // ],
+
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _pickImage,
+                  icon: const Icon(Icons.image),
+                  label: const Text("Select Image"),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: _captureImage,
+                  icon: const Icon(Icons.camera_alt),
+                  label: const Text("Capture Image"),
+                ),
+              ],
+            ),
+            if (_image != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Image.file(
+                  _image!,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
             const SizedBox(height: 20),
 
             // Add Button
@@ -272,36 +244,32 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
                 onPressed: isLoading
                     ? null
                     : () async {
-                  if (nameController.text.isEmpty ||
-                      priorityController.text.isEmpty) {
-                    showMessage("Please fill necessary details");
-                    log("Please fill all the fields");
+                        if (nameController.text.isEmpty || priorityController.text.isEmpty) {
+                          showMessage("Please fill necessary details");
+                          log("Please fill all the fields");
 
-                    setState(() {
-                      isLoading = false;
-                    });
+                          setState(() {
+                            isLoading = false;
+                          });
 
-                    return;
-                  }
+                          return;
+                        }
 
-                  setState(() {
-                    isLoading = true;
-                  });
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                  await addCategory(context);
+                        await addCategory(context);
 
-                  setState(() {
-                    isLoading = false;
-                  });
+                        setState(() {
+                          isLoading = false;
+                        });
 
-                  Navigator.pop(context, true);
-                },
+                        Navigator.pop(context, true);
+                      },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isLoading
-                      ? Colors.black.withOpacity(0.3)
-                      : Colors.black, // Set the color directly
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  backgroundColor: isLoading ? Colors.black.withOpacity(0.3) : Colors.black, // Set the color directly
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -313,16 +281,16 @@ class _EditOfferCategoryState extends State<EditOfferCategory> {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : const Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Gilroy-Bold',
-                  ),
-                ),
+                        "Save",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Gilroy-Bold',
+                        ),
+                      ),
               ),
             )
           ],

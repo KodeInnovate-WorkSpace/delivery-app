@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/admin/offers/category_offer/update_offer_category.dart';
 import 'package:speedy_delivery/admin/offers/offer_model.dart';
@@ -92,6 +93,7 @@ class _ManageOfferCategoryScreenState extends State<ManageOfferCategoryScreen> {
                       PaginatedDataTable(
                         columns: const [
                           DataColumn(label: Text('ID')),
+                          DataColumn(label: Text('Image')),
                           DataColumn(label: Text('Category')),
                           DataColumn(label: Text('Status')),
                           DataColumn(label: Text('Priority')),
@@ -177,10 +179,17 @@ class TableData extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
-    if (index >= filteredData.length) return null; // Check index bounds
+    if (index >= filteredData.length) return null;
     final data = filteredData[index];
     return DataRow(cells: [
       DataCell(Text(data['id'].toString())),
+
+      DataCell(CachedNetworkImage(
+        imageUrl: data['categoryImage'],
+        width: 50,
+        height: 50,
+      )),
+
       DataCell(Text(data['name'].toString())),
       DataCell(
         DropdownButton<int>(
