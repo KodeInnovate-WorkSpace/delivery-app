@@ -139,17 +139,21 @@ class _MyAppState extends State<MyAppState> {
   }
 
   Future<void> checkForUpdate() async {
-    log('checking for Update');
-    InAppUpdate.checkForUpdate().then((info) {
-      setState(() {
-        if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-          log('update available');
-          update();
-        }
+    try {
+      log('checking for Update');
+      InAppUpdate.checkForUpdate().then((info) {
+        setState(() {
+          if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+            log('update available');
+            update();
+          }
+        });
+      }).catchError((e) {
+        log(e.toString());
       });
-    }).catchError((e) {
-      log(e.toString());
-    });
+    } catch (e) {
+      log("Error updating app: $e");
+    }
   }
 
   void update() async {

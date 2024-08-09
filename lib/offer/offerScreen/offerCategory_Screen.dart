@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:speedy_delivery/offer/offerWidget/offerProductCard.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
 import '../../models/product_model.dart';
 import '../../widget/add_to_cart_button.dart';
@@ -47,21 +48,21 @@ class OfferCategoryScreen extends StatelessWidget {
 
             final products = snapshot.data!.docs
                 .map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  return Product(
-                    id: data['id'] ?? 0,
-                    name: data['name'] ?? '',
-                    image: data['image'] ?? '',
-                    unit: data['unit'] ?? '0',
-                    price: data['price'] ?? 0,
-                    mrp: data['mrp'] ?? 0,
-                    stock: data['stock'] ?? 0,
-                    subCatId: data['sub_category_id'] ?? 0,
-                    status: data['status'],
-                    isVeg: data['isVeg'] ?? false,
-                    isOfferProduct: data['isOfferProduct'] ?? false,
-                  );
-                })
+              final data = doc.data() as Map<String, dynamic>;
+              return Product(
+                id: data['id'] ?? 0,
+                name: data['name'] ?? '',
+                image: data['image'] ?? '',
+                unit: data['unit'] ?? '0',
+                price: data['price'] ?? 0,
+                mrp: data['mrp'] ?? 0,
+                stock: data['stock'] ?? 0,
+                subCatId: data['sub_category_id'] ?? 0,
+                status: data['status'],
+                isVeg: data['isVeg'] ?? false,
+                isOfferProduct: data['isOfferProduct'] ?? false,
+              );
+            })
                 .where((product) => product.status == 1)
                 .toList();
 
@@ -94,6 +95,7 @@ class OfferCategoryScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             // Handle image tap
+                            showProductImage(context, product.image);
                           },
                           child: Container(
                             decoration: const BoxDecoration(
@@ -183,7 +185,15 @@ class OfferCategoryScreen extends StatelessWidget {
             );
           },
         ),
-        floatingActionButton: const CartButton(),
+        floatingActionButton: const Stack(
+          children: [
+            Positioned(
+              right: 20.0,
+              bottom: 25.0,
+              child: CartButton(),
+            ),
+          ],
+        ),
       ),
     );
   }
