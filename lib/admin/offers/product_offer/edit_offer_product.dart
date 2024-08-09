@@ -19,7 +19,7 @@ class _EditOfferProductState extends State<EditOfferProduct> {
   final _mrpController = TextEditingController();
   final _unitController = TextEditingController();
   final _stockController = TextEditingController();
-  int _status = 0; // 0 for off, 1 for active
+  int _status = 1;
   bool _isVeg = false;
   bool _isFood = false;
   File? _imageFile;
@@ -67,15 +67,15 @@ class _EditOfferProductState extends State<EditOfferProduct> {
         'id': newId,
         'name': _nameController.text,
         'image': imageUrl ?? '',
-        'categoryId': int.parse(_categoryIdController.text) ,
-        'price': double.tryParse(_priceController.text) ?? 0.0,
-        'mrp': double.tryParse(_mrpController.text) ?? 0.0,
+        'categoryId': int.parse(_categoryIdController.text),
+        'price': int.parse(_priceController.text),
+        'mrp': int.parse(_mrpController.text),
         'unit': _unitController.text,
         'status': _status,
         'isVeg': _isVeg,
         'isFood': _isFood,
         'isOfferProduct': true,
-        'stock': int.tryParse(_stockController.text) ?? 0,
+        'stock': int.parse(_stockController.text),
       };
 
       try {
