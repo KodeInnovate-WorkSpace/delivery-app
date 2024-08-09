@@ -130,7 +130,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
                           }
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("You can only add one product at a time"),
+                              content: Text("Cannot add more than one of this product"),
                               duration: Duration(milliseconds: 600),
                               // backgroundColor: color,
                             ),
@@ -159,7 +159,7 @@ class AddToCartButtonState extends State<AddToCartButton> {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Product has been changed"),
+                      content: Text("You can avail the offer on only one product."),
                       duration: Duration(milliseconds: 600),
                       // backgroundColor: color,
                     ),

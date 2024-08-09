@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/datamigration/v1.dart';
 import '../offerScreen/offerCategory_Screen.dart';
 import 'offerProductCard.dart';
 
@@ -31,6 +33,21 @@ Widget buildOfferSection() {
                     final data = offerCat.data() as Map<String, dynamic>;
                     final name = data['name'] ?? "Buy 1 Get 1 Free";
                     int categoryId = data['id'];
+
+                    final textColor = data['textColor'];
+                    final buttonColor = data['buttonColor'];
+
+                    // Convert hex string to Color object
+                    Color colorFromHex(String hexString) {
+                      final buffer = StringBuffer();
+                      if (hexString.length == 6 || hexString.length == 7) {
+                        buffer.write('ff'); // Add alpha value if not present
+                        buffer.write(hexString.replaceAll('#', ''));
+                      } else if (hexString.length == 8 || hexString.length == 9) {
+                        buffer.write(hexString.replaceAll('#', ''));
+                      }
+                      return Color(int.parse(buffer.toString(), radix: 16));
+                    }
 
                     return GestureDetector(
                       onTap: () {
@@ -71,6 +88,22 @@ Widget buildOfferSection() {
                               SizedBox(
                                 height: 300, // Adjust height as needed
                                 child: offerProductCard(categoryId, name),
+                              ),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                  child: Container(
+                                    decoration: BoxDecoration(color: colorFromHex(buttonColor), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                                    width: MediaQuery.of(context).size.width / 1.5,
+                                    height: MediaQuery.of(context).size.height / 15,
+                                    child: Center(
+                                      child: Text(
+                                        "See All",
+                                        style: TextStyle(fontFamily: 'Gilroy-SemiBold', fontSize: 16, color: colorFromHex(textColor)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

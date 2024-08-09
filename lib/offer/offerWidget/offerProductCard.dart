@@ -61,30 +61,31 @@ Widget offerProductCard(int categoryId, String categoryName) {
                   ),
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Product name
-                    Center(
-                      child: Text(
-                        data["name"],
-                        style: const TextStyle(fontFamily: 'cgblack', fontSize: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Center(
+                        child: Text(
+                          data["name"],
+                          style: const TextStyle(fontFamily: 'cgblack', fontSize: 10),
+                        ),
                       ),
                     ),
                     // Image
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        // color: Colors.cyanAccent
                         image: DecorationImage(
                           image: CachedNetworkImageProvider(data['image']),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
                       width: double.infinity,
-                      height: 70,
+                      height: 75,
                     ),
                   ],
                 ),
