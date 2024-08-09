@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/widget/cart_button.dart';
-import 'package:speedy_delivery/widget/product_card.dart';
 import '../../models/product_model.dart';
 import '../../shared/showProductImage.dart';
 import '../../widget/add_to_cart_button.dart';

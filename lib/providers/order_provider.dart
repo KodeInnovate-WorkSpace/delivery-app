@@ -161,6 +161,7 @@ class OrderProvider with ChangeNotifier {
     }
     return null;
   }
+
   void _updateDeliveryCharge() async {
     bool isDeliveryFree = await _fetchDeliveryChargeStatus();
     // delvChrg = (selectedPaymentMethod == "Online" && isDeliveryFree) ? 0 : 29;

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/admin/offers/product_offer/update_offer_product.dart';
-import 'package:speedy_delivery/admin/product/update_product.dart';
 import '../offer_model.dart';
 import 'edit_offer_product.dart';
 
@@ -181,7 +180,6 @@ class TableData extends DataTableSource {
 
   Future<void> _loadOfferCategoryData() async {
     final categories = await offerCatObj.manageOfferCategories();
-    // offerCatData = {for (var cat in categories) cat['id']: cat['id']};
     notifyListeners();
   }
 
