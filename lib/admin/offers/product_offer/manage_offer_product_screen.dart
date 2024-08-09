@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:speedy_delivery/admin/product/update_product.dart';
-import '../../admin_model.dart';
 import '../offer_model.dart';
 import 'edit_offer_product.dart';
 

@@ -3,9 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../offerScreen/offerCategory_Screen.dart';
 
+Future<List<DocumentSnapshot>> _fetchProducts(int categoryId) async {
+  final snapshot = await FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: categoryId).where('status', isEqualTo: 1).where('isOfferProduct', isEqualTo: true).get();
+  return snapshot.docs;
+}
+
 Widget offerProductCard(int categoryId, String categoryName) {
-  return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: categoryId).where('status', isEqualTo: 1).where('isOfferProduct', isEqualTo: true).snapshots(),
+  return FutureBuilder<List<DocumentSnapshot>>(
+    // future: FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: categoryId).where('status', isEqualTo: 1).where('isOfferProduct', isEqualTo: true).snapshots(),
+    future: _fetchProducts(categoryId),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const Center(
@@ -15,10 +21,10 @@ Widget offerProductCard(int categoryId, String categoryName) {
         );
       } else if (snapshot.hasError) {
         return const SizedBox.shrink();
-      } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
         return const SizedBox.shrink();
       } else {
-        final products = snapshot.data!.docs;
+        final products = snapshot.data!;
 
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
