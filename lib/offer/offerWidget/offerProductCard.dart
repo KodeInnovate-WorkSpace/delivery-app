@@ -10,7 +10,6 @@ Future<List<DocumentSnapshot>> _fetchProducts(int categoryId) async {
 
 Widget offerProductCard(int categoryId, String categoryName) {
   return FutureBuilder<List<DocumentSnapshot>>(
-    // future: FirebaseFirestore.instance.collection("offerProduct").where('categoryId', isEqualTo: categoryId).where('status', isEqualTo: 1).where('isOfferProduct', isEqualTo: true).snapshots(),
     future: _fetchProducts(categoryId),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -27,6 +26,8 @@ Widget offerProductCard(int categoryId, String categoryName) {
         final products = snapshot.data!;
 
         return GridView.builder(
+          shrinkWrap: true, // Make GridView take only the space it needs
+          physics: const NeverScrollableScrollPhysics(), // Disable GridView's internal scrolling
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3, // 3 items per row
             childAspectRatio: 0.9, // size of each content inside grid view
@@ -40,7 +41,6 @@ Widget offerProductCard(int categoryId, String categoryName) {
 
             return GestureDetector(
               onTap: () {
-                // showProductImage(context, data['image']);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -64,88 +64,28 @@ Widget offerProductCard(int categoryId, String categoryName) {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    //product name
+                    // Product name
                     Center(
-                        child: Text(
-                      data["name"],
-                      style: const TextStyle(fontFamily: 'cgblack', fontSize: 10),
-                    )),
-
+                      child: Text(
+                        data["name"],
+                        style: const TextStyle(fontFamily: 'cgblack', fontSize: 10),
+                      ),
+                    ),
                     // Image
                     Container(
                       decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          image: DecorationImage(image: CachedNetworkImageProvider(data['image']))),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(data['image']),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       width: double.infinity,
                       height: 70,
-
-                      // child: CachedNetworkImage(
-                      //   imageUrl: data["image"],
-                      //   fit: BoxFit.cover,
-                      // ),
                     ),
-
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 10),
-                    //   child: Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       // Product Name
-                    //       Text(
-                    //         data["name"],
-                    //         style: const TextStyle(color: Colors.black, fontFamily: 'Gilroy-ExtraBold'),
-                    //       ),
-                    //       // Product weight
-                    //       Text(
-                    //         data["unit"],
-                    //         style: TextStyle(color: Colors.grey.shade400, fontSize: 12, fontFamily: 'Gilroy-Bold'),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    // SizedBox(
-                    //   height: 50,
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //     children: [
-                    //       Column(
-                    //         crossAxisAlignment: CrossAxisAlignment.start,
-                    //         children: [
-                    //           // Product price
-                    //           Text(
-                    //             "Rs. ${data["price"].toString()}",
-                    //             style: const TextStyle(
-                    //               color: Colors.black,
-                    //               fontFamily: "Gilroy-ExtraBold",
-                    //             ),
-                    //           ),
-                    //           // Product MRP
-                    //           Text(
-                    //             "Rs. ${data["mrp"].toString()}",
-                    //             style: TextStyle(
-                    //               color: Colors.grey.shade400,
-                    //               fontSize: 12,
-                    //               fontFamily: 'Gilroy-Bold',
-                    //               decoration: TextDecoration.lineThrough,
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       // Add button
-                    //       AddToCartButton(
-                    //         productName: data["name"],
-                    //         productPrice: data["price"],
-                    //         productImage: data["image"],
-                    //         productUnit: data["unit"],
-                    //         isOfferProduct: data['isOfferProduct'],
-                    //         catName: categoryName,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -156,3 +96,4 @@ Widget offerProductCard(int categoryId, String categoryName) {
     },
   );
 }
+
