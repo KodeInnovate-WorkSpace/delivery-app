@@ -96,4 +96,3 @@ Widget offerProductCard(int categoryId, String categoryName) {
     },
   );
 }
-
